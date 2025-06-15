@@ -1,0 +1,11 @@
+[package]
+name = "nwc_rust"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+uniffi = "0.28.3"
+
+[lib]
+crate-type = ["cdylib", "staticlib"]
+path = "src/commonMain/rust/lib.rs"
