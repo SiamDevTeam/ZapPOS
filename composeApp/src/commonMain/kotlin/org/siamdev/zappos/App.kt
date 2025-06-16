@@ -33,7 +33,7 @@ fun App() {
                 Text("Click me!")
             }
             Column {
-                Text("Addition using Rust: 2 + 3 = ${uniffi.nostr_sdk.N}")
+                Text("Addition using Rust: 2 + 3 = ${uniffi.nwc_rust.add(1,3)}")
                 val greeting = remember { uniffi.nwc_rust.Greeter("Hello") }
                 Text(greeting.finally())
                 DisposableEffect(greeting) {
