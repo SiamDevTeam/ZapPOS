@@ -1,15 +1,26 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.composeHotReload)
+    kotlin("plugin.atomicfu") version libs.versions.kotlin
+    id("dev.gobley.cargo") version "0.2.0"
+    id("dev.gobley.uniffi") version "0.2.0"
+}
+
+cargo {
+    publishJvmArtifacts = false
+}
+uniffi {
+    // Generate the bindings using library mode.
+    generateFromLibrary {
+        namespace = "nwc_rust"
+    }
+    formatCode = true
 }
 
 kotlin {
@@ -31,40 +42,13 @@ kotlin {
         }
     }
     
-    jvm("desktop")
-    
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        moduleName = "composeApp"
-        browser {
-            val rootDirPath = project.rootDir.path
-            val projectDirPath = project.projectDir.path
-            commonWebpackConfig {
-                outputFileName = "composeApp.js"
-                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
-                    static = (static ?: mutableListOf()).apply {
-                        // Serve sources to debug inside browser
-                        add(rootDirPath)
-                        add(projectDirPath)
-                    }
-                }
-            }
-        }
-        binaries.executable()
-    }
-    
     sourceSets {
-        val desktopMain by getting
         
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
-
-            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.0-beta02")
-            implementation("org.jetbrains.compose.material:material-icons-extended:1.7.3")
-
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -77,23 +61,20 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
-        desktopMain.dependencies {
-            implementation(compose.desktop.currentOs)
-            implementation(libs.kotlinx.coroutinesSwing)
-        }
     }
 }
 
 android {
-    namespace = "org.zappos.core"
+    namespace = "org.siamdev.zappos"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "org.zappos.core"
+        applicationId = "org.siamdev.zappos"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+//        ndk.abiFilters += setOf("arm64-v8a", "armeabi-v7a")
     }
     packaging {
         resources {
@@ -115,22 +96,3 @@ dependencies {
     debugImplementation(compose.uiTooling)
 }
 
-compose.desktop {
-    application {
-        mainClass = "org.zappos.core.MainKt"
-
-        nativeDistributions {
-            targetFormats(
-                TargetFormat.Dmg,
-                TargetFormat.Msi,
-                TargetFormat.Exe,
-                TargetFormat.Deb,
-                TargetFormat.Rpm,
-                TargetFormat.Pkg,
-                TargetFormat.AppImage
-            )
-            packageName = "org.zappos.core"
-            packageVersion = "1.0.0"
-        }
-    }
-}

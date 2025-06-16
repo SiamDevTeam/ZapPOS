@@ -1,4 +1,4 @@
-package org.zappos.core
+package org.siamdev.zappos
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
