@@ -45,7 +45,7 @@ kotlin {
     sourceSets {
         
         androidMain.dependencies {
-            implementation(libs.jna)
+            implementation("net.java.dev.jna:jna:5.15.0@aar")
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
         }
