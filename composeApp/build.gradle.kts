@@ -18,7 +18,7 @@ cargo {
 uniffi {
     // Generate the bindings using library mode.
     generateFromLibrary {
-        namespace = "nwc_rust"
+        namespace = "zappos"
     }
     formatCode = true
 }
@@ -45,10 +45,12 @@ kotlin {
     sourceSets {
         
         androidMain.dependencies {
+            implementation(libs.jna)
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
+            runtimeOnly(libs.ktlint.core)
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)

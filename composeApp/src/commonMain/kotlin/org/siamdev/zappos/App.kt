@@ -32,16 +32,13 @@ fun App() {
             Button(onClick = { showContent = !showContent }) {
                 Text("Click me!")
             }
-            Column {
-                Text("Addition using Rust: 2 + 3 = ${uniffi.nwc_rust.add(1,3)}")
-                val greeting = remember { uniffi.nwc_rust.Greeter("Hello") }
-                Text(greeting.finally())
-                DisposableEffect(greeting) {
-                    onDispose {
-                        greeting.close()
-                    }
-                }
-            }
+            val keys = uniffi.nostr_sdk.Keys.generate()
+            val publicKey = keys.publicKey()
+            val secretKey = keys.secretKey()
+
+            Text(text = publicKey.toHex())
+            Text(text = secretKey.toHex())
+
             AnimatedVisibility(showContent) {
                 val greeting = remember { Greeting().greet() }
                 Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
