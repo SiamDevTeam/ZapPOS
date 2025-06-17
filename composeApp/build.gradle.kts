@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -45,7 +44,7 @@ kotlin {
     sourceSets {
         
         androidMain.dependencies {
-            implementation("net.java.dev.jna:jna:5.15.0@aar")
+            implementation("net.java.dev.jna:jna:5.17.0@aar")
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
         }

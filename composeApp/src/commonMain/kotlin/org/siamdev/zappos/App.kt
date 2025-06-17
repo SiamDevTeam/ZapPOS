@@ -32,6 +32,7 @@ fun App() {
             Button(onClick = { showContent = !showContent }) {
                 Text("Click me!")
             }
+
             val keys = uniffi.nostr_sdk.Keys.generate()
             val publicKey = keys.publicKey()
             val secretKey = keys.secretKey()
