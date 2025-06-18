@@ -1,6 +1,0 @@
-[submodule "composeApp/src/commonMain/nostr-sdk-ffi"]
-	path = composeApp/src/commonMain/nostr-sdk-ffi
-	url = https://github.com/rust-nostr/nostr-sdk-ffi.git
-[submodule "composeApp/src/commonMain/rust/nostr-sdk-ffi"]
-	path = composeApp/src/commonMain/rust/nostr-sdk-ffi
-	url = https://github.com/rust-nostr/nostr-sdk-ffi.git
