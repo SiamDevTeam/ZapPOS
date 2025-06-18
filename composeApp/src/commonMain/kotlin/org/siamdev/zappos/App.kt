@@ -33,12 +33,6 @@ fun App() {
                 Text("Click me!")
             }
 
-            val keys = uniffi.nostr_sdk.Keys.generate()
-            val publicKey = keys.publicKey()
-            val secretKey = keys.secretKey()
-
-            Text(text = publicKey.toHex())
-            Text(text = secretKey.toHex())
 
             AnimatedVisibility(showContent) {
                 val greeting = remember { Greeting().greet() }

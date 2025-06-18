@@ -6,20 +6,6 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    kotlin("plugin.atomicfu") version libs.versions.kotlin
-    id("dev.gobley.cargo") version "0.2.0"
-    id("dev.gobley.uniffi") version "0.2.0"
-}
-
-cargo {
-    publishJvmArtifacts = false
-}
-uniffi {
-    // Generate the bindings using library mode.
-    generateFromLibrary {
-        namespace = "zappos"
-    }
-    formatCode = true
 }
 
 kotlin {
@@ -45,20 +31,58 @@ kotlin {
         
         androidMain.dependencies {
             implementation(libs.jna)
-            implementation(compose.preview)
+            implementation("org.rust-nostr:nostr-sdk:0.42.1")
+            //implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
         }
-        commonMain.dependencies {
-            runtimeOnly(libs.ktlint.core)
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
+
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
         }
+
+        val commonMain by getting {
+            dependencies {
+                // Compose Multiplatform
+                implementation(compose.preview)
+                implementation(compose.runtime)
+                implementation(compose.foundation)
+                implementation(compose.material3)
+                implementation(compose.ui)
+                implementation(libs.material.icons.core)
+                implementation(compose.components.resources)
+                implementation(compose.components.uiToolingPreview)
+                implementation(libs.navigation.compose)
+
+                // Network
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.client.content.negotiation)
+                implementation(libs.ktor.serialization.kotlinx.json)
+
+                // AndroidX Lifecycle
+                implementation(libs.androidx.lifecycle.viewmodel)
+                implementation(libs.androidx.lifecycle.runtimeCompose)
+
+                // FlowMVI core
+                implementation(libs.flowmvi.core)
+
+                // FlowMVI Compose
+                implementation(libs.flowmvi.compose)
+
+                // FlowMVI Saved State
+                implementation(libs.flowmvi.savedstate)
+
+                // FlowMVI debugger client (optional, dev/debug only)
+                implementation(libs.flowmvi.debugger.client)
+
+                // FlowMVI Essenty integration (optional, if using Decompose)
+                implementation(libs.flowmvi.essenty)
+                implementation(libs.flowmvi.essenty.compose)
+
+                // ktlint for runtime check (optional, dev tools)
+                runtimeOnly(libs.ktlint.core)
+            }
+        }
+
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
