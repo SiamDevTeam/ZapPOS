@@ -26,66 +26,47 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     sourceSets {
-        
+
         androidMain.dependencies {
-            implementation(libs.jna)
-            implementation("org.rust-nostr:nostr-sdk:0.42.1")
-            //implementation(compose.preview)
+            implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
         }
+        commonMain.dependencies {
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.ui)
+            implementation(compose.components.resources)
+            implementation(compose.components.uiToolingPreview)
+            implementation(libs.androidx.lifecycle.viewmodel)
+            implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.navigation.compose)
+            implementation(libs.material.icons.core)
 
-        iosMain.dependencies {
-            implementation(libs.ktor.client.darwin)
-        }
+            // FlowMVI core
+            implementation(libs.flowmvi.core)
 
-        val commonMain by getting {
-            dependencies {
-                // Compose Multiplatform
-                implementation(compose.preview)
-                implementation(compose.runtime)
-                implementation(compose.foundation)
-                implementation(compose.material3)
-                implementation(compose.ui)
-                implementation(libs.material.icons.core)
-                implementation(compose.components.resources)
-                implementation(compose.components.uiToolingPreview)
-                implementation(libs.navigation.compose)
+            // FlowMVI Compose
+            implementation(libs.flowmvi.compose)
 
-                // Network
-                implementation(libs.ktor.client.core)
-                implementation(libs.ktor.client.content.negotiation)
-                implementation(libs.ktor.serialization.kotlinx.json)
+            // FlowMVI Saved State
+            implementation(libs.flowmvi.savedstate)
 
-                // AndroidX Lifecycle
-                implementation(libs.androidx.lifecycle.viewmodel)
-                implementation(libs.androidx.lifecycle.runtimeCompose)
+            // FlowMVI debugger client (optional, dev/debug only)
+            implementation(libs.flowmvi.debugger.client)
 
-                // FlowMVI core
-                implementation(libs.flowmvi.core)
+            // FlowMVI Essenty integration (optional, if using Decompose)
+            implementation(libs.flowmvi.essenty)
+            implementation(libs.flowmvi.essenty.compose)
 
-                // FlowMVI Compose
-                implementation(libs.flowmvi.compose)
-
-                // FlowMVI Saved State
-                implementation(libs.flowmvi.savedstate)
-
-                // FlowMVI debugger client (optional, dev/debug only)
-                implementation(libs.flowmvi.debugger.client)
-
-                // FlowMVI Essenty integration (optional, if using Decompose)
-                implementation(libs.flowmvi.essenty)
-                implementation(libs.flowmvi.essenty.compose)
-
-                // ktlint for runtime check (optional, dev tools)
-                runtimeOnly(libs.ktlint.core)
-            }
         }
 
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
+
     }
 }
 
@@ -99,7 +80,6 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
-//        ndk.abiFilters += setOf("arm64-v8a", "armeabi-v7a")
     }
     packaging {
         resources {
