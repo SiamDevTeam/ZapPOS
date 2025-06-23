@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -7,20 +6,6 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    kotlin("plugin.atomicfu") version libs.versions.kotlin
-    id("dev.gobley.cargo") version "0.2.0"
-    id("dev.gobley.uniffi") version "0.2.0"
-}
-
-cargo {
-    publishJvmArtifacts = false
-}
-uniffi {
-    // Generate the bindings using library mode.
-    generateFromLibrary {
-        namespace = "nwc_rust"
-    }
-    formatCode = true
 }
 
 kotlin {
@@ -41,9 +26,9 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     sourceSets {
-        
+
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
@@ -57,10 +42,31 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.navigation.compose)
+            implementation(libs.material.icons.core)
+
+            // FlowMVI core
+            implementation(libs.flowmvi.core)
+
+            // FlowMVI Compose
+            implementation(libs.flowmvi.compose)
+
+            // FlowMVI Saved State
+            implementation(libs.flowmvi.savedstate)
+
+            // FlowMVI debugger client (optional, dev/debug only)
+            implementation(libs.flowmvi.debugger.client)
+
+            // FlowMVI Essenty integration (optional, if using Decompose)
+            implementation(libs.flowmvi.essenty)
+            implementation(libs.flowmvi.essenty.compose)
+
         }
+
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
+
     }
 }
 
@@ -74,7 +80,6 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
-//        ndk.abiFilters += setOf("arm64-v8a", "armeabi-v7a")
     }
     packaging {
         resources {

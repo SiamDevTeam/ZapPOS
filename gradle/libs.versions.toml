@@ -11,8 +11,13 @@ androidx-espresso = "3.6.1"
 androidx-lifecycle = "2.9.0"
 androidx-testExt = "1.2.1"
 composeMultiplatform = "1.8.1"
+navigationCompose = "2.9.0-beta01"
+materialIconsCore = "1.7.3"
 junit = "4.13.2"
 kotlin = "2.1.21"
+flowmvi = "3.1.0"
+
+
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -26,6 +31,26 @@ androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayo
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
+navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "materialIconsCore" }
+
+
+# Core KMP module
+flowmvi-core = { module = "pro.respawn.flowmvi:core", version.ref = "flowmvi" }
+# Test DSL
+flowmvi-test = { module = "pro.respawn.flowmvi:test", version.ref = "flowmvi" }
+# Compose multiplatform
+flowmvi-compose = { module = "pro.respawn.flowmvi:compose", version.ref = "flowmvi" }
+# Android (common + view-based)
+flowmvi-android = { module = "pro.respawn.flowmvi:android", version.ref = "flowmvi" }
+# Multiplatform state preservation
+flowmvi-savedstate = { module = "pro.respawn.flowmvi:savedstate", version.ref = "flowmvi" }
+# Remote debugging client
+flowmvi-debugger-client = { module = "pro.respawn.flowmvi:debugger-plugin", version.ref = "flowmvi" }
+# Essenty (Decompose) integration
+flowmvi-essenty = { module = "pro.respawn.flowmvi:essenty", version.ref = "flowmvi" }
+flowmvi-essenty-compose = { module = "pro.respawn.flowmvi:essenty-compose", version.ref = "flowmvi" }
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
