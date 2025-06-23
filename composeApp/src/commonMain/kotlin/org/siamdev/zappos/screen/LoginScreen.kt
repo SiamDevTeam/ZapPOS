@@ -1,4 +1,4 @@
-package org.zappos.core.screen
+package org.siamdev.zappos.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.zappos.core.view.MaterialButton
+import org.siamdev.zappos.view.MaterialButton
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.compose_multiplatform
 

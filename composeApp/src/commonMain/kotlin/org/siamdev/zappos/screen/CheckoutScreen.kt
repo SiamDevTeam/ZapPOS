@@ -1,4 +1,4 @@
-package org.zappos.core.screen
+package org.siamdev.zappos.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
@@ -18,9 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.zappos.core.view.CheckoutItem
-import org.zappos.core.view.MaterialButton
-import org.zappos.core.view.TextIconButton
+import org.siamdev.zappos.view.CheckoutItem
+import org.siamdev.zappos.view.MaterialButton
+import org.siamdev.zappos.view.TextIconButton
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.ic_checkout
 

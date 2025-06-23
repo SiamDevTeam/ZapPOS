@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.composeHotReload)
 }
 
 kotlin {
@@ -34,6 +35,8 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.0-beta02")
+            implementation("org.jetbrains.compose.material:material-icons-extended:1.7.3")
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)

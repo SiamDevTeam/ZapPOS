@@ -1,4 +1,4 @@
-package org.zappos.core.screen
+package org.siamdev.zappos.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -6,7 +6,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.zappos.core.view.MenuItemView
+import org.siamdev.zappos.view.MenuItemView
 
 @Composable
 fun MenuScreen(

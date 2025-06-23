@@ -1,4 +1,4 @@
-package org.zappos.core.view
+package org.siamdev.zappos.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column

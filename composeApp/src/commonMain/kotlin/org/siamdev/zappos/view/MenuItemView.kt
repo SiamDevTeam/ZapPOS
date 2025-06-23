@@ -1,4 +1,4 @@
-package org.zappos.core.view
+package org.siamdev.zappos.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
