@@ -2,6 +2,7 @@ package org.siamdev.zappos.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -9,6 +10,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -31,6 +33,20 @@ fun MaterialButton(
     onClick: () -> Unit
 ) {
     Button(
+        modifier = modifier,
+        onClick = onClick
+    ) {
+        Text(text)
+    }
+}
+
+@Composable
+fun MaterialOutlinedButton(
+    text: String,
+    modifier: Modifier = Modifier.fillMaxWidth(),
+    onClick: () -> Unit
+) {
+    OutlinedButton(
         modifier = modifier,
         onClick = onClick
     ) {
@@ -101,6 +117,16 @@ fun RemoveItem(
 @Composable
 fun previewMaterialButton() {
     MaterialButton(text = "Click Me") {
+        // Handle click
+    }
+}
+
+@Preview
+@Composable
+fun previewClearCartButton() {
+    MaterialOutlinedButton(
+        text = "Clear Cart"
+    ) {
         // Handle click
     }
 }

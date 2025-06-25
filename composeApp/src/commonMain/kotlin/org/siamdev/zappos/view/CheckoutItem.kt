@@ -39,6 +39,7 @@ fun CheckoutItem(
     ) {
         Row(
             modifier = Modifier
+                .fillMaxWidth()
                 .background(color = Color.LightGray, RoundedCornerShape(8.dp))
                 .padding(16.dp),
         ) {
@@ -46,7 +47,7 @@ fun CheckoutItem(
                 Text(text = menu, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 Text(text = sats, fontSize = 12.sp)
             }
-            Spacer(Modifier.width(16.dp))
+            Spacer(Modifier.weight(1f))
             MaterialIconButton(
                 modifier = Modifier
                     .width(36.dp).height(36.dp)
@@ -95,12 +96,23 @@ fun CheckoutItem(
 @Preview
 @Composable
 fun previewCheckoutItem() {
-    CheckoutItem(
-        menu = "Spaghetti Carbonara",
-        sats = "150 sats",
-        quantity = 2,
-        onAddItemClick = {},
-        onRemoveItemClick = {},
-        onDeleteItemClick = {}
-    )
+    Column {
+        CheckoutItem(
+            menu = "Spaghetti Carbonara",
+            sats = "150 sats",
+            quantity = 2,
+            onAddItemClick = {},
+            onRemoveItemClick = {},
+            onDeleteItemClick = {}
+        )
+        CheckoutItem(
+            menu = "item 2",
+            sats = "150 sats",
+            quantity = 2,
+            onAddItemClick = {},
+            onRemoveItemClick = {},
+            onDeleteItemClick = {}
+        )
+    }
+
 }

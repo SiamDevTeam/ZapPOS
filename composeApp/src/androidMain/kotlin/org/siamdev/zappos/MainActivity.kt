@@ -19,6 +19,7 @@ class MainActivity : ComponentActivity() {
             LoginScreen(
                 onButtonClick = {
                     context.startActivity(Intent(context, PosActivity::class.java))
+                    finish()
                 }
             )
             // if login, go to PosActivity

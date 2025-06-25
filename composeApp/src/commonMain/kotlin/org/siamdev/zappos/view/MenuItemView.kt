@@ -32,7 +32,6 @@ fun MenuItemView(
     Card(
         modifier = Modifier
             .padding(8.dp)
-            .width(120.dp)
             .clickable { onClick?.invoke() },
         shape = RoundedCornerShape(4.dp)
     ) {

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,11 +29,10 @@ fun HistoryItem(
     ElevatedCard (
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(vertical = 8.dp),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 4.dp
         ),
-        // click to see bill detail
         onClick = onClick
     ) {
         Row (
@@ -44,13 +44,14 @@ fun HistoryItem(
             Column {
                 Text(
                     text = name,
+                    fontWeight = FontWeight.Medium,
                     color = Color.Black,
                     fontSize = 18.sp
                 )
                 Text(
                     text = date,
-                    color = Color.LightGray,
-                    fontSize = 16.sp
+                    color = Color.DarkGray,
+                    fontSize = 14.sp
                 )
             }
             Column (
@@ -58,14 +59,14 @@ fun HistoryItem(
             ) {
                 Text(
                     text = sats,
-                    color = Color.Green,
+                    color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 )
                 Text(
                     text = baht,
-                    color = Color.LightGray,
-                    fontSize = 16.sp
+                    color = Color.DarkGray,
+                    fontSize = 14.sp
                 )
             }
         }
