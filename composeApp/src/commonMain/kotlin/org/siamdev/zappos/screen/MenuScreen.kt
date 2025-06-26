@@ -17,7 +17,8 @@ import org.siamdev.zappos.view.MenuItemView
 
 @Composable
 fun MenuScreen(
-    menuList: List<MenuItem>
+    menuList: List<MenuItem>,
+    onMenuItemClick: (MenuItem) -> Unit = {}
 ) {
     Box(
         modifier = Modifier
@@ -31,14 +32,14 @@ fun MenuScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            menuList.forEach { items ->
+            menuList.forEach { item ->
                 item {
                     MenuItemView(
-                        name = items.name,
-                        priceSats = items.priceSats,
-                        priceBaht = items.priceBaht
+                        name = item.name,
+                        priceSats = item.priceSats,
+                        priceBaht = item.priceBaht
                     ) {
-                        // Handle item click if needed
+                        onMenuItemClick(item)
                     }
                 }
             }

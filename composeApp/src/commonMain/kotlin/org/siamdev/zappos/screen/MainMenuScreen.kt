@@ -1,14 +1,83 @@
 package org.siamdev.zappos.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
 @Composable
 fun MainMenuScreen() {
+    val cart = remember { mutableStateListOf<CheckoutOrder>() }
+
+    fun addToCart(menuItem: MenuItem) {
+        val index = cart.indexOfFirst { it.name == menuItem.name }
+        if (index >= 0) {
+            // Update existing item quantity
+            val item = cart[index]
+            cart[index] = item.copy(
+                quantity = item.quantity + 1,
+                total = "${(item.quantity + 1) * (item.sats.filter { it.isDigit() }.toIntOrNull() ?: 0)} sat"
+            )
+        } else {
+            // Add new item
+            val satsInt = menuItem.priceSats.filter { it.isDigit() }.toIntOrNull() ?: 0
+            cart.add(
+                CheckoutOrder(
+                    name = menuItem.name,
+                    sats = menuItem.priceSats,
+                    quantity = 1,
+                    total = "$satsInt sat"
+                )
+            )
+        }
+    }
+
+    fun increaseItem(name: String) {
+        val index = cart.indexOfFirst { it.name == name }
+        if (index >= 0) {
+            val item = cart[index]
+            val satsInt = item.sats.filter { it.isDigit() }.toIntOrNull() ?: 0
+            cart[index] = item.copy(
+                quantity = item.quantity + 1,
+                total = "${(item.quantity + 1) * satsInt} sat"
+            )
+        }
+    }
+
+    fun decreaseItem(name: String) {
+        val index = cart.indexOfFirst { it.name == name }
+        if (index >= 0) {
+            val item = cart[index]
+            if (item.quantity > 1) {
+                val satsInt = item.sats.filter { it.isDigit() }.toIntOrNull() ?: 0
+                cart[index] = item.copy(
+                    quantity = item.quantity - 1,
+                    total = "${(item.quantity - 1) * satsInt} sat"
+                )
+            } else {
+                cart.removeAt(index)
+            }
+        }
+    }
+
+    fun deleteItem(name: String) {
+        val index = cart.indexOfFirst { it.name == name }
+        if (index >= 0) {
+            cart.removeAt(index)
+        }
+    }
+
+    fun onCheckout() {
+        // TODO: open QR code screen
+    }
+
+    fun clearCart() {
+        cart.clear()
+    }
+
     Column(
         modifier = Modifier.background(color = Color.White).fillMaxHeight()
     ) {
@@ -18,13 +87,16 @@ fun MainMenuScreen() {
                 MenuItem("Item 2", "200 sat", "6.00 baht", "https://example.com/image2.jpg"),
                 MenuItem("Item 3", "300 sat", "9.00 baht", "https://example.com/image3.jpg"),
                 MenuItem("Item 4", "400 sat", "12.00 baht", "https://example.com/image4.jpg")
-            )
+            ),
+            onMenuItemClick = { addToCart(it) }
         )
         CheckoutScreen(
-            checkoutList = emptyList(),
-            onAddItemClick = {},
-            onRemoveItemClick = {},
-            onDeleteItemClick = {}
+            checkoutList = cart,
+            onAddItemClick = { name -> increaseItem(name) },
+            onRemoveItemClick = { name -> decreaseItem(name) },
+            onDeleteItemClick = { name -> deleteItem(name) },
+            onCheckout = { onCheckout() },
+            onClearCart = { clearCart() }
         )
     }
 }

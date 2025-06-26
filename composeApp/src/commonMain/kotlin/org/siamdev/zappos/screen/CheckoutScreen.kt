@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -29,9 +30,11 @@ import zappos.composeapp.generated.resources.ic_checkout
 @Composable
 fun CheckoutScreen(
     checkoutList: List<CheckoutOrder> = emptyList(),
-    onAddItemClick: () -> Unit,
-    onRemoveItemClick: () -> Unit,
-    onDeleteItemClick: () -> Unit
+    onAddItemClick: (String) -> Unit,
+    onRemoveItemClick: (String) -> Unit,
+    onDeleteItemClick: (String) -> Unit,
+    onCheckout: () -> Unit,
+    onClearCart: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -47,8 +50,12 @@ fun CheckoutScreen(
                 fontSize = 20.sp,
                 modifier = Modifier.weight(1f)
             )
+            // Calculate total dynamically
+            val totalSats = checkoutList.sumOf {
+                it.sats.filter { c -> c.isDigit() }.toIntOrNull()?.times(it.quantity) ?: 0
+            }
             Text(
-                text = "0 sat",
+                text = "$totalSats sat",
                 fontWeight = FontWeight.Medium,
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.primary,
@@ -60,7 +67,14 @@ fun CheckoutScreen(
         if (checkoutList.isEmpty()) {
             CartEmpty()
         } else {
-            CartItemList(checkoutList, onAddItemClick, onRemoveItemClick, onDeleteItemClick)
+            CartItemList(
+                checkoutList = checkoutList,
+                onAddItemClick = onAddItemClick,
+                onRemoveItemClick = onRemoveItemClick,
+                onDeleteItemClick = onDeleteItemClick,
+                onCheckout = onCheckout,
+                onClearCart = onClearCart
+            )
         }
     }
 }
@@ -79,58 +93,64 @@ fun CartEmpty() {
 }
 
 @Composable
-fun CartItemList(
-    checkoutList: List<CheckoutOrder> = emptyList(),
-    onAddItemClick: () -> Unit,
-    onRemoveItemClick: () -> Unit,
-    onDeleteItemClick: () -> Unit
+private fun CartItemList(
+    checkoutList: List<CheckoutOrder>,
+    onAddItemClick: (String) -> Unit,
+    onRemoveItemClick: (String) -> Unit,
+    onDeleteItemClick: (String) -> Unit,
+    onCheckout: () -> Unit,
+    onClearCart: () -> Unit
 ) {
     Column {
-        checkoutList.forEach { item ->
-            CheckoutItem(
-                menu = item.name,
-                sats = item.sats,
-                quantity = item.quantity,
-                onAddItemClick = onAddItemClick,
-                onRemoveItemClick = onRemoveItemClick,
-                onDeleteItemClick = onDeleteItemClick
+        LazyColumn {
+            items(checkoutList.size) { index ->
+                val item = checkoutList[index]
+                CheckoutItem(
+                    menu = item.name,
+                    sats = item.sats,
+                    quantity = item.quantity,
+                    onAddItemClick = { onAddItemClick(item.name) },
+                    onRemoveItemClick = { onRemoveItemClick(item.name) },
+                    onDeleteItemClick = { onDeleteItemClick(item.name) }
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        HorizontalDivider(thickness = 2.dp)
+        Spacer(modifier = Modifier.height(16.dp))
+        Row {
+            Text(
+                text = "Total",
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                modifier = Modifier.weight(1f)
+            )
+            val totalSats = checkoutList.sumOf {
+                it.sats.filter { c -> c.isDigit() }.toIntOrNull()?.times(it.quantity) ?: 0
+            }
+            Text(
+                text = "$totalSats sat",
+                fontWeight = FontWeight.Medium,
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.weight(1f).alignByBaseline(),
+                textAlign = TextAlign.End
             )
         }
-    }
-    Spacer(modifier = Modifier.height(16.dp))
-    HorizontalDivider(thickness = 2.dp)
-    Spacer(modifier = Modifier.height(16.dp))
-    Row {
-        Text(
-            text = "Total",
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp,
-            modifier = Modifier.weight(1f)
+        Spacer(modifier = Modifier.height(8.dp))
+        TextIconButton(
+            text = "Checkout",
+            modifier = Modifier
+                .background(color = MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
+                .fillMaxWidth(),
+            resource = Res.drawable.ic_checkout,
+            onClick = onCheckout
         )
-        Text(
-            text = "123 sat",
-            fontWeight = FontWeight.Medium,
-            fontSize = 16.sp,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.weight(1f).alignByBaseline(),
-            textAlign = TextAlign.End
+        Spacer(modifier = Modifier.height(8.dp))
+        MaterialOutlinedButton(
+            text = "Clear Cart",
+            onClick = onClearCart
         )
-    }
-    Spacer(modifier = Modifier.height(8.dp))
-    TextIconButton(
-        text = "Checkout",
-        modifier = Modifier
-            .background(color = MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
-            .fillMaxWidth(),
-        resource = Res.drawable.ic_checkout
-    ) {
-        // Handle click
-    }
-    Spacer(modifier = Modifier.height(8.dp))
-    MaterialOutlinedButton(
-        text = "Clear Cart"
-    ) {
-        // Handle click
     }
 }
 
@@ -141,7 +161,9 @@ fun CheckoutScreenEmptyPreview() {
         checkoutList = listOf(),
         onAddItemClick = {},
         onRemoveItemClick = {},
-        onDeleteItemClick = {}
+        onDeleteItemClick = {},
+        onCheckout = {},
+        onClearCart = {}
     )
 }
 
@@ -155,12 +177,14 @@ fun CheckoutScreenNotEmptyPreview() {
         ),
         onAddItemClick = {},
         onRemoveItemClick = {},
-        onDeleteItemClick = {}
+        onDeleteItemClick = {},
+        onCheckout = {},
+        onClearCart = {}
     )
 }
 
-// TODO: will move
-class CheckoutOrder(
+// เปลี่ยน class เป็น data class
+data class CheckoutOrder(
     val name: String,
     val sats: String,
     val quantity: Int,
