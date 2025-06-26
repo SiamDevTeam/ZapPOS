@@ -36,11 +36,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.siamdev.zappos.screen.CheckoutScreen
 import org.siamdev.zappos.screen.HistoryScreen
-import org.siamdev.zappos.screen.MenuItem
-import org.siamdev.zappos.screen.MenuScreen
-import org.siamdev.zappos.screen.TransactionHistory
+import org.siamdev.zappos.screen.MainMenuScreen
 
 class PosActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -149,56 +146,4 @@ fun NewScreen(
             }
         )
     }
-}
-
-@Composable
-fun MainMenuScreen() {
-    Column {
-        MenuScreen(
-            menuList = listOf(
-                MenuItem("Item 1", "100 sat", "3.00 baht", "https://example.com/image1.jpg"),
-                MenuItem("Item 2", "200 sat", "6.00 baht", "https://example.com/image2.jpg"),
-                MenuItem("Item 3", "300 sat", "9.00 baht", "https://example.com/image3.jpg"),
-                MenuItem("Item 4", "400 sat", "12.00 baht", "https://example.com/image4.jpg")
-            )
-        )
-        CheckoutScreen(
-            checkoutList = emptyList(),
-            onAddItemClick = {},
-            onRemoveItemClick = {},
-            onDeleteItemClick = {}
-        )
-    }
-}
-
-@Composable
-fun HistoryScreen() {
-    HistoryScreen(
-        totalSats = "10000 sats",
-        totalBaht = "about ฿21.00",
-        historyList = listOf(
-            TransactionHistory(
-                transactionId = "1",
-                name = "Transaction 1",
-                date = "June 1, 2025",
-                sats = "1000 sats",
-                baht = "฿20.00"
-            ),
-            TransactionHistory(
-                transactionId = "2",
-                name = "Transaction 2",
-                date = "June 2, 2025",
-                sats = "2000 sats",
-                baht = "฿40.00"
-            ),
-            TransactionHistory(
-                transactionId = "3",
-                name = "Transaction 3",
-                date = "June 3, 2025",
-                sats = "3000 sats",
-                baht = "฿60.00"
-            )
-        ),
-        onItemClick = {}
-    )
 }

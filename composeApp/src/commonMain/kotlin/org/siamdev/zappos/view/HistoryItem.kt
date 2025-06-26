@@ -1,10 +1,14 @@
 package org.siamdev.zappos.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
@@ -73,6 +77,41 @@ fun HistoryItem(
     }
 }
 
+@Composable
+fun TransactionMenuItem(
+    itemName: String,
+    quantity: String,
+    sats: String,
+    baht: String,
+) {
+    Row(
+        modifier = Modifier
+            .background(color = MaterialTheme.colorScheme.surface, RoundedCornerShape(8.dp))
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        Text(
+            text = "$itemName x $quantity",
+            fontSize = 16.sp,
+            modifier = Modifier.weight(1f)
+        )
+        Column(
+            modifier = Modifier.weight(1f),
+            horizontalAlignment = Alignment.End
+        ) {
+            Text(
+                text = sats,
+                fontSize = 18.sp
+            )
+            Text(
+                text = baht,
+                fontSize = 14.sp
+            )
+        }
+    }
+    Spacer(modifier = Modifier.height(8.dp))
+}
+
 @Preview
 @Composable
 fun previewHistoryItem() {
@@ -82,5 +121,16 @@ fun previewHistoryItem() {
         sats = "+ 1000 Sats",
         baht = "about ฿21.00",
         onClick = {}
+    )
+}
+
+@Preview
+@Composable
+fun previewTransactionMenuItem() {
+    TransactionMenuItem(
+        itemName = "Item Name",
+        quantity = "2",
+        sats = "500 sat",
+        baht = "10.00 baht"
     )
 }

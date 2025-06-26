@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -49,7 +48,7 @@ fun CheckoutScreen(
                 modifier = Modifier.weight(1f)
             )
             Text(
-                text = "123 sat",
+                text = "0 sat",
                 fontWeight = FontWeight.Medium,
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.primary,
@@ -86,18 +85,16 @@ fun CartItemList(
     onRemoveItemClick: () -> Unit,
     onDeleteItemClick: () -> Unit
 ) {
-    LazyColumn {
+    Column {
         checkoutList.forEach { item ->
-            item {
-                CheckoutItem(
-                    menu = item.name,
-                    sats = item.sats,
-                    quantity = item.quantity,
-                    onAddItemClick = onAddItemClick,
-                    onRemoveItemClick = onRemoveItemClick,
-                    onDeleteItemClick = onDeleteItemClick
-                )
-            }
+            CheckoutItem(
+                menu = item.name,
+                sats = item.sats,
+                quantity = item.quantity,
+                onAddItemClick = onAddItemClick,
+                onRemoveItemClick = onRemoveItemClick,
+                onDeleteItemClick = onDeleteItemClick
+            )
         }
     }
     Spacer(modifier = Modifier.height(16.dp))
@@ -121,7 +118,7 @@ fun CartItemList(
     }
     Spacer(modifier = Modifier.height(8.dp))
     TextIconButton(
-        text = "checkout",
+        text = "Checkout",
         modifier = Modifier
             .background(color = MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
             .fillMaxWidth(),
