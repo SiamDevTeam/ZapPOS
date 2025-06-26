@@ -53,10 +53,10 @@ fun CheckoutItem(
                     .width(36.dp).height(36.dp)
                     .background(color = Color.White, RoundedCornerShape(8.dp))
                     .wrapContentWidth(),
-                resource = Res.drawable.ic_add,
-                contentDescription = "Add Item"
+                resource = Res.drawable.ic_remove,
+                contentDescription = "Remove Item"
             ) {
-                onAddItemClick()
+                onRemoveItemClick()
             }
             Spacer(Modifier.width(16.dp))
             Text(
@@ -73,10 +73,10 @@ fun CheckoutItem(
                     .width(36.dp).height(36.dp)
                     .background(color = Color.White, RoundedCornerShape(8.dp))
                     .wrapContentWidth(),
-                resource = Res.drawable.ic_remove,
-                contentDescription = "Remove Item"
+                resource = Res.drawable.ic_add,
+                contentDescription = "Add Item"
             ) {
-                onRemoveItemClick()
+                onAddItemClick()
             }
             Spacer(Modifier.width(16.dp))
             RemoveItem(
