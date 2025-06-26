@@ -2,11 +2,14 @@ package org.siamdev.zappos.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun MainMenuScreen() {
@@ -78,26 +81,36 @@ fun MainMenuScreen() {
         cart.clear()
     }
 
-    Column(
-        modifier = Modifier.background(color = Color.White).fillMaxHeight()
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.White)
     ) {
-        MenuScreen(
-            menuList = listOf(
-                MenuItem("Item 1", "100 sat", "3.00 baht", "https://example.com/image1.jpg"),
-                MenuItem("Item 2", "200 sat", "6.00 baht", "https://example.com/image2.jpg"),
-                MenuItem("Item 3", "300 sat", "9.00 baht", "https://example.com/image3.jpg"),
-                MenuItem("Item 4", "400 sat", "12.00 baht", "https://example.com/image4.jpg")
-            ),
-            onMenuItemClick = { addToCart(it) }
-        )
-        CheckoutScreen(
-            checkoutList = cart,
-            onAddItemClick = { name -> increaseItem(name) },
-            onRemoveItemClick = { name -> decreaseItem(name) },
-            onDeleteItemClick = { name -> deleteItem(name) },
-            onCheckout = { onCheckout() },
-            onClearCart = { clearCart() }
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(8.dp)
+        ) {
+            MenuScreen(
+                menuList = listOf(
+                    MenuItem("Item 1", "100 sat", "3.00 baht", "https://example.com/image1.jpg"),
+                    MenuItem("Item 2", "200 sat", "6.00 baht", "https://example.com/image2.jpg"),
+                    MenuItem("Item 3", "300 sat", "9.00 baht", "https://example.com/image3.jpg"),
+                    MenuItem("Item 4", "400 sat", "12.00 baht", "https://example.com/image4.jpg")
+                ),
+                onMenuItemClick = { addToCart(it) }
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            CheckoutScreen(
+                checkoutList = cart,
+                onAddItemClick = { name -> increaseItem(name) },
+                onRemoveItemClick = { name -> decreaseItem(name) },
+                onDeleteItemClick = { name -> deleteItem(name) },
+                onCheckout = { onCheckout() },
+                onClearCart = { clearCart() }
+            )
+        }
     }
 }
 

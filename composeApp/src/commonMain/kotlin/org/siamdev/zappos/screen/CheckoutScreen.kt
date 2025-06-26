@@ -1,18 +1,11 @@
 package org.siamdev.zappos.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,17 +31,18 @@ fun CheckoutScreen(
 ) {
     Column(
         modifier = Modifier
-            .padding(8.dp)
             .fillMaxWidth()
             .background(color = MaterialTheme.colorScheme.secondaryContainer, RoundedCornerShape(8.dp))
             .padding(16.dp)
     ) {
-        Row {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             Text(
                 text = "Current Order",
                 fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                modifier = Modifier.weight(1f)
+                fontSize = 20.sp
             )
             // Calculate total dynamically
             val totalSats = checkoutList.sumOf {
@@ -59,7 +53,6 @@ fun CheckoutScreen(
                 fontWeight = FontWeight.Medium,
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.weight(1f).alignByBaseline(),
                 textAlign = TextAlign.End
             )
         }
@@ -67,13 +60,58 @@ fun CheckoutScreen(
         if (checkoutList.isEmpty()) {
             CartEmpty()
         } else {
-            CartItemList(
-                checkoutList = checkoutList,
-                onAddItemClick = onAddItemClick,
-                onRemoveItemClick = onRemoveItemClick,
-                onDeleteItemClick = onDeleteItemClick,
-                onCheckout = onCheckout,
-                onClearCart = onClearCart
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                checkoutList.forEach { item ->
+                    CheckoutItem(
+                        menu = item.name,
+                        sats = item.sats,
+                        quantity = item.quantity,
+                        onAddItemClick = { onAddItemClick(item.name) },
+                        onRemoveItemClick = { onRemoveItemClick(item.name) },
+                        onDeleteItemClick = { onDeleteItemClick(item.name) }
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            HorizontalDivider(thickness = 2.dp)
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Total",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
+                val totalSats = checkoutList.sumOf {
+                    it.sats.filter { c -> c.isDigit() }.toIntOrNull()?.times(it.quantity) ?: 0
+                }
+                Text(
+                    text = "$totalSats sat",
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.primary,
+                    textAlign = TextAlign.End
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            TextIconButton(
+                text = "Checkout",
+                modifier = Modifier
+                    .background(color = MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
+                    .fillMaxWidth(),
+                resource = Res.drawable.ic_checkout,
+                onClick = onCheckout
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            MaterialOutlinedButton(
+                text = "Clear Cart",
+                onClick = onClearCart
             )
         }
     }
@@ -88,68 +126,6 @@ fun CartEmpty() {
         Text(
             text = "Cart is empty",
             fontSize = 16.sp
-        )
-    }
-}
-
-@Composable
-private fun CartItemList(
-    checkoutList: List<CheckoutOrder>,
-    onAddItemClick: (String) -> Unit,
-    onRemoveItemClick: (String) -> Unit,
-    onDeleteItemClick: (String) -> Unit,
-    onCheckout: () -> Unit,
-    onClearCart: () -> Unit
-) {
-    Column {
-        LazyColumn {
-            items(checkoutList.size) { index ->
-                val item = checkoutList[index]
-                CheckoutItem(
-                    menu = item.name,
-                    sats = item.sats,
-                    quantity = item.quantity,
-                    onAddItemClick = { onAddItemClick(item.name) },
-                    onRemoveItemClick = { onRemoveItemClick(item.name) },
-                    onDeleteItemClick = { onDeleteItemClick(item.name) }
-                )
-            }
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        HorizontalDivider(thickness = 2.dp)
-        Spacer(modifier = Modifier.height(16.dp))
-        Row {
-            Text(
-                text = "Total",
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
-                modifier = Modifier.weight(1f)
-            )
-            val totalSats = checkoutList.sumOf {
-                it.sats.filter { c -> c.isDigit() }.toIntOrNull()?.times(it.quantity) ?: 0
-            }
-            Text(
-                text = "$totalSats sat",
-                fontWeight = FontWeight.Medium,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.weight(1f).alignByBaseline(),
-                textAlign = TextAlign.End
-            )
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        TextIconButton(
-            text = "Checkout",
-            modifier = Modifier
-                .background(color = MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
-                .fillMaxWidth(),
-            resource = Res.drawable.ic_checkout,
-            onClick = onCheckout
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        MaterialOutlinedButton(
-            text = "Clear Cart",
-            onClick = onClearCart
         )
     }
 }

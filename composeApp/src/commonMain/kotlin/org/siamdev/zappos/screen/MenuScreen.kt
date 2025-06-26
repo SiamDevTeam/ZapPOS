@@ -1,12 +1,7 @@
 package org.siamdev.zappos.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -22,26 +17,35 @@ fun MenuScreen(
 ) {
     Box(
         modifier = Modifier
-            .padding(8.dp)
             .fillMaxWidth()
             .background(color = MaterialTheme.colorScheme.secondaryContainer, RoundedCornerShape(8.dp))
             .padding(8.dp)
     ) {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        Column(
+            modifier = Modifier.fillMaxWidth()
         ) {
-            menuList.forEach { item ->
-                item {
-                    MenuItemView(
-                        name = item.name,
-                        priceSats = item.priceSats,
-                        priceBaht = item.priceBaht
-                    ) {
-                        onMenuItemClick(item)
+            menuList.chunked(2).forEach { rowItems ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    rowItems.forEach { item ->
+                        Box(modifier = Modifier.weight(1f)) {
+                            MenuItemView(
+                                name = item.name,
+                                priceSats = item.priceSats,
+                                priceBaht = item.priceBaht
+                            ) {
+                                onMenuItemClick(item)
+                            }
+                        }
+                    }
+                    // Add empty box if row has only one item
+                    if (rowItems.size == 1) {
+                        Box(modifier = Modifier.weight(1f))
                     }
                 }
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }
