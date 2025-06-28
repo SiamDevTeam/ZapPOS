@@ -10,6 +10,13 @@ plugins {
 }
 
 kotlin {
+
+    targets.all {
+        compilations.all {
+            kotlinOptions.freeCompilerArgs += listOf("-Xexpect-actual-classes")
+        }
+    }
+
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
@@ -31,9 +38,11 @@ kotlin {
     sourceSets {
 
         androidMain.dependencies {
+            implementation(libs.org.rust.nostr)
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
         }
+
         commonMain.dependencies {
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.0-beta02")
             implementation("org.jetbrains.compose.material:material-icons-extended:1.7.3")
@@ -83,6 +92,7 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+        ndk.abiFilters += setOf("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
     }
     packaging {
         resources {

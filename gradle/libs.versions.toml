@@ -18,8 +18,10 @@ junit = "4.13.2"
 kotlin = "2.1.21"
 kotlinx-coroutines = "1.10.2"
 flowmvi = "3.1.0"
+nostr-sdk = "0.42.3"
 
 [libraries]
+org-rust-nostr = { module = "org.rust-nostr:nostr-sdk", version.ref = "nostr-sdk" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { module = "junit:junit", version.ref = "junit" }

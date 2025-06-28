@@ -38,6 +38,7 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.screen.HistoryScreen
 import org.siamdev.zappos.screen.MainMenuScreen
+import org.siamdev.zappos.screen.NostrDemoScreen
 
 class PosActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,6 +119,19 @@ fun NewScreen(
                             }
                         }
                     )
+
+                    NavigationDrawerItem(
+                        label = { Text(text = "nostr demo use") },
+                        selected = false,
+                        onClick = {
+                            scope.launch { drawerState.close() }
+                            navController.navigate("nostr demo") {
+                                popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        }
+                    )
+
                     HorizontalDivider(
                         modifier = Modifier.padding(horizontal = 8.dp),
                         thickness = 1.dp
@@ -142,6 +156,7 @@ fun NewScreen(
                 ) {
                     composable("menu") { MainMenuScreen() }
                     composable("history") { HistoryScreen() }
+                    composable("nostr demo") { NostrDemoScreen() }
                 }
             }
         )
