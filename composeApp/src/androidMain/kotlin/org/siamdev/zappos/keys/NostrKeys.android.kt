@@ -14,7 +14,7 @@ actual class NostrKeys private constructor(private val keys: Keys) {
 
     actual fun secretKey(): NostrSecretKey = NostrSecretKey(keys.secretKey())
     actual fun publicKey(): NostrPublicKey = NostrPublicKey(keys.publicKey())
-
+    actual fun sign(msg: String): String = keys.signSchnorr(msg.hexToByteArray())
 }
 
 actual class NostrPublicKey internal constructor(private val pk: PublicKey) {

@@ -9,6 +9,8 @@ expect class NostrKeys {
     fun secretKey(): NostrSecretKey
     fun publicKey(): NostrPublicKey
 
+    fun sign(msg: String): String
+
 }
 
 

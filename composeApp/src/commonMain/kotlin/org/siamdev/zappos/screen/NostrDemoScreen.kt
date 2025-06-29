@@ -33,11 +33,17 @@ fun NostrDemoScreen() {
     val parsedPublicKey = NostrKeys.parse(nsec).publicKey()
     val npubUri = publicKey.toNostrUri()
 
+    val msg = "13adc511de7e1cfcf1c6b7f6365fb5a03442d7bcacf565ea57fa7770912c023d"
+    val signature = keys.sign(msg)
+
+
+
     val cardList = listOf(
         NostrCardData("Private Key (hex)", secretKey.toHex()),
         NostrCardData("Public Key (hex)", publicKey.toHex()),
         NostrCardData("nsec key", nsec),
         NostrCardData("npub key", npub),
+        NostrCardData("Sign Message", signature),
         NostrCardData("Parsed from nsec to hex", parsedSecretKey.toHex()),
         NostrCardData("Parsed from nsec to hex", parsedPublicKey.toHex()),
         NostrCardData("Profile URI", npubUri)
