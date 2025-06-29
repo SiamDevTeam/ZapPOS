@@ -4,20 +4,19 @@ android-compileSdk = "35"
 android-minSdk = "24"
 android-targetSdk = "35"
 androidx-activity = "1.10.1"
-androidx-appcompat = "1.7.0"
+androidx-appcompat = "1.7.1"
 androidx-constraintlayout = "2.2.1"
 androidx-core = "1.16.0"
 androidx-espresso = "3.6.1"
 androidx-lifecycle = "2.9.0"
 androidx-testExt = "1.2.1"
-composeHotReload = "1.0.0-alpha09"
+composeHotReload = "1.0.0-beta01"
 composeMultiplatform = "1.8.1"
-navigationCompose = "2.9.0-beta01"
+navigationCompose = "2.9.0-beta03"
 materialIconsCore = "1.7.3"
 junit = "4.13.2"
-kotlin = "2.1.21"
+kotlin = "2.2.0"
 kotlinx-coroutines = "1.10.2"
-flowmvi = "3.1.0"
 nostr-sdk = "0.42.3"
 
 [libraries]
@@ -36,23 +35,6 @@ androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle
 kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "materialIconsCore" }
-
-
-# Core KMP module
-flowmvi-core = { module = "pro.respawn.flowmvi:core", version.ref = "flowmvi" }
-# Test DSL
-flowmvi-test = { module = "pro.respawn.flowmvi:test", version.ref = "flowmvi" }
-# Compose multiplatform
-flowmvi-compose = { module = "pro.respawn.flowmvi:compose", version.ref = "flowmvi" }
-# Android (common + view-based)
-flowmvi-android = { module = "pro.respawn.flowmvi:android", version.ref = "flowmvi" }
-# Multiplatform state preservation
-flowmvi-savedstate = { module = "pro.respawn.flowmvi:savedstate", version.ref = "flowmvi" }
-# Remote debugging client
-flowmvi-debugger-client = { module = "pro.respawn.flowmvi:debugger-plugin", version.ref = "flowmvi" }
-# Essenty (Decompose) integration
-flowmvi-essenty = { module = "pro.respawn.flowmvi:essenty", version.ref = "flowmvi" }
-flowmvi-essenty-compose = { module = "pro.respawn.flowmvi:essenty-compose", version.ref = "flowmvi" }
 
 
 [plugins]
