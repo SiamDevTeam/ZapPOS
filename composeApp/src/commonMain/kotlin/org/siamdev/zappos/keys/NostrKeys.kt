@@ -4,6 +4,7 @@ expect class NostrKeys {
     companion object {
         fun generate(): NostrKeys
         fun parse(secretKey: String): NostrKeys
+        fun getSharedKey(secretKey: NostrSecretKey, publicKey: NostrPublicKey): NostrKeys
     }
 
     fun secretKey(): NostrSecretKey
@@ -21,6 +22,9 @@ expect class NostrPublicKey {
 }
 
 expect class NostrSecretKey {
+    companion object {
+        fun fromBytes(bytes: ByteArray): NostrSecretKey
+    }
     fun toHex(): String
     fun toBech32(): String
 }
