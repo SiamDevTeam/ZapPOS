@@ -1,4 +1,4 @@
-rootProject.name = "ZapPos"
+rootProject.name = "ZapPOS"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {

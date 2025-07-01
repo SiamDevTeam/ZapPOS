@@ -11,11 +11,6 @@ plugins {
 
 kotlin {
 
-    targets.all {
-        compilations.all {
-            kotlinOptions.freeCompilerArgs += listOf("-Xexpect-actual-classes")
-        }
-    }
 
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
@@ -38,6 +33,7 @@ kotlin {
     sourceSets {
 
         androidMain.dependencies {
+            implementation("net.java.dev.jna:jna:5.17.0@aar")
             implementation(libs.org.rust.nostr)
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
@@ -56,23 +52,6 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.navigation.compose)
             implementation(libs.material.icons.core)
-
-            // FlowMVI core
-            implementation(libs.flowmvi.core)
-
-            // FlowMVI Compose
-            implementation(libs.flowmvi.compose)
-
-            // FlowMVI Saved State
-            implementation(libs.flowmvi.savedstate)
-
-            // FlowMVI debugger client (optional, dev/debug only)
-            implementation(libs.flowmvi.debugger.client)
-
-            // FlowMVI Essenty integration (optional, if using Decompose)
-            implementation(libs.flowmvi.essenty)
-            implementation(libs.flowmvi.essenty.compose)
-
         }
 
         commonTest.dependencies {
@@ -92,7 +71,10 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
-        ndk.abiFilters += setOf("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
+        //ndk.abiFilters += setOf("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
+        ndk {
+            abiFilters += setOf("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
+        }
     }
     packaging {
         resources {

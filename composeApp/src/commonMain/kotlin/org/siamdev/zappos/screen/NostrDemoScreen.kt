@@ -19,6 +19,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.keys.NostrKeys
+import org.siamdev.zappos.keys.NostrPublicKey
+import org.siamdev.zappos.keys.NostrSigner
 
 data class NostrCardData(val title: String, val content: String)
 
@@ -33,11 +35,19 @@ fun NostrDemoScreen() {
     val parsedPublicKey = NostrKeys.parse(nsec).publicKey()
     val npubUri = publicKey.toNostrUri()
 
+    val msg = "13adc511de7e1cfcf1c6b7f6365fb5a03442d7bcacf565ea57fa7770912c023d"
+    val signature = keys.sign(msg)
+
+    val signerPublicKey = NostrSigner.keys(keys).getPublicKey()
+
+
     val cardList = listOf(
         NostrCardData("Private Key (hex)", secretKey.toHex()),
         NostrCardData("Public Key (hex)", publicKey.toHex()),
         NostrCardData("nsec key", nsec),
         NostrCardData("npub key", npub),
+        NostrCardData("Sign Message", signature),
+        NostrCardData("Nostr Signer", signerPublicKey.toHex()),
         NostrCardData("Parsed from nsec to hex", parsedSecretKey.toHex()),
         NostrCardData("Parsed from nsec to hex", parsedPublicKey.toHex()),
         NostrCardData("Profile URI", npubUri)
