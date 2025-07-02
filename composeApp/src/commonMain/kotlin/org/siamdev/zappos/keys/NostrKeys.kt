@@ -1,9 +1,21 @@
 package org.siamdev.zappos.keys
 
+
+expect enum class NIP44VERSION {
+    V2
+}
+
+
 expect class NostrKeys {
     companion object {
         fun generate(): NostrKeys
         fun parse(secretKey: String): NostrKeys
+        fun getSharedKey(secretKey: NostrSecretKey, publicKey: NostrPublicKey): NostrKeys
+        fun NIP04Encrypt(secretKey: NostrSecretKey, publicKey: NostrPublicKey, content: String): String
+        fun NIP04Decrypt(secretKey: NostrSecretKey, publicKey: NostrPublicKey, content: String): String
+
+        fun NIP44Encrypt(secretKey: NostrSecretKey, publicKey: NostrPublicKey, content: String, version: NIP44VERSION): String
+        fun NIP44Decrypt(secretKey: NostrSecretKey, publicKey: NostrPublicKey, content: String): String
     }
 
     fun secretKey(): NostrSecretKey
@@ -21,6 +33,9 @@ expect class NostrPublicKey {
 }
 
 expect class NostrSecretKey {
+    companion object {
+        fun fromBytes(bytes: ByteArray): NostrSecretKey
+    }
     fun toHex(): String
     fun toBech32(): String
 }
