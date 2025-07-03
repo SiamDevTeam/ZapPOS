@@ -1,4 +1,12 @@
-# ZapPOS
+<div align="center">
+
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="doc/ZapPOS_Horizontal_v1.svg" width="445">
+    <img alt="Fenrir-s logo" src="doc/ZapPOS_Horizontal_v1.svg" width="445">
+  </picture>
+
+</div>
+
 
 Nostr NWC based Point of Sale written in Kotlin Multi Platform
 
