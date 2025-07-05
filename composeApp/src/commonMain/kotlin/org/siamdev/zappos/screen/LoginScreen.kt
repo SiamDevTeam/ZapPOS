@@ -12,8 +12,6 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.view.MaterialButton
 import zappos.composeapp.generated.resources.Res
-import zappos.composeapp.generated.resources.compose_multiplatform
-import zappos.composeapp.generated.resources.ic_add
 import zappos.composeapp.generated.resources.ic_app_logo
 
 @Composable

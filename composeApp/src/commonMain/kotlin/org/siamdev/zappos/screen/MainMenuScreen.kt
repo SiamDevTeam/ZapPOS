@@ -4,16 +4,25 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import org.siamdev.zappos.view.MaterialButton
+import org.siamdev.zappos.view.MaterialOutlinedButton
 
 @Composable
 fun MainMenuScreen() {
     val cart = remember { mutableStateListOf<CheckoutOrder>() }
+    var showQrDialog by remember { mutableStateOf(false) }
 
     fun addToCart(menuItem: MenuItem) {
         val index = cart.indexOfFirst { it.name == menuItem.name }
@@ -74,7 +83,7 @@ fun MainMenuScreen() {
     }
 
     fun onCheckout() {
-        // TODO: open QR code screen
+        showQrDialog = true
     }
 
     fun clearCart() {
@@ -86,6 +95,7 @@ fun MainMenuScreen() {
             .fillMaxSize()
             .background(color = Color.White)
     ) {
+        // Show QR overlay above main content
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -109,6 +119,12 @@ fun MainMenuScreen() {
                 onDeleteItemClick = { name -> deleteItem(name) },
                 onCheckout = { onCheckout() },
                 onClearCart = { clearCart() }
+            )
+        }
+        if (showQrDialog) {
+            openQrCode(
+                onCancel = { showQrDialog = false },
+                onInquire = { /* TODO: handle inquire */ }
             )
         }
     }
@@ -152,4 +168,52 @@ fun HistoryScreen() {
             )
         )
     )
+}
+
+@Composable
+fun openQrCode(onCancel: () -> Unit, onInquire: () -> Unit) {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.5f))
+            .wrapContentSize(Alignment.Center)
+            .padding(horizontal = 32.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .background(Color.White, shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp))
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Scan QR Code",
+                style = MaterialTheme.typography.headlineMedium,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Box(
+                modifier = Modifier
+                    .width(200.dp)
+                    .height(200.dp)
+                    .background(Color.LightGray),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("[QR Scanner]")
+            }
+            Spacer(modifier = Modifier.height(24.dp))
+            Row {
+                MaterialOutlinedButton(
+                    text = "Cancel",
+                    onClick = onCancel,
+                    modifier = Modifier.weight(1f)
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                MaterialButton(
+                    text = "Inquire",
+                    onClick = onInquire,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+    }
 }
