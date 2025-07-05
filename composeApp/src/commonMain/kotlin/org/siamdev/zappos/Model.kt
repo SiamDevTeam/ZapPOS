@@ -5,7 +5,7 @@ class MenuItem(
     val name: String,
     val priceSats: String,
     val priceBaht: String,
-    val imageUrl: String
+    val imageUrl: String? = null
 )
 
 // Checkout
