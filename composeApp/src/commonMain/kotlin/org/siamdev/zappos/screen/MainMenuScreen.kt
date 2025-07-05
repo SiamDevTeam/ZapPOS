@@ -3,6 +3,7 @@ package org.siamdev.zappos.screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,6 +24,7 @@ import org.siamdev.zappos.view.MaterialOutlinedButton
 fun MainMenuScreen() {
     val cart = remember { mutableStateListOf<CheckoutOrder>() }
     var showQrDialog by remember { mutableStateOf(false) }
+    var showSuccessPayment by remember { mutableStateOf(false) }
 
     fun addToCart(menuItem: MenuItem) {
         val index = cart.indexOfFirst { it.name == menuItem.name }
@@ -124,8 +126,19 @@ fun MainMenuScreen() {
         if (showQrDialog) {
             openQrCode(
                 onCancel = { showQrDialog = false },
-                onInquire = { /* TODO: handle inquire */ }
+                onInquire = {
+                    //TODO: check use already pay, then show successPaymentView
+                    showQrDialog = false
+                    showSuccessPayment = true
+                    clearCart() // Clear cart after successful payment
+                    //else generate qr code again
+                }
             )
+        }
+        if (showSuccessPayment) {
+            successPaymentView {
+                showSuccessPayment = false
+            }
         }
     }
 }
@@ -182,7 +195,7 @@ fun openQrCode(onCancel: () -> Unit, onInquire: () -> Unit) {
         Column(
             modifier = Modifier
                 .align(Alignment.Center)
-                .background(Color.White, shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp))
+                .background(Color.White, shape = RoundedCornerShape(16.dp))
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -214,6 +227,43 @@ fun openQrCode(onCancel: () -> Unit, onInquire: () -> Unit) {
                     modifier = Modifier.weight(1f)
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun successPaymentView(
+    onCloseView: () -> Unit,
+) {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.5f))
+            .wrapContentSize(Alignment.Center)
+            .padding(horizontal = 32.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .background(Color.White, shape = RoundedCornerShape(16.dp))
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Payment Successful",
+                style = MaterialTheme.typography.headlineMedium,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Thank you for your purchase!",
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.Gray
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            MaterialButton(
+                text = "Close",
+                onClick = onCloseView
+            )
         }
     }
 }
