@@ -17,6 +17,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import org.siamdev.zappos.CheckoutOrder
+import org.siamdev.zappos.MenuItem
+import org.siamdev.zappos.TransactionHistory
+import org.siamdev.zappos.TransactionItem
 import org.siamdev.zappos.view.MaterialButton
 import org.siamdev.zappos.view.MaterialOutlinedButton
 
