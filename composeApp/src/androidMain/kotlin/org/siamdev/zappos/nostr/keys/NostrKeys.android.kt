@@ -1,4 +1,4 @@
-package org.siamdev.zappos.keys
+package org.siamdev.zappos.nostr.keys
 
 import rust.nostr.sdk.Keys
 import rust.nostr.sdk.Nip44Version
@@ -11,14 +11,14 @@ import rust.nostr.sdk.nip44Encrypt
 import rust.nostr.sdk.nip04Encrypt
 
 
-actual enum class NIP44VERSION(internal val version: Nip44Version) {
-    V2(Nip44Version.V2)
-}
 @OptIn(ExperimentalStdlibApi::class)
 actual class NostrKeys private constructor(private val keys: Keys) {
     actual companion object {
+
         actual fun generate(): NostrKeys = NostrKeys(Keys.generate())
+
         actual fun parse(secretKey: String): NostrKeys = NostrKeys(Keys.parse(secretKey))
+
         actual fun getSharedKey(secretKey: NostrSecretKey, publicKey: NostrPublicKey): NostrKeys {
             val sharedKeyBytes = generateSharedKey(secretKey.sk, publicKey.pk)
             val sharedSecretKey = SecretKey.fromBytes(sharedKeyBytes)
@@ -26,10 +26,19 @@ actual class NostrKeys private constructor(private val keys: Keys) {
             return NostrKeys(sharedKeys)
         }
 
-        actual fun NIP04Encrypt(secretKey: NostrSecretKey, publicKey: NostrPublicKey, content: String): String {
+        actual fun NIP04Encrypt(
+            secretKey: NostrSecretKey,
+            publicKey: NostrPublicKey,
+            content: String
+        ): String {
             return nip04Encrypt(secretKey.sk, publicKey.pk, content)
         }
-        actual fun NIP04Decrypt(secretKey: NostrSecretKey, publicKey: NostrPublicKey, content: String): String {
+
+        actual fun NIP04Decrypt(
+            secretKey: NostrSecretKey,
+            publicKey: NostrPublicKey,
+            content: String
+        ): String {
             return nip04Decrypt(secretKey.sk, publicKey.pk, content)
         }
 
@@ -74,3 +83,6 @@ actual class NostrSecretKey internal constructor(internal val sk: SecretKey) {
     actual fun toBech32(): String = sk.toBech32()
 }
 
+actual enum class NIP44VERSION(internal val version: Nip44Version) {
+    V2(Nip44Version.V2)
+}

@@ -1,4 +1,4 @@
-package org.siamdev.zappos.keys
+package org.siamdev.zappos.nostr.keys
 
 expect class NostrSigner {
     companion object {

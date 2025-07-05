@@ -20,9 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.siamdev.zappos.keys.NIP44VERSION
-import org.siamdev.zappos.keys.NostrKeys
-import org.siamdev.zappos.keys.NostrSigner
+import org.siamdev.zappos.nostr.keys.NIP44VERSION
+import org.siamdev.zappos.nostr.keys.NostrKeys
+import org.siamdev.zappos.nostr.keys.NostrSigner
 
 data class NostrCardData(val title: String, val content: String)
 
