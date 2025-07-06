@@ -3,17 +3,32 @@ package org.siamdev.zappos.screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import org.siamdev.zappos.CheckoutOrder
+import org.siamdev.zappos.MenuItem
+import org.siamdev.zappos.TransactionHistory
+import org.siamdev.zappos.TransactionItem
+import org.siamdev.zappos.view.MaterialButton
+import org.siamdev.zappos.view.MaterialOutlinedButton
 
 @Composable
 fun MainMenuScreen() {
     val cart = remember { mutableStateListOf<CheckoutOrder>() }
+    var showQrDialog by remember { mutableStateOf(false) }
+    var showSuccessPayment by remember { mutableStateOf(false) }
 
     fun addToCart(menuItem: MenuItem) {
         val index = cart.indexOfFirst { it.name == menuItem.name }
@@ -74,7 +89,7 @@ fun MainMenuScreen() {
     }
 
     fun onCheckout() {
-        // TODO: open QR code screen
+        showQrDialog = true
     }
 
     fun clearCart() {
@@ -86,6 +101,7 @@ fun MainMenuScreen() {
             .fillMaxSize()
             .background(color = Color.White)
     ) {
+        // Show QR overlay above main content
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -94,10 +110,11 @@ fun MainMenuScreen() {
         ) {
             MenuScreen(
                 menuList = listOf(
-                    MenuItem("Item 1", "100 sat", "3.00 baht", "https://example.com/image1.jpg"),
-                    MenuItem("Item 2", "200 sat", "6.00 baht", "https://example.com/image2.jpg"),
-                    MenuItem("Item 3", "300 sat", "9.00 baht", "https://example.com/image3.jpg"),
-                    MenuItem("Item 4", "400 sat", "12.00 baht", "https://example.com/image4.jpg")
+                    MenuItem("Americano", "15,000 sat", "60.00 baht", "https://images.pexels.com/photos/3704460/pexels-photo-3704460.jpeg"),
+                    MenuItem("Latte", "17,500 sat", "70.00 baht", "https://images.pexels.com/photos/17486832/pexels-photo-17486832.jpeg"),
+                    MenuItem("Mocha", "17,500 sat", "70.00 baht", "https://images.pexels.com/photos/350478/pexels-photo-350478.jpeg"),
+                    MenuItem("Matcha Latte", "26,000 sat", "100.00 baht", "https://images.pexels.com/photos/2611811/pexels-photo-2611811.jpeg"),
+                    MenuItem("Matcha Coffee", "26,000 sat", "100.00 baht", "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg")
                 ),
                 onMenuItemClick = { addToCart(it) }
             )
@@ -110,6 +127,23 @@ fun MainMenuScreen() {
                 onCheckout = { onCheckout() },
                 onClearCart = { clearCart() }
             )
+        }
+        if (showQrDialog) {
+            openQrCode(
+                onCancel = { showQrDialog = false },
+                onInquire = {
+                    //TODO: check use already pay, then show successPaymentView
+                    showQrDialog = false
+                    showSuccessPayment = true
+                    clearCart()
+                    //else generate qr code again
+                }
+            )
+        }
+        if (showSuccessPayment) {
+            successPaymentView {
+                showSuccessPayment = false
+            }
         }
     }
 }
@@ -152,4 +186,89 @@ fun HistoryScreen() {
             )
         )
     )
+}
+
+@Composable
+fun openQrCode(onCancel: () -> Unit, onInquire: () -> Unit) {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.5f))
+            .wrapContentSize(Alignment.Center)
+            .padding(horizontal = 32.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .background(Color.White, shape = RoundedCornerShape(16.dp))
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Scan QR Code",
+                style = MaterialTheme.typography.headlineMedium,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Box(
+                modifier = Modifier
+                    .width(200.dp)
+                    .height(200.dp)
+                    .background(Color.LightGray),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("[QR Scanner]")
+            }
+            Spacer(modifier = Modifier.height(24.dp))
+            Row {
+                MaterialOutlinedButton(
+                    text = "Cancel",
+                    onClick = onCancel,
+                    modifier = Modifier.weight(1f)
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                MaterialButton(
+                    text = "Inquire",
+                    onClick = onInquire,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun successPaymentView(
+    onCloseView: () -> Unit,
+) {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.5f))
+            .wrapContentSize(Alignment.Center)
+            .padding(horizontal = 32.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .background(Color.White, shape = RoundedCornerShape(16.dp))
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Payment Successful",
+                style = MaterialTheme.typography.headlineMedium,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Thank you for your purchase!",
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.Gray
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            MaterialButton(
+                text = "Close",
+                onClick = onCloseView
+            )
+        }
+    }
 }

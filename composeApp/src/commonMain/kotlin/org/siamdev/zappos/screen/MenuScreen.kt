@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.siamdev.zappos.MenuItem
 import org.siamdev.zappos.view.MenuItemView
 
 @Composable
@@ -31,11 +32,7 @@ fun MenuScreen(
                 ) {
                     rowItems.forEach { item ->
                         Box(modifier = Modifier.weight(1f)) {
-                            MenuItemView(
-                                name = item.name,
-                                priceSats = item.priceSats,
-                                priceBaht = item.priceBaht
-                            ) {
+                            MenuItemView(item) {
                                 onMenuItemClick(item)
                             }
                         }
@@ -63,11 +60,3 @@ fun MenuScreenPreview() {
         )
     )
 }
-
-// TODO: will move
-class MenuItem(
-    val name: String,
-    val priceSats: String,
-    val priceBaht: String,
-    val imageUrl: String
-)

@@ -14,6 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.siamdev.zappos.CheckoutOrder
 import org.siamdev.zappos.view.CheckoutItem
 import org.siamdev.zappos.view.MaterialOutlinedButton
 import org.siamdev.zappos.view.TextIconButton
@@ -158,11 +159,3 @@ fun CheckoutScreenNotEmptyPreview() {
         onClearCart = {}
     )
 }
-
-// เปลี่ยน class เป็น data class
-data class CheckoutOrder(
-    val name: String,
-    val sats: String,
-    val quantity: Int,
-    val total: String
-)

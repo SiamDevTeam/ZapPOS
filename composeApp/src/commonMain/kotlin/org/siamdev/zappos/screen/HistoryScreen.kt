@@ -25,6 +25,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.siamdev.zappos.TransactionHistory
+import org.siamdev.zappos.TransactionItem
 import org.siamdev.zappos.view.HistoryItem
 import org.siamdev.zappos.view.TransactionMenuItem
 
@@ -181,19 +183,3 @@ fun PreviewHistoryScreen() {
         )
     )
 }
-
-//  TODO: will move
-class TransactionHistory(
-    val transactionId: String,
-    val date: String,
-    val totalSats: String,
-    val totalBaht: String,
-    val items: List<TransactionItem> = emptyList()
-)
-
-class TransactionItem(
-    val itemName: String,
-    val quantity: String,
-    val sats: String,
-    val baht: String
-)
