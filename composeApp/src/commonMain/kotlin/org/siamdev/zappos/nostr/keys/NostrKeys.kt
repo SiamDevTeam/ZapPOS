@@ -1,11 +1,6 @@
 package org.siamdev.zappos.nostr.keys
 
 
-expect enum class NIP44VERSION {
-    V2
-}
-
-
 expect class NostrKeys {
     companion object {
         fun generate(): NostrKeys
@@ -38,4 +33,8 @@ expect class NostrSecretKey {
     }
     fun toHex(): String
     fun toBech32(): String
+}
+
+expect enum class NIP44VERSION {
+    V2
 }
