@@ -15,7 +15,8 @@ expect class NostrEvent {
     val content: String
     val sig: String
 
-    val tags: List<NostrTag>
+    val tags: NostrTags
+
 
     fun hashtags(): List<String>
     fun taggedPublicKeys(): List<String>

@@ -35,8 +35,9 @@ actual class NostrEvent private constructor(
     actual val sig: String
         get() = event.signature()
 
-    actual val tags: List<NostrTag>
-        get() = event.tags().toVec().map { NostrTag(it) }
+    actual val tags: NostrTags
+        get() = NostrTags(event.tags())
+
 
     actual fun hashtags(): List<String> = event.tags().hashtags()
 
