@@ -18,6 +18,8 @@ junit = "4.13.2"
 kotlin = "2.2.0"
 kotlinx-coroutines = "1.10.2"
 nostr-sdk = "0.42.3"
+coil-compose = "3.3.0"
+coil-network-ktor = "3.3.0"
 
 [libraries]
 org-rust-nostr = { module = "org.rust-nostr:nostr-sdk", version.ref = "nostr-sdk" }
@@ -35,7 +37,8 @@ androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle
 kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "materialIconsCore" }
-
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil-compose" }
+coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor", version.ref = "coil-network-ktor" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
