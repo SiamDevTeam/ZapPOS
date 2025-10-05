@@ -18,8 +18,9 @@ junit = "4.13.2"
 kotlin = "2.2.0"
 kotlinx-coroutines = "1.10.2"
 nostr-sdk = "0.42.3"
-coil-compose = "3.2.0"
-coil-network-okhttp = "3.2.0"
+ktor = "3.3.0"
+coil-compose = "3.3.0"
+coil-network-ktor3 = "3.3.0"
 
 [libraries]
 org-rust-nostr = { module = "org.rust-nostr:nostr-sdk", version.ref = "nostr-sdk" }
@@ -40,6 +41,17 @@ material-icons-core = { module = "org.jetbrains.compose.material:material-icons-
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil-compose" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil-network-okhttp" }
 
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
+coil = { module = "io.coil-kt.coil3:coil", version.ref = "coil-compose" }
+coil-compose-core = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coil-compose" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil-compose" }
+coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil-network-ktor3" }
+
+[bundles]
+ktor-common = ["ktor-client-core", "ktor-client-logging", "ktor-client-content-negotiation"]
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

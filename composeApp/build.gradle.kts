@@ -40,6 +40,7 @@ kotlin {
             implementation(libs.org.rust.nostr)
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            //implementation(libs.ktor.client.okhttp)
         }
 
         commonMain.dependencies {
@@ -55,8 +56,11 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.navigation.compose)
             implementation(libs.material.icons.core)
+            implementation(libs.bundles.ktor.common)
+            implementation(libs.coil.compose.core)
+            implementation(libs.coil)
             implementation(libs.coil.compose)
-            implementation(libs.coil.network.okhttp)
+            implementation(libs.coil.network.ktor)
         }
 
         commonTest.dependencies {
