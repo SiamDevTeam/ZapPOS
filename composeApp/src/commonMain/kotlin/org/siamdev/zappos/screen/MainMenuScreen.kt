@@ -110,10 +110,11 @@ fun MainMenuScreen() {
         ) {
             MenuScreen(
                 menuList = listOf(
-                    MenuItem("Item 1", "100 sat", "3.00 baht", "https://example.com/image1.jpg"),
-                    MenuItem("Item 2", "200 sat", "6.00 baht", "https://example.com/image2.jpg"),
-                    MenuItem("Item 3", "300 sat", "9.00 baht", "https://example.com/image3.jpg"),
-                    MenuItem("Item 4", "400 sat", "12.00 baht", "https://example.com/image4.jpg")
+                    MenuItem("Americano", "15,000 sat", "60.00 baht", "https://images.pexels.com/photos/3704460/pexels-photo-3704460.jpeg"),
+                    MenuItem("Latte", "17,500 sat", "70.00 baht", "https://images.pexels.com/photos/17486832/pexels-photo-17486832.jpeg"),
+                    MenuItem("Mocha", "17,500 sat", "70.00 baht", "https://images.pexels.com/photos/350478/pexels-photo-350478.jpeg"),
+                    MenuItem("Matcha Latte", "26,000 sat", "100.00 baht", "https://images.pexels.com/photos/2611811/pexels-photo-2611811.jpeg"),
+                    MenuItem("Matcha Coffee", "26,000 sat", "100.00 baht", "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg")
                 ),
                 onMenuItemClick = { addToCart(it) }
             )
@@ -134,7 +135,7 @@ fun MainMenuScreen() {
                     //TODO: check use already pay, then show successPaymentView
                     showQrDialog = false
                     showSuccessPayment = true
-                    clearCart() // Clear cart after successful payment
+                    clearCart()
                     //else generate qr code again
                 }
             )

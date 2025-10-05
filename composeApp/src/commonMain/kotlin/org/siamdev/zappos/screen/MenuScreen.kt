@@ -32,11 +32,7 @@ fun MenuScreen(
                 ) {
                     rowItems.forEach { item ->
                         Box(modifier = Modifier.weight(1f)) {
-                            MenuItemView(
-                                name = item.name,
-                                priceSats = item.priceSats,
-                                priceBaht = item.priceBaht
-                            ) {
+                            MenuItemView(item) {
                                 onMenuItemClick(item)
                             }
                         }

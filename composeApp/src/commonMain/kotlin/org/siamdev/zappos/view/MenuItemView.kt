@@ -1,6 +1,5 @@
 package org.siamdev.zappos.view
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -9,6 +8,10 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,19 +19,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.jetbrains.compose.resources.painterResource
+import coil3.compose.AsyncImage
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import zappos.composeapp.generated.resources.Res
-import zappos.composeapp.generated.resources.compose_multiplatform
+import org.siamdev.zappos.MenuItem
 
 @Composable
 fun MenuItemView(
-    name: String,
-    priceSats: String,
-    priceBaht: String,
-    imageRes: Int? = null,
+    item: MenuItem,
     onClick: (() -> Unit)? = null
 ) {
+    var isImageError by remember { mutableStateOf(false) }
     Card(
         modifier = Modifier
             .padding(8.dp)
@@ -42,42 +42,36 @@ fun MenuItemView(
                 .padding(8.dp),
             horizontalAlignment = Alignment.Start
         ) {
-            if (imageRes != null) {
-                Image(
-                    painter = painterResource(Res.drawable.compose_multiplatform),
-                    contentDescription = name,
+            if (item.imageUrl != null && !isImageError) {
+                AsyncImage(
+                    model = item.imageUrl,
+                    contentDescription = item.name,
                     modifier = Modifier
                         .fillMaxWidth()
                         .size(72.dp)
-                        .padding(bottom = 4.dp),
-                    contentScale = ContentScale.Crop
+                        .padding(bottom = 4.dp)
+                        .background(Color.LightGray, RoundedCornerShape(4.dp)),
+                    contentScale = ContentScale.Crop,
+                    onError = { isImageError = true }
                 )
             } else {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .size(72.dp)
-                        .background(Color.LightGray, RoundedCornerShape(4.dp)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("No Image", fontSize = 12.sp, color = Color.Gray)
-                }
+                placeHolderView(firstChar = item.name[0].uppercase())
             }
             Text(
-                text = name,
+                text = item.name,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
                 modifier = Modifier.padding(top = 4.dp).align(Alignment.CenterHorizontally)
             )
             Text(
-                text = priceSats,
+                text = item.priceSats,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 14.sp,
                 modifier = Modifier.padding(top = 2.dp).align(Alignment.CenterHorizontally)
             )
             Text(
-                text = priceBaht,
+                text = item.priceBaht,
                 color = MaterialTheme.colorScheme.secondary,
                 fontWeight = FontWeight.Normal,
                 fontSize = 10.sp,
@@ -87,13 +81,46 @@ fun MenuItemView(
     }
 }
 
+@Composable
+fun placeHolderView(firstChar: String) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .size(72.dp)
+            .background(Color.LightGray, RoundedCornerShape(4.dp)),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = firstChar,
+            fontSize = 16.sp,
+            color = Color.DarkGray,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
 @Preview
 @Composable
 fun previewMenuItem() {
     MenuItemView(
-        name = "Americano",
-        priceSats = "60 Sats",
-        priceBaht = "฿60",
-        imageRes = null
+        item = MenuItem(
+            name = "Americano",
+            priceSats = "60 Sats",
+            priceBaht = "฿60",
+            imageUrl = null
+        )
+    )
+}
+
+@Preview
+@Composable
+fun previewMenuItemWithImageUrl() {
+    MenuItemView(
+        item = MenuItem(
+            name = "Americano",
+            priceSats = "60 Sats",
+            priceBaht = "฿60",
+            imageUrl = "https://images.pexels.com/photos/3704460/pexels-photo-3704460.jpeg"
+        )
     )
 }
