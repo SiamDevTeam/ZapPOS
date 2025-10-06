@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -54,8 +55,9 @@ fun HistoryScreen(
             style = MaterialTheme.typography.bodyMedium
         )
         Spacer(modifier = Modifier.height(32.dp))
-        Column {
-            historyList.forEach { item ->
+        LazyColumn { 
+            items(historyList.size) { index ->
+                val item = historyList[index]
                 HistoryItem(
                     name = item.transactionId,
                     date = item.date,
@@ -94,8 +96,9 @@ fun HistoryScreen(
                         text = "Items",
                         style = MaterialTheme.typography.titleSmall
                     )
-                    Column {
-                        it.items.forEach { item ->
+                    LazyColumn {
+                        items(it.items.size) { index ->
+                            val item = it.items[index]
                             TransactionMenuItem(
                                 itemName = item.itemName,
                                 quantity = item.quantity,
