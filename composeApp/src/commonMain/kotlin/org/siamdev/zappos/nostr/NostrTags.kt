@@ -5,7 +5,6 @@ import org.siamdev.zappos.nostr.keys.NostrPublicKey
 expect class NostrTags {
     companion object {
         fun fromList(list: List<TagElt>): NostrTags
-        fun fromText(text: String): NostrTags
         fun parse(tags: List<List<String>>): NostrTags
     }
 

@@ -1,4 +1,4 @@
-package org.zappos.core
+package org.siamdev.zappos
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

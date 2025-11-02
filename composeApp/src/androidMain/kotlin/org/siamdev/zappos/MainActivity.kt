@@ -1,28 +1,37 @@
 package org.siamdev.zappos
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.ui.platform.LocalContext
-import org.siamdev.zappos.screen.LoginScreen
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         enableEdgeToEdge()
+        var isActive = true
+        lifecycleScope.launch {
+            delay(1500L)
+            isActive = false
+        }
+        splashScreen.apply {
+            setKeepOnScreenCondition { isActive }
+        }
         super.onCreate(savedInstanceState)
-
         setContent {
-            val context = LocalContext.current
-            // if not login
-            LoginScreen(
-                onButtonClick = {
-                    context.startActivity(Intent(context, PosActivity::class.java))
-                    finish()
-                }
-            )
-            // if login, go to PosActivity
+            App()
         }
     }
+}
+
+@Preview
+@Composable
+fun AppAndroidPreview() {
+    App()
 }

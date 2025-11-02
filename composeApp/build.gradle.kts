@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -16,14 +16,12 @@ kotlin {
     }
 
     androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
     
     listOf(
-        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -32,41 +30,36 @@ kotlin {
             isStatic = true
         }
     }
-
+    
+    jvm()
+    
     sourceSets {
-
         androidMain.dependencies {
-            implementation("net.java.dev.jna:jna:5.17.0@aar")
-            implementation(libs.org.rust.nostr)
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            //implementation(libs.ktor.client.okhttp)
+            implementation("net.java.dev.jna:jna:5.18.1@aar")
+            implementation(libs.org.rust.nostr)
+            implementation(libs.androidx.core.splashscreen)
         }
-
         commonMain.dependencies {
-            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.0-beta02")
-            implementation("org.jetbrains.compose.material:material-icons-extended:1.7.3")
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodel)
+            implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
-            implementation(libs.navigation.compose)
-            implementation(libs.material.icons.core)
-            implementation(libs.bundles.ktor.common)
-            implementation(libs.coil.compose.core)
-            implementation(libs.coil)
-            implementation(libs.coil.compose)
-            implementation(libs.coil.network.ktor)
         }
-
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
-
+        jvmMain.dependencies {
+            implementation(compose.desktop.currentOs)
+            implementation(libs.kotlinx.coroutinesSwing)
+            implementation(libs.nostr.sdk.jvm)
+            implementation("net.java.dev.jna:jna:5.17.0")
+        }
     }
 }
 
@@ -80,10 +73,6 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
-        //ndk.abiFilters += setOf("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
-        ndk {
-            abiFilters += setOf("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
-        }
     }
     packaging {
         resources {
@@ -105,3 +94,14 @@ dependencies {
     debugImplementation(compose.uiTooling)
 }
 
+compose.desktop {
+    application {
+        mainClass = "org.siamdev.zappos.MainKt"
+
+        nativeDistributions {
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            packageName = "org.siamdev.zappos"
+            packageVersion = "1.0.0"
+        }
+    }
+}
