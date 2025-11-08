@@ -11,16 +11,12 @@ plugins {
 
 kotlin {
 
-    compilerOptions {
-        freeCompilerArgs.add("-Xexpect-actual-classes")
-    }
-
     androidTarget {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -30,15 +26,13 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     jvm()
-    
+
     sourceSets {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            implementation("net.java.dev.jna:jna:5.18.1@aar")
-            implementation(libs.org.rust.nostr)
             implementation(libs.androidx.core.splashscreen)
         }
         commonMain.dependencies {
@@ -50,6 +44,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(projects.core)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -57,8 +52,7 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
-            implementation(libs.nostr.sdk.jvm)
-            implementation("net.java.dev.jna:jna:5.17.0")
+
         }
     }
 }
@@ -99,7 +93,12 @@ compose.desktop {
         mainClass = "org.siamdev.zappos.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(
+                TargetFormat.Dmg
+                , TargetFormat.Msi
+                , TargetFormat.Deb
+                , TargetFormat.Rpm
+            )
             packageName = "org.siamdev.zappos"
             packageVersion = "1.0.0"
         }

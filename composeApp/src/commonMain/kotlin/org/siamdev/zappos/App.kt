@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.siamdev.core.nostr.keys.NostrKeys
 
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.compose_multiplatform
@@ -24,6 +25,11 @@ import zappos.composeapp.generated.resources.compose_multiplatform
 fun App() {
     MaterialTheme {
         var showContent by remember { mutableStateOf(false) }
+        val keys = NostrKeys.generate()
+
+        println(keys.secretKey().toBech32())
+        println(keys.publicKey().toBech32())
+
         Column(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.primaryContainer)
@@ -35,13 +41,16 @@ fun App() {
                 Text("Click me!")
             }
             AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
+                val isPlatform = remember { PlatformInfo().message }
+                println(isPlatform)
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
+                    Text("Compose: $isPlatform")
+                    Text("Private key: ${keys.secretKey().toHex()}")
+                    Text("Public key: ${keys.publicKey().toHex()}")
                 }
             }
         }
