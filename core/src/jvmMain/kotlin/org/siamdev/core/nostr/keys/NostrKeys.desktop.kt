@@ -29,40 +29,35 @@ actual class NostrKeys private constructor(private val keys: Keys) {
             secretKey: NostrSecretKey,
             publicKey: NostrPublicKey,
             content: String
-        ): String {
-            return nip04Encrypt(secretKey.sk, publicKey.pk, content)
-        }
+        ): String = nip04Encrypt(secretKey.sk, publicKey.pk, content)
 
         actual fun NIP04Decrypt(
             secretKey: NostrSecretKey,
             publicKey: NostrPublicKey,
             content: String
-        ): String {
-            return nip04Decrypt(secretKey.sk, publicKey.pk, content)
-        }
+        ): String = nip04Decrypt(secretKey.sk, publicKey.pk, content)
 
         actual fun NIP44Encrypt(
             secretKey: NostrSecretKey,
             publicKey: NostrPublicKey,
             content: String,
             version: NIP44VERSION
-        ): String {
-            return nip44Encrypt(secretKey.sk, publicKey.pk, content, version.version)
-        }
+        ): String = nip44Encrypt(secretKey.sk, publicKey.pk, content, version.version)
 
         actual fun NIP44Decrypt(
             secretKey: NostrSecretKey,
             publicKey: NostrPublicKey,
             content: String
-        ): String {
-            return nip44Decrypt(secretKey.sk, publicKey.pk, content)
-        }
+        ): String = nip44Decrypt(secretKey.sk, publicKey.pk, content)
 
     }
 
     actual fun secretKey(): NostrSecretKey = NostrSecretKey(keys.secretKey())
+
     actual fun publicKey(): NostrPublicKey = NostrPublicKey(keys.publicKey())
+
     actual fun sign(msg: String): String = keys.signSchnorr(msg.hexToByteArray())
+
 }
 
 actual class NostrPublicKey internal constructor(internal val pk: PublicKey) {
@@ -80,6 +75,7 @@ actual class NostrSecretKey internal constructor(internal val sk: SecretKey) {
     }
     actual fun toHex(): String = sk.toHex()
     actual fun toBech32(): String = sk.toBech32()
+
 }
 
 actual enum class NIP44VERSION(internal val version: Nip44Version) {

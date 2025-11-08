@@ -16,17 +16,10 @@ class MainActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
         enableEdgeToEdge()
         var isActive = true
-        lifecycleScope.launch {
-            delay(1500L)
-            isActive = false
-        }
-        splashScreen.apply {
-            setKeepOnScreenCondition { isActive }
-        }
+        lifecycleScope.launch { delay(2000L); isActive = false }
+        splashScreen.apply { setKeepOnScreenCondition { isActive } }
         super.onCreate(savedInstanceState)
-        setContent {
-            App()
-        }
+        setContent { App() }
     }
 }
 

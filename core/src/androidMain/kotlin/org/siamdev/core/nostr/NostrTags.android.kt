@@ -11,9 +11,7 @@ actual class NostrTags(internal val tags: Tags) {
             return NostrTags(Tags.fromList(rustList))
         }
 
-        actual fun parse(tags: List<List<String>>): NostrTags {
-            return NostrTags(Tags.parse(tags))
-        }
+        actual fun parse(tags: List<List<String>>): NostrTags = NostrTags(Tags.parse(tags))
     }
 
     actual fun isEmpty(): Boolean = tags.isEmpty()

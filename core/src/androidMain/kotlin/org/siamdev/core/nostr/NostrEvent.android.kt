@@ -13,9 +13,7 @@ actual class NostrEvent private constructor(
         }
     }
 
-    actual fun toJson(): String {
-        return event.asJson()
-    }
+    actual fun toJson(): String = event.asJson()
 
     actual val id: String
         get() = event.id().toHex()
