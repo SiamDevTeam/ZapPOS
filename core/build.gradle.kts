@@ -55,7 +55,12 @@ kotlin {
         }
     }
 
-    jvm()
+    jvm {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+        }
+    }
+
 
     // Source set declarations.
     // Declaring a target automatically creates a source set with the same name. By default, the
@@ -67,11 +72,6 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.stdlib)
                 // Add KMP dependencies here
-                implementation("io.realm.kotlin:library-base:3.0.0")
-                // If using Device Sync
-                implementation("io.realm.kotlin:library-sync:2.3.0")
-                // If using coroutines with the SDK
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 
             }
         }

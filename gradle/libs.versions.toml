@@ -16,6 +16,8 @@ junit = "4.13.2"
 kotlin = "2.2.20"
 kotlinx-coroutines = "1.10.2"
 
+realmSync = "2.3.0"
+realmBase = "3.0.0"
 nostr-sdk = "0.43.1"
 kotlinStdlib = "2.2.20"
 runner = "1.5.2"
@@ -23,6 +25,8 @@ core = "1.5.0"
 
 [libraries]
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
+realm-sync = { module = "io.realm.kotlin:library-sync", version.ref = "realmSync" }
+realm-base = { module = "io.realm.kotlin:library-base", version.ref = "realmBase" }
 nostr-sdk-jvm = { module = "org.rust-nostr:nostr-sdk-jvm", version.ref = "nostr-sdk" }
 org-rust-nostr = { module = "org.rust-nostr:nostr-sdk", version.ref = "nostr-sdk" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
