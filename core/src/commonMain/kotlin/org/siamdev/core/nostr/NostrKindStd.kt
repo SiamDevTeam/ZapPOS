@@ -1,0 +1,111 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2025 SiamDev by SiamDharmar
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package org.siamdev.core.nostr
+
+expect enum class NostrKindStd {
+    METADATA,
+    TEXT_NOTE,
+    CONTACT_LIST,
+    OPEN_TIMESTAMPS,
+    EVENT_DELETION,
+    REPOST,
+    GENERIC_REPOST,
+    COMMENT,
+    REACTION,
+    BADGE_AWARD,
+    BLOSSOM_AUTH,
+    CHANNEL_CREATION,
+    CHANNEL_METADATA,
+    CHANNEL_MESSAGE,
+    CHANNEL_HIDE_MESSAGE,
+    CHANNEL_MUTE_USER,
+    GIT_PATCH,
+    GIT_ISSUE,
+    GIT_REPLY,
+    GIT_STATUS_OPEN,
+    GIT_STATUS_APPLIED,
+    GIT_STATUS_CLOSED,
+    GIT_STATUS_DRAFT,
+    TORRENT,
+    TORRENT_COMMENT,
+    LABEL,
+    WALLET_CONNECT_INFO,
+    WALLET_CONNECT_NOTIFICATION,
+    REPORTING,
+    ZAP_PRIVATE_MESSAGE,
+    ZAP_REQUEST,
+    ZAP_RECEIPT,
+    MUTE_LIST,
+    PIN_LIST,
+    BOOKMARKS,
+    COMMUNITIES,
+    PUBLIC_CHATS,
+    BLOCKED_RELAYS,
+    SEARCH_RELAYS,
+    SIMPLE_GROUPS,
+    INTERESTS,
+    EMOJIS,
+    FOLLOW_SET,
+    RELAY_SET,
+    BOOKMARK_SET,
+    ARTICLES_CURATION_SET,
+    VIDEOS_CURATION_SET,
+    INTEREST_SET,
+    EMOJI_SET,
+    RELEASE_ARTIFACT_SET,
+    RELAY_LIST,
+    PEER_TO_PEER_ORDER,
+    REQUEST_TO_VANISH,
+    AUTHENTICATION,
+    WALLET_CONNECT_REQUEST,
+    WALLET_CONNECT_RESPONSE,
+    NOSTR_CONNECT,
+    LIVE_EVENT,
+    LIVE_EVENT_MESSAGE,
+    PROFILE_BADGES,
+    BADGE_DEFINITION,
+    SEAL,
+    GIFT_WRAP,
+    PRIVATE_DIRECT_MESSAGE,
+    INBOX_RELAYS,
+    MLS_KEY_PACKAGE_RELAYS,
+    MLS_KEY_PACKAGE,
+    MLS_WELCOME,
+    MLS_GROUP_MESSAGE,
+    LONG_FORM_TEXT_NOTE,
+    GIT_REPO_ANNOUNCEMENT,
+    APPLICATION_SPECIFIC_DATA,
+    FILE_METADATA,
+    HTTP_AUTH,
+    SET_STALL,
+    SET_PRODUCT,
+    JOB_FEEDBACK,
+    USER_STATUS,
+    CASHU_WALLET,
+    CASHU_WALLET_UNSPENT_PROOF,
+    CASHU_WALLET_SPENDING_HISTORY,
+    CODE_SNIPPET,
+    POLL,
+    POLL_RESPONSE;
+}

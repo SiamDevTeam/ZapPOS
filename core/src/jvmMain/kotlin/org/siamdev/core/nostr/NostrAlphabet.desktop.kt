@@ -23,48 +23,33 @@
  */
 package org.siamdev.core.nostr
 
-import rust.nostr.sdk.Event
+import rust.nostr.sdk.Alphabet as NativeAlphabet
 
-actual class NostrEvent(
-    internal val event: Event
-) {
-
-    actual companion object {
-        actual fun fromJson(json: String): NostrEvent {
-            val event = Event.fromJson(json)
-            return NostrEvent(event)
-        }
-    }
-
-    actual fun toJson(): String = event.asJson()
-
-    actual val id: String
-        get() = event.id().toHex()
-
-    actual val pubkey: String
-        get() = event.author().toHex()
-
-    actual val createdAt: ULong
-        get() = event.createdAt().asSecs()
-
-    actual val kind: UShort
-        get() = event.kind().asU16()
-
-    actual val content: String
-        get() = event.content()
-
-    actual val sig: String
-        get() = event.signature()
-
-    actual val tags: NostrTags
-        get() = NostrTags(event.tags())
-
-
-    actual fun hashtags(): List<String> = event.tags().hashtags()
-
-    actual fun taggedPublicKeys(): List<String> = event.tags().publicKeys().map { it.toHex() }
-
-    actual fun taggedEventIds(): List<String> = event.tags().eventIds().map { it.toHex() }
-
-    actual fun identifier(): String? = event.tags().identifier()
+actual enum class NostrAlphabet(internal val native: NativeAlphabet) {
+    A(NativeAlphabet.A),
+    B(NativeAlphabet.B),
+    C(NativeAlphabet.C),
+    D(NativeAlphabet.D),
+    E(NativeAlphabet.E),
+    F(NativeAlphabet.F),
+    G(NativeAlphabet.G),
+    H(NativeAlphabet.H),
+    I(NativeAlphabet.I),
+    J(NativeAlphabet.J),
+    K(NativeAlphabet.K),
+    L(NativeAlphabet.L),
+    M(NativeAlphabet.M),
+    N(NativeAlphabet.N),
+    O(NativeAlphabet.O),
+    P(NativeAlphabet.P),
+    Q(NativeAlphabet.Q),
+    R(NativeAlphabet.R),
+    S(NativeAlphabet.S),
+    T(NativeAlphabet.T),
+    U(NativeAlphabet.U),
+    V(NativeAlphabet.V),
+    W(NativeAlphabet.W),
+    X(NativeAlphabet.X),
+    Y(NativeAlphabet.Y),
+    Z(NativeAlphabet.Z);
 }

@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package org.siamdev.core.nostr
 
 import org.siamdev.core.nostr.keys.NostrPublicKey
@@ -46,9 +45,7 @@ actual class NostrTags(internal val tags: Tags) {
 
     actual fun len(): ULong = tags.len()
 
-    actual fun publicKeys(): List<NostrPublicKey> {
-        return tags.publicKeys().map { NostrPublicKey(it) }
-    }
+    actual fun publicKeys(): List<NostrPublicKey> = tags.publicKeys().map { NostrPublicKey(it) }
 
     actual fun first(): TagElt? = tags.first()?.let { TagElt(it) }
 

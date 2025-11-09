@@ -23,48 +23,47 @@
  */
 package org.siamdev.core.nostr
 
-import rust.nostr.sdk.Event
+import rust.nostr.sdk.FilterRecord
+import rust.nostr.sdk.GenericTag
 
-actual class NostrEvent(
-    internal val event: Event
+actual class NostrFilterRecord internal constructor(
+    internal val native: FilterRecord
 ) {
 
-    actual companion object {
-        actual fun fromJson(json: String): NostrEvent {
-            val event = Event.fromJson(json)
-            return NostrEvent(event)
-        }
-    }
+    actual val ids: List<String>?
+        get() = native.ids?.map { it.toHex() }
 
-    actual fun toJson(): String = event.asJson()
+    actual val authors: List<String>?
+        get() = native.authors?.map { it.toHex() }
 
-    actual val id: String
-        get() = event.id().toHex()
+    actual val kinds: List<UShort>?
+        get() = native.kinds?.map { it.asU16() }
 
-    actual val pubkey: String
-        get() = event.author().toHex()
+    actual val search: String?
+        get() = native.search
 
-    actual val createdAt: ULong
-        get() = event.createdAt().asSecs()
+    actual val since: ULong?
+        get() = native.since?.asSecs()
 
-    actual val kind: UShort
-        get() = event.kind().asU16()
+    actual val until: ULong?
+        get() = native.until?.asSecs()
 
-    actual val content: String
-        get() = event.content()
+    actual val limit: ULong?
+        get() = native.limit
 
-    actual val sig: String
-        get() = event.signature()
+    actual val genericTags: List<NostrGenericTag>
+        get() = native.genericTags.map { NostrGenericTag(it) }
 
-    actual val tags: NostrTags
-        get() = NostrTags(event.tags())
+}
 
+actual class NostrGenericTag internal constructor(
+    internal val native: GenericTag
+) {
 
-    actual fun hashtags(): List<String> = event.tags().hashtags()
+    actual val key: NostrSingleLetterTag
+        get() = NostrSingleLetterTag(native.key)
 
-    actual fun taggedPublicKeys(): List<String> = event.tags().publicKeys().map { it.toHex() }
+    actual val value: List<String>
+        get() = native.value
 
-    actual fun taggedEventIds(): List<String> = event.tags().eventIds().map { it.toHex() }
-
-    actual fun identifier(): String? = event.tags().identifier()
 }

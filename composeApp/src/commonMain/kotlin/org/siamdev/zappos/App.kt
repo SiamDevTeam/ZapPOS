@@ -44,12 +44,14 @@ import org.siamdev.core.nostr.keys.NostrKeys
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.compose_multiplatform
 
+
 @Composable
 @Preview
 fun App() {
     MaterialTheme {
         var showContent by remember { mutableStateOf(false) }
         val keys = NostrKeys.generate()
+
 
         println(keys.secretKey().toBech32())
         println(keys.publicKey().toBech32())

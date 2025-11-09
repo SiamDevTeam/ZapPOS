@@ -23,48 +23,21 @@
  */
 package org.siamdev.core.nostr
 
-import rust.nostr.sdk.Event
+import rust.nostr.sdk.RelayUrl as NativeRelayUrl
 
-actual class NostrEvent(
-    internal val event: Event
+actual class RelayUrl internal constructor(
+    internal val native: NativeRelayUrl
 ) {
 
     actual companion object {
-        actual fun fromJson(json: String): NostrEvent {
-            val event = Event.fromJson(json)
-            return NostrEvent(event)
+        @Throws(Exception::class)
+        actual fun parse(url: String): Result<RelayUrl> = runCatching {
+            RelayUrl(NativeRelayUrl.parse(url))
         }
     }
 
-    actual fun toJson(): String = event.asJson()
+    actual fun isLocalAddr(): Boolean = native.isLocalAddr()
 
-    actual val id: String
-        get() = event.id().toHex()
+    actual fun isOnion(): Boolean = native.isOnion()
 
-    actual val pubkey: String
-        get() = event.author().toHex()
-
-    actual val createdAt: ULong
-        get() = event.createdAt().asSecs()
-
-    actual val kind: UShort
-        get() = event.kind().asU16()
-
-    actual val content: String
-        get() = event.content()
-
-    actual val sig: String
-        get() = event.signature()
-
-    actual val tags: NostrTags
-        get() = NostrTags(event.tags())
-
-
-    actual fun hashtags(): List<String> = event.tags().hashtags()
-
-    actual fun taggedPublicKeys(): List<String> = event.tags().publicKeys().map { it.toHex() }
-
-    actual fun taggedEventIds(): List<String> = event.tags().eventIds().map { it.toHex() }
-
-    actual fun identifier(): String? = event.tags().identifier()
 }

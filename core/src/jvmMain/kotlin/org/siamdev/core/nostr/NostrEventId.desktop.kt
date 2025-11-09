@@ -23,48 +23,32 @@
  */
 package org.siamdev.core.nostr
 
-import rust.nostr.sdk.Event
+import rust.nostr.sdk.EventId as NativeEventId
 
-actual class NostrEvent(
-    internal val event: Event
+actual class NostrEventId internal constructor(
+    internal val native: NativeEventId
 ) {
 
     actual companion object {
-        actual fun fromJson(json: String): NostrEvent {
-            val event = Event.fromJson(json)
-            return NostrEvent(event)
-        }
+        actual fun fromBytes(bytes: ByteArray): NostrEventId =
+            NostrEventId(NativeEventId.fromBytes(bytes))
+
+        actual fun parse(id: String): NostrEventId =
+            NostrEventId(NativeEventId.parse(id))
     }
 
-    actual fun toJson(): String = event.asJson()
+    actual fun asBytes(): ByteArray = native.asBytes()
 
-    actual val id: String
-        get() = event.id().toHex()
+    actual fun toBech32(): String = native.toBech32()
 
-    actual val pubkey: String
-        get() = event.author().toHex()
+    actual fun toHex(): String = native.toHex()
 
-    actual val createdAt: ULong
-        get() = event.createdAt().asSecs()
+    actual fun toNostrUri(): String = native.toNostrUri()
 
-    actual val kind: UShort
-        get() = event.kind().asU16()
+    actual override fun equals(other: Any?): Boolean =
+        if (this === other) true
+        else if (other !is NostrEventId) false
+        else native.equals(other.native)
 
-    actual val content: String
-        get() = event.content()
-
-    actual val sig: String
-        get() = event.signature()
-
-    actual val tags: NostrTags
-        get() = NostrTags(event.tags())
-
-
-    actual fun hashtags(): List<String> = event.tags().hashtags()
-
-    actual fun taggedPublicKeys(): List<String> = event.tags().publicKeys().map { it.toHex() }
-
-    actual fun taggedEventIds(): List<String> = event.tags().eventIds().map { it.toHex() }
-
-    actual fun identifier(): String? = event.tags().identifier()
+    actual override fun hashCode(): Int = native.hashCode()
 }

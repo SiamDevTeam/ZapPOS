@@ -21,12 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package org.siamdev.core.nostr
 
 import rust.nostr.sdk.Event
 
-actual class NostrEvent private constructor(
+actual class NostrEvent(
     internal val event: Event
 ) {
 
