@@ -27,6 +27,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.siamdev.core.nostr.keys.NostrPublicKey
 import org.siamdev.core.nostr.keys.NostrSigner
+import rust.nostr.sdk.Client
 import rust.nostr.sdk.PublicKey
 import java.time.Duration
 import rust.nostr.sdk.Client as NativeClient
@@ -37,9 +38,12 @@ import rust.nostr.sdk.EventBuilder as NativeEventBuilder
 import rust.nostr.sdk.ClientMessage as NativeClientMessage
 
 actual class NostrClient internal constructor(
-    internal val client: NativeClient
+    private val client: NativeClient
 ) {
 
+    actual constructor() : this(Client())
+
+    
     actual fun unwrap(): Any = client
 
     actual suspend fun addDiscoveryRelay(url: RelayUrl): Boolean =

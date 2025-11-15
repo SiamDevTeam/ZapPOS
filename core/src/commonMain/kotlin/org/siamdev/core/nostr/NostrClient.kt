@@ -27,6 +27,9 @@ import org.siamdev.core.nostr.keys.NostrPublicKey
 import org.siamdev.core.nostr.keys.NostrSigner
 
 expect class NostrClient {
+
+    constructor()
+
     fun unwrap(): Any
     suspend fun addDiscoveryRelay(url: RelayUrl): Boolean
     suspend fun addReadRelay(url: RelayUrl): Boolean

@@ -27,7 +27,7 @@ expect class RelayUrl {
 
     companion object {
         @Throws(Exception::class)
-        fun parse(url: String): Result<RelayUrl>
+        fun parse(url: String): RelayUrl
     }
     fun isOnion(): Boolean
     fun isLocalAddr(): Boolean

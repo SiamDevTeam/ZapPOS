@@ -30,6 +30,8 @@ actual class NostrFilter internal constructor(
     internal val native: NativeFilter
 ) {
 
+    actual constructor() : this(NativeFilter())
+
     actual companion object {
         @Throws(Exception::class)
         actual fun fromJson(json: String): NostrFilter =

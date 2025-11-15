@@ -27,6 +27,8 @@ import org.siamdev.core.nostr.keys.NostrPublicKey
 
 expect class NostrFilter {
 
+    constructor()
+
     companion object {
         @Throws(Exception::class)
         fun fromJson(json: String): NostrFilter

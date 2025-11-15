@@ -99,7 +99,7 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(
-                TargetFormat.Dmg
+                  TargetFormat.Dmg
                 , TargetFormat.Msi
                 , TargetFormat.Deb
                 , TargetFormat.Rpm

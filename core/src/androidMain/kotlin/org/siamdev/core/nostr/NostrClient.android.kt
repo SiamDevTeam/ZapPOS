@@ -29,6 +29,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.siamdev.core.nostr.keys.NostrPublicKey
 import org.siamdev.core.nostr.keys.NostrSigner
+import rust.nostr.sdk.Client
 import rust.nostr.sdk.PublicKey
 import java.time.Duration
 import rust.nostr.sdk.Client as NativeClient
@@ -37,12 +38,13 @@ import rust.nostr.sdk.RelayOptions as NativeRelayOptions
 import rust.nostr.sdk.Event as NativeEvent
 import rust.nostr.sdk.EventBuilder as NativeEventBuilder
 import rust.nostr.sdk.ClientMessage as NativeClientMessage
-import rust.nostr.sdk.Filter as NativeFilter
 
 @RequiresApi(Build.VERSION_CODES.O)
 actual class NostrClient internal constructor(
     internal val client: NativeClient
 ) {
+
+    actual constructor() : this(Client())
 
     actual fun unwrap(): Any = client
 

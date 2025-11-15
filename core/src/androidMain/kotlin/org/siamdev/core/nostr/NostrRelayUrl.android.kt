@@ -31,9 +31,7 @@ actual class RelayUrl internal constructor(
 
     actual companion object {
         @Throws(Exception::class)
-        actual fun parse(url: String): Result<RelayUrl> = runCatching {
-            RelayUrl(NativeRelayUrl.parse(url))
-        }
+        actual fun parse(url: String): RelayUrl = RelayUrl(NativeRelayUrl.parse(url))
     }
 
 
