@@ -67,4 +67,6 @@ actual class NostrEvent(
     actual fun taggedEventIds(): List<String> = event.tags().eventIds().map { it.toHex() }
 
     actual fun identifier(): String? = event.tags().identifier()
+
+    actual fun unwrap(): Any = event
 }

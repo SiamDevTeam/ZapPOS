@@ -45,4 +45,5 @@ expect class NostrEvent {
     fun taggedPublicKeys(): List<String>
     fun taggedEventIds(): List<String>
     fun identifier(): String?
+    fun unwrap(): Any
 }

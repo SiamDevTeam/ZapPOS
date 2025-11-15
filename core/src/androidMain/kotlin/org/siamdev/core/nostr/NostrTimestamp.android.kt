@@ -23,8 +23,12 @@
  */
 package org.siamdev.core.nostr
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import java.time.Duration
 import rust.nostr.sdk.Timestamp as NativeTimestamp
 
+@RequiresApi(Build.VERSION_CODES.O)
 actual class NostrTimestamp internal constructor(
     internal val native: NativeTimestamp
 ) {
@@ -44,6 +48,11 @@ actual class NostrTimestamp internal constructor(
     }
 
     actual fun asSecs(): ULong = native.asSecs()
+
+    actual fun addDuration(duration: NostrDuration): NostrTimestamp =
+        NostrTimestamp(
+            native.addDuration(duration.unwrap() as Duration)
+        )
 
     actual fun toHumanDatetime(): String = native.toHumanDatetime()
 

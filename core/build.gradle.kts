@@ -99,6 +99,7 @@ kotlin {
                 // dependencies declared in commonMain.
                 implementation("net.java.dev.jna:jna:5.18.1@aar")
                 implementation(libs.org.rust.nostr)
+                implementation(libs.androidx.annotation.jvm)
             }
         }
 

@@ -90,4 +90,5 @@ expect class NostrFilter {
     fun search(text: String): NostrFilter
     fun since(timestamp: NostrTimestamp): NostrFilter
     fun until(timestamp: NostrTimestamp): NostrFilter
+    fun unwrap(): Any
 }

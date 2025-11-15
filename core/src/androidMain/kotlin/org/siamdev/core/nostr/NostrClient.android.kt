@@ -51,7 +51,6 @@ actual class NostrClient internal constructor(
     fun automaticAuthentication(enable: Boolean) = client.automaticAuthentication(enable)
     suspend fun connect() = runCatching { client.connect() }
     suspend fun connectRelay(url: RelayUrl) = runCatching { client.connectRelay(url) }
-    fun database(): NostrDatabase = client.database()
     suspend fun disconnect() = runCatching { client.disconnect() }
     suspend fun disconnectRelay(url: RelayUrl) = runCatching { client.disconnectRelay(url) }
     suspend fun fetchCombinedEvents(filter: Filter, timeout: java.time.Duration) = runCatching { client.fetchCombinedEvents(
@@ -82,5 +81,4 @@ actual class NostrClient internal constructor(
     suspend fun signEventBuilder(builder: EventBuilder) = runCatching { client.signEventBuilder(builder) }
     suspend fun signer() = runCatching { client.signer() }
 }
-
-* */
+*/

@@ -33,6 +33,8 @@ expect class NostrTimestamp {
     }
 
     fun asSecs(): ULong
-    fun toHumanDatetime(): String
 
+    fun addDuration(duration: NostrDuration): NostrTimestamp
+
+    fun toHumanDatetime(): String
 }

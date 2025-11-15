@@ -25,6 +25,8 @@
 /*
 package org.siamdev.core.nostr
 
+import org.siamdev.core.nostr.keys.NostrPublicKey
+
 expect class NostrClient {
     suspend fun addDiscoveryRelay(url: RelayUrl): Boolean
     suspend fun addReadRelay(url: RelayUrl): Boolean
@@ -34,23 +36,18 @@ expect class NostrClient {
     fun automaticAuthentication(enable: Boolean)
     suspend fun connect()
     suspend fun connectRelay(url: RelayUrl)
-    fun database(): NostrDatabase
     suspend fun disconnect()
     suspend fun disconnectRelay(url: RelayUrl)
-    suspend fun fetchCombinedEvents(filter: Filter, timeout: java.time.Duration): Result<Events>
-    suspend fun fetchEvents(filter: Filter, timeout: java.time.Duration): Events
-    suspend fun fetchEventsFrom(urls: List<RelayUrl>, filter: Filter, timeout: java.time.Duration): Events
-    suspend fun fetchMetadata(publicKey: PublicKey, timeout: java.time.Duration): Metadata?
+    suspend fun fetchCombinedEvents(filter: NostrFilter, timeout: NostrDuration): Result<NostrEvents>
+    suspend fun fetchEvents(filter: NostrFilter, timeout: NostrDuration): NostrEvents
+    suspend fun fetchEventsFrom(urls: List<RelayUrl>, filter: NostrFilter, timeout: NostrDuration): NostrEvents
     suspend fun forceRemoveAllRelays()
     suspend fun forceRemoveRelay(url: RelayUrl)
-    suspend fun giftWrap(receiver: PublicKey, rumor: UnsignedEvent, extraTags: List<Tag>): SendEventOutput
-    suspend fun giftWrapTo(urls: List<RelayUrl>, receiver: PublicKey, rumor: UnsignedEvent, extraTags: List<Tag>): SendEventOutput
-    suspend fun handleNotifications(handler: HandleNotification)
     suspend fun relay(url: RelayUrl): Relay
     suspend fun relays(): Map<RelayUrl, Relay>
     suspend fun removeAllRelays()
     suspend fun removeRelay(url: RelayUrl)
-    suspend fun sendEvent(event: Event): SendEventOutput
+    suspend fun sendEvent(event: NostrEvent): SendEventOutput
     suspend fun sendEventBuilder(builder: EventBuilder): SendEventOutput
     suspend fun sendEventBuilderTo(urls: List<RelayUrl>, builder: EventBuilder): SendEventOutput
     suspend fun sendEventTo(urls: List<RelayUrl>, event: Event): SendEventOutput
@@ -62,6 +59,4 @@ expect class NostrClient {
     suspend fun signEventBuilder(builder: EventBuilder): Event
     suspend fun signer(): NostrSigner
 }
-
-
- */
+*/

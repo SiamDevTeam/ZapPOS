@@ -110,4 +110,5 @@ actual class NostrFilter internal constructor(
     actual fun search(text: String): NostrFilter = NostrFilter(native.search(text))
     actual fun since(timestamp: NostrTimestamp): NostrFilter = NostrFilter(native.since(timestamp.native))
     actual fun until(timestamp: NostrTimestamp): NostrFilter = NostrFilter(native.until(timestamp.native))
+    actual fun unwrap(): Any = native
 }
