@@ -40,7 +40,7 @@ actual class RelayOptions internal constructor(
         runCatching { RelayOptions(native.banRelayOnMismatch(enable)) }
 
     actual fun setConnectionMode(mode: NostrConnectionMode): Result<RelayOptions> =
-        runCatching { RelayOptions(native.connectionMode(mode.new())) }
+        runCatching { RelayOptions(native.connectionMode(mode.unwrap())) }
 
     actual fun setPing(enable: Boolean): Result<RelayOptions> =
         runCatching { RelayOptions(native.ping(enable)) }

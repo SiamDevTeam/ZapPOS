@@ -23,33 +23,35 @@
  */
 package org.siamdev.core.nostr
 
-import rust.nostr.sdk.ConnectionMode as NativeConnectionMode
+import rust.nostr.sdk.Reconciliation as NativeReconciliation
+import rust.nostr.sdk.ReconciliationSendFailureItem as NativeReconciliationSendFailureItem
 
-actual sealed class NostrConnectionMode {
+actual class NostrReconciliation internal constructor(
+    internal val native: NativeReconciliation
+) {
+    actual val local: List<NostrEventId>
+        get() = native.local.map { NostrEventId(it) }
 
-    internal abstract fun unwrap(): NativeConnectionMode
+    actual val remote: List<NostrEventId>
+        get() = native.remote.map { NostrEventId(it) }
 
-    actual class NostrProxy internal constructor(
-        internal val native: NativeConnectionMode.Proxy
-    ) : NostrConnectionMode() {
+    actual val sent: List<NostrEventId>
+        get() = native.sent.map { NostrEventId(it) }
 
-        actual val ip: String
-            get() = native.ip
+    actual val received: List<NostrEventId>
+        get() = native.received.map { NostrEventId(it) }
 
-        actual val port: UShort
-            get() = native.port
+    actual val sendFailures: Map<RelayUrl, List<NostrReconciliationSendFailureItem>>
+        get() = native.sendFailures.mapKeys { RelayUrl(it.key) }
+            .mapValues { entry -> entry.value.map { NostrReconciliationSendFailureItem(it) } }
+}
 
-        actual constructor(ip: String, port: UShort)
-                : this(NativeConnectionMode.Proxy(ip, port))
+actual class NostrReconciliationSendFailureItem internal constructor(
+    internal val native: NativeReconciliationSendFailureItem
+) {
+    actual val id: NostrEventId
+        get() = NostrEventId(native.id)
 
-        override fun unwrap(): NativeConnectionMode = native
-    }
-
-    companion object {
-        fun fromNative(native: NativeConnectionMode): NostrConnectionMode =
-            when (native) {
-                is NativeConnectionMode.Proxy -> NostrProxy(native)
-                else -> error("Unsupported NativeConnectionMode: $native")
-            }
-    }
+    actual val error: String
+        get() = native.error
 }

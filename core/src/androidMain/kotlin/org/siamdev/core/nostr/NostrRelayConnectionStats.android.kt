@@ -23,33 +23,36 @@
  */
 package org.siamdev.core.nostr
 
-import rust.nostr.sdk.ConnectionMode as NativeConnectionMode
+import android.os.Build
+import androidx.annotation.RequiresApi
+import rust.nostr.sdk.RelayConnectionStats as NativeRelayStats
 
-actual sealed class NostrConnectionMode {
+@RequiresApi(Build.VERSION_CODES.O)
+actual class NostrRelayConnectionStats internal constructor(
+    internal val native: NativeRelayStats
+) {
 
-    internal abstract fun unwrap(): NativeConnectionMode
+    actual val attempts: ULong
+        get() = native.attempts()
 
-    actual class NostrProxy internal constructor(
-        internal val native: NativeConnectionMode.Proxy
-    ) : NostrConnectionMode() {
+    actual val bytesReceived: ULong
+        get() = native.bytesReceived()
 
-        actual val ip: String
-            get() = native.ip
+    actual val bytesSent: ULong
+        get() = native.bytesSent()
 
-        actual val port: UShort
-            get() = native.port
+    actual val connectedAt: NostrTimestamp
+        get() = NostrTimestamp(native.connectedAt())
 
-        actual constructor(ip: String, port: UShort)
-                : this(NativeConnectionMode.Proxy(ip, port))
+    actual val firstConnectionTimestamp: NostrTimestamp
+        get() = NostrTimestamp(native.firstConnectionTimestamp())
 
-        override fun unwrap(): NativeConnectionMode = native
-    }
+    actual val latency: NostrDuration?
+        get() = native.latency()?.let { NostrDuration(it) }
 
-    companion object {
-        fun fromNative(native: NativeConnectionMode): NostrConnectionMode =
-            when (native) {
-                is NativeConnectionMode.Proxy -> NostrProxy(native)
-                else -> error("Unsupported NativeConnectionMode: $native")
-            }
-    }
+    actual val success: ULong
+        get() = native.success()
+
+    actual val successRate: Double
+        get() = native.successRate()
 }

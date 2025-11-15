@@ -21,35 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.siamdev.core.nostr
+package org.siamdev.core.nostr.types
 
-import rust.nostr.sdk.ConnectionMode as NativeConnectionMode
+import rust.nostr.sdk.SyncDirection as NativeSyncDirection
 
-actual sealed class NostrConnectionMode {
-
-    internal abstract fun unwrap(): NativeConnectionMode
-
-    actual class NostrProxy internal constructor(
-        internal val native: NativeConnectionMode.Proxy
-    ) : NostrConnectionMode() {
-
-        actual val ip: String
-            get() = native.ip
-
-        actual val port: UShort
-            get() = native.port
-
-        actual constructor(ip: String, port: UShort)
-                : this(NativeConnectionMode.Proxy(ip, port))
-
-        override fun unwrap(): NativeConnectionMode = native
-    }
-
-    companion object {
-        fun fromNative(native: NativeConnectionMode): NostrConnectionMode =
-            when (native) {
-                is NativeConnectionMode.Proxy -> NostrProxy(native)
-                else -> error("Unsupported NativeConnectionMode: $native")
-            }
-    }
+actual enum class NostrSyncDirection(internal val native: NativeSyncDirection) {
+    UP(NativeSyncDirection.UP),
+    DOWN(NativeSyncDirection.DOWN),
+    BOTH(NativeSyncDirection.BOTH);
 }

@@ -72,6 +72,7 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.stdlib)
                 // Add KMP dependencies here
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 
             }
         }
@@ -121,5 +122,6 @@ kotlin {
             }
         }
     }
+
 
 }

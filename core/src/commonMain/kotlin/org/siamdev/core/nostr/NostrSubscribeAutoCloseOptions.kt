@@ -23,33 +23,11 @@
  */
 package org.siamdev.core.nostr
 
-import rust.nostr.sdk.ConnectionMode as NativeConnectionMode
+expect class NostrSubscribeAutoCloseOptions {
 
-actual sealed class NostrConnectionMode {
+    fun exitPolicy(policy: NostrReqExitPolicy): NostrSubscribeAutoCloseOptions
 
-    internal abstract fun unwrap(): NativeConnectionMode
+    fun idleTimeout(timeout: NostrDuration?): NostrSubscribeAutoCloseOptions
 
-    actual class NostrProxy internal constructor(
-        internal val native: NativeConnectionMode.Proxy
-    ) : NostrConnectionMode() {
-
-        actual val ip: String
-            get() = native.ip
-
-        actual val port: UShort
-            get() = native.port
-
-        actual constructor(ip: String, port: UShort)
-                : this(NativeConnectionMode.Proxy(ip, port))
-
-        override fun unwrap(): NativeConnectionMode = native
-    }
-
-    companion object {
-        fun fromNative(native: NativeConnectionMode): NostrConnectionMode =
-            when (native) {
-                is NativeConnectionMode.Proxy -> NostrProxy(native)
-                else -> error("Unsupported NativeConnectionMode: $native")
-            }
-    }
+    fun timeout(timeout: NostrDuration?): NostrSubscribeAutoCloseOptions
 }

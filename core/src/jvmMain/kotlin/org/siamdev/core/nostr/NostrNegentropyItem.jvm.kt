@@ -23,33 +23,14 @@
  */
 package org.siamdev.core.nostr
 
-import rust.nostr.sdk.ConnectionMode as NativeConnectionMode
+import rust.nostr.sdk.NegentropyItem as NativeNegentropyItem
 
-actual sealed class NostrConnectionMode {
+actual class NostrNegentropyItem internal constructor(
+    internal val native: NativeNegentropyItem
+) {
+    actual val id: NostrEventId
+        get() = NostrEventId(native.id)
 
-    internal abstract fun unwrap(): NativeConnectionMode
-
-    actual class NostrProxy internal constructor(
-        internal val native: NativeConnectionMode.Proxy
-    ) : NostrConnectionMode() {
-
-        actual val ip: String
-            get() = native.ip
-
-        actual val port: UShort
-            get() = native.port
-
-        actual constructor(ip: String, port: UShort)
-                : this(NativeConnectionMode.Proxy(ip, port))
-
-        override fun unwrap(): NativeConnectionMode = native
-    }
-
-    companion object {
-        fun fromNative(native: NativeConnectionMode): NostrConnectionMode =
-            when (native) {
-                is NativeConnectionMode.Proxy -> NostrProxy(native)
-                else -> error("Unsupported NativeConnectionMode: $native")
-            }
-    }
+    actual val timestamp: NostrTimestamp
+        get() = NostrTimestamp(native.timestamp)
 }

@@ -23,33 +23,24 @@
  */
 package org.siamdev.core.nostr
 
-import rust.nostr.sdk.ConnectionMode as NativeConnectionMode
+import kotlin.UShort
 
-actual sealed class NostrConnectionMode {
+expect sealed class NostrReqExitPolicy {
 
-    internal abstract fun unwrap(): NativeConnectionMode
+    class NostrExitOnEose : NostrReqExitPolicy
 
-    actual class NostrProxy internal constructor(
-        internal val native: NativeConnectionMode.Proxy
-    ) : NostrConnectionMode() {
-
-        actual val ip: String
-            get() = native.ip
-
-        actual val port: UShort
-            get() = native.port
-
-        actual constructor(ip: String, port: UShort)
-                : this(NativeConnectionMode.Proxy(ip, port))
-
-        override fun unwrap(): NativeConnectionMode = native
+    class NostrWaitForEvents : NostrReqExitPolicy {
+        constructor(num: UShort)
+        val num: UShort
     }
 
-    companion object {
-        fun fromNative(native: NativeConnectionMode): NostrConnectionMode =
-            when (native) {
-                is NativeConnectionMode.Proxy -> NostrProxy(native)
-                else -> error("Unsupported NativeConnectionMode: $native")
-            }
+    class NostrWaitForEventsAfterEose : NostrReqExitPolicy {
+        constructor(num: UShort)
+        val num: UShort
+    }
+
+    class NostrWaitDurationAfterEose : NostrReqExitPolicy {
+        constructor(duration: NostrDuration)
+        val duration: NostrDuration
     }
 }

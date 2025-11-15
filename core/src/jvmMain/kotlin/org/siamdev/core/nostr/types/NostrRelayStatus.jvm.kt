@@ -21,35 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.siamdev.core.nostr
+package org.siamdev.core.nostr.types
 
-import rust.nostr.sdk.ConnectionMode as NativeConnectionMode
+import rust.nostr.sdk.RelayStatus as NativeRelayStatus
 
-actual sealed class NostrConnectionMode {
+actual enum class NostrRelayStatus (internal val native: NativeRelayStatus) {
+    INITIALIZED(NativeRelayStatus.INITIALIZED),
+    PENDING(NativeRelayStatus.PENDING),
+    CONNECTING(NativeRelayStatus.CONNECTING),
+    CONNECTED(NativeRelayStatus.CONNECTED),
+    DISCONNECTED(NativeRelayStatus.DISCONNECTED),
+    TERMINATED(NativeRelayStatus.TERMINATED),
+    SLEEPING(NativeRelayStatus.SLEEPING);
 
-    internal abstract fun unwrap(): NativeConnectionMode
-
-    actual class NostrProxy internal constructor(
-        internal val native: NativeConnectionMode.Proxy
-    ) : NostrConnectionMode() {
-
-        actual val ip: String
-            get() = native.ip
-
-        actual val port: UShort
-            get() = native.port
-
-        actual constructor(ip: String, port: UShort)
-                : this(NativeConnectionMode.Proxy(ip, port))
-
-        override fun unwrap(): NativeConnectionMode = native
-    }
-
-    companion object {
-        fun fromNative(native: NativeConnectionMode): NostrConnectionMode =
-            when (native) {
-                is NativeConnectionMode.Proxy -> NostrProxy(native)
-                else -> error("Unsupported NativeConnectionMode: $native")
+    actual companion object {
+        actual fun of(native: Any): NostrRelayStatus =
+            when (native.toString()) {
+                "INITIALIZED" -> INITIALIZED
+                "PENDING" -> PENDING
+                "CONNECTING" -> CONNECTING
+                "CONNECTED" -> CONNECTED
+                "DISCONNECTED" -> DISCONNECTED
+                "TERMINATED" -> TERMINATED
+                "SLEEPING" -> SLEEPING
+                else -> throw IllegalArgumentException("Unknown NativeRelayStatus: $native")
             }
     }
+
 }

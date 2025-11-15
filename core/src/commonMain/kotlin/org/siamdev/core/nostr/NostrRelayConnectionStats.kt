@@ -23,33 +23,13 @@
  */
 package org.siamdev.core.nostr
 
-import rust.nostr.sdk.ConnectionMode as NativeConnectionMode
-
-actual sealed class NostrConnectionMode {
-
-    internal abstract fun unwrap(): NativeConnectionMode
-
-    actual class NostrProxy internal constructor(
-        internal val native: NativeConnectionMode.Proxy
-    ) : NostrConnectionMode() {
-
-        actual val ip: String
-            get() = native.ip
-
-        actual val port: UShort
-            get() = native.port
-
-        actual constructor(ip: String, port: UShort)
-                : this(NativeConnectionMode.Proxy(ip, port))
-
-        override fun unwrap(): NativeConnectionMode = native
-    }
-
-    companion object {
-        fun fromNative(native: NativeConnectionMode): NostrConnectionMode =
-            when (native) {
-                is NativeConnectionMode.Proxy -> NostrProxy(native)
-                else -> error("Unsupported NativeConnectionMode: $native")
-            }
-    }
+expect class NostrRelayConnectionStats {
+    val attempts: ULong
+    val bytesReceived: ULong
+    val bytesSent: ULong
+    val connectedAt: NostrTimestamp
+    val firstConnectionTimestamp: NostrTimestamp
+    val latency: NostrDuration?
+    val success: ULong
+    val successRate: Double
 }
