@@ -25,35 +25,33 @@ package org.siamdev.core.nostr
 
 import rust.nostr.sdk.RelayOptions as NativeRelayOptions
 
-actual class RelayOptions internal constructor(
-    private val native: NativeRelayOptions
+actual class NostrRelayOptions internal constructor(
+    internal val native: NativeRelayOptions
 ) {
 
-    actual companion object {
-        actual fun default(): RelayOptions = RelayOptions(NativeRelayOptions())
-    }
+    actual fun unwrap(): Any = native
 
-    actual fun adjustRetryInterval(enable: Boolean): Result<RelayOptions> =
-        runCatching { RelayOptions(native.adjustRetryInterval(enable)) }
+    actual fun adjustRetryInterval(enable: Boolean): Result<NostrRelayOptions> =
+        runCatching { NostrRelayOptions(native.adjustRetryInterval(enable)) }
 
-    actual fun banRelayOnMismatch(enable: Boolean): Result<RelayOptions> =
-        runCatching { RelayOptions(native.banRelayOnMismatch(enable)) }
+    actual fun banRelayOnMismatch(enable: Boolean): Result<NostrRelayOptions> =
+        runCatching { NostrRelayOptions(native.banRelayOnMismatch(enable)) }
 
-    actual fun setConnectionMode(mode: NostrConnectionMode): Result<RelayOptions> =
-        runCatching { RelayOptions(native.connectionMode(mode.unwrap())) }
+    actual fun setConnectionMode(mode: NostrConnectionMode): Result<NostrRelayOptions> =
+        runCatching { NostrRelayOptions(native.connectionMode(mode.unwrap())) }
 
-    actual fun setPing(enable: Boolean): Result<RelayOptions> =
-        runCatching { RelayOptions(native.ping(enable)) }
+    actual fun setPing(enable: Boolean): Result<NostrRelayOptions> =
+        runCatching { NostrRelayOptions(native.ping(enable)) }
 
-    actual fun setRead(enable: Boolean): Result<RelayOptions> =
-        runCatching { RelayOptions(native.read(enable)) }
+    actual fun setRead(enable: Boolean): Result<NostrRelayOptions> =
+        runCatching { NostrRelayOptions(native.read(enable)) }
 
-    actual fun enableReconnect(enable: Boolean): Result<RelayOptions> =
-        runCatching { RelayOptions(native.reconnect(enable)) }
+    actual fun enableReconnect(enable: Boolean): Result<NostrRelayOptions> =
+        runCatching { NostrRelayOptions(native.reconnect(enable)) }
 
-    actual fun verifySubscriptions(enable: Boolean): Result<RelayOptions> =
-        runCatching { RelayOptions(native.verifySubscriptions(enable)) }
+    actual fun verifySubscriptions(enable: Boolean): Result<NostrRelayOptions> =
+        runCatching { NostrRelayOptions(native.verifySubscriptions(enable)) }
 
-    actual fun setWrite(enable: Boolean): Result<RelayOptions> =
-        runCatching { RelayOptions(native.write(enable)) }
+    actual fun setWrite(enable: Boolean): Result<NostrRelayOptions> =
+        runCatching { NostrRelayOptions(native.write(enable)) }
 }

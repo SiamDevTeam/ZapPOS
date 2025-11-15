@@ -31,5 +31,5 @@ expect class RelayUrl {
     }
     fun isOnion(): Boolean
     fun isLocalAddr(): Boolean
-
+    fun unwrap(): Any
 }

@@ -23,24 +23,18 @@
  */
 package org.siamdev.core.nostr
 
-import rust.nostr.sdk.RelayUrl as NativeRelayUrl
+import org.siamdev.core.nostr.keys.NostrKeys
+import org.siamdev.core.nostr.keys.NostrPublicKey
+import org.siamdev.core.nostr.keys.NostrSigner
 
-actual class RelayUrl internal constructor(
-    internal val native: NativeRelayUrl
-) {
+expect class NostrEventBuilder {
+    fun allowSelfTagging(): NostrEventBuilder
+    fun build(publicKey: NostrPublicKey): NostrUnsignedEvent
+    fun customCreatedAt(createdAt: NostrTimestamp): NostrEventBuilder
+    fun dedupTags(): NostrEventBuilder
+    fun pow(difficulty: UByte): NostrEventBuilder
+    fun tags(tags: List<NostrTag>): NostrEventBuilder
 
-    actual companion object {
-        @Throws(Exception::class)
-        actual fun parse(url: String): Result<RelayUrl> = runCatching {
-            RelayUrl(NativeRelayUrl.parse(url))
-        }
-    }
-
-
-    actual fun isLocalAddr(): Boolean = native.isLocalAddr()
-
-    actual fun isOnion(): Boolean = native.isOnion()
-
-    actual fun unwrap(): Any = native
-
+    suspend fun sign(signer: NostrSigner): Result<NostrEvent>
+    fun signWithKeys(keys: NostrKeys): NostrEvent
 }

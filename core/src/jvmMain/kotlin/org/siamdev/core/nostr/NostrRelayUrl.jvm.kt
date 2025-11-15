@@ -40,4 +40,5 @@ actual class RelayUrl internal constructor(
 
     actual fun isOnion(): Boolean = native.isOnion()
 
+    actual fun unwrap(): Any = native
 }

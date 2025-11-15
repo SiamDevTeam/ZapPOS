@@ -23,7 +23,76 @@
  */
 package org.siamdev.core.nostr
 
-expect class NostrTagKind {
+expect sealed class NostrTagKind {
+    object Alt : NostrTagKind
+    object Client : NostrTagKind
+    object Commit : NostrTagKind
+    object Dependency : NostrTagKind
+    object Extension : NostrTagKind
+    object License : NostrTagKind
+    object Maintainers : NostrTagKind
+    object Protected : NostrTagKind
+    object RelayUrl : NostrTagKind
+    object Nonce : NostrTagKind
+    object ContentWarning : NostrTagKind
+    object Expiration : NostrTagKind
+    object Subject : NostrTagKind
+    object Challenge : NostrTagKind
+    object Title : NostrTagKind
+    object Image : NostrTagKind
+    object Thumb : NostrTagKind
+    object Summary : NostrTagKind
+    object PublishedAt : NostrTagKind
+    object Description : NostrTagKind
+    object Bolt11 : NostrTagKind
+    object Preimage : NostrTagKind
+    object Relays : NostrTagKind
+    object Amount : NostrTagKind
+    object Lnurl : NostrTagKind
+    object MlsProtocolVersion : NostrTagKind
+    object MlsCiphersuite : NostrTagKind
+    object MlsExtensions : NostrTagKind
+    object Name : NostrTagKind
+    object Option : NostrTagKind
+    object Url : NostrTagKind
+    object Aes256Gcm : NostrTagKind
+    object Size : NostrTagKind
+    object Dim : NostrTagKind
+    object File : NostrTagKind
+    object Magnet : NostrTagKind
+    object Blurhash : NostrTagKind
+    object Streaming : NostrTagKind
+    object Recording : NostrTagKind
+    object Server : NostrTagKind
+    object Starts : NostrTagKind
+    object Ends : NostrTagKind
+    object Status : NostrTagKind
+    object CurrentParticipants : NostrTagKind
+    object TotalParticipants : NostrTagKind
+    object Tracker : NostrTagKind
+    object Method : NostrTagKind
+    object Payload : NostrTagKind
+    object Anon : NostrTagKind
+    object Proxy : NostrTagKind
+    object Emoji : NostrTagKind
+    object Encrypted : NostrTagKind
+    object Repository : NostrTagKind
+    object Request : NostrTagKind
+    object Runtime : NostrTagKind
+    object PollType : NostrTagKind
+    object Response : NostrTagKind
+    object Web : NostrTagKind
+    object Word : NostrTagKind
 
+    class SingleLetter(singleLetter: NostrSingleLetterTag) : NostrTagKind {
+        val singleLetter: NostrSingleLetterTag
+    }
 
+    class Unknown(name: String) : NostrTagKind {
+        val name: String
+    }
+
+    companion object {
+        internal fun of(native: Any): NostrTagKind
+    }
 }

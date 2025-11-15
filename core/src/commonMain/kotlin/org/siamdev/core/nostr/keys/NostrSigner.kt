@@ -28,4 +28,5 @@ expect class NostrSigner {
         fun keys(key: NostrKeys): NostrSigner
     }
     fun getPublicKey(): NostrPublicKey
+    fun unwrap(): Any
 }

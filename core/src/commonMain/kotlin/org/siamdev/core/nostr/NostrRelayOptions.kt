@@ -25,19 +25,17 @@ package org.siamdev.core.nostr
 
 import kotlin.time.Duration
 
-expect class RelayOptions {
+expect class NostrRelayOptions {
 
-    companion object {
-        fun default(): RelayOptions
-    }
+    fun unwrap(): Any
 
-    fun adjustRetryInterval(enable: Boolean): Result<RelayOptions>
-    fun banRelayOnMismatch(enable: Boolean): Result<RelayOptions>
-    fun setConnectionMode(mode: NostrConnectionMode): Result<RelayOptions>
-//    fun setLimits(limits: RelayLimits): Result<RelayOptions>
-    fun setPing(enable: Boolean): Result<RelayOptions>
-    fun setRead(enable: Boolean): Result<RelayOptions>
-    fun enableReconnect(enable: Boolean): Result<RelayOptions>
-    fun verifySubscriptions(enable: Boolean): Result<RelayOptions>
-    fun setWrite(enable: Boolean): Result<RelayOptions>
+    fun adjustRetryInterval(enable: Boolean): Result<NostrRelayOptions>
+    fun banRelayOnMismatch(enable: Boolean): Result<NostrRelayOptions>
+    fun setConnectionMode(mode: NostrConnectionMode): Result<NostrRelayOptions>
+//    fun setLimits(limits: RelayLimits): Result<NostrRelayOptions>
+    fun setPing(enable: Boolean): Result<NostrRelayOptions>
+    fun setRead(enable: Boolean): Result<NostrRelayOptions>
+    fun enableReconnect(enable: Boolean): Result<NostrRelayOptions>
+    fun verifySubscriptions(enable: Boolean): Result<NostrRelayOptions>
+    fun setWrite(enable: Boolean): Result<NostrRelayOptions>
 }

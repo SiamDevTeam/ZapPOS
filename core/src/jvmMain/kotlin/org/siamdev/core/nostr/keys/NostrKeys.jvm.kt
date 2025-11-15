@@ -34,7 +34,9 @@ import rust.nostr.sdk.nip44Encrypt
 import rust.nostr.sdk.nip04Encrypt
 
 @OptIn(ExperimentalStdlibApi::class)
-actual class NostrKeys private constructor(private val keys: Keys) {
+actual class NostrKeys internal constructor(
+    internal val native: Keys
+) {
     actual companion object {
 
         actual fun generate(): NostrKeys = NostrKeys(Keys.generate())
@@ -75,11 +77,13 @@ actual class NostrKeys private constructor(private val keys: Keys) {
 
     }
 
-    actual fun secretKey(): NostrSecretKey = NostrSecretKey(keys.secretKey())
+    actual fun secretKey(): NostrSecretKey = NostrSecretKey(native.secretKey())
 
-    actual fun publicKey(): NostrPublicKey = NostrPublicKey(keys.publicKey())
+    actual fun publicKey(): NostrPublicKey = NostrPublicKey(native.publicKey())
 
-    actual fun sign(msg: String): String = keys.signSchnorr(msg.hexToByteArray())
+    actual fun sign(msg: String): String = native.signSchnorr(msg.hexToByteArray())
+
+    actual fun unwrap(): Any = native
 
 }
 

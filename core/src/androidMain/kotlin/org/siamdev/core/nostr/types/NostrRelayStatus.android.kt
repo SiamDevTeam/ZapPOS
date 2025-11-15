@@ -35,7 +35,7 @@ actual enum class NostrRelayStatus (internal val native: NativeRelayStatus) {
     SLEEPING(NativeRelayStatus.SLEEPING);
 
     actual companion object {
-        actual fun of(native: Any): NostrRelayStatus =
+        internal actual fun of(native: Any): NostrRelayStatus =
             when (native.toString()) {
                 "INITIALIZED" -> INITIALIZED
                 "PENDING" -> PENDING

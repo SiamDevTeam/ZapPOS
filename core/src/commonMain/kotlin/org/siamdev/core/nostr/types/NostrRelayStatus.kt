@@ -33,6 +33,6 @@ expect enum class NostrRelayStatus {
     SLEEPING;
 
     companion object {
-        fun of(native: Any): NostrRelayStatus
+        internal fun of(native: Any): NostrRelayStatus
     }
 }

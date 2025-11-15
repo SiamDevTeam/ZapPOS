@@ -41,6 +41,8 @@ expect class NostrKeys {
 
     fun sign(msg: String): String
 
+    fun unwrap(): Any
+
 }
 
 

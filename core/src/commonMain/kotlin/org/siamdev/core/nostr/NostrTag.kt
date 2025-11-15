@@ -23,24 +23,14 @@
  */
 package org.siamdev.core.nostr
 
-import rust.nostr.sdk.RelayUrl as NativeRelayUrl
-
-actual class RelayUrl internal constructor(
-    internal val native: NativeRelayUrl
-) {
-
-    actual companion object {
-        @Throws(Exception::class)
-        actual fun parse(url: String): Result<RelayUrl> = runCatching {
-            RelayUrl(NativeRelayUrl.parse(url))
-        }
-    }
-
-
-    actual fun isLocalAddr(): Boolean = native.isLocalAddr()
-
-    actual fun isOnion(): Boolean = native.isOnion()
-
-    actual fun unwrap(): Any = native
-
+expect class NostrTag {
+    fun asVec(): List<String>
+    fun content(): String?
+    fun isProtected(): Boolean
+    fun isReply(): Boolean
+    fun isRoot(): Boolean
+    fun kind(): NostrTagKind
+    fun kindStr(): String
+    fun len(): ULong
+    fun singleLetterTag(): NostrSingleLetterTag?
 }

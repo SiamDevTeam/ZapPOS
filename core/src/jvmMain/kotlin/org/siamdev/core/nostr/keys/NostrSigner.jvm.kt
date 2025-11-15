@@ -23,9 +23,13 @@
  */
 package org.siamdev.core.nostr.keys
 
-actual class NostrSigner private constructor(private val keys: NostrKeys) {
+actual class NostrSigner internal constructor(
+    internal val native: NostrKeys
+) {
     actual companion object {
         actual fun keys(key: NostrKeys): NostrSigner = NostrSigner(key)
     }
-    actual fun getPublicKey(): NostrPublicKey = keys.publicKey()
+    actual fun getPublicKey(): NostrPublicKey = native.publicKey()
+
+    actual fun unwrap(): Any = native
 }
