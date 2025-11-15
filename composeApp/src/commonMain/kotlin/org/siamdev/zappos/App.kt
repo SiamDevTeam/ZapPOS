@@ -42,6 +42,7 @@ import org.siamdev.core.nostr.keys.NostrKeys
 
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.compose_multiplatform
+import zappos.composeapp.generated.resources.ic_app_logo
 
 
 @Composable
@@ -72,7 +73,7 @@ fun App() {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
+                    Image(painterResource(Res.drawable.ic_app_logo), null)
                     Text("Compose: $isPlatform")
                     Text("Private key: ${keys.secretKey().toHex()}")
                     Text("Public key: ${keys.publicKey().toHex()}")

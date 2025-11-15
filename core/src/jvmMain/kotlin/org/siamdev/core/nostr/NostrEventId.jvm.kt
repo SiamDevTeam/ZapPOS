@@ -51,7 +51,7 @@ actual class NostrEventId internal constructor(
     actual override fun equals(other: Any?): Boolean =
         if (this === other) true
         else if (other !is NostrEventId) false
-        else native.equals(other.native)
+        else native == other.native
 
     actual override fun hashCode(): Int = native.hashCode()
 }

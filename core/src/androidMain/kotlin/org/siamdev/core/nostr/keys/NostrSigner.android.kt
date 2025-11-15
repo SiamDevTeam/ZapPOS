@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package org.siamdev.core.nostr.keys
 
 actual class NostrSigner private constructor(private val keys: NostrKeys) {
