@@ -32,7 +32,7 @@ expect enum class NostrRelayStatus {
     TERMINATED,
     SLEEPING;
 
-    expect companion object {
+    companion object {
         fun of(native: Any): NostrRelayStatus
     }
 }
