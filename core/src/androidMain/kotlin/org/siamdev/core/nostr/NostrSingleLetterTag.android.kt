@@ -23,6 +23,7 @@
  */
 package org.siamdev.core.nostr
 
+import org.siamdev.core.nostr.types.NostrAlphabet
 import rust.nostr.sdk.SingleLetterTag as NativeSingleLetterTag
 
 actual class NostrSingleLetterTag internal constructor(

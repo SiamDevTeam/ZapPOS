@@ -1,4 +1,4 @@
-package org.siamdev.core.nostr
+package org.siamdev.core.nostr.types
 
 expect enum class NostrAlphabet {
     A,

@@ -1,4 +1,4 @@
-package org.siamdev.core.nostr
+package org.siamdev.core.nostr.types
 
 import rust.nostr.sdk.Alphabet as NativeAlphabet
 
@@ -30,3 +30,4 @@ actual enum class NostrAlphabet(internal val native: NativeAlphabet) {
     Y(NativeAlphabet.Y),
     Z(NativeAlphabet.Z);
 }
+

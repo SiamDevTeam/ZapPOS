@@ -23,6 +23,8 @@
  */
 package org.siamdev.core.nostr
 
+import org.siamdev.core.nostr.types.NostrKindStd
+
 expect class NostrKind {
 
     companion object {

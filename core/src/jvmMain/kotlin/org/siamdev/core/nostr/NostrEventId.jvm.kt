@@ -30,19 +30,22 @@ actual class NostrEventId internal constructor(
 ) {
 
     actual companion object {
+        @Throws(Exception::class)
         actual fun fromBytes(bytes: ByteArray): NostrEventId =
             NostrEventId(NativeEventId.fromBytes(bytes))
-
+        @Throws(Exception::class)
         actual fun parse(id: String): NostrEventId =
             NostrEventId(NativeEventId.parse(id))
     }
 
     actual fun asBytes(): ByteArray = native.asBytes()
 
+    @Throws(Exception::class)
     actual fun toBech32(): String = native.toBech32()
 
     actual fun toHex(): String = native.toHex()
 
+    @Throws(Exception::class)
     actual fun toNostrUri(): String = native.toNostrUri()
 
     actual override fun equals(other: Any?): Boolean =

@@ -42,6 +42,7 @@ actual class NostrCoordinate internal constructor(
     actual fun verify(): Boolean = coordinate.verify()
 
     actual companion object {
+        @Throws(Exception::class)
         actual fun parse(coordinate: String): NostrCoordinate {
             return NostrCoordinate(Coordinate.parse(coordinate))
         }

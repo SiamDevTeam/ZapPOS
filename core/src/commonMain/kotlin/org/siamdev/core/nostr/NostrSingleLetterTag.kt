@@ -23,6 +23,8 @@
  */
 package org.siamdev.core.nostr
 
+import org.siamdev.core.nostr.types.NostrAlphabet
+
 expect class NostrSingleLetterTag {
 
     companion object {

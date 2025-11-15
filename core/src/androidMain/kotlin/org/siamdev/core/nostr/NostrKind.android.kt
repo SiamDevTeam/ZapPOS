@@ -23,6 +23,7 @@
  */
 package org.siamdev.core.nostr
 
+import org.siamdev.core.nostr.types.NostrKindStd
 import rust.nostr.sdk.Kind as NativeKind
 
 actual class NostrKind internal constructor(

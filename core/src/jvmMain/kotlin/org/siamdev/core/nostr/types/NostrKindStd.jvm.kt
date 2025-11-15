@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.siamdev.core.nostr
+package org.siamdev.core.nostr.types
 
 import rust.nostr.sdk.KindStandard as KindStd
 
