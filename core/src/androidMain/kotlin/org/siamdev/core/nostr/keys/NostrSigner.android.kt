@@ -23,13 +23,66 @@
  */
 package org.siamdev.core.nostr.keys
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.siamdev.core.nostr.NostrEvent
+import org.siamdev.core.nostr.NostrUnsignedEvent
+import rust.nostr.sdk.PublicKey
+import rust.nostr.sdk.NostrSigner as NativeSigner
+
 actual class NostrSigner internal constructor(
-    internal val native: NostrKeys
+    internal val native: NativeSigner
 ) {
-    actual companion object {
-        actual fun keys(key: NostrKeys): NostrSigner = NostrSigner(key)
+
+    actual suspend fun getPublicKey(): Result<NostrPublicKey> =
+        runCatching {
+            val pub = withContext(Dispatchers.IO) { native.getPublicKey() }
+            NostrPublicKey(pub)
+        }
+
+    actual suspend fun nip04Decrypt(
+        publicKey: NostrPublicKey,
+        encryptedContent: String
+    ): Result<String> = runCatching {
+        withContext(Dispatchers.IO) {
+            native.nip04Decrypt(publicKey.unwrap() as PublicKey, encryptedContent)
+        }
     }
-    actual fun getPublicKey(): NostrPublicKey = native.publicKey()
+
+    actual suspend fun nip04Encrypt(
+        publicKey: NostrPublicKey,
+        content: String
+    ): Result<String> = runCatching {
+        withContext(Dispatchers.IO) {
+            native.nip04Encrypt(publicKey.unwrap() as PublicKey, content)
+        }
+    }
+
+    actual suspend fun nip44Decrypt(
+        publicKey: NostrPublicKey,
+        payload: String
+    ): Result<String> = runCatching {
+        withContext(Dispatchers.IO) {
+            native.nip44Decrypt(publicKey.pk, payload)
+        }
+    }
+
+    actual suspend fun nip44Encrypt(
+        publicKey: NostrPublicKey,
+        content: String
+    ): Result<String> = runCatching {
+        withContext(Dispatchers.IO) {
+            native.nip44Encrypt(publicKey.unwrap() as PublicKey, content)
+        }
+    }
+
+    actual suspend fun signEvent(unsignedEvent: NostrUnsignedEvent): Result<NostrEvent> =
+        runCatching {
+            val signed = withContext(Dispatchers.IO) {
+                native.signEvent(unsignedEvent.native)
+            }
+            NostrEvent(signed)
+        }
 
     actual fun unwrap(): Any = native
 }

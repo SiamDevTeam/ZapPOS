@@ -37,4 +37,6 @@ expect class NostrTimestamp {
     fun addDuration(duration: NostrDuration): NostrTimestamp
 
     fun toHumanDatetime(): String
+
+    fun unwrap(): Any
 }

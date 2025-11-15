@@ -38,4 +38,5 @@ actual class NostrTag internal constructor(
     actual fun len(): ULong = native.len()
     actual fun singleLetterTag(): NostrSingleLetterTag? =
         native.singleLetterTag()?.let { NostrSingleLetterTag(it) }
+    actual fun unwrap(): Any = native
 }

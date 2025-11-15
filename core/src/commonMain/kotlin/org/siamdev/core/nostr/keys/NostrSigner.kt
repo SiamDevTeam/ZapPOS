@@ -23,10 +23,23 @@
  */
 package org.siamdev.core.nostr.keys
 
+import org.siamdev.core.nostr.NostrEvent
+import org.siamdev.core.nostr.NostrUnsignedEvent
+
+
 expect class NostrSigner {
-    companion object {
-        fun keys(key: NostrKeys): NostrSigner
-    }
-    fun getPublicKey(): NostrPublicKey
+
+    suspend fun getPublicKey(): Result<NostrPublicKey>
+
+    suspend fun nip04Decrypt(publicKey: NostrPublicKey, encryptedContent: String): Result<String>
+
+    suspend fun nip04Encrypt(publicKey: NostrPublicKey, content: String): Result<String>
+
+    suspend fun nip44Decrypt(publicKey: NostrPublicKey, payload: String): Result<String>
+
+    suspend fun nip44Encrypt(publicKey: NostrPublicKey, content: String): Result<String>
+
+    suspend fun signEvent(unsignedEvent: NostrUnsignedEvent): Result<NostrEvent>
+
     fun unwrap(): Any
 }

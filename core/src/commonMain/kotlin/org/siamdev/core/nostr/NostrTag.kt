@@ -33,4 +33,5 @@ expect class NostrTag {
     fun kindStr(): String
     fun len(): ULong
     fun singleLetterTag(): NostrSingleLetterTag?
+    fun unwrap(): Any
 }

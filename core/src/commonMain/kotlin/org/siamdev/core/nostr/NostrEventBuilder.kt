@@ -34,7 +34,7 @@ expect class NostrEventBuilder {
     fun dedupTags(): NostrEventBuilder
     fun pow(difficulty: UByte): NostrEventBuilder
     fun tags(tags: List<NostrTag>): NostrEventBuilder
-
     suspend fun sign(signer: NostrSigner): Result<NostrEvent>
     fun signWithKeys(keys: NostrKeys): NostrEvent
+    fun unwrap(): Any
 }

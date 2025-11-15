@@ -21,64 +21,138 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-/*
 package org.siamdev.core.nostr
 
-import rust.nostr.sdk.Client
-import rust.nostr.sdk.ClientMessage
-import rust.nostr.sdk.Event
-import rust.nostr.sdk.Events
-import rust.nostr.sdk.EventBuilder
-import rust.nostr.sdk.Filter
-import rust.nostr.sdk.HandleNotification
-import rust.nostr.sdk.NostrDatabase
+import android.os.Build
+import androidx.annotation.RequiresApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.siamdev.core.nostr.keys.NostrPublicKey
+import org.siamdev.core.nostr.keys.NostrSigner
 import rust.nostr.sdk.PublicKey
-import rust.nostr.sdk.RelayOptions
-import rust.nostr.sdk.RelayUrl
-import rust.nostr.sdk.Tag
-import rust.nostr.sdk.UnsignedEvent
+import java.time.Duration
+import rust.nostr.sdk.Client as NativeClient
+import rust.nostr.sdk.RelayUrl as NativeRelayUrl
+import rust.nostr.sdk.RelayOptions as NativeRelayOptions
+import rust.nostr.sdk.Event as NativeEvent
+import rust.nostr.sdk.EventBuilder as NativeEventBuilder
+import rust.nostr.sdk.ClientMessage as NativeClientMessage
+import rust.nostr.sdk.Filter as NativeFilter
 
+@RequiresApi(Build.VERSION_CODES.O)
 actual class NostrClient internal constructor(
-    internal val client: Client
+    internal val client: NativeClient
 ) {
 
-    suspend fun addDiscoveryRelay(url: RelayUrl) = runCatching { client.addDiscoveryRelay(url) }
-    suspend fun addReadRelay(url: RelayUrl) = runCatching { client.addReadRelay(url) }
-    suspend fun addRelay(url: RelayUrl) = runCatching { client.addRelay(url) }
-    suspend fun addRelayWithOpts(url: RelayUrl, opts: RelayOptions) = runCatching { client.addRelayWithOpts(url, opts) }
-    suspend fun addWriteRelay(url: RelayUrl) = runCatching { client.addWriteRelay(url) }
-    fun automaticAuthentication(enable: Boolean) = client.automaticAuthentication(enable)
-    suspend fun connect() = runCatching { client.connect() }
-    suspend fun connectRelay(url: RelayUrl) = runCatching { client.connectRelay(url) }
-    suspend fun disconnect() = runCatching { client.disconnect() }
-    suspend fun disconnectRelay(url: RelayUrl) = runCatching { client.disconnectRelay(url) }
-    suspend fun fetchCombinedEvents(filter: Filter, timeout: java.time.Duration) = runCatching { client.fetchCombinedEvents(
-        filter: Filter, timeout) }
-    suspend fun fetchEvents(filter: Filter, timeout: java.time.Duration) = runCatching { client.fetchEvents(
-        filter: Filter, timeout) }
-    suspend fun fetchEventsFrom(urls: List<RelayUrl>, filter: Filter, timeout: java.time.Duration) = runCatching { client.fetchEventsFrom(urls,
-        filter: Filter, timeout) }
-    suspend fun fetchMetadata(publicKey: PublicKey, timeout: java.time.Duration) = runCatching { client.fetchMetadata(publicKey, timeout) }
-    actual suspend fun forceRemoveAllRelays() = runCatching { client.forceRemoveAllRelays() }
-    suspend fun forceRemoveRelay(url: RelayUrl) = runCatching { client.forceRemoveRelay(url) }
-    suspend fun giftWrap(receiver: PublicKey, rumor: UnsignedEvent, extraTags: List<Tag>) = runCatching { client.giftWrap(receiver, rumor, extraTags) }
-    suspend fun giftWrapTo(urls: List<RelayUrl>, receiver: PublicKey, rumor: UnsignedEvent, extraTags: List<Tag>) = runCatching { client.giftWrapTo(urls, receiver, rumor, extraTags) }
-    suspend fun handleNotifications(handler: HandleNotification) = runCatching { client.handleNotifications(handler) }
-    suspend fun relay(url: RelayUrl) = runCatching { client.relay(url) }
-    actual suspend fun relays() = runCatching { client.relays() }
-    actual suspend fun removeAllRelays() = runCatching { client.removeAllRelays() }
-    suspend fun removeRelay(url: RelayUrl) = runCatching { client.removeRelay(url) }
-    suspend fun sendEvent(event: Event) = runCatching { client.sendEvent(event) }
-    suspend fun sendEventBuilder(builder: EventBuilder) = runCatching { client.sendEventBuilder(builder) }
-    suspend fun sendEventBuilderTo(urls: List<RelayUrl>, builder: EventBuilder) = runCatching { client.sendEventBuilderTo(urls, builder) }
-    suspend fun sendEventTo(urls: List<RelayUrl>, event: Event) = runCatching { client.sendEventTo(urls, event) }
-    suspend fun sendMsgTo(urls: List<RelayUrl>, msg: ClientMessage) = runCatching { client.sendMsgTo(urls, msg) }
-    suspend fun sendPrivateMsg(receiver: PublicKey, message: String, rumorExtraTags: List<Tag>) = runCatching { client.sendPrivateMsg(receiver, message, rumorExtraTags) }
-    suspend fun sendPrivateMsgTo(urls: List<RelayUrl>, receiver: PublicKey, message: String, rumorExtraTags: List<Tag>) = runCatching { client.sendPrivateMsgTo(urls, receiver, message, rumorExtraTags) }
-    suspend fun setMetadata(metadata: Metadata) = runCatching { client.setMetadata(metadata) }
-    suspend fun shutdown() = runCatching { client.shutdown() }
-    suspend fun signEventBuilder(builder: EventBuilder) = runCatching { client.signEventBuilder(builder) }
-    suspend fun signer() = runCatching { client.signer() }
+    actual fun unwrap(): Any = client
+
+    actual suspend fun addDiscoveryRelay(url: RelayUrl): Boolean =
+        withContext(Dispatchers.IO) { client.addDiscoveryRelay(url.unwrap() as NativeRelayUrl) }
+
+    actual suspend fun addReadRelay(url: RelayUrl): Boolean =
+        withContext(Dispatchers.IO) { client.addReadRelay(url.unwrap() as NativeRelayUrl) }
+
+    actual suspend fun addRelay(url: RelayUrl): Boolean =
+        withContext(Dispatchers.IO) { client.addRelay(url.unwrap() as NativeRelayUrl) }
+
+    actual suspend fun addRelayWithOpts(url: RelayUrl, opts: NostrRelayOptions): Boolean =
+        withContext(Dispatchers.IO) { client.addRelayWithOpts(
+            url.unwrap() as NativeRelayUrl,
+            opts.unwrap() as NativeRelayOptions
+        ) }
+
+    actual suspend fun addWriteRelay(url: RelayUrl): Boolean =
+        withContext(Dispatchers.IO) { client.addWriteRelay(url.unwrap() as NativeRelayUrl) }
+
+    actual fun automaticAuthentication(enable: Boolean) =
+        client.automaticAuthentication(enable)
+
+    actual suspend fun connect() =
+        withContext(Dispatchers.IO) { client.connect() }
+
+    actual suspend fun connectRelay(url: RelayUrl) =
+        withContext(Dispatchers.IO) { client.connectRelay(url.unwrap() as NativeRelayUrl) }
+
+    actual suspend fun disconnect() =
+        withContext(Dispatchers.IO) { client.disconnect() }
+
+    actual suspend fun disconnectRelay(url: RelayUrl) =
+        withContext(Dispatchers.IO) { client.disconnectRelay(url.unwrap() as NativeRelayUrl) }
+
+    actual suspend fun fetchCombinedEvents(filter: NostrFilter, timeout: NostrDuration): Result<NostrEvents> =
+        runCatching { NostrEvents(client.fetchCombinedEvents(filter.native,
+            timeout.unwrap() as Duration
+        )) }
+
+    actual suspend fun fetchEvents(filter: NostrFilter, timeout: NostrDuration): NostrEvents =
+        NostrEvents(client.fetchEvents(filter.native, timeout.unwrap() as Duration))
+
+    actual suspend fun fetchEventsFrom(urls: List<RelayUrl>, filter: NostrFilter, timeout: NostrDuration): NostrEvents =
+        NostrEvents(client.fetchEventsFrom(
+            urls.map { it.unwrap() } as List<NativeRelayUrl>,
+            filter.native,
+            timeout.unwrap() as Duration
+        ))
+
+    actual suspend fun forceRemoveAllRelays() =
+        withContext(Dispatchers.IO) { client.forceRemoveAllRelays() }
+
+    actual suspend fun forceRemoveRelay(url: RelayUrl) =
+        withContext(Dispatchers.IO) { client.forceRemoveRelay(url.unwrap() as NativeRelayUrl) }
+
+    actual suspend fun relay(url: RelayUrl): NostrRelay =
+        NostrRelay(client.relay(url.unwrap() as NativeRelayUrl))
+
+    actual suspend fun relays(): Map<RelayUrl, NostrRelay> =
+        client.relays().mapKeys { RelayUrl(it.key) }.mapValues { NostrRelay(it.value) }
+
+    actual suspend fun removeAllRelays() =
+        withContext(Dispatchers.IO) { client.removeAllRelays() }
+
+    actual suspend fun removeRelay(url: RelayUrl) =
+        withContext(Dispatchers.IO) { client.removeRelay(url.unwrap() as NativeRelayUrl) }
+
+    actual suspend fun sendEvent(event: NostrEvent): NostrSendEventOutput =
+        NostrSendEventOutput(client.sendEvent(event.unwrap() as NativeEvent))
+
+    actual suspend fun sendEventBuilder(builder: NostrEventBuilder): NostrSendEventOutput =
+        NostrSendEventOutput(client.sendEventBuilder(builder.unwrap() as NativeEventBuilder))
+
+    actual suspend fun sendEventBuilderTo(urls: List<RelayUrl>, builder: NostrEventBuilder): NostrSendEventOutput =
+        NostrSendEventOutput(client.sendEventBuilderTo(
+            urls.map { it.unwrap() } as List<NativeRelayUrl>,
+            builder.unwrap() as NativeEventBuilder)
+        )
+
+    actual suspend fun sendEventTo(urls: List<RelayUrl>, event: NostrEvent): NostrSendEventOutput =
+        NostrSendEventOutput(client.sendEventTo(urls.map { it.unwrap() } as List<NativeRelayUrl>,
+            event.unwrap() as NativeEvent
+        ))
+
+    actual suspend fun sendMsgTo(urls: List<RelayUrl>, msg: NostrClientMessage): NostrOutput =
+        NostrOutput(client.sendMsgTo(urls.map { it.unwrap() } as List<NativeRelayUrl>, msg.unwrap() as NativeClientMessage))
+
+    actual suspend fun sendPrivateMsg(receiver: NostrPublicKey, message: String, rumorExtraTags: List<NostrTag>): NostrSendEventOutput =
+        NostrSendEventOutput(client.sendPrivateMsg(
+            receiver.unwrap() as PublicKey,
+            message,
+            rumorExtraTags.map { it.native })
+        )
+
+    actual suspend fun sendPrivateMsgTo(urls: List<RelayUrl>, receiver: NostrPublicKey, message: String, rumorExtraTags: List<NostrTag>): NostrSendEventOutput =
+        NostrSendEventOutput(
+            client.sendPrivateMsgTo(urls.map { it.unwrap() } as List<NativeRelayUrl>,
+                receiver.unwrap() as PublicKey,
+                message,
+                rumorExtraTags.map { it.native })
+        )
+
+    actual suspend fun shutdown() =
+        withContext(Dispatchers.IO) { client.shutdown() }
+
+    actual suspend fun signEventBuilder(builder: NostrEventBuilder): NostrEvent =
+        NostrEvent(client.signEventBuilder(builder.unwrap() as NativeEventBuilder))
+
+    actual suspend fun signer(): NostrSigner =
+        NostrSigner(client.signer())
 }
-*/

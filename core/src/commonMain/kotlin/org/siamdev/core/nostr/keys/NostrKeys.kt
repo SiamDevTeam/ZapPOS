@@ -50,6 +50,7 @@ expect class NostrPublicKey {
     fun toHex(): String
     fun toBech32(): String
     fun toNostrUri(): String
+    fun unwrap(): Any
 }
 
 expect class NostrSecretKey {

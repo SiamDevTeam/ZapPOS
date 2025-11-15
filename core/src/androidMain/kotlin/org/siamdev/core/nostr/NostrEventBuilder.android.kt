@@ -23,48 +23,50 @@
  */
 package org.siamdev.core.nostr
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import rust.nostr.sdk.EventBuilder as NativeEventBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.siamdev.core.nostr.keys.NostrKeys
 import org.siamdev.core.nostr.keys.NostrPublicKey
+import org.siamdev.core.nostr.keys.NostrSigner
+import rust.nostr.sdk.Keys
+import rust.nostr.sdk.PublicKey
+import rust.nostr.sdk.Tag
+import rust.nostr.sdk.Timestamp
 
+
+@RequiresApi(Build.VERSION_CODES.O)
 actual class NostrEventBuilder internal constructor(
     internal val native: NativeEventBuilder
 ) {
-    actual fun allowSelfTagging(): NostrEventBuilder {
-        native.allowSelfTagging()
-        return this
-    }
+    actual fun allowSelfTagging(): NostrEventBuilder =
+        NostrEventBuilder(native.allowSelfTagging())
 
     actual fun build(publicKey: NostrPublicKey): NostrUnsignedEvent =
-        NostrUnsignedEvent(native.build(publicKey.unwrap()))
+        NostrUnsignedEvent(native.build(publicKey.unwrap() as PublicKey))
 
-    actual fun customCreatedAt(createdAt: NostrTimestamp): NostrEventBuilder {
-        native.customCreatedAt(createdAt.unwrap())
-        return this
-    }
+    actual fun customCreatedAt(createdAt: NostrTimestamp): NostrEventBuilder =
+        NostrEventBuilder(native.customCreatedAt(createdAt.unwrap() as Timestamp))
 
-    actual fun dedupTags(): NostrEventBuilder {
-        native.dedupTags()
-        return this
-    }
+    actual fun dedupTags(): NostrEventBuilder =
+        NostrEventBuilder(native.dedupTags())
 
-    actual fun pow(difficulty: UByte): NostrEventBuilder {
-        native.pow(difficulty)
-        return this
-    }
+    actual fun pow(difficulty: UByte): NostrEventBuilder =
+        NostrEventBuilder(native.pow(difficulty))
 
-    actual fun tags(tags: List<NostrTag>): NostrEventBuilder {
-        native.tags(tags.map { it.unwrap() })
-        return this
-    }
+    actual fun tags(tags: List<NostrTag>): NostrEventBuilder =
+        NostrEventBuilder(native.tags(tags.map { it.unwrap() } as List<Tag>))
 
     actual suspend fun sign(signer: NostrSigner): Result<NostrEvent> = runCatching {
         withContext(Dispatchers.IO) {
-            NostrEvent(native.sign(signer.unwrap()))
+            NostrEvent(native.sign(signer.unwrap() as rust.nostr.sdk.NostrSigner))
         }
     }
 
     actual fun signWithKeys(keys: NostrKeys): NostrEvent =
-        NostrEvent(native.signWithKeys(keys.unwrap()))
+        NostrEvent(native.signWithKeys(keys.unwrap() as Keys))
+
+    actual fun unwrap(): Any = native
 }

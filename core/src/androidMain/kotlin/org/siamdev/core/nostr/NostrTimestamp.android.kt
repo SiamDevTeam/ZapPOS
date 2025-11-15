@@ -56,4 +56,6 @@ actual class NostrTimestamp internal constructor(
 
     actual fun toHumanDatetime(): String = native.toHumanDatetime()
 
+    actual fun unwrap(): Any = native
+
 }

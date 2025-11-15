@@ -33,6 +33,7 @@ import rust.nostr.sdk.nip44Decrypt
 import rust.nostr.sdk.nip44Encrypt
 import rust.nostr.sdk.nip04Encrypt
 
+
 @OptIn(ExperimentalStdlibApi::class)
 actual class NostrKeys internal constructor(
     internal val native: Keys
@@ -91,6 +92,7 @@ actual class NostrPublicKey internal constructor(internal val pk: PublicKey) {
     actual fun toHex(): String = pk.toHex()
     actual fun toBech32(): String = pk.toBech32()
     actual fun toNostrUri(): String = pk.toNostrUri()
+    actual fun unwrap(): Any = pk
 }
 
 actual class NostrSecretKey internal constructor(internal val sk: SecretKey) {
