@@ -95,4 +95,5 @@ expect sealed class NostrTagKind {
     companion object {
         internal fun of(native: Any): NostrTagKind
     }
+
 }

@@ -21,47 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.siamdev.core.nostr.keys
+package org.siamdev.core.nostr.nwc
 
+import org.siamdev.core.nostr.RelayUrl
+import org.siamdev.core.nostr.keys.NostrPublicKey
+import org.siamdev.core.nostr.keys.NostrSecretKey
 
-expect class NostrKeys {
-    companion object {
-        fun generate(): NostrKeys
-        fun parse(secretKey: String): NostrKeys
-        fun getSharedKey(secretKey: NostrSecretKey, publicKey: NostrPublicKey): NostrKeys
-        fun NIP04Encrypt(secretKey: NostrSecretKey, publicKey: NostrPublicKey, content: String): String
-        fun NIP04Decrypt(secretKey: NostrSecretKey, publicKey: NostrPublicKey, content: String): String
+expect class NostrWalletConnectUri {
 
-        fun NIP44Encrypt(secretKey: NostrSecretKey, publicKey: NostrPublicKey, content: String, version: NIP44VERSION): String
-        fun NIP44Decrypt(secretKey: NostrSecretKey, publicKey: NostrPublicKey, content: String): String
-    }
-
-    fun secretKey(): NostrSecretKey
+    fun lud16(): String?
     fun publicKey(): NostrPublicKey
+    fun relays(): List<RelayUrl>
+    fun secret(): NostrSecretKey
 
-    fun sign(msg: String): String
-
-    fun unwrap(): Any
-
-}
-
-
-expect class NostrPublicKey {
-    fun toHex(): String
-    fun toBech32(): String
-    fun toNostrUri(): String
-    fun unwrap(): Any
-}
-
-expect class NostrSecretKey {
     companion object {
-        fun fromBytes(bytes: ByteArray): NostrSecretKey
-        fun parse(secretKey: String): NostrSecretKey
+        fun parse(uri: String): NostrWalletConnectUri
     }
-    fun toHex(): String
-    fun toBech32(): String
-}
-
-expect enum class NIP44VERSION {
-    V2
 }

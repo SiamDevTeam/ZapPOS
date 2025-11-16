@@ -91,6 +91,10 @@ kotlin {
         }
 
         jvmTest {
+            dependencies {
+                implementation("net.java.dev.jna:jna:5.18.1")
+                implementation(libs.kotlin.test)
+            }
         }
 
         androidMain {
@@ -101,6 +105,13 @@ kotlin {
                 implementation("net.java.dev.jna:jna:5.18.1@aar")
                 implementation(libs.org.rust.nostr)
                 implementation(libs.androidx.annotation.jvm)
+            }
+        }
+
+        androidUnitTest {
+            dependencies {
+                implementation("net.java.dev.jna:jna:5.18.1@aar")
+                implementation(libs.kotlin.test)
             }
         }
 

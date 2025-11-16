@@ -100,6 +100,7 @@ actual class NostrSecretKey internal constructor(internal val sk: SecretKey) {
             val secretKey = SecretKey.fromBytes(bytes)
             return NostrSecretKey(secretKey)
         }
+        actual fun parse(secretKey: String): NostrSecretKey = NostrSecretKey(SecretKey.parse(secretKey))
     }
     actual fun toHex(): String = sk.toHex()
     actual fun toBech32(): String = sk.toBech32()
