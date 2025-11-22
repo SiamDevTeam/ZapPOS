@@ -23,29 +23,42 @@
  */
 package org.siamdev.zappos
 
-import androidx.compose.animation.Crossfade
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.*
 import kotlinx.coroutines.delay
 import org.siamdev.zappos.ui.screens.SplashScreen
-import org.siamdev.zappos.ui.screens.home.HomeScreen
 
+@Preview
 @Composable
-fun App(isDesktop: Boolean) {
+fun DesktopSplashWindow(
+    onFinished: () -> Unit
+) {
+    var isOpen by remember { mutableStateOf(true) }
 
-    var showSplash by remember { mutableStateOf(!isDesktop) }
-
-    LaunchedEffect(Unit) {
-        if (!isDesktop) {
-            delay(3000L)
-            showSplash = false
+    if (isOpen) {
+        Window(
+            onCloseRequest = {},
+            title = "",
+            resizable = false,
+            undecorated = true,
+            transparent = false,
+            state = rememberWindowState(
+                placement = WindowPlacement.Floating,
+                position = WindowPosition(Alignment.Center),
+                width = 560.dp,
+                height = 420.dp
+            )
+        ) {
+            SplashScreen(isDesktop = true)
         }
-    }
 
-    MaterialTheme {
-        Crossfade(targetState = showSplash) { splash ->
-            if (splash) SplashScreen()
-            else HomeScreen()
+        LaunchedEffect(Unit) {
+            delay(3000L)
+            isOpen = false
+            onFinished()
         }
     }
 }

@@ -90,7 +90,7 @@ fun HomeScreen() {
             ) {
                 Image(
                     painter = painterResource(Res.drawable.compose_multiplatform),
-                    contentDescription = "App Logo"
+                    contentDescription = null
                 )
                 Text("Compose: $isPlatform")
             }

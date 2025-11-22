@@ -41,12 +41,13 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch { delay(2000L); isActive = false }
         splashScreen.apply { setKeepOnScreenCondition { false } }*/
 
-        setContent { App() }
+        setContent { App(isDesktop = false) }
+
     }
 }
 
 @Preview
 @Composable
 fun AppAndroidPreview() {
-    App()
+    App(isDesktop = false)
 }
