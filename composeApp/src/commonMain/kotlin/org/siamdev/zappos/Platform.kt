@@ -21,15 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package org.siamdev.zappos
 
 import org.siamdev.core.getPlatform
 
-class PlatformInfo {
+class Platform {
     private val platform = getPlatform()
 
     val name get() = platform.name
 
-    val message get() = "Hello, $name!"
+    val message get() = "Hello, $name"
 }

@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
@@ -57,7 +59,7 @@ kotlin {
 
     jvm {
         compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_11)
         }
     }
 
@@ -86,13 +88,13 @@ kotlin {
         jvmMain {
             dependencies {
                 implementation(libs.nostr.sdk.jvm)
-                implementation("net.java.dev.jna:jna:5.18.1")
+                //implementation("net.java.dev.jna:jna:5.18.1")
             }
         }
 
         jvmTest {
             dependencies {
-                implementation("net.java.dev.jna:jna:5.18.1")
+                //implementation("net.java.dev.jna:jna:5.18.1")
                 implementation(libs.kotlin.test)
             }
         }
@@ -102,7 +104,7 @@ kotlin {
                 // Add Android-specific dependencies here. Note that this source set depends on
                 // commonMain by default and will correctly pull the Android artifacts of any KMP
                 // dependencies declared in commonMain.
-                implementation("net.java.dev.jna:jna:5.18.1@aar")
+                //implementation("net.java.dev.jna:jna:5.18.1@aar")
                 implementation(libs.org.rust.nostr)
                 implementation(libs.androidx.annotation.jvm)
             }
@@ -110,7 +112,7 @@ kotlin {
 
         androidUnitTest {
             dependencies {
-                implementation("net.java.dev.jna:jna:5.18.1@aar")
+                //implementation("net.java.dev.jna:jna:5.18.1@aar")
                 implementation(libs.kotlin.test)
             }
         }

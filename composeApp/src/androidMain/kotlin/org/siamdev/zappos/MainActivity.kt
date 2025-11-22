@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package org.siamdev.zappos
 
 import android.os.Bundle
@@ -31,18 +30,17 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        val splashScreen = installSplashScreen()
-        enableEdgeToEdge()
-        var isActive = true
-        lifecycleScope.launch { delay(2000L); isActive = false }
-        splashScreen.apply { setKeepOnScreenCondition { isActive } }
         super.onCreate(savedInstanceState)
+        installSplashScreen().setKeepOnScreenCondition { false }
+
+        enableEdgeToEdge()
+/*        var isActive = true
+        lifecycleScope.launch { delay(2000L); isActive = false }
+        splashScreen.apply { setKeepOnScreenCondition { false } }*/
+
         setContent { App() }
     }
 }

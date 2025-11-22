@@ -46,6 +46,11 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(projects.core)
 
+            // This lib include JNA
+            implementation("io.github.crowded-libs:kotlin-lmdb:0.3.6") {
+                exclude(group = "net.java.dev.jna", module = "jna")
+            }
+
             implementation(libs.realm.base)
             implementation(libs.realm.sync)
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
