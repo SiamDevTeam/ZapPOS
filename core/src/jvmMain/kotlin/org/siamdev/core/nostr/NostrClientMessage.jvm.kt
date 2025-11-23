@@ -66,7 +66,6 @@ actual class NostrClientMessage internal constructor(
             is ClientMessageEnum.NegClose -> NostrClientMessageEnum.NegClose(
                 enumNative.subscriptionId
             )
-            else -> throw IllegalArgumentException("Unknown ClientMessageEnum: $enumNative")
         }
 
     actual fun asJson(): String = native.asJson()

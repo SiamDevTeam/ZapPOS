@@ -72,17 +72,17 @@ fun HomeScreen() {
         println(keys.publicKey().toBech32())
 
         val lmdb = Lmdb()
-        lmdb.put("users", "user_1", "Alice")
-        lmdb.put("users", "user_2", "Bob")
 
-        val name = lmdb.get("users", "user_1")
-        println(name) // Output: Alice
+        val id = events.first()!!.id
+        lmdb.put("event", id, events.first()!!.toJson())
+        val event = lmdb.get("event", id)
+        println(event)
 
-        val exists = lmdb.exists("users", "user_3")
+        val exists = lmdb.exists("event", id)
         println(exists) // Output: false
 
-        lmdb.delete("users", "user_2")
-        println(lmdb.exists("users", "user_2")) // Output: false
+        lmdb.delete("event", id)
+        println(lmdb.exists("event", id)) // Output: false
 
         lmdb.close()
     }
