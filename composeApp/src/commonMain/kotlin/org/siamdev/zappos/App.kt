@@ -27,12 +27,11 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import kotlinx.coroutines.delay
-import org.siamdev.zappos.ui.screens.SplashScreen
+import org.siamdev.zappos.ui.screens.splash.SplashScreen
 import org.siamdev.zappos.ui.screens.home.HomeScreen
 
 @Composable
 fun App(isDesktop: Boolean) {
-
     var showSplash by remember { mutableStateOf(!isDesktop) }
 
     LaunchedEffect(Unit) {

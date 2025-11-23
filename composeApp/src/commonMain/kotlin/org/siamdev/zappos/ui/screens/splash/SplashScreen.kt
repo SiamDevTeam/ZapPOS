@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.siamdev.zappos.ui.screens
+package org.siamdev.zappos.ui.screens.splash
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -42,13 +42,18 @@ import zappos.composeapp.generated.resources.zappos_dark_horizontal_v2
 
 @Preview
 @Composable
-fun SplashScreen(isDesktop: Boolean = false) {
+fun SplashScreen() {
 
     BoxWithConstraints(
-        modifier = Modifier.fillMaxSize().background(Color.White),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White),
         contentAlignment = Alignment.Center
     ) {
-        val logoRes = if (isDesktop) {
+
+        val isWide = maxWidth >= 600.dp
+
+        val logoRes = if (isWide) {
             Res.drawable.zappos_dark_horizontal_v2
         } else {
             Res.drawable.ic_app_logo
@@ -60,7 +65,7 @@ fun SplashScreen(isDesktop: Boolean = false) {
             modifier = Modifier.fillMaxWidth()
         ) {
 
-            val logoModifier = if (isDesktop) {
+            val logoModifier = if (isWide) {
                 Modifier.width(260.dp)
             } else {
                 Modifier.size(180.dp)
@@ -76,17 +81,19 @@ fun SplashScreen(isDesktop: Boolean = false) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Bottom,
-            modifier = Modifier.fillMaxSize().padding(bottom = if (isDesktop) 35.dp else 45.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = if (isWide) 35.dp else 45.dp)
         ) {
             Text(
                 text = "from",
                 color = Color(0xFF515151),
-                fontSize = if (isDesktop) 14.sp else 12.sp
+                fontSize = if (isWide) 14.sp else 12.sp
             )
             Image(
                 painter = painterResource(Res.drawable.siamdev_logo),
                 contentDescription = "Logo",
-                modifier = Modifier.height(if (isDesktop) 35.dp else 32.dp)
+                modifier = Modifier.height(if (isWide) 35.dp else 32.dp)
             )
         }
     }

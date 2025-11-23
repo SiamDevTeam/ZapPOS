@@ -29,7 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import kotlinx.coroutines.delay
-import org.siamdev.zappos.ui.screens.SplashScreen
+import org.siamdev.zappos.ui.screens.splash.SplashScreen
 
 @Preview
 @Composable
@@ -52,7 +52,7 @@ fun DesktopSplashWindow(
                 height = 420.dp
             )
         ) {
-            SplashScreen(isDesktop = true)
+            SplashScreen()
         }
 
         LaunchedEffect(Unit) {

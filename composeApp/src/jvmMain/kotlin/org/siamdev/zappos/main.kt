@@ -47,7 +47,6 @@ fun main() = application {
             title = "ZapPOS",
             state = rememberWindowState(
                 placement = WindowPlacement.Maximized,
-                //placement = WindowPlacement.Fullscreen,
                 position = WindowPosition(Alignment.Center)
             )
         ) {
