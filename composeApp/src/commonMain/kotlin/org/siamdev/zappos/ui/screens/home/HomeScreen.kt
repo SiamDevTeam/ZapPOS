@@ -50,6 +50,7 @@ import org.siamdev.core.nostr.RelayUrl
 import org.siamdev.core.nostr.keys.NostrKeys
 import org.siamdev.core.nostr.types.NostrKindStd
 import org.siamdev.zappos.Platform
+import org.siamdev.zappos.data.source.local.Lmdb
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.compose_multiplatform
 
@@ -69,6 +70,21 @@ fun HomeScreen() {
         println(events.first()?.toJson())
         println(keys.secretKey().toBech32())
         println(keys.publicKey().toBech32())
+
+        val lmdb = Lmdb()
+        lmdb.put("users", "user_1", "Alice")
+        lmdb.put("users", "user_2", "Bob")
+
+        val name = lmdb.get("users", "user_1")
+        println(name) // Output: Alice
+
+        val exists = lmdb.exists("users", "user_3")
+        println(exists) // Output: false
+
+        lmdb.delete("users", "user_2")
+        println(lmdb.exists("users", "user_2")) // Output: false
+
+        lmdb.close()
     }
 
     Column(

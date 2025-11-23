@@ -9,5 +9,4 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.androidKotlinMultiplatformLibrary) apply false
     alias(libs.plugins.androidLint) apply false
-    id("io.realm.kotlin") version "3.0.0" apply false
 }
