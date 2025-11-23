@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    kotlin("plugin.serialization") version "2.2.0"
 }
 
 kotlin {
@@ -57,9 +58,9 @@ kotlin {
                 exclude(group = "net.java.dev.jna", module = "jna")
             }
 
-            implementation(libs.realm.base)
-            implementation(libs.realm.sync)
+            implementation("io.coil-kt.coil3:coil-compose:3.3.0")
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 
         }
         commonTest.dependencies {

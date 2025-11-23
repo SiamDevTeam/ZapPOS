@@ -26,65 +26,52 @@ package org.siamdev.zappos.ui.screens.home
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.jetbrains.compose.resources.painterResource
-import org.siamdev.core.nostr.NostrClient
-import org.siamdev.core.nostr.NostrDuration
-import org.siamdev.core.nostr.NostrFilter
-import org.siamdev.core.nostr.NostrKind
-import org.siamdev.core.nostr.RelayUrl
+import org.siamdev.core.nostr.*
 import org.siamdev.core.nostr.keys.NostrKeys
 import org.siamdev.core.nostr.types.NostrKindStd
 import org.siamdev.zappos.Platform
-import org.siamdev.zappos.data.source.local.Lmdb
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.compose_multiplatform
+import org.siamdev.zappos.data.repository.*
 
 @Composable
 fun HomeScreen() {
-
     var showContent by remember { mutableStateOf(false) }
     val keys = remember { NostrKeys.generate() }
     val client2 = remember { NostrClient() }
     val filter = remember { NostrFilter().kind(NostrKind.fromStd(NostrKindStd.METADATA)).limit(5U) }
 
     LaunchedEffect(Unit) {
+        // Fetch events
         val target = RelayUrl.parse("wss://fenrir-s.notoshi.win")
         client2.addRelay(target)
         client2.connect()
         val events = client2.fetchEvents(filter, NostrDuration.seconds(10L))
+        println(events.first())
         println(events.first()?.toJson())
         println(keys.secretKey().toBech32())
         println(keys.publicKey().toBech32())
 
-        val lmdb = Lmdb()
+        val profile: NostrEvent = events.first()!!
+        runLmdb { tx ->
+            val profile: NostrEvent = events.first()!!
 
-        val id = events.first()!!.id
-        lmdb.put("event", id, events.first()!!.toJson())
-        val event = lmdb.get("event", id)
-        println(event)
+            tx.set("profile", profile.id, profile.toJson())
 
-        val exists = lmdb.exists("event", id)
-        println(exists) // Output: false
+            val jsonString = tx.get("profile", profile.id)
+            val loadedProfile = jsonString?.let { NostrEvent.fromJson(it) }
+            println("Loaded NostrEvent: ${loadedProfile?.id}")
+        }
 
-        lmdb.delete("event", id)
-        println(lmdb.exists("event", id)) // Output: false
 
-        lmdb.close()
     }
 
     Column(
@@ -92,23 +79,22 @@ fun HomeScreen() {
             .background(MaterialTheme.colorScheme.primaryContainer)
             .safeContentPadding()
             .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(onClick = { showContent = !showContent }) {
             Text("Click me!")
         }
 
         AnimatedVisibility(showContent) {
-            val isPlatform = remember { Platform().message }
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
                     painter = painterResource(Res.drawable.compose_multiplatform),
                     contentDescription = null
                 )
-                Text("Compose: $isPlatform")
+                Text("Compose: ${Platform().message}")
             }
         }
     }

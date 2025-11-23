@@ -49,7 +49,7 @@ fun DesktopSplashWindow(
                 placement = WindowPlacement.Floating,
                 position = WindowPosition(Alignment.Center),
                 width = 560.dp,
-                height = 420.dp
+                height = 370.dp
             )
         ) {
             SplashScreen()

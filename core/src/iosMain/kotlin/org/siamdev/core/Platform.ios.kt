@@ -23,7 +23,6 @@
  */
 package org.siamdev.core
 
-
 import platform.Foundation.*
 import platform.UIKit.UIDevice
 import kotlinx.cinterop.ExperimentalForeignApi
