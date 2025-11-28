@@ -15,8 +15,8 @@ junit = "4.13.2"
 kotlin = "2.2.20"
 kotlinx-coroutines = "1.10.2"
 coreSplashscreen = "1.2.0"
-nostr-sdk = "0.43.1"
 kotlinStdlib = "2.2.20"
+nostrSdkKmp = "0.44.0"
 runner = "1.5.2"
 core = "1.5.0"
 annotationJvm = "1.9.1"
@@ -25,8 +25,7 @@ koin = "4.1.1"
 
 [libraries]
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
-nostr-sdk-jvm = { module = "org.rust-nostr:nostr-sdk-jvm", version.ref = "nostr-sdk" }
-org-rust-nostr = { module = "org.rust-nostr:nostr-sdk", version.ref = "nostr-sdk" }
+
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { module = "junit:junit", version.ref = "junit" }
@@ -47,6 +46,7 @@ navigator-screen-model = { module = "cafe.adriel.voyager:voyager-screenmodel", v
 navigator-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
 navigator-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyager" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+nostr-sdk-kmp = { module = "org.rust-nostr:nostr-sdk-kmp", version.ref = "nostrSdkKmp" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

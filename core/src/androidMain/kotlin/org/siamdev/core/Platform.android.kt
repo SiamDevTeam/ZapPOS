@@ -40,12 +40,9 @@ class AndroidPlatform : Platform {
     override val dataDir: String
         get() {
             val lmdbDir = File(appContext.filesDir, "lmdb")
-            if (!lmdbDir.exists()) {
-                lmdbDir.mkdirs() // สร้างโฟลเดอร์ย่อย
-            }
+            if (!lmdbDir.exists()) lmdbDir.mkdirs()
             return lmdbDir.absolutePath
         }
-
 
 }
 

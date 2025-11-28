@@ -51,7 +51,7 @@ fun SplashScreen() {
         contentAlignment = Alignment.Center
     ) {
 
-        val isWide = maxWidth >= 600.dp
+        val isWide = maxWidth >= 500.dp
 
         val logoRes = if (isWide) {
             Res.drawable.zappos_dark_horizontal_v2
@@ -66,7 +66,7 @@ fun SplashScreen() {
         ) {
 
             val logoModifier = if (isWide) {
-                Modifier.width(260.dp)
+                Modifier.width(250.dp)
             } else {
                 Modifier.size(180.dp)
             }

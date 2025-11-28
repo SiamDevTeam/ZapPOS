@@ -59,7 +59,7 @@ kotlin {
 
     jvm {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_21)
         }
     }
 
@@ -74,7 +74,7 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.stdlib)
                 // Add KMP dependencies here
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+
 
             }
         }
@@ -87,7 +87,6 @@ kotlin {
 
         jvmMain {
             dependencies {
-                implementation(libs.nostr.sdk.jvm)
                 //implementation("net.java.dev.jna:jna:5.18.1")
             }
         }
@@ -105,7 +104,6 @@ kotlin {
                 // commonMain by default and will correctly pull the Android artifacts of any KMP
                 // dependencies declared in commonMain.
                 //implementation("net.java.dev.jna:jna:5.18.1@aar")
-                implementation(libs.org.rust.nostr)
                 implementation(libs.androidx.annotation.jvm)
             }
         }

@@ -31,4 +31,4 @@ interface Platform {
 
 expect fun getPlatform(): Platform
 
-fun getDatabasePath(): String = getPlatform().dataDir //+ "/lmdb"
+fun getDatabasePath(): String = getPlatform().dataDir

@@ -36,16 +36,17 @@ class IOSPlatform : Platform {
 
     override val dataDir: String
         get() {
-            val paths = NSSearchPathForDirectoriesInDomains(
-                NSDocumentDirectory,
-                NSUserDomainMask,
-                true
-            )
+            val paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, true)
             val documentsDir = paths.first() as NSString
             val lmdbDir = documentsDir.stringByAppendingPathComponent("lmdb")
             val fileManager = NSFileManager.defaultManager
             if (!fileManager.fileExistsAtPath(lmdbDir)) {
-                fileManager.createDirectoryAtPath(lmdbDir, withIntermediateDirectories = true, attributes = null, error = null)
+                fileManager.createDirectoryAtPath(
+                    path = lmdbDir,
+                    withIntermediateDirectories = true,
+                    attributes = null,
+                    error = null
+                )
             }
             return lmdbDir
         }

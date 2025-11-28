@@ -34,43 +34,43 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.jetbrains.compose.resources.painterResource
-import org.siamdev.core.nostr.*
-import org.siamdev.core.nostr.keys.NostrKeys
-import org.siamdev.core.nostr.types.NostrKindStd
-import org.siamdev.zappos.Platform
+import org.siamdev.core.getPlatform
+import org.siamdev.zappos.data.source.remote.ConnectionPool
+import org.siamdev.zappos.data.source.remote.NostrClient
+import rust.nostr.sdk.*
+import rust.nostr.sdk.Kind
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.compose_multiplatform
-import org.siamdev.zappos.data.repository.*
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun HomeScreen() {
     var showContent by remember { mutableStateOf(false) }
-    val keys = remember { NostrKeys.generate() }
-    val client2 = remember { NostrClient() }
-    val filter = remember { NostrFilter().kind(NostrKind.fromStd(NostrKindStd.METADATA)).limit(5U) }
 
     LaunchedEffect(Unit) {
-        // Fetch events
-        val target = RelayUrl.parse("wss://fenrir-s.notoshi.win")
-        client2.addRelay(target)
-        client2.connect()
-        val events = client2.fetchEvents(filter, NostrDuration.seconds(10L))
-        println(events.first())
-        println(events.first()?.toJson())
-        println(keys.secretKey().toBech32())
-        println(keys.publicKey().toBech32())
 
-        val profile: NostrEvent = events.first()!!
-        runLmdb { tx ->
-            val profile: NostrEvent = events.first()!!
-
-            tx.set("profile", profile.id, profile.toJson())
-
-            val jsonString = tx.get("profile", profile.id)
-            val loadedProfile = jsonString?.let { NostrEvent.fromJson(it) }
-            println("Loaded NostrEvent: ${loadedProfile?.id}")
+        /*val posts = NostrClient.fetch(timeout = 5.seconds) {
+            authors = listOf()
+            kinds = listOf(Kind(1u))
+            limit = 20u
         }
 
+        if (posts.isNotEmpty()) {
+            println(posts.first().asJson())
+        } else {
+            println("No events returned")
+        }*/
+
+        val client = Client()
+
+        val relayUrl = RelayUrl.parse("wss://relay.damus.io")
+        client.addRelay(relayUrl)
+        client.connect()
+
+        val filter1: Filter = Filter().kind(Kind.fromStd(KindStandard.METADATA)).limit(3u)
+        val events1: Events = client.fetchEvents(filter = filter1, timeout = 3.seconds)
+        println(events1.toVec().size)
 
     }
 
@@ -94,7 +94,7 @@ fun HomeScreen() {
                     painter = painterResource(Res.drawable.compose_multiplatform),
                     contentDescription = null
                 )
-                Text("Compose: ${Platform().message}")
+                Text("Compose: ${getPlatform()}")
             }
         }
     }

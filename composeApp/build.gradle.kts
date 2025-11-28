@@ -10,6 +10,13 @@ plugins {
     kotlin("plugin.serialization") version "2.2.0"
 }
 
+configurations.all {
+    resolutionStrategy {
+        force("net.java.dev.jna:jna:5.18.0")
+        force("net.java.dev.jna:jna-platform:5.18.0")
+    }
+}
+
 kotlin {
 
     androidTarget {
@@ -54,6 +61,9 @@ kotlin {
             implementation(libs.koin.core)
 
             // This lib include JNA
+            implementation(libs.nostr.sdk.kmp)
+
+            // This lib include JNA
             implementation("io.github.crowded-libs:kotlin-lmdb:0.3.6") {
                 exclude(group = "net.java.dev.jna", module = "jna")
             }
@@ -70,6 +80,8 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
 
+            implementation("net.java.dev.jna:jna:5.18.0")
+            implementation("net.java.dev.jna:jna-platform:5.18.0")
         }
     }
 }
@@ -88,6 +100,12 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+        jniLibs {
+            pickFirsts += setOf("lib/arm64-v8a/libjnidispatch.so",
+                "lib/armeabi-v7a/libjnidispatch.so",
+                "lib/x86_64/libjnidispatch.so",
+                "lib/x86/libjnidispatch.so")
         }
     }
     buildTypes {
@@ -108,16 +126,20 @@ dependencies {
 compose.desktop {
     application {
         mainClass = "org.siamdev.zappos.MainKt"
+        jvmArgs += listOf(
+            "@zappos.vmoptions"
+        )
 
         nativeDistributions {
             targetFormats(
-                  TargetFormat.Dmg
+                TargetFormat.Dmg
                 , TargetFormat.Msi
                 , TargetFormat.Deb
                 , TargetFormat.Rpm
             )
             packageName = "org.siamdev.zappos"
             packageVersion = "1.0.0"
+            includeAllModules = true
         }
     }
 }

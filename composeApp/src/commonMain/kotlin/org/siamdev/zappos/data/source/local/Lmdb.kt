@@ -33,11 +33,11 @@ class Lmdb {
 
     private fun configure(): Env {
         val path = getDatabasePath()
-        println("LMDB path: $path")
+        //println("LMDB path: $path")
 
         return Env().apply {
             maxDatabases = 15u
-            mapSize = (200 * 1024 * 1024).toULong() // 200 MB
+            mapSize = (200 * 1024 * 1024).toULong()
             maxReaders = 128u
             open(path, EnvOption.NoTLS)
         }
