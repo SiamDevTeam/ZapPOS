@@ -35,13 +35,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.jetbrains.compose.resources.painterResource
 import org.siamdev.core.getPlatform
-import org.siamdev.zappos.data.source.remote.ConnectionPool
 import org.siamdev.zappos.data.source.remote.NostrClient
 import rust.nostr.sdk.*
 import rust.nostr.sdk.Kind
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.compose_multiplatform
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
@@ -50,19 +48,25 @@ fun HomeScreen() {
 
     LaunchedEffect(Unit) {
 
-        /*val posts = NostrClient.fetch(timeout = 5.seconds) {
-            authors = listOf()
-            kinds = listOf(Kind(1u))
-            limit = 20u
+        val myPubKey = PublicKey.parse("e4b2c64f0e4e54abb34d5624cd040e05ecc77f0c467cc46e2cc4d5be98abe3e3")
+
+        val posts: List<Event> = NostrClient.fetch(timeout = 10.seconds) {
+            authors = listOf(myPubKey)
+            //kinds = listOf(Kind(1u))
+            limit = 2u
         }
 
         if (posts.isNotEmpty()) {
-            println(posts.first().asJson())
+            //println(posts.first().asJson())
+            posts.forEachIndexed { index, post ->
+                println("[${index + 1}] ${post.asJson()}")
+            }
+
         } else {
             println("No events returned")
-        }*/
+        }
 
-        val client = Client()
+        /*val client = Client()
 
         val relayUrl = RelayUrl.parse("wss://relay.damus.io")
         client.addRelay(relayUrl)
@@ -70,7 +74,7 @@ fun HomeScreen() {
 
         val filter1: Filter = Filter().kind(Kind.fromStd(KindStandard.METADATA)).limit(3u)
         val events1: Events = client.fetchEvents(filter = filter1, timeout = 3.seconds)
-        println(events1.toVec().size)
+        println(events1.toVec().size)*/
 
     }
 
@@ -94,7 +98,7 @@ fun HomeScreen() {
                     painter = painterResource(Res.drawable.compose_multiplatform),
                     contentDescription = null
                 )
-                Text("Compose: ${getPlatform()}")
+                Text("Compose: ${getPlatform().name}")
             }
         }
     }
