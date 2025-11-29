@@ -35,27 +35,25 @@ import org.siamdev.zappos.ui.screens.splash.SplashScreen
 import org.siamdev.zappos.ui.screens.login.LoginScreen
 import org.siamdev.zappos.ui.viewmodel.AppViewModel
 
-val lightRedColor = Color(color = 0xFFFCBE00)
-val darkRedColor = Color(color = 0xFF515151)
+val lightColor = Color(color = 0xFFFCBE00)
+val darkColor = Color(color = 0xFF515151)
 
 @Composable
 fun App(isDesktop: Boolean) {
     val viewModel: AppViewModel = viewModel()
     val lightColors = lightColorScheme(
-        primary = lightRedColor,
-        onPrimary = darkRedColor,
-        primaryContainer = lightRedColor,
-        onPrimaryContainer = darkRedColor
+        primary = lightColor,
+        onPrimary = darkColor,
+        primaryContainer = lightColor,
+        onPrimaryContainer = darkColor
     )
     val darkColors = darkColorScheme(
-        primary = lightRedColor,
-        onPrimary = darkRedColor,
-        primaryContainer = lightRedColor,
-        onPrimaryContainer = darkRedColor
+        primary = lightColor,
+        onPrimary = darkColor,
+        primaryContainer = lightColor,
+        onPrimaryContainer = darkColor
     )
-    val colors by mutableStateOf(
-        if (isSystemInDarkTheme()) darkColors else lightColors
-    )
+    val colors = if (isSystemInDarkTheme()) darkColors else lightColors
 
     MaterialTheme(colorScheme = colors) {
         Crossfade(viewModel.showHome) { ready ->

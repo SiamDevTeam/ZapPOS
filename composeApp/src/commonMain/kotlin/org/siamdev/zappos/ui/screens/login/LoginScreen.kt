@@ -25,6 +25,7 @@ package org.siamdev.zappos.ui.screens.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -68,7 +69,6 @@ fun LoginScreen() {
             kinds = listOf(Kind(0u))
             limit = 1u
         }
-        events.forEach { println(it.asJson()) }
 
         transaction {
             name = "profile"
@@ -101,25 +101,31 @@ fun LoginScreen() {
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        // Buttons
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+        BoxWithConstraints(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
         ) {
-            MaterialButton(
-                modifier = Modifier.fillMaxWidth(0.6f),
-                text = "Login with Nostr account",
-                iconEnd = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                onClick = {}
-            )
+            val buttonWidth = if (maxWidth < 600.dp) 0.6f else 0.3f
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                MaterialButton(
+                    modifier = Modifier.fillMaxWidth(buttonWidth),
+                    text = "Login with Nostr account",
+                    iconEnd = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    onClick = {}
+                )
 
-            MaterialButton(
-                modifier = Modifier.fillMaxWidth(0.6f),
-                text = "Login with anonymous",
-                iconEnd = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                onClick = {}
-            )
+                Spacer(modifier = Modifier.height(10.dp))
+
+                MaterialButton(
+                    modifier = Modifier.fillMaxWidth(buttonWidth),
+                    text = "Login with anonymous",
+                    iconEnd = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    onClick = {}
+                )
+            }
         }
 
         Spacer(modifier = Modifier.weight(1f))
@@ -133,6 +139,7 @@ fun LoginScreen() {
         )
     }
 }
+
 
 
 @Preview
