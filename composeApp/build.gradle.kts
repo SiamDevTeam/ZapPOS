@@ -55,20 +55,21 @@ kotlin {
             implementation(libs.material.icons.extended)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.kotlinx.serialization)
             implementation(projects.core)
 
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.1")
 
-            implementation(libs.navigation3.runtime)
+            /*implementation(libs.navigation3.runtime)
             implementation(libs.navigation3.ui)
             implementation(libs.navigation3.viewmodel)
-            implementation(libs.kotlinx.serialization)
+
 
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.navigation3)
-
+*/
             // This lib include JNA
             implementation(libs.nostr.sdk.kmp)
 
