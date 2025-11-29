@@ -24,18 +24,41 @@
 package org.siamdev.zappos
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.CheckboxDefaults.colors
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.siamdev.zappos.ui.screens.splash.SplashScreen
 import org.siamdev.zappos.ui.screens.login.LoginScreen
 import org.siamdev.zappos.ui.viewmodel.AppViewModel
 
+val lightRedColor = Color(color = 0xFFFCBE00)
+val darkRedColor = Color(color = 0xFF515151)
+
 @Composable
 fun App(isDesktop: Boolean) {
     val viewModel: AppViewModel = viewModel()
+    val lightColors = lightColorScheme(
+        primary = lightRedColor,
+        onPrimary = darkRedColor,
+        primaryContainer = lightRedColor,
+        onPrimaryContainer = darkRedColor
+    )
+    val darkColors = darkColorScheme(
+        primary = lightRedColor,
+        onPrimary = darkRedColor,
+        primaryContainer = lightRedColor,
+        onPrimaryContainer = darkRedColor
+    )
+    val colors by mutableStateOf(
+        if (isSystemInDarkTheme()) darkColors else lightColors
+    )
 
-    MaterialTheme {
+    MaterialTheme(colorScheme = colors) {
         Crossfade(viewModel.showHome) { ready ->
             println("ready: $ready")
             when {

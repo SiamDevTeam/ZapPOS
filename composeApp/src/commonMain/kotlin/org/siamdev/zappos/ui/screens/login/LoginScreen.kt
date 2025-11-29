@@ -33,10 +33,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,11 +49,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.siamdev.zappos.data.source.remote.NostrClient
+import rust.nostr.sdk.Event
+import rust.nostr.sdk.Kind
+import rust.nostr.sdk.PublicKey
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.zappos_dark_horizontal_v2
 
 @Composable
 fun LoginScreen() {
+
+    LaunchedEffect(Unit) {
+        val myPubKey = PublicKey.parse("e4b2c64f0e4e54abb34d5624cd040e05ecc77f0c467cc46e2cc4d5be98abe3e3")
+        val events: List<Event> = NostrClient.fetch {
+            authors = listOf(myPubKey)
+            kinds = listOf(Kind(0u))
+            limit = 1u
+        }
+        events.forEach { println(it.asJson()) }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -73,10 +93,18 @@ fun LoginScreen() {
             Button(
                 modifier = Modifier
                     .fillMaxWidth(0.6f)
-                    .background(color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp)),
+                    .background(
+                        color = MaterialTheme.colorScheme.primary,
+                        shape = RoundedCornerShape(8.dp)
+                    ),
                 onClick = {}
             ) {
                 Text("Login with Nostr account")
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = null
+                )
             }
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -84,11 +112,19 @@ fun LoginScreen() {
             Button(
                 modifier = Modifier
                     .fillMaxWidth(0.6f)
-                    .background(color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp)),
+                    .background(
+                        color = MaterialTheme.colorScheme.primary,
+                        shape = RoundedCornerShape(8.dp)
+                    ),
                 onClick = {}
             ) {
 
                 Text("Login with anonymous")
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = null
+                )
             }
         }
 
@@ -103,8 +139,6 @@ fun LoginScreen() {
         )
     }
 }
-
-
 
 @Preview
 @Composable

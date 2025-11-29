@@ -45,16 +45,6 @@ import zappos.composeapp.generated.resources.compose_multiplatform
 fun HomeScreen() {
     var showContent by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
-        val myPubKey = PublicKey.parse("e4b2c64f0e4e54abb34d5624cd040e05ecc77f0c467cc46e2cc4d5be98abe3e3")
-        val events: List<Event> = NostrClient.fetch {
-            authors = listOf(myPubKey)
-            kinds = listOf(Kind(0u))
-            limit = 1u
-        }
-        events.forEach { println(it.asJson()) }
-    }
-
     Column(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.primaryContainer)
