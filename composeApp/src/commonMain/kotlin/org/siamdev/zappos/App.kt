@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2025 SiamDev by SiamDharmar
+ * Copyright (c) 2025 SiamDevTeam
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,6 +31,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.ui.screens.splash.SplashScreen
 import org.siamdev.zappos.ui.screens.login.LoginScreen
 import org.siamdev.zappos.ui.viewmodel.AppViewModel
@@ -64,4 +65,10 @@ fun App(isDesktop: Boolean) {
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun AppPreview() {
+    App(isDesktop = false)
 }

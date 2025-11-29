@@ -6,7 +6,6 @@
 # Code cache: small but stable
 -XX:ReservedCodeCacheSize=256m
 
-# Enable G1GC (best for UI + low memory)
 -XX:+UseG1GC
 -XX:MaxGCPauseMillis=80
 -XX:G1HeapRegionSize=1m

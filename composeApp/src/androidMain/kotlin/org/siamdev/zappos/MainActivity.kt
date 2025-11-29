@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2025 SiamDev by SiamDharmar
+ * Copyright (c) 2025 SiamDevTeam
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,8 +27,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import org.siamdev.core.initAndroidPlatform
 
@@ -46,10 +44,4 @@ class MainActivity : ComponentActivity() {
         setContent { App(isDesktop = false) }
 
     }
-}
-
-@Preview
-@Composable
-fun AppAndroidPreview() {
-    App(isDesktop = false)
 }
