@@ -1,11 +1,9 @@
-
-package org.siamdev.zappos.data.repository
+package org.siamdev.zappos.data.source.local
 
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
-import org.siamdev.zappos.data.source.local.Lmdb
 
 val StandardJson = Json {
     prettyPrint = false
@@ -13,7 +11,7 @@ val StandardJson = Json {
     isLenient = true
 }
 
-class LmdbTransactionBuilder(private val lmdb: Lmdb) {
+class LmdbTransactionBuilder(private val lmdb: LmdbConfig) {
     var name: String? = null
     var key: Any? = null
     var value: Any? = null
@@ -57,7 +55,7 @@ class LmdbTransactionBuilder(private val lmdb: Lmdb) {
 suspend inline fun transaction(
     crossinline block: suspend LmdbTransactionBuilder.() -> Unit
 ) = withContext(Dispatchers.IO) {
-    val lmdb = Lmdb()
+    val lmdb = LmdbConfig()
     try {
         println("Opening LMDB")
         val builder = LmdbTransactionBuilder(lmdb)
@@ -73,7 +71,7 @@ suspend inline fun transaction(
 internal suspend inline fun <reified T> fetch(
     crossinline block: LmdbTransactionBuilder.() -> Unit
 ): T? = withContext(Dispatchers.IO) {
-    val lmdb = Lmdb()
+    val lmdb = LmdbConfig()
     try {
         val builder = LmdbTransactionBuilder(lmdb)
         builder.block()

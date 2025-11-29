@@ -50,32 +50,12 @@ fun HomeScreen() {
 
         val myPubKey = PublicKey.parse("e4b2c64f0e4e54abb34d5624cd040e05ecc77f0c467cc46e2cc4d5be98abe3e3")
 
-        val posts: List<Event> = NostrClient.fetch(timeout = 10.seconds) {
+        val events: List<Event> = NostrClient.fetch(timeout = 10.seconds) {
             authors = listOf(myPubKey)
-            //kinds = listOf(Kind(1u))
+            kinds = listOf(Kind(1u))
             limit = 2u
         }
-
-        if (posts.isNotEmpty()) {
-            //println(posts.first().asJson())
-            posts.forEachIndexed { index, post ->
-                println("[${index + 1}] ${post.asJson()}")
-            }
-
-        } else {
-            println("No events returned")
-        }
-
-        /*val client = Client()
-
-        val relayUrl = RelayUrl.parse("wss://relay.damus.io")
-        client.addRelay(relayUrl)
-        client.connect()
-
-        val filter1: Filter = Filter().kind(Kind.fromStd(KindStandard.METADATA)).limit(3u)
-        val events1: Events = client.fetchEvents(filter = filter1, timeout = 3.seconds)
-        println(events1.toVec().size)*/
-
+        events.forEach { println(it.asJson()) }
     }
 
     Column(
