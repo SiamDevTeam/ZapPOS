@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
-    kotlin("plugin.serialization") version "2.2.0"
+    alias(libs.plugins.serialization)
 }
 
 configurations.all {
@@ -25,7 +25,7 @@ kotlin {
         }
     }
 
-    listOf(
+    /*listOf(
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -33,15 +33,17 @@ kotlin {
             baseName = "ComposeApp"
             isStatic = true
         }
-    }
+    }*/
 
     jvm()
 
     sourceSets {
+
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.core.splashscreen)
+            implementation(libs.koin.android)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -55,11 +57,17 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(projects.core)
 
-            implementation(libs.navigator)
-            implementation(libs.navigator.screen.model)
-            implementation(libs.navigator.transitions)
-            implementation(libs.navigator.koin)
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.1")
+
+            implementation(libs.navigation3.runtime)
+            implementation(libs.navigation3.ui)
+            implementation(libs.navigation3.viewmodel)
+            implementation(libs.kotlinx.serialization)
+
             implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.koin.navigation3)
 
             // This lib include JNA
             implementation(libs.nostr.sdk.kmp)
@@ -70,8 +78,6 @@ kotlin {
             }
 
             implementation("io.coil-kt.coil3:coil-compose:3.3.0")
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
-            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -98,12 +104,12 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
-        jniLibs {
+        /*jniLibs {
             pickFirsts += setOf("lib/arm64-v8a/libjnidispatch.so",
                 "lib/armeabi-v7a/libjnidispatch.so",
                 "lib/x86_64/libjnidispatch.so",
                 "lib/x86/libjnidispatch.so")
-        }
+        }*/
     }
     buildTypes {
         getByName("release") {

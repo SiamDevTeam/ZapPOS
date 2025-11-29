@@ -6,7 +6,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.siamdev.zappos.data.source.remote.RelayConfig
@@ -14,10 +13,9 @@ import org.siamdev.zappos.data.source.remote.RelayConfig
 class AppViewModel: ViewModel() {
 
     var relayReady by mutableStateOf(false)
-        private set
 
     var splashDone by mutableStateOf(false)
-        private set
+
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -26,7 +24,7 @@ class AppViewModel: ViewModel() {
         }
 
         viewModelScope.launch(Dispatchers.Main) {
-            delay(2000L)
+            delay(3000L)
             splashDone = true
         }
     }

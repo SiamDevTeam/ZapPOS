@@ -21,12 +21,13 @@ nostrSdkKmp = "0.44.0"
 runner = "1.7.0"
 core = "1.7.0"
 annotationJvm = "1.9.1"
-voyager = "1.0.0"
-koin = "4.1.1"
+serialization = "1.9.0"
+koin = "4.2.0-alpha3"
+navigation3 = "1.0.0"
+navigation3ViewModel = "2.10.0"
 
 [libraries]
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
-
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { module = "junit:junit", version.ref = "junit" }
@@ -43,12 +44,19 @@ androidx-runner = { group = "androidx.test", name = "runner", version.ref = "run
 androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
 androidx-annotation-jvm = { group = "androidx.annotation", name = "annotation-jvm", version.ref = "annotationJvm" }
 material-icons-extended = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
-navigator-screen-model = { module = "cafe.adriel.voyager:voyager-screenmodel", version.ref = "voyager" }
-navigator-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
-navigator-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyager" }
-koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 nostr-sdk-kmp = { module = "org.rust-nostr:nostr-sdk-kmp", version.ref = "nostrSdkKmp" }
+
+kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
+navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }
+navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "navigation3" }
+navigation3-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "navigation3ViewModel" }
+
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
+koin-navigation3 = { module = "io.insert-koin:koin-compose-navigation3", version.ref = "koin" }
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -59,3 +67,4 @@ composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "k
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 androidLint = { id = "com.android.lint", version.ref = "agp" }
+serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

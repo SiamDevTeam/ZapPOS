@@ -25,7 +25,6 @@ package org.siamdev.zappos
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.CheckboxDefaults.colors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
