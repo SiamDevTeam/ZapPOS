@@ -26,40 +26,20 @@ package org.siamdev.zappos
 import androidx.compose.animation.Crossfade
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.Dispatchers
-import org.siamdev.zappos.data.source.remote.RelayConfig
+import androidx.lifecycle.viewmodel.compose.viewModel
 import org.siamdev.zappos.ui.screens.splash.SplashScreen
-import org.siamdev.zappos.ui.screens.home.HomeScreen
+import org.siamdev.zappos.ui.screens.login.LoginScreen
+import org.siamdev.zappos.ui.viewmodel.AppViewModel
 
 @Composable
 fun App(isDesktop: Boolean) {
-    var relayReady by remember { mutableStateOf(false) }
-    var splashDone by remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        withContext(Dispatchers.IO) {
-            RelayConfig.setup()
-        }
-        relayReady = true
-    }
-
-    LaunchedEffect(Unit) {
-        splashDone = isDesktop
-        if (!isDesktop) {
-            delay(2000L)
-            splashDone = true
-        }
-    }
-
-    val showHome = relayReady && splashDone
+    val viewModel: AppViewModel = viewModel()
 
     MaterialTheme {
-        Crossfade(showHome) { ready ->
+        Crossfade(viewModel.showHome) { ready ->
+            println("ready: $ready")
             when {
-                ready -> HomeScreen()
+                ready -> LoginScreen()
                 !isDesktop -> SplashScreen()
             }
         }

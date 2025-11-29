@@ -40,7 +40,6 @@ import zappos.composeapp.generated.resources.ic_app_logo
 import zappos.composeapp.generated.resources.siamdev_logo
 import zappos.composeapp.generated.resources.zappos_dark_horizontal_v2
 
-@Preview
 @Composable
 fun SplashScreen() {
 
@@ -97,4 +96,10 @@ fun SplashScreen() {
             )
         }
     }
+}
+
+@Preview
+@Composable
+fun SplashScreenPreview()  {
+    SplashScreen()
 }
