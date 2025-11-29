@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -7,23 +7,25 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    alias(libs.plugins.serialization)
+}
+
+configurations.all {
+    resolutionStrategy {
+        force("net.java.dev.jna:jna:5.18.0")
+        force("net.java.dev.jna:jna-platform:5.18.0")
+    }
 }
 
 kotlin {
 
-    compilerOptions {
-        freeCompilerArgs.add("-Xexpect-actual-classes")
-    }
-
     androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_21)
         }
     }
-    
-    listOf(
-        iosX64(),
+
+    /*listOf(
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -31,42 +33,59 @@ kotlin {
             baseName = "ComposeApp"
             isStatic = true
         }
-    }
+    }*/
+
+    jvm()
 
     sourceSets {
 
         androidMain.dependencies {
-            implementation("net.java.dev.jna:jna:5.17.0@aar")
-            implementation(libs.org.rust.nostr)
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            //implementation(libs.ktor.client.okhttp)
+            implementation(libs.androidx.core.splashscreen)
+            implementation(libs.koin.android)
         }
-
         commonMain.dependencies {
-            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.0-beta02")
-            implementation("org.jetbrains.compose.material:material-icons-extended:1.7.3")
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodel)
+            implementation(libs.material.icons.extended)
+            implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
-            implementation(libs.navigation.compose)
-            implementation(libs.material.icons.core)
-            implementation(libs.bundles.ktor.common)
-            implementation(libs.coil.compose.core)
-            implementation(libs.coil)
-            implementation(libs.coil.compose)
-            implementation(libs.coil.network.ktor)
-        }
+            implementation(projects.core)
 
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.1")
+
+            implementation(libs.navigation3.runtime)
+            implementation(libs.navigation3.ui)
+            implementation(libs.navigation3.viewmodel)
+            implementation(libs.kotlinx.serialization)
+
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.koin.navigation3)
+
+            // This lib include JNA
+            implementation(libs.nostr.sdk.kmp)
+
+            // This lib include JNA
+            implementation("io.github.crowded-libs:kotlin-lmdb:0.3.6") {
+                exclude(group = "net.java.dev.jna", module = "jna")
+            }
+
+            implementation("io.coil-kt.coil3:coil-compose:3.3.0")
+        }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
-
+        jvmMain.dependencies {
+            implementation(compose.desktop.currentOs)
+            implementation(libs.kotlinx.coroutinesSwing)
+        }
     }
 }
 
@@ -80,15 +99,17 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
-        //ndk.abiFilters += setOf("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
-        ndk {
-            abiFilters += setOf("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
-        }
     }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+        /*jniLibs {
+            pickFirsts += setOf("lib/arm64-v8a/libjnidispatch.so",
+                "lib/armeabi-v7a/libjnidispatch.so",
+                "lib/x86_64/libjnidispatch.so",
+                "lib/x86/libjnidispatch.so")
+        }*/
     }
     buildTypes {
         getByName("release") {
@@ -96,8 +117,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 }
 
@@ -105,3 +126,23 @@ dependencies {
     debugImplementation(compose.uiTooling)
 }
 
+compose.desktop {
+    application {
+        mainClass = "org.siamdev.zappos.MainKt"
+        jvmArgs += listOf(
+            "@zappos.vmoptions"
+        )
+
+        nativeDistributions {
+            targetFormats(
+                TargetFormat.Dmg
+                , TargetFormat.Msi
+                , TargetFormat.Deb
+                , TargetFormat.Rpm
+            )
+            packageName = "org.siamdev.zappos"
+            packageVersion = "1.0.0"
+            includeAllModules = true
+        }
+    }
+}

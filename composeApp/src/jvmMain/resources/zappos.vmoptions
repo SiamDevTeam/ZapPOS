@@ -1,0 +1,39 @@
+
+# Heap: Start small, limit tight
+-Xms128m
+-Xmx768m
+
+# Code cache: small but stable
+-XX:ReservedCodeCacheSize=256m
+
+# Enable G1GC (best for UI + low memory)
+-XX:+UseG1GC
+-XX:MaxGCPauseMillis=80
+-XX:G1HeapRegionSize=1m
+
+# Shrink heap aggressively when idle
+-XX:JbrShrinkingGcMaxHeapFreeRatio=30
+
+# Reduce JIT CPU usage
+-XX:CICompilerCount=1
+
+# Avoid aggressive optimizer (stable UI)
+-XX:+IgnoreUnrecognizedVMOptions
+
+# Reduce freeze from AWT
+-Dawt.lock.fair=true
+-Dsun.awt.disableMixing=true
+
+# UTF-8 required for Thai UI + receipts
+-Dfile.encoding=UTF-8
+
+# Faster file access
+-Djava.util.zip.use.nio.for.zip.file.access=true
+
+# Prevent canonical path caching bug
+-Dsun.io.useCanonCaches=false
+
+# Disable Coroutines debug overhead
+-Dkotlinx.coroutines.debug=off
+
+-Dzappos.testLoad=true
