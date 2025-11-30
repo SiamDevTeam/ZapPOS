@@ -33,6 +33,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Article
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.ShoppingBag
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -101,7 +103,7 @@ fun MaterialButtonPreview() {
     MaterialButton(
         modifier = Modifier.width(250.dp),
         text = "Preview Button",
-        iconStart = Icons.AutoMirrored.Filled.Article,
+        iconStart = Icons.Default.ShoppingCart,
         iconEnd = Icons.AutoMirrored.Filled.KeyboardArrowRight,
         onClick = {}
     )

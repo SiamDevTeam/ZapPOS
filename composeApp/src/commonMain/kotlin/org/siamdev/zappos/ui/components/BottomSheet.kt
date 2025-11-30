@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Article
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -149,21 +152,21 @@ fun BottomSheetPreview() {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Button(
-                        onClick = {},
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text("Confirm")
-                    }
+                    MaterialButton(
+                        modifier = Modifier.weight(1f),
+                        text = "Clear Cart",
+                        buttonColor = Color.White,
+                        onClick = {  }
+                    )
 
                     Spacer(Modifier.width(12.dp))
 
-                    OutlinedButton(
-                        onClick = {},
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text("Clear Cart")
-                    }
+                    MaterialButton(
+                        modifier = Modifier.weight(1f),
+                        text = "Confirm",
+                        iconStart = Icons.Default.ShoppingCart,
+                        onClick = {  }
+                    )
                 }
             }
 

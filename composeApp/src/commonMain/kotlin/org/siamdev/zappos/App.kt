@@ -32,6 +32,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.siamdev.zappos.ui.screens.demo.CounterScreen
+import org.siamdev.zappos.ui.screens.home.HomeScreen
 import org.siamdev.zappos.ui.screens.splash.SplashScreen
 import org.siamdev.zappos.ui.screens.login.LoginScreen
 import org.siamdev.zappos.ui.viewmodel.AppViewModel
@@ -60,7 +62,11 @@ fun App(isDesktop: Boolean) {
         Crossfade(viewModel.showHome) { ready ->
             println("ready: $ready")
             when {
-                ready -> LoginScreen()
+                ready -> {
+                   // HomeScreen()
+                    LoginScreen()
+                   // CounterScreen()
+                }
                 !isDesktop -> SplashScreen()
             }
         }
