@@ -1,9 +1,12 @@
 package org.siamdev.zappos.ui.screens.demo
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Article
+import androidx.compose.material.icons.filled.CurrencyBitcoin
+import androidx.compose.material.icons.filled.CurrencyLira
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -11,9 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.siamdev.zappos.ui.components.BottomSheet
+import org.siamdev.zappos.ui.components.SlideBottomSheet
 import org.siamdev.zappos.ui.components.MaterialButton
+import zappos.composeapp.generated.resources.Res
+import zappos.composeapp.generated.resources.sat_unit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,7 +34,7 @@ fun CounterScreen() {
     )
     val scope = rememberCoroutineScope()
 
-    BottomSheet(
+    SlideBottomSheet(
         sheetState = sheetState,
         topContent = {
             Text("Matcha Coffee 999")
@@ -59,9 +65,27 @@ fun CounterScreen() {
                     Column(
                         horizontalAlignment = Alignment.End
                     ) {
-                        Text("฿ 61,020", style = MaterialTheme.typography.titleLarge)
+
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Default.CurrencyLira,
+                                contentDescription = "Currency",
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(Modifier.width(4.dp))
+                            Text("61,020", style = MaterialTheme.typography.titleLarge)
+                        }
+
                         Spacer(Modifier.height(4.dp))
-                        Text("$ 1,900.35", style = MaterialTheme.typography.titleMedium)
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Image(painterResource(
+                                resource = Res.drawable.sat_unit),
+                                contentDescription = "sat icon",
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(Modifier.width(4.dp))
+                            Text("1,900.35", style = MaterialTheme.typography.titleMedium)
+                        }
                     }
                 }
             }

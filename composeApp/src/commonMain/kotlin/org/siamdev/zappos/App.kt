@@ -64,8 +64,8 @@ fun App(isDesktop: Boolean) {
             when {
                 ready -> {
                    // HomeScreen()
-                    LoginScreen()
-                   // CounterScreen()
+                   // LoginScreen()
+                    CounterScreen()
                 }
                 !isDesktop -> SplashScreen()
             }

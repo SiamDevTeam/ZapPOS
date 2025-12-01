@@ -1,70 +1,85 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2025 SiamDevTeam
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package org.siamdev.zappos.ui.components
 
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Article
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import zappos.composeapp.generated.resources.Res
+import zappos.composeapp.generated.resources.sat_unit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BottomSheet(
+fun SlideBottomSheet(
+    show: Boolean,
+    onDismiss: () -> Unit,
     topContent: @Composable ColumnScope.() -> Unit,
-    bottomContent: @Composable ColumnScope.() -> Unit,
-    sheetState: BottomSheetScaffoldState,
-    screenContent: @Composable () -> Unit
+    bottomContent: @Composable ColumnScope.() -> Unit
 ) {
+    if (!show) return
 
-    val customDragHandle: @Composable (() -> Unit) = {
-        Box(
-            modifier = Modifier
-                .padding(top = 8.dp, bottom = 8.dp)
-                .fillMaxWidth()
-                .height(36.dp),
-            contentAlignment = Alignment.Center
-        ) {
+    ModalBottomSheet(
+        onDismissRequest = { onDismiss() },
+
+        dragHandle = {
             Box(
                 modifier = Modifier
-                    .width(80.dp)
-                    .height(3.dp)
-                    .clip(RoundedCornerShape(3.dp))
-                    .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f))
-            )
+                    .padding(top = 8.dp, bottom = 8.dp)
+                    .fillMaxWidth()
+                    .height(36.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Box(
+                    modifier = Modifier
+                        .width(80.dp)
+                        .height(3.dp)
+                        .clip(RoundedCornerShape(3.dp))
+                        .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f))
+                )
+            }
         }
+    ) {
+        BottomSheetInternalLayout(
+            topContent = topContent,
+            bottomContent = bottomContent
+        )
     }
-
-    BottomSheetScaffold(
-        scaffoldState = sheetState,
-        sheetPeekHeight = 100.dp,
-        sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
-        sheetDragHandle = customDragHandle,
-        //sheetContainerColor = Color.White,
-
-        // BottomSheet content
-        sheetContent = {
-            BottomSheetInternalLayout(
-                topContent = topContent,
-                bottomContent = bottomContent
-            )
-        },
-        // Main screen content
-        content = {
-            screenContent()
-        }
-    )
-
 }
 
 
@@ -76,8 +91,6 @@ private fun BottomSheetInternalLayout(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .navigationBarsPadding()
-            .imePadding()
             .height(320.dp)
             .padding(16.dp)
     ) {
@@ -92,7 +105,13 @@ private fun BottomSheetInternalLayout(
         }
 
         Spacer(Modifier.height(16.dp))
-        Divider()
+
+        HorizontalDivider(
+            modifier = Modifier.padding(vertical = 8.dp),
+            thickness = 1.dp,
+            color = Color(0xFFC4C4C4)
+        )
+
         Spacer(Modifier.height(16.dp))
 
         // Bottom content fixed
@@ -103,7 +122,6 @@ private fun BottomSheetInternalLayout(
         }
     }
 }
-
 
 
 
@@ -140,7 +158,15 @@ fun BottomSheetPreview() {
                         ) {
                             Text("฿ 61,020", style = MaterialTheme.typography.titleLarge)
                             Spacer(Modifier.height(4.dp))
-                            Text("$ 1,900.35", style = MaterialTheme.typography.titleMedium)
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Image(
+                                    painter = painterResource(Res.drawable.sat_unit),
+                                    contentDescription = "sat icon",
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Spacer(Modifier.width(4.dp))
+                                Text("1,900.35", style = MaterialTheme.typography.titleMedium)
+                            }
                         }
                     }
                 }
@@ -168,9 +194,8 @@ fun BottomSheetPreview() {
                         onClick = {  }
                     )
                 }
+
             }
-
         )
-
     }
 }
