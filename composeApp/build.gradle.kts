@@ -128,9 +128,6 @@ dependencies {
 compose.desktop {
     application {
         mainClass = "org.siamdev.zappos.MainKt"
-        jvmArgs += listOf(
-            "@zappos.vmoptions"
-        )
 
         nativeDistributions {
             targetFormats(
@@ -139,9 +136,12 @@ compose.desktop {
                 , TargetFormat.Deb
                 , TargetFormat.Rpm
             )
-            packageName = "org.siamdev.zappos"
+            packageName = "ZapPOS"
             packageVersion = "1.0.0"
-            includeAllModules = true
+
+            linux {
+                iconFile.set(project.file("src/jvmMain/resources/ico_sizes/linux/ic_zappos_256.png"))
+            }
         }
     }
 }
