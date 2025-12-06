@@ -33,6 +33,7 @@ import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import javax.swing.SwingUtilities
 
 fun main() = application {
     var showMainWindow by remember { mutableStateOf(false) }
@@ -54,4 +55,11 @@ fun main() = application {
         }
     }
 
+}
+
+
+private inline fun <T : Any> runOnMainThreadBlocking(crossinline block: () -> T): T {
+    lateinit var result: T
+    SwingUtilities.invokeAndWait { result = block() }
+    return result
 }

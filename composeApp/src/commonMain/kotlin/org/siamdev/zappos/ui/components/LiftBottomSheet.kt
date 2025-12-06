@@ -92,7 +92,9 @@ private fun BottomSheetInternalLayout(
         modifier = Modifier
             .fillMaxWidth()
             .height(320.dp)
-            .padding(16.dp)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Top content scrollable
         Column(

@@ -33,12 +33,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -50,7 +46,7 @@ import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.data.source.local.fetch
-import org.siamdev.zappos.data.source.local.transaction
+import org.siamdev.zappos.data.source.local.lmdbWrite
 import org.siamdev.zappos.data.source.remote.NostrClient
 import org.siamdev.zappos.ui.components.MaterialButton
 import rust.nostr.sdk.Event
@@ -60,7 +56,10 @@ import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.zappos_dark_horizontal_v2
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    onLoginAnonymous: () -> Unit = {}
+) {
+
 
     LaunchedEffect(Unit) {
         val myPubKey = PublicKey.parse("e4b2c64f0e4e54abb34d5624cd040e05ecc77f0c467cc46e2cc4d5be98abe3e3")
@@ -70,7 +69,7 @@ fun LoginScreen() {
             limit = 1u
         }
 
-        transaction {
+        lmdbWrite {
             name = "profile"
             key = events.first().id().toHex()
             value = events.first().asJson()
@@ -123,8 +122,9 @@ fun LoginScreen() {
                     modifier = Modifier.fillMaxWidth(buttonWidth),
                     text = "Login with anonymous",
                     iconEnd = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                    onClick = {}
+                    onClick = { onLoginAnonymous() }
                 )
+
             }
         }
 

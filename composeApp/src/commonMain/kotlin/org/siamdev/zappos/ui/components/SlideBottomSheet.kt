@@ -24,6 +24,7 @@
 package org.siamdev.zappos.ui.components
 
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -38,14 +39,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import zappos.composeapp.generated.resources.Res
+import zappos.composeapp.generated.resources.sat_unit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SlideBottomSheet(
+    sheetState: BottomSheetScaffoldState,
     topContent: @Composable ColumnScope.() -> Unit,
     bottomContent: @Composable ColumnScope.() -> Unit,
-    sheetState: BottomSheetScaffoldState,
     screenContent: @Composable () -> Unit
 ) {
 
@@ -102,7 +106,9 @@ private fun BottomSheetInternalLayout(
             .navigationBarsPadding()
             .imePadding()
             .height(320.dp)
-            .padding(16.dp)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Top content scrollable
         Column(
@@ -126,10 +132,15 @@ private fun BottomSheetInternalLayout(
 
         // Bottom content fixed
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(Alignment.CenterVertically),
+            //verticalArrangement = Arrangement.Center,
+            //horizontalAlignment = Alignment.CenterHorizontally
         ) {
             bottomContent()
         }
+
     }
 }
 
@@ -169,7 +180,15 @@ fun BottomSheetV1Preview() {
                         ) {
                             Text("฿ 61,020", style = MaterialTheme.typography.titleLarge)
                             Spacer(Modifier.height(4.dp))
-                            Text("$ 1,900.35", style = MaterialTheme.typography.titleMedium)
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Image(
+                                    painter = painterResource(Res.drawable.sat_unit),
+                                    contentDescription = "sat icon",
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Spacer(Modifier.width(4.dp))
+                                Text("1,900.35", style = MaterialTheme.typography.titleMedium)
+                            }
                         }
                     }
                 }

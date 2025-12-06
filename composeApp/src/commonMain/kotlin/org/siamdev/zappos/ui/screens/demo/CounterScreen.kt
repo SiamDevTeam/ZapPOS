@@ -2,10 +2,11 @@ package org.siamdev.zappos.ui.screens.demo
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Article
-import androidx.compose.material.icons.filled.CurrencyBitcoin
 import androidx.compose.material.icons.filled.CurrencyLira
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -98,7 +99,13 @@ fun CounterScreen() {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 MaterialButton(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .border(
+                            width = 1.dp,
+                            color = Color(0xFFD9D9D9),
+                            shape = RoundedCornerShape(8.dp)
+                        ),
                     text = "Clear Cart",
                     buttonColor = Color.White,
                     onClick = { count = 0 }

@@ -19,13 +19,17 @@ configurations.all {
 
 kotlin {
 
+    compilerOptions {
+        freeCompilerArgs.add("-Xdata-flow-based-exhaustiveness")
+    }
+
     androidTarget {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_21)
         }
     }
 
-    /*listOf(
+    listOf(
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -33,7 +37,7 @@ kotlin {
             baseName = "ComposeApp"
             isStatic = true
         }
-    }*/
+    }
 
     jvm()
 
@@ -58,18 +62,11 @@ kotlin {
             implementation(libs.kotlinx.serialization)
             implementation(projects.core)
 
-            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.1")
-
-            /*implementation(libs.navigation3.runtime)
-            implementation(libs.navigation3.ui)
-            implementation(libs.navigation3.viewmodel)
+            implementation(libs.jetbrains.navigation3.ui)
+            implementation(libs.jetbrains.lifecycle.viewmodel.nav3)
+            implementation(libs.jetbrains.lifecycle.viewmodel)
 
 
-            implementation(libs.koin.core)
-            implementation(libs.koin.compose)
-            implementation(libs.koin.compose.viewmodel)
-            implementation(libs.koin.navigation3)
-*/
             // This lib include JNA
             implementation(libs.nostr.sdk.kmp)
 

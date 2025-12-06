@@ -37,9 +37,9 @@ class MainActivity : ComponentActivity() {
         initAndroidPlatform(this)
 
         enableEdgeToEdge()
-/*        var isActive = true
-        lifecycleScope.launch { delay(2000L); isActive = false }
-        splashScreen.apply { setKeepOnScreenCondition { false } }*/
+        /*        var isActive = true
+                lifecycleScope.launch { delay(2000L); isActive = false }
+                splashScreen.apply { setKeepOnScreenCondition { false } }*/
 
         setContent { App(isDesktop = false) }
 

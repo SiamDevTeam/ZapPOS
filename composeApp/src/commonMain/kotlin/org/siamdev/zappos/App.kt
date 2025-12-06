@@ -23,27 +23,25 @@
  */
 package org.siamdev.zappos
 
-import androidx.compose.animation.Crossfade
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.theme.ZapposTheme
-import org.siamdev.zappos.ui.screens.demo.CounterScreen
-import org.siamdev.zappos.ui.screens.login.LoginScreen
-import org.siamdev.zappos.ui.screens.splash.SplashScreen
-import org.siamdev.zappos.ui.viewmodel.AppViewModel
+import org.siamdev.zappos.navigation.NavigationRoot
+import org.siamdev.zappos.navigation.Route
+import org.siamdev.zappos.ui.screens.splash.SplashViewModel
 
 @Composable
 fun App(isDesktop: Boolean) {
-    val viewModel: AppViewModel = viewModel()
+    val splashVM: SplashViewModel = viewModel()
+    val themeMode = splashVM.themeMode.collectAsState()
 
-    ZapposTheme(themeMode = viewModel.themeMode.value) {
-        Crossfade(viewModel.showHome) { ready ->
-            when {
-                ready -> CounterScreen()
-                !isDesktop -> SplashScreen()
-            }
-        }
+    val start = if (isDesktop) Route.Login else Route.Splash
+    ZapposTheme(themeMode = themeMode.value) {
+        NavigationRoot(
+            startDestination = start
+        )
     }
 }
 

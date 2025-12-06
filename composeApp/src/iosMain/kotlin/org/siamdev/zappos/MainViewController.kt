@@ -23,6 +23,15 @@
  */
 package org.siamdev.zappos
 
+import androidx.compose.runtime.remember
 import androidx.compose.ui.window.ComposeUIViewController
+import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import navigation.RootComponent
 
-fun MainViewController() = ComposeUIViewController { App(isDesktop = false) }
+fun MainViewController() = ComposeUIViewController {
+    val root = remember {
+        RootComponent(DefaultComponentContext(LifecycleRegistry(), false))
+    }
+    App(root)
+}

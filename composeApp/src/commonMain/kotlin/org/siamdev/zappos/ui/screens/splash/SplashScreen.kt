@@ -28,11 +28,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import zappos.composeapp.generated.resources.Res
@@ -41,7 +44,17 @@ import zappos.composeapp.generated.resources.siamdev_logo
 import zappos.composeapp.generated.resources.zappos_dark_horizontal_v2
 
 @Composable
-fun SplashScreen() {
+fun SplashScreen(
+    viewModel: SplashViewModel = viewModel()/* viewModel() หรือรับผ่าน DI */,
+    onSplashFinished: () -> Unit = {}
+) {
+
+    val ready = viewModel.isReady.collectAsState()
+    LaunchedEffect(ready.value) {
+        if (ready.value) {
+            onSplashFinished()
+        }
+    }
 
     BoxWithConstraints(
         modifier = Modifier

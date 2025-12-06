@@ -24,6 +24,7 @@
 package org.siamdev.zappos.data.source.local
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 
@@ -74,7 +75,7 @@ class LmdbTransactionBuilder(private val lmdb: LmdbConfig) {
 
 }
 
-suspend inline fun transaction(
+suspend inline fun lmdbWrite(
     crossinline block: suspend LmdbTransactionBuilder.() -> Unit
 ) = withContext(Dispatchers.IO) {
     val lmdb = LmdbConfig()
