@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.koinInject
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.ic_app_logo
 import zappos.composeapp.generated.resources.siamdev_logo
@@ -43,7 +44,7 @@ import zappos.composeapp.generated.resources.zappos_dark_horizontal_v2
 
 @Composable
 fun SplashScreen(
-    viewModel: SplashViewModel/* viewModel() หรือรับผ่าน DI */,
+    viewModel: SplashViewModel,
     onSplashFinished: () -> Unit = {}
 ) {
 
@@ -108,11 +109,3 @@ fun SplashScreen(
         }
     }
 }
-
-/*
-@Preview
-@Composable
-fun SplashScreenPreview()  {
-    SplashScreen()
-}
-*/
