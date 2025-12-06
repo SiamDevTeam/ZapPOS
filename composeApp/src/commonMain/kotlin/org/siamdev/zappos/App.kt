@@ -25,28 +25,19 @@ package org.siamdev.zappos
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.lifecycle.viewmodel.compose.viewModel
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.theme.ZapposTheme
 import org.siamdev.zappos.navigation.NavigationRoot
 import org.siamdev.zappos.navigation.Route
 import org.siamdev.zappos.ui.screens.splash.SplashViewModel
 
 @Composable
-fun App(isDesktop: Boolean) {
-    val splashVM: SplashViewModel = viewModel()
-    val themeMode = splashVM.themeMode.collectAsState()
-
+fun App(isDesktop: Boolean, splashViewModel: SplashViewModel) {
+    val themeMode = splashViewModel.themeMode.collectAsState()
     val start = if (isDesktop) Route.Login else Route.Splash
     ZapposTheme(themeMode = themeMode.value) {
         NavigationRoot(
-            startDestination = start
+            startDestination = start,
+            splashViewModel = splashViewModel
         )
     }
-}
-
-@Preview
-@Composable
-fun AppPreview() {
-    App(isDesktop = false)
 }

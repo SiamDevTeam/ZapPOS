@@ -23,15 +23,11 @@
  */
 package org.siamdev.zappos
 
-import androidx.compose.runtime.remember
 import androidx.compose.ui.window.ComposeUIViewController
-import com.arkivanov.decompose.DefaultComponentContext
-import com.arkivanov.essenty.lifecycle.LifecycleRegistry
-import navigation.RootComponent
+import org.siamdev.zappos.ui.screens.splash.SplashViewModel
+import androidx.compose.runtime.remember
 
 fun MainViewController() = ComposeUIViewController {
-    val root = remember {
-        RootComponent(DefaultComponentContext(LifecycleRegistry(), false))
-    }
-    App(root)
+    val splashVM = remember { SplashViewModel() }
+    App(isDesktop = false, splashViewModel = splashVM)
 }

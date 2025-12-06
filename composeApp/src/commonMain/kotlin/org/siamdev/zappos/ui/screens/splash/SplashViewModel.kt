@@ -11,7 +11,7 @@ import org.siamdev.zappos.data.source.remote.RelayConfig
 
 class SplashViewModel : ViewModel() {
 
-    private val _themeMode = MutableStateFlow(ThemeMode.SYSTEM)
+    private val _themeMode = MutableStateFlow(ThemeMode.LIGHT)
     val themeMode = _themeMode.asStateFlow()
 
     private val _relayReady = MutableStateFlow(false)
@@ -34,14 +34,16 @@ class SplashViewModel : ViewModel() {
     private suspend fun runSplashDelay() {
         delay(3000)
         _splashDone.value = true
+        updateReadyState()
     }
 
     private suspend fun setupRelay() {
         RelayConfig.setup()
         _relayReady.value = true
+        updateReadyState()
     }
 
     private fun updateReadyState() {
-        _isReady.value = true
+        _isReady.value = _splashDone.value && _relayReady.value
     }
 }

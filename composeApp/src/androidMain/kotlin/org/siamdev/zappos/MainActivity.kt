@@ -28,7 +28,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.viewmodel.compose.viewModel
 import org.siamdev.core.initAndroidPlatform
+import org.siamdev.zappos.ui.screens.splash.SplashViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +43,10 @@ class MainActivity : ComponentActivity() {
                 lifecycleScope.launch { delay(2000L); isActive = false }
                 splashScreen.apply { setKeepOnScreenCondition { false } }*/
 
-        setContent { App(isDesktop = false) }
+        setContent {
+            val splashVM: SplashViewModel = viewModel()
+            App(isDesktop = false, splashViewModel = splashVM)
+        }
 
     }
 }

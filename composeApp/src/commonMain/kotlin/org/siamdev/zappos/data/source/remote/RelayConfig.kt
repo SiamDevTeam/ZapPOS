@@ -70,7 +70,7 @@ object RelayConfig {
     }
 
     fun getConnection(): Client {
-        check(ready) { "RelayConnect not initialized. Call initialize() first." }
+        check(ready) { "RelayConnect not initialized. Call setup() first." }
         return client
     }
 

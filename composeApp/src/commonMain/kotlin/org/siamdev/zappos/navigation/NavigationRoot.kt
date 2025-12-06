@@ -1,3 +1,26 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2025 SiamDevTeam
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package org.siamdev.zappos.navigation
 
 import androidx.compose.runtime.Composable
@@ -13,10 +36,12 @@ import kotlinx.serialization.modules.polymorphic
 import org.siamdev.zappos.ui.screens.demo.CounterScreen
 import org.siamdev.zappos.ui.screens.login.LoginScreen
 import org.siamdev.zappos.ui.screens.splash.SplashScreen
+import org.siamdev.zappos.ui.screens.splash.SplashViewModel
 
 @Composable
 fun NavigationRoot(
-    startDestination: Route
+    startDestination: Route,
+    splashViewModel: SplashViewModel
 ) {
     val backStack = rememberNavBackStack(
         configuration = SavedStateConfiguration {
@@ -42,9 +67,13 @@ fun NavigationRoot(
             when (key) {
                 is Route.Splash -> {
                     NavEntry(key) {
-                        // SplashScreen receives a callback to navigate to Login
                         SplashScreen(
-                            onSplashFinished = { backStack.add(Route.Login) }
+                            viewModel = splashViewModel,
+                            onSplashFinished = {
+                                if (splashViewModel.relayReady.value) {
+                                    backStack.add(Route.Login)
+                                }
+                            }
                         )
                     }
                 }

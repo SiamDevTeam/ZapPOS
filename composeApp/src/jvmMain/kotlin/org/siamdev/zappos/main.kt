@@ -23,24 +23,35 @@
  */
 package org.siamdev.zappos
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import org.siamdev.zappos.ui.screens.splash.SplashScreen
+import org.siamdev.zappos.ui.screens.splash.SplashViewModel
 import javax.swing.SwingUtilities
 
+
 fun main() = application {
+    val splashVM = remember { SplashViewModel() }
     var showMainWindow by remember { mutableStateOf(false) }
 
-    DesktopSplashWindow(
-        onFinished = { showMainWindow = true }
-    )
+    if (!showMainWindow) {
+        DesktopSplashWindow(
+            splashViewModel = splashVM,
+            onFinished = { showMainWindow = true }
+        )
+    }
 
     if (showMainWindow) {
         Window(
@@ -51,10 +62,42 @@ fun main() = application {
                 position = WindowPosition(Alignment.Center)
             )
         ) {
-            App(isDesktop = true)
+            App(isDesktop = true, splashViewModel = splashVM)
         }
     }
+}
 
+@Composable
+fun DesktopSplashWindow(
+    splashViewModel: SplashViewModel,
+    onFinished: () -> Unit
+) {
+    var isOpen by remember { mutableStateOf(true) }
+    if (isOpen) {
+        Window(
+            onCloseRequest = {},
+            title = "",
+            resizable = false,
+            undecorated = true,
+            transparent = false,
+            state = rememberWindowState(
+                placement = WindowPlacement.Floating,
+                position = WindowPosition(Alignment.Center),
+                width = 560.dp,
+                height = 370.dp
+            )
+        ) {
+            SplashScreen(viewModel = splashViewModel)
+        }
+
+        val isReady by splashViewModel.isReady.collectAsState()
+        LaunchedEffect(isReady) {
+            if (isReady) {
+                isOpen = false
+                onFinished()
+            }
+        }
+    }
 }
 
 
