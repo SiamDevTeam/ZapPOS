@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Article
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CurrencyLira
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -125,7 +127,7 @@ fun CounterScreen() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(top = 300.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -134,15 +136,18 @@ fun CounterScreen() {
             Spacer(modifier = Modifier.height(16.dp))
             Row {
                 MaterialButton(
-                    text = "-",
-                    onClick = { count-- },
-                    modifier = Modifier.size(60.dp)
+                    modifier = Modifier.size(50.dp),
+                    iconCenter = Icons.Default.Remove,
+                    iconSize = 28,
+                    onClick = { count-- }
                 )
                 Spacer(modifier = Modifier.width(16.dp))
+
                 MaterialButton(
-                    text = "+",
-                    onClick = { count++ },
-                    modifier = Modifier.size(60.dp)
+                    modifier = Modifier.size(50.dp),
+                    iconCenter = Icons.Default.Add,
+                    iconSize = 28,
+                    onClick = { count++ }
                 )
             }
             Spacer(Modifier.height(20.dp))

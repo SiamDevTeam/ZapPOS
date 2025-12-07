@@ -5,8 +5,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import org.siamdev.zappos.data.source.local.lmdbWrite
 
 enum class ThemeMode {
     SYSTEM,
@@ -18,38 +16,34 @@ private val LightColors = lightColorScheme(
     primary = LightPrimary,
     onPrimary = LightOnPrimary,
     primaryContainer = LightPrimary,
-    onPrimaryContainer = LightOnPrimary
+    onPrimaryContainer = LightOnPrimary,
+
+    background = LightBackground,
+    surface = LightBackground
 )
 
 private val DarkColors = darkColorScheme(
     primary = DarkPrimary,
     onPrimary = DarkOnPrimary,
     primaryContainer = DarkPrimary,
-    onPrimaryContainer = DarkOnPrimary
+    onPrimaryContainer = DarkOnPrimary,
+
+    background = DarkBackground,
+    surface = DarkBackground
 )
 
 @Composable
 fun ZapposTheme(
-    themeMode: ThemeMode = ThemeMode.LIGHT,
+    themeMode: ThemeMode,
     content: @Composable () -> Unit
 ) {
-
-    /*LaunchedEffect(Unit) {
-        lmdbWrite {
-            name = "settings"
-            key = "theme"
-            value = ThemeMode.LIGHT.toString()
-        }
-    }*/
-
-    val useTheme = when (themeMode) {
+    val isDark = when (themeMode) {
         ThemeMode.SYSTEM -> isSystemInDarkTheme()
         ThemeMode.LIGHT -> false
         ThemeMode.DARK -> true
     }
 
-
-    val colors = if (useTheme) DarkColors else LightColors
+    val colors = if (isDark) DarkColors else LightColors
 
     MaterialTheme(
         colorScheme = colors,

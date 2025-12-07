@@ -35,8 +35,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import org.jetbrains.compose.resources.painterResource
-import org.koin.compose.koinInject
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.ic_app_logo
 import zappos.composeapp.generated.resources.siamdev_logo
@@ -109,3 +110,14 @@ fun SplashScreen(
         }
     }
 }
+
+@Preview
+@Composable
+fun SplashScreenPreview() {
+    val fakeViewModel: SplashViewModel = viewModel()
+    SplashScreen(
+        viewModel = fakeViewModel,
+        onSplashFinished = {}
+    )
+}
+

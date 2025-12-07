@@ -21,10 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package org.siamdev.zappos.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
@@ -32,6 +34,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -51,10 +54,17 @@ fun MaterialButton(
     modifier: Modifier = Modifier,
     text: String = "",
     iconStart: ImageVector? = null,
+    iconCenter: ImageVector? = null,
     iconEnd: ImageVector? = null,
+    iconSize: Int = 24,
     buttonColor: Color = MaterialTheme.colorScheme.primary,
     onClick: () -> Unit,
 ) {
+
+    val contentPadding =
+        if (iconCenter != null) PaddingValues(0.dp)
+        else PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+
     Button(
         modifier = modifier
             .background(
@@ -66,7 +76,23 @@ fun MaterialButton(
             containerColor = buttonColor
         ),
         shape = RoundedCornerShape(8.dp),
+        contentPadding = contentPadding
     ) {
+
+        if (iconCenter != null) {
+            androidx.compose.foundation.layout.Box(
+                modifier = Modifier
+                    .size(iconSize.dp)
+            ) {
+                Icon(
+                    imageVector = iconCenter,
+                    contentDescription = null,
+                    modifier = Modifier.size(iconSize.dp)
+                )
+            }
+            return@Button
+        }
+
         Row(horizontalArrangement = Arrangement.Center) {
 
             // Start Icon (optional)
@@ -79,7 +105,8 @@ fun MaterialButton(
                 Spacer(modifier = Modifier.width(8.dp))
             }
 
-            Text(text)
+            //Text(text)
+            if (text.isNotEmpty()) Text(text)
 
             // End Icon (optional)
             if (iconEnd != null) {
@@ -103,6 +130,18 @@ fun MaterialButtonPreview() {
         text = "Preview Button",
         iconStart = Icons.Default.ShoppingCart,
         iconEnd = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+        onClick = {}
+    )
+}
+
+@Preview
+@Composable
+fun AddButtonPreview() {
+    MaterialButton(
+        modifier = Modifier.size(50.dp),
+        iconCenter = Icons.Default.Add,
+        iconSize = 28,
+        buttonColor = Color(0xFF070E1E),
         onClick = {}
     )
 }
