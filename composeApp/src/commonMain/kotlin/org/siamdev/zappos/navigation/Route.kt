@@ -46,6 +46,10 @@ sealed interface Route : NavKey {
     object Home : Route, NavKey
 
     @Serializable
+    object Menu : Route, NavKey
+
+
+    @Serializable
     object Counter : Route, NavKey
 
 }

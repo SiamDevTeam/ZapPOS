@@ -35,6 +35,8 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import org.siamdev.zappos.ui.screens.demo.CounterScreen
 import org.siamdev.zappos.ui.screens.login.LoginScreen
+import org.siamdev.zappos.ui.screens.home.HomeScreen
+import org.siamdev.zappos.ui.screens.menu.MainMenuScreen
 import org.siamdev.zappos.ui.screens.splash.SplashScreen
 import org.siamdev.zappos.ui.screens.splash.SplashViewModel
 
@@ -50,6 +52,7 @@ fun NavigationRoot(
                     subclass(Route.Splash::class, Route.Splash.serializer())
                     subclass(Route.Login::class, Route.Login.serializer())
                     subclass(Route.Home::class, Route.Home.serializer())
+                    subclass(Route.Menu::class, Route.Menu.serializer())
                     subclass(Route.Counter::class, Route.Counter.serializer())
                 }
             }
@@ -80,17 +83,18 @@ fun NavigationRoot(
                 is Route.Login -> {
                     NavEntry(key) {
                         LoginScreen(
-                            onLoginAnonymous = { backStack.add(Route.Counter) }
+                            onLoginAnonymous = { backStack.add(Route.Menu) }
                         )
                     }
                 }
-                is Route.Counter -> NavEntry(key) { CounterScreen() }
                 is Route.Home -> {
                     NavEntry(key) {
-                        // HomeScreen()
-                        CounterScreen()
+                        HomeScreen()
+                        //CounterScreen()
                     }
                 }
+                is Route.Menu -> NavEntry(key) { MainMenuScreen() }
+                is Route.Counter -> NavEntry(key) { CounterScreen() }
                 else -> error("Unknown NavKey: $key")
             }
         }
