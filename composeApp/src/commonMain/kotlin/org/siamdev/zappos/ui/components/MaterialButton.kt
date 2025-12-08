@@ -26,6 +26,7 @@ package org.siamdev.zappos.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -56,7 +57,8 @@ fun MaterialButton(
     iconStart: ImageVector? = null,
     iconCenter: ImageVector? = null,
     iconEnd: ImageVector? = null,
-    iconSize: Int = 24,
+    iconSize: Int = 25,
+    iconColor: Color = MaterialTheme.colorScheme.onPrimary,
     buttonColor: Color = MaterialTheme.colorScheme.primary,
     onClick: () -> Unit,
 ) {
@@ -80,14 +82,15 @@ fun MaterialButton(
     ) {
 
         if (iconCenter != null) {
-            androidx.compose.foundation.layout.Box(
+            Box(
                 modifier = Modifier
                     .size(iconSize.dp)
             ) {
                 Icon(
                     imageVector = iconCenter,
                     contentDescription = null,
-                    modifier = Modifier.size(iconSize.dp)
+                    modifier = Modifier.size(iconSize.dp),
+                    tint = iconColor
                 )
             }
             return@Button
@@ -100,7 +103,8 @@ fun MaterialButton(
                 Icon(
                     imageVector = iconStart,
                     contentDescription = null,
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(20.dp),
+                    tint = iconColor
                 )
                 Spacer(modifier = Modifier.width(8.dp))
             }
@@ -114,7 +118,8 @@ fun MaterialButton(
                 Icon(
                     imageVector = iconEnd,
                     contentDescription = null,
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(20.dp),
+                    tint = iconColor
                 )
             }
         }

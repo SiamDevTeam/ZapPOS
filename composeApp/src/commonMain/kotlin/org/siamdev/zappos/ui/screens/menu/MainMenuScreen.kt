@@ -8,12 +8,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Article
@@ -34,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.ui.components.MaterialButton
+import org.siamdev.zappos.ui.components.MenuItemCard
 import org.siamdev.zappos.ui.components.SlideBottomSheet
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.sat_unit
@@ -143,9 +147,101 @@ fun MainMenuScreen() {
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-                .padding(top = 300.dp),
+                .padding(top = 120.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
+            LazyColumn(
+                modifier = Modifier
+                    .wrapContentWidth()
+                    .fillMaxHeight(),
+                verticalArrangement = Arrangement.spacedBy(3.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                item {
+                    MenuItemCard(
+                        imageUrl = "https://images.pexels.com/photos/350478/pexels-photo-350478.jpeg",
+                        name = "Americano",
+                        priceBaht = "70.00",
+                        priceSat = "17,500"
+                    )
+                }
+
+                item {
+                    MenuItemCard(
+                        imageUrl = "https://images.pexels.com/photos/17486832/pexels-photo-17486832.jpeg",
+                        name = "Americano",
+                        priceBaht = "70.00",
+                        priceSat = "17,500"
+                    )
+                }
+
+                item {
+                    MenuItemCard(
+                        imageUrl = "https://images.pexels.com/photos/2611811/pexels-photo-2611811.jpeg",
+                        name = "Americano",
+                        priceBaht = "100.00",
+                        priceSat = "26,000"
+                    )
+                }
+
+                item {
+                    MenuItemCard(
+                        imageUrl = "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg",
+                        name = "Americano",
+                        priceBaht = "100.00",
+                        priceSat = "26,000"
+                    )
+                }
+
+                item {
+                    MenuItemCard(
+                        imageUrl = "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg",
+                        name = "Americano",
+                        priceBaht = "100.00",
+                        priceSat = "26,000"
+                    )
+                }
+
+                item {
+                    MenuItemCard(
+                        imageUrl = "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg",
+                        name = "Americano",
+                        priceBaht = "100.00",
+                        priceSat = "26,000"
+                    )
+                }
+
+                item {
+                    MenuItemCard(
+                        imageUrl = "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg",
+                        name = "Americano",
+                        priceBaht = "100.00",
+                        priceSat = "26,000"
+                    )
+                }
+
+                item {
+                    MenuItemCard(
+                        imageUrl = "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg",
+                        name = "Americano",
+                        priceBaht = "100.00",
+                        priceSat = "26,000"
+                    )
+                }
+
+                item {
+                    MenuItemCard(
+                        imageUrl = "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg",
+                        name = "Americano",
+                        priceBaht = "100.00",
+                        priceSat = "26,000"
+                    )
+                }
+            }
+
+
 
 
         }

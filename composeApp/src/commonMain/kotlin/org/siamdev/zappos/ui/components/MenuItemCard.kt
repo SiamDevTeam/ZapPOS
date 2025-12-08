@@ -10,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
@@ -41,7 +42,7 @@ fun MenuItemCard(
 
         Row(
             modifier = Modifier
-                .padding(10.dp),
+                .padding(5.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
 
@@ -50,14 +51,20 @@ fun MenuItemCard(
                 contentDescription = name,
                 modifier = Modifier
                     .size(90.dp)
-                    .background(Color.LightGray, RoundedCornerShape(8.dp)),
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color.LightGray),
                 contentScale = ContentScale.Crop
             )
+
 
             Spacer(Modifier.width(12.dp))
 
             Column(
-                modifier = Modifier.weight(0.1f)
+                verticalArrangement = Arrangement.Bottom,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .height(80.dp)
+                    .padding(end = 100.dp)
             ) {
 
                 Text(
@@ -96,20 +103,29 @@ fun MenuItemCard(
                 }
             }
 
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(17.dp))
 
             Column(
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.height(80.dp)
+                modifier = Modifier
+                    .height(80.dp)
+                    .padding(bottom = 10.dp)
             ) {
+                Text(
+                    text = "x5",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(bottom = 30.dp)
+                )
                 MaterialButton(
-                    modifier = Modifier.size(36.dp),
+                    modifier = Modifier
+                        .size(17.dp),
                     iconCenter = Icons.Default.Add,
-                    iconSize = 37,
+                    iconColor = Color.White,
                     buttonColor = Color(0xFF070E1E),
                     onClick = onAddClick
                 )
+
             }
         }
     }
@@ -127,14 +143,3 @@ fun Item1CardPreview() {
     )
 }
 
-
-/*
-@Preview
-@Composable
-fun MenuItemCardPreview() {
-    // https://images.pexels.com/photos/17486832/pexels-photo-17486832.jpeg | 17,500 sat 70.00 baht
-    // https://images.pexels.com/photos/350478/pexels-photo-350478.jpeg | 17,500 sat 70.00 baht
-    // https://images.pexels.com/photos/2611811/pexels-photo-2611811.jpeg | 26,000 sat 100.00 baht
-    // https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg | 26,000 sat 100.00 baht
-}
-*/
