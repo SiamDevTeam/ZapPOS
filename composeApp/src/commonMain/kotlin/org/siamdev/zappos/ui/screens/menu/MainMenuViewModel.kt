@@ -14,7 +14,6 @@ data class MenuItem(
 
 class MainMenuViewModel : ViewModel() {
 
-    // Mutable state list — Compose reactive
     private val _items = mutableStateListOf<MenuItem>()
     val items: List<MenuItem> get() = _items
 
@@ -71,5 +70,43 @@ class MainMenuViewModel : ViewModel() {
         }
     }
 
+    fun clearAllItems() {
+        for (i in _items.indices) {
+            val item = _items[i]
+            if (item.count > 0u) {
+                _items[i] = item.copy(count = 0u)
+            }
+        }
+    }
+
+    val totalFiat: String
+        get() {
+            var total = 0.0
+            for (item in _items) {
+                total += item.priceBaht.toDouble() * item.count.toDouble()
+            }
+            return formatNumber(total)
+        }
+
+    val totalSat: String
+        get() {
+            var total = 0.0
+            for (item in _items) {
+                val satValue = item.priceSat.replace(",", "").toDoubleOrNull() ?: 0.0
+                total += satValue * item.count.toDouble()
+            }
+            return formatNumber(total)
+        }
+
+
+
+    fun formatNumber(value: Double): String {
+        val intPart = value.toLong()
+        val decimalPart = ((value - intPart) * 100).toInt()
+
+        val intStr = intPart.toString().reversed().chunked(3).joinToString(",").reversed()
+        val decimalStr = decimalPart.toString().padStart(2, '0')
+        return "$intStr.$decimalStr"
+    }
 
 }

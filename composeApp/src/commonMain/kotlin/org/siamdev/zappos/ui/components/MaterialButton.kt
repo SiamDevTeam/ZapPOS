@@ -28,6 +28,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
@@ -76,6 +77,7 @@ fun MaterialButton(
     iconSize: Int = 25,
     iconColor: Color = MaterialTheme.colorScheme.onPrimary,
     buttonColor: Color = MaterialTheme.colorScheme.primary,
+    showBorder: Boolean = false,
     onClick: () -> Unit,
 ) {
 
@@ -94,18 +96,18 @@ fun MaterialButton(
     }
 
     // Smooth pressed bg color
-    val targetColor = if (isPressed) buttonColor.copy(alpha = 0.80f) else buttonColor
+    val targetColor = if (isPressed) buttonColor.copy(alpha = 0.6f) else buttonColor
+
     val backgroundColor by animateColorAsState(
         targetValue = targetColor,
-        animationSpec = tween(120),
+        animationSpec = tween(150),
         label = ""
     )
 
     // Smooth pressed scale
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 0.94f else 1f,
-        animationSpec = tween(90),
-        label = ""
+        animationSpec = tween(90)
     )
 
     val contentPadding =
@@ -116,14 +118,20 @@ fun MaterialButton(
         modifier = modifier
             .scale(scale)
             .background(backgroundColor, RoundedCornerShape(8.dp))
+            .then(
+                if (showBorder) Modifier.border(
+                    width = 1.dp,
+                    color = Color(0xFFD9D9D9),
+                    shape = RoundedCornerShape(8.dp)
+                ) else Modifier
+            )
             .clickable(
                 interactionSource = interactionSource,
                 indication = null, // remove ripple
                 onClick = onClick
             )
             .padding(contentPadding)
-            .heightIn(min = 40.dp)              // Minimum button height
-            .requiredHeight(40.dp)      // Prevent collapsing
+            .heightIn(min = 40.dp)
     ) {
 
         if (iconCenter != null) {

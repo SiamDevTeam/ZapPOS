@@ -2,7 +2,6 @@ package org.siamdev.zappos.ui.screens.menu
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Article
 import androidx.compose.material.icons.filled.CurrencyLira
@@ -29,7 +27,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -93,7 +90,7 @@ fun MainMenuScreen(viewModel: MainMenuViewModel) {
                                 modifier = Modifier.size(20.dp)
                             )
                             Spacer(Modifier.width(4.dp))
-                            Text("61,020", style = MaterialTheme.typography.titleLarge)
+                            Text(viewModel.totalFiat, style = MaterialTheme.typography.titleLarge)
                         }
 
                         Spacer(Modifier.height(4.dp))
@@ -104,7 +101,7 @@ fun MainMenuScreen(viewModel: MainMenuViewModel) {
                                 modifier = Modifier.size(20.dp)
                             )
                             Spacer(Modifier.width(4.dp))
-                            Text("1,900.35", style = MaterialTheme.typography.titleMedium)
+                            Text(viewModel.totalSat, style = MaterialTheme.typography.titleMedium)
                         }
                     }
                 }
@@ -119,15 +116,11 @@ fun MainMenuScreen(viewModel: MainMenuViewModel) {
             ) {
                 MaterialButton(
                     modifier = Modifier
-                        .weight(1f)
-                        .border(
-                            width = 1.dp,
-                            color = Color(0xFFD9D9D9),
-                            shape = RoundedCornerShape(8.dp)
-                        ),
+                        .weight(1f),
                     text = "Clear Cart",
                     buttonColor = Color.White,
-                    onClick = {  }
+                    showBorder = true,
+                    onClick = { viewModel.clearAllItems() }
                 )
 
                 Spacer(Modifier.width(12.dp))
