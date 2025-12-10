@@ -23,16 +23,32 @@
  */
 package org.siamdev.zappos.navigation
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.NavEntryDecorator
 import androidx.savedstate.serialization.SavedStateConfiguration
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
+import org.siamdev.zappos.di.viewModelOf
 import org.siamdev.zappos.ui.screens.demo.CounterScreen
 import org.siamdev.zappos.ui.screens.login.LoginScreen
 import org.siamdev.zappos.ui.screens.home.HomeScreen
@@ -40,6 +56,7 @@ import org.siamdev.zappos.ui.screens.menu.MainMenuScreen
 import org.siamdev.zappos.ui.screens.menu.MainMenuViewModel
 import org.siamdev.zappos.ui.screens.splash.SplashScreen
 import org.siamdev.zappos.ui.screens.splash.SplashViewModel
+
 
 @Composable
 fun NavigationRoot(
@@ -68,39 +85,50 @@ fun NavigationRoot(
             rememberViewModelStoreNavEntryDecorator()
         ),
         entryProvider = { key ->
-            when (key) {
-                is Route.Splash -> {
-                    NavEntry(key) {
-                        SplashScreen(
-                            viewModel = splashViewModel,
-                            onSplashFinished = {
-                                if (splashViewModel.relayReady.value) {
-                                    backStack.add(Route.Login)
-                                }
-                            }
-                        )
-                    }
-                }
-                is Route.Login -> {
-                    NavEntry(key) {
-                        LoginScreen(
-                            onLoginAnonymous = { backStack.add(Route.Menu) }
-                        )
-                    }
-                }
-                is Route.Home -> {
-                    NavEntry(key) {
-                        HomeScreen()
-                        //CounterScreen()
-                    }
-                }
-                is Route.Menu -> NavEntry(key) {
-                    val viewModel = androidx.lifecycle.viewmodel.compose.viewModel<MainMenuViewModel>()
-                    MainMenuScreen(viewModel)
+            NavEntry(key) {
+                var visible by remember { mutableStateOf(false) }
+                LaunchedEffect(Unit) { visible = true }
 
+                val (enterAnim, exitAnim) = when (key) {
+                    /*is Route.Splash -> {
+                        fadeIn(animationSpec = tween(500)) + slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(500)) to
+                                fadeOut(animationSpec = tween(500)) + slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(500))
+                    }*/
+                    is Route.Login -> {
+                        /*fadeIn(animationSpec = tween(300)) + slideInHorizontally(initialOffsetX = { it / 2 }, animationSpec = tween(300)) to
+                                fadeOut(animationSpec = tween(300)) + slideOutHorizontally(targetOffsetX = { -it / 2 }, animationSpec = tween(300))*/
+                        fadeIn(animationSpec = tween(400)) to fadeOut(animationSpec = tween(400))
+                    }
+                    is Route.Menu -> {
+                        fadeIn(animationSpec = tween(400)) to fadeOut(animationSpec = tween(400))
+                    }
+                    else -> {
+                        fadeIn() to fadeOut()
+                    }
                 }
-                is Route.Counter -> NavEntry(key) { CounterScreen() }
-                else -> error("Unknown NavKey: $key")
+
+                AnimatedVisibility(
+                    visible = visible,
+                    enter = enterAnim,
+                    exit = exitAnim
+                ) {
+                    when (key) {
+                        is Route.Splash -> SplashScreen(viewModel = splashViewModel) {
+                            if (splashViewModel.relayReady.value) {
+                                backStack.add(Route.Login)
+                            }
+                        }
+                        is Route.Login -> LoginScreen(onLoginAnonymous = { backStack.add(Route.Menu) })
+                        is Route.Home -> HomeScreen()
+                        is Route.Menu -> {
+                            // val viewModel = viewModel<MainMenuViewModel>()
+                            val viewModel = viewModelOf { MainMenuViewModel() }
+                            MainMenuScreen(viewModel)
+                        }
+                        is Route.Counter -> CounterScreen()
+                        else -> error("Unknown NavKey: $key")
+                    }
+                }
             }
         }
     )

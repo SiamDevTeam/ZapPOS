@@ -6,27 +6,30 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CurrencyLira
-import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.sat_unit
 import org.jetbrains.compose.resources.painterResource
+import zappos.composeapp.generated.resources.compose_multiplatform
 
 @Composable
 fun MenuItemCard(
     imageUrl: String,
     name: String,
     priceBaht: String,
-    priceSat: String,
+    priceSat: String? = null,
     count: UInt = 0u,
     onAddClick: () -> Unit = {},
     onReduceClick: () -> Unit = {}
@@ -56,7 +59,9 @@ fun MenuItemCard(
                     .size(90.dp)
                     .clip(RoundedCornerShape(10.dp))
                     .background(Color.LightGray),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
+                placeholder = ColorPainter(Color.LightGray),
+                error = painterResource(Res.drawable.compose_multiplatform)
             )
 
             Spacer(Modifier.width(12.dp))
@@ -70,7 +75,10 @@ fun MenuItemCard(
 
                 Text(
                     text = name,
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                    ),
+                    fontSize = 18.sp
                 )
 
                 Spacer(Modifier.height(4.dp))
@@ -87,20 +95,24 @@ fun MenuItemCard(
 
                 Spacer(Modifier.height(4.dp))
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        painter = painterResource(Res.drawable.sat_unit),
-                        contentDescription = "sat icon",
-                        tint = Color(0xFFFFB700),
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(Modifier.width(4.dp))
-                    Text(
-                        text = priceSat,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = Color(0xFFFFB700)
-                    )
+                // Sat price row
+                if (priceSat != null) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(Res.drawable.sat_unit),
+                            contentDescription = "sat icon",
+                            tint = Color(0xFFFFB700),
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(Modifier.width(4.dp))
+                        Text(
+                            text = priceSat,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color(0xFFFFB700)
+                        )
+                    }
                 }
+
             }
 
 
@@ -149,10 +161,48 @@ fun MenuItemCard(
 fun Item1CardPreview() {
     MenuItemCard(
         imageUrl = "https://images.pexels.com/photos/350478/pexels-photo-350478.jpeg",
-        name = "Americano",
+        name = "Mocha",
         priceBaht = "70.00",
         priceSat = "17,500",
         count = 21u
+    )
+}
+
+@Preview
+@Composable
+fun Item2CardPreview() {
+    MenuItemCard(
+        imageUrl = "https://images.pexels.com/photos/17486832/pexels-photo-17486832.jpeg",
+        name = "Latte",
+        priceBaht = "70.00",
+        priceSat = "17,500",
+        count = 2u
+    )
+}
+
+
+@Preview
+@Composable
+fun Item3CardPreview() {
+    MenuItemCard(
+        imageUrl = "https://images.pexels.com/photos/2611811/pexels-photo-2611811.jpeg",
+        name = "Matcha Latte",
+        priceBaht = "100.00",
+        //priceSat = "26,000",
+        count = 4u
+    )
+}
+
+
+@Preview
+@Composable
+fun Item4CardPreview() {
+    MenuItemCard(
+        imageUrl = "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg",
+        name = "Matcha Coffee",
+        priceBaht = "100.00",
+        //priceSat = "26,000",
+        count = 1u
     )
 }
 
