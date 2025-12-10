@@ -44,7 +44,7 @@ import zappos.composeapp.generated.resources.sat_unit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainMenuScreen() {
+fun MainMenuScreen(viewModel: MainMenuViewModel) {
 
     val sheetState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberStandardBottomSheetState(
@@ -53,7 +53,6 @@ fun MainMenuScreen() {
         )
     )
 
-    val scope = rememberCoroutineScope()
 
     SlideBottomSheet(
         sheetState = sheetState,
@@ -151,6 +150,7 @@ fun MainMenuScreen() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
+            val items = viewModel.items
             LazyColumn(
                 modifier = Modifier
                     .wrapContentWidth()
@@ -158,89 +158,20 @@ fun MainMenuScreen() {
                 verticalArrangement = Arrangement.spacedBy(3.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
-                item {
+                items(items.size) { index ->
+                    val item = items[index]
                     MenuItemCard(
-                        imageUrl = "https://images.pexels.com/photos/350478/pexels-photo-350478.jpeg",
-                        name = "Americano",
-                        priceBaht = "70.00",
-                        priceSat = "17,500"
+                        imageUrl = item.imageUrl,
+                        name = item.name,
+                        priceBaht = item.priceBaht,
+                        priceSat = item.priceSat,
+                        count = item.count,
+                        onAddClick = { viewModel.addItem(item.id) },
+                        onReduceClick = { viewModel.reduceItem(item.id) }
                     )
                 }
 
-                item {
-                    MenuItemCard(
-                        imageUrl = "https://images.pexels.com/photos/17486832/pexels-photo-17486832.jpeg",
-                        name = "Americano",
-                        priceBaht = "70.00",
-                        priceSat = "17,500"
-                    )
-                }
-
-                item {
-                    MenuItemCard(
-                        imageUrl = "https://images.pexels.com/photos/2611811/pexels-photo-2611811.jpeg",
-                        name = "Americano",
-                        priceBaht = "100.00",
-                        priceSat = "26,000"
-                    )
-                }
-
-                item {
-                    MenuItemCard(
-                        imageUrl = "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg",
-                        name = "Americano",
-                        priceBaht = "100.00",
-                        priceSat = "26,000"
-                    )
-                }
-
-                item {
-                    MenuItemCard(
-                        imageUrl = "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg",
-                        name = "Americano",
-                        priceBaht = "100.00",
-                        priceSat = "26,000"
-                    )
-                }
-
-                item {
-                    MenuItemCard(
-                        imageUrl = "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg",
-                        name = "Americano",
-                        priceBaht = "100.00",
-                        priceSat = "26,000"
-                    )
-                }
-
-                item {
-                    MenuItemCard(
-                        imageUrl = "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg",
-                        name = "Americano",
-                        priceBaht = "100.00",
-                        priceSat = "26,000"
-                    )
-                }
-
-                item {
-                    MenuItemCard(
-                        imageUrl = "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg",
-                        name = "Americano",
-                        priceBaht = "100.00",
-                        priceSat = "26,000"
-                    )
-                }
-
-                item {
-                    MenuItemCard(
-                        imageUrl = "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg",
-                        name = "Americano",
-                        priceBaht = "100.00",
-                        priceSat = "26,000"
-                    )
-                }
             }
-
 
 
 
@@ -254,5 +185,5 @@ fun MainMenuScreen() {
 @Preview
 @Composable
 fun MainMenuScreenPreview() {
-    MainMenuScreen()
+    MainMenuScreen(MainMenuViewModel())
 }

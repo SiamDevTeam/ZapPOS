@@ -24,12 +24,23 @@
 
 package org.siamdev.zappos.ui.components
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,13 +48,18 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
@@ -63,42 +79,75 @@ fun MaterialButton(
     onClick: () -> Unit,
 ) {
 
+    val interactionSource = remember { MutableInteractionSource() }
+    var isPressed by remember { mutableStateOf(false) }
+
+    LaunchedEffect(interactionSource) {
+        interactionSource.interactions.collect { interaction ->
+            isPressed = when (interaction) {
+                is PressInteraction.Press -> true
+                is PressInteraction.Release,
+                is PressInteraction.Cancel -> false
+                else -> false
+            }
+        }
+    }
+
+    // Smooth pressed bg color
+    val targetColor = if (isPressed) buttonColor.copy(alpha = 0.80f) else buttonColor
+    val backgroundColor by animateColorAsState(
+        targetValue = targetColor,
+        animationSpec = tween(120),
+        label = ""
+    )
+
+    // Smooth pressed scale
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.94f else 1f,
+        animationSpec = tween(90),
+        label = ""
+    )
+
     val contentPadding =
         if (iconCenter != null) PaddingValues(0.dp)
-        else PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+        else PaddingValues(horizontal = 12.dp, vertical = 8.dp)
 
-    Button(
+    Box(
         modifier = modifier
-            .background(
-                color = buttonColor,
-                shape = RoundedCornerShape(8.dp)
-            ),
-        onClick = onClick,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = buttonColor
-        ),
-        shape = RoundedCornerShape(8.dp),
-        contentPadding = contentPadding
+            .scale(scale)
+            .background(backgroundColor, RoundedCornerShape(8.dp))
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null, // remove ripple
+                onClick = onClick
+            )
+            .padding(contentPadding)
+            .heightIn(min = 40.dp)              // Minimum button height
+            .requiredHeight(40.dp)      // Prevent collapsing
     ) {
 
         if (iconCenter != null) {
-            Box(
+            Icon(
+                imageVector = iconCenter,
+                contentDescription = null,
                 modifier = Modifier
                     .size(iconSize.dp)
-            ) {
-                Icon(
-                    imageVector = iconCenter,
-                    contentDescription = null,
-                    modifier = Modifier.size(iconSize.dp),
-                    tint = iconColor
-                )
-            }
-            return@Button
+                    .align(Alignment.Center),
+                tint = iconColor
+            )
+            return@Box
         }
 
-        Row(horizontalArrangement = Arrangement.Center) {
+        // Normal button layout: start icon + text + end icon
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.Center)
+        ) {
 
-            // Start Icon (optional)
+            // Optional start icon
             if (iconStart != null) {
                 Icon(
                     imageVector = iconStart,
@@ -106,15 +155,15 @@ fun MaterialButton(
                     modifier = Modifier.size(20.dp),
                     tint = iconColor
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(Modifier.width(8.dp))
             }
 
-            //Text(text)
-            if (text.isNotEmpty()) Text(text)
+            // Optional text
+            if (text.isNotEmpty()) Text(text, color = iconColor)
 
-            // End Icon (optional)
+            // Optional end icon
             if (iconEnd != null) {
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(Modifier.weight(1f))
                 Icon(
                     imageVector = iconEnd,
                     contentDescription = null,

@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CurrencyLira
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -26,7 +27,9 @@ fun MenuItemCard(
     name: String,
     priceBaht: String,
     priceSat: String,
-    onAddClick: () -> Unit = {}
+    count: UInt = 0u,
+    onAddClick: () -> Unit = {},
+    onReduceClick: () -> Unit = {}
 ) {
 
     Card(
@@ -51,20 +54,18 @@ fun MenuItemCard(
                 contentDescription = name,
                 modifier = Modifier
                     .size(90.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                    .clip(RoundedCornerShape(10.dp))
                     .background(Color.LightGray),
                 contentScale = ContentScale.Crop
             )
 
-
             Spacer(Modifier.width(12.dp))
 
+
+            // Middle: Item Info
             Column(
-                verticalArrangement = Arrangement.Bottom,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .height(80.dp)
-                    .padding(end = 100.dp)
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.weight(1f)
             ) {
 
                 Text(
@@ -78,12 +79,11 @@ fun MenuItemCard(
                     Icon(
                         imageVector = Icons.Default.CurrencyLira,
                         contentDescription = "Currency",
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(18.dp)
                     )
                     Spacer(Modifier.width(4.dp))
                     Text(text = priceBaht, style = MaterialTheme.typography.titleMedium)
                 }
-
 
                 Spacer(Modifier.height(4.dp))
 
@@ -92,7 +92,7 @@ fun MenuItemCard(
                         painter = painterResource(Res.drawable.sat_unit),
                         contentDescription = "sat icon",
                         tint = Color(0xFFFFB700),
-                        modifier = Modifier.size(18.dp)
+                        modifier = Modifier.size(16.dp)
                     )
                     Spacer(Modifier.width(4.dp))
                     Text(
@@ -103,33 +103,45 @@ fun MenuItemCard(
                 }
             }
 
-            Spacer(Modifier.width(17.dp))
 
+            // Right: Qty + Add button
             Column(
-                verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .height(80.dp)
-                    .padding(bottom = 10.dp)
+                //verticalArrangement = Arrangement.Bottom,
+                verticalArrangement = Arrangement.Center
+
             ) {
-                Text(
-                    text = "x5",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(bottom = 30.dp)
-                )
+
+                Box(
+                    modifier = Modifier.height(35.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (count > 0u) {
+                        Text(
+                            text = "x$count",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(10.dp))
+
+
                 MaterialButton(
-                    modifier = Modifier
-                        .size(17.dp),
+                    modifier = Modifier.size(40.dp),
                     iconCenter = Icons.Default.Add,
                     iconColor = Color.White,
                     buttonColor = Color(0xFF070E1E),
                     onClick = onAddClick
                 )
+            }
 
+                Spacer(Modifier.width(12.dp))
             }
         }
-    }
+
 }
+
 
 
 @Preview
@@ -139,7 +151,8 @@ fun Item1CardPreview() {
         imageUrl = "https://images.pexels.com/photos/350478/pexels-photo-350478.jpeg",
         name = "Americano",
         priceBaht = "70.00",
-        priceSat = "17,500"
+        priceSat = "17,500",
+        count = 21u
     )
 }
 

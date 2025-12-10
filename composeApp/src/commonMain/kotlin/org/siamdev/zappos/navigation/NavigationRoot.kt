@@ -37,6 +37,7 @@ import org.siamdev.zappos.ui.screens.demo.CounterScreen
 import org.siamdev.zappos.ui.screens.login.LoginScreen
 import org.siamdev.zappos.ui.screens.home.HomeScreen
 import org.siamdev.zappos.ui.screens.menu.MainMenuScreen
+import org.siamdev.zappos.ui.screens.menu.MainMenuViewModel
 import org.siamdev.zappos.ui.screens.splash.SplashScreen
 import org.siamdev.zappos.ui.screens.splash.SplashViewModel
 
@@ -93,7 +94,11 @@ fun NavigationRoot(
                         //CounterScreen()
                     }
                 }
-                is Route.Menu -> NavEntry(key) { MainMenuScreen() }
+                is Route.Menu -> NavEntry(key) {
+                    val viewModel = androidx.lifecycle.viewmodel.compose.viewModel<MainMenuViewModel>()
+                    MainMenuScreen(viewModel)
+
+                }
                 is Route.Counter -> NavEntry(key) { CounterScreen() }
                 else -> error("Unknown NavKey: $key")
             }
