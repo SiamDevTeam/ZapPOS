@@ -104,6 +104,7 @@ class MainMenuViewModel : ViewModel() {
             val item = _items[index]
             if (item.count > 0u) {
                 _items[index] = item.copy(count = item.count - 1u)
+                updateSelectedKeys(id)
             }
         }
     }
@@ -115,6 +116,7 @@ class MainMenuViewModel : ViewModel() {
                 _items[i] = item.copy(count = 0u)
             }
         }
+        _selectedKeys.clear()
     }
 
     val totalFiat: String
