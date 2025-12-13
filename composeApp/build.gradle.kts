@@ -140,6 +140,7 @@ compose.desktop {
     application {
         mainClass = "org.siamdev.zappos.MainKt"
 
+        // https://github.com/JetBrains/compose-multiplatform/issues/4883
         buildTypes.release.proguard {
             version.set("7.7.0")
             configurationFiles.from("proguard.pro")
