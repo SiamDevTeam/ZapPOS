@@ -48,7 +48,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.core.splashscreen)
             implementation(libs.koin.android)
-            implementation("io.ktor:ktor-client-android:3.0.0")
+            implementation("io.ktor:ktor-client-android:3.3.0")
 
         }
         commonMain.dependencies {
@@ -77,7 +77,6 @@ kotlin {
             implementation("io.github.crowded-libs:kotlin-lmdb:0.3.6") {
                 exclude(group = "net.java.dev.jna", module = "jna")
             }
-
             implementation("io.coil-kt.coil3:coil-network-ktor3:3.3.0")
             implementation("io.coil-kt.coil3:coil-compose:3.3.0")
 
@@ -89,12 +88,13 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
-            implementation("io.ktor:ktor-client-java:3.0.0")
+            implementation("io.ktor:ktor-client-java:3.3.0")
+            implementation("io.coil-kt.coil3:coil-network-okhttp:3.3.0")
 
         }
 
         iosMain.dependencies {
-            implementation("io.ktor:ktor-client-darwin:3.0.0")
+            implementation("io.ktor:ktor-client-darwin:3.3.0")
         }
     }
 }
@@ -139,6 +139,11 @@ dependencies {
 compose.desktop {
     application {
         mainClass = "org.siamdev.zappos.MainKt"
+
+        buildTypes.release.proguard {
+            version.set("7.7.0")
+            configurationFiles.from("proguard.pro")
+        }
 
         nativeDistributions {
             targetFormats(
