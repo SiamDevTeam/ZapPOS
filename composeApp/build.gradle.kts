@@ -77,7 +77,7 @@ kotlin {
             implementation("io.github.crowded-libs:kotlin-lmdb:0.3.6") {
                 exclude(group = "net.java.dev.jna", module = "jna")
             }
-            implementation("io.coil-kt.coil3:coil-network-ktor3:3.3.0")
+
             implementation("io.coil-kt.coil3:coil-compose:3.3.0")
 
 

@@ -18,6 +18,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import coil3.compose.LocalPlatformContext
+import coil3.request.ImageRequest
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.sat_unit
@@ -53,7 +55,14 @@ fun MenuItemCard(
         ) {
 
             AsyncImage(
-                model = imageUrl,
+                model = ImageRequest.Builder(LocalPlatformContext.current)
+                    .data(imageUrl)
+                    .listener(
+                        onStart = { println("Coil start: ${it.data}") },
+                        onSuccess = { _, _ -> println("Coil success") },
+                        onError = { _, result -> result.throwable.printStackTrace() }
+                    )
+                    .build(),
                 contentDescription = name,
                 modifier = Modifier
                     .size(90.dp)
