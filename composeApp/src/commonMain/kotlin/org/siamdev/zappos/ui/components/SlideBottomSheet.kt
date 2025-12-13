@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -48,6 +49,7 @@ import zappos.composeapp.generated.resources.sat_unit
 @Composable
 fun SlideBottomSheet(
     sheetState: BottomSheetScaffoldState,
+    sheetMaxHeight: Dp = 320.dp,
     topContent: @Composable ColumnScope.() -> Unit,
     bottomContent: @Composable ColumnScope.() -> Unit,
     screenContent: @Composable () -> Unit
@@ -82,6 +84,7 @@ fun SlideBottomSheet(
         // BottomSheet content
         sheetContent = {
             BottomSheetInternalLayout(
+                sheetMaxHeight = sheetMaxHeight,
                 topContent = topContent,
                 bottomContent = bottomContent
             )
@@ -97,6 +100,7 @@ fun SlideBottomSheet(
 
 @Composable
 private fun BottomSheetInternalLayout(
+    sheetMaxHeight: Dp,
     topContent: @Composable ColumnScope.() -> Unit,
     bottomContent: @Composable ColumnScope.() -> Unit
 ) {
@@ -105,7 +109,7 @@ private fun BottomSheetInternalLayout(
             .fillMaxWidth()
             .navigationBarsPadding()
             .imePadding()
-            .height(320.dp)
+            .height(sheetMaxHeight)
             .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -152,6 +156,7 @@ private fun BottomSheetInternalLayout(
 fun BottomSheetV1Preview() {
     Surface {
         BottomSheetInternalLayout(
+            sheetMaxHeight = 420.dp,
             topContent = {
                 Text("Matcha Coffee 999")
                 Text("Latte 999")

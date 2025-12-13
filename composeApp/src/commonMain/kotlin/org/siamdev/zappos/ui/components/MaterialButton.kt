@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package org.siamdev.zappos.ui.components
 
 import androidx.compose.animation.animateColorAsState
@@ -38,10 +37,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -66,7 +63,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-
 @Composable
 fun MaterialButton(
     modifier: Modifier = Modifier,
@@ -86,28 +82,20 @@ fun MaterialButton(
 
     LaunchedEffect(interactionSource) {
         interactionSource.interactions.collect { interaction ->
-            isPressed = when (interaction) {
-                is PressInteraction.Press -> true
-                is PressInteraction.Release,
-                is PressInteraction.Cancel -> false
-                else -> false
-            }
+            isPressed = interaction is PressInteraction.Press
         }
     }
 
-    // Smooth pressed bg color
     val targetColor = if (isPressed) buttonColor.copy(alpha = 0.6f) else buttonColor
 
     val backgroundColor by animateColorAsState(
         targetValue = targetColor,
-        animationSpec = tween(150),
-        label = ""
+        animationSpec = tween(durationMillis = 150)
     )
 
-    // Smooth pressed scale
     val scale by animateFloatAsState(
-        targetValue = if (isPressed) 0.94f else 1f,
-        animationSpec = tween(90)
+        targetValue = if (isPressed) 0.96f else 1f,
+        animationSpec = tween(durationMillis = 90)
     )
 
     val contentPadding =
@@ -127,7 +115,7 @@ fun MaterialButton(
             )
             .clickable(
                 interactionSource = interactionSource,
-                indication = null, // remove ripple
+                indication = null,
                 onClick = onClick
             )
             .padding(contentPadding)
@@ -154,7 +142,6 @@ fun MaterialButton(
                 .fillMaxWidth()
                 .align(Alignment.Center)
         ) {
-
             // Optional start icon
             if (iconStart != null) {
                 Icon(
@@ -187,24 +174,27 @@ fun MaterialButton(
 @Preview
 @Composable
 fun MaterialButtonPreview() {
-    MaterialButton(
-        modifier = Modifier.width(250.dp),
-        text = "Preview Button",
-        iconStart = Icons.Default.ShoppingCart,
-        iconEnd = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-        onClick = {}
-    )
+    MaterialTheme {
+        MaterialButton(
+            modifier = Modifier.width(250.dp),
+            text = "Preview Button",
+            iconStart = Icons.Default.ShoppingCart,
+            iconEnd = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            onClick = {}
+        )
+    }
 }
 
 @Preview
 @Composable
 fun AddButtonPreview() {
-    MaterialButton(
-        modifier = Modifier.size(50.dp),
-        iconCenter = Icons.Default.Add,
-        iconSize = 28,
-        buttonColor = Color(0xFF070E1E),
-        onClick = {}
-    )
+    MaterialTheme {
+        MaterialButton(
+            modifier = Modifier.size(50.dp),
+            iconCenter = Icons.Default.Add,
+            iconSize = 28,
+            buttonColor = Color(0xFF070E1E),
+            onClick = {}
+        )
+    }
 }
-

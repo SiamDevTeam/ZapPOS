@@ -58,6 +58,7 @@ import zappos.composeapp.generated.resources.zappos_dark_horizontal_v2
 
 @Composable
 fun LoginScreen(
+    onLoginNostr: () -> Unit = {},
     onLoginAnonymous: () -> Unit = {}
 ) {
 
@@ -86,7 +87,7 @@ fun LoginScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
+            .background(MaterialTheme.colorScheme.background.copy(alpha = 0.9f)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.weight(1f))
@@ -104,7 +105,7 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            val buttonWidth = if (maxWidth < 600.dp) 0.6f else 0.3f
+            val buttonWidth = if (maxWidth < 600.dp) 0.7f else 0.4f
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -113,7 +114,7 @@ fun LoginScreen(
                     modifier = Modifier.fillMaxWidth(buttonWidth),
                     text = "Login with Nostr account",
                     iconEnd = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                    onClick = {}
+                    onClick = { onLoginNostr() }
                 )
 
                 Spacer(modifier = Modifier.height(10.dp))

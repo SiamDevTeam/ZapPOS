@@ -23,15 +23,10 @@
  */
 package org.siamdev.zappos.navigation
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -47,12 +42,10 @@ import androidx.navigation3.runtime.NavEntry
 import androidx.savedstate.serialization.SavedStateConfiguration
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
-import org.siamdev.zappos.di.viewModelOf
 import org.siamdev.zappos.ui.screens.demo.CounterScreen
 import org.siamdev.zappos.ui.screens.login.LoginScreen
 import org.siamdev.zappos.ui.screens.home.HomeScreen
 import org.siamdev.zappos.ui.screens.menu.MainMenuScreen
-import org.siamdev.zappos.ui.screens.menu.MainMenuViewModel
 import org.siamdev.zappos.ui.screens.splash.SplashScreen
 import org.siamdev.zappos.ui.screens.splash.SplashViewModel
 
@@ -117,13 +110,12 @@ fun NavigationRoot(
                                 backStack.add(Route.Login)
                             }
                         }
-                        is Route.Login -> LoginScreen(onLoginAnonymous = { backStack.add(Route.Menu) })
+                        is Route.Login -> LoginScreen(
+                            onLoginNostr = { backStack.add(Route.Counter) },
+                            onLoginAnonymous = { backStack.add(Route.Menu) }
+                        )
                         is Route.Home -> HomeScreen()
-                        is Route.Menu -> {
-                            // val viewModel = viewModel<MainMenuViewModel>()
-                            val viewModel = viewModelOf { MainMenuViewModel() }
-                            MainMenuScreen(viewModel)
-                        }
+                        is Route.Menu -> MainMenuScreen()
                         is Route.Counter -> CounterScreen()
                         else -> error("Unknown NavKey: $key")
                     }
