@@ -29,10 +29,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Reorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,84 +45,119 @@ import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun UtilityHeader(
+fun TopBar(
     modifier: Modifier = Modifier,
     title: String = "Untitled",
-    onClick: () -> Unit = {}
+    onClick: (expanded: Boolean) -> Unit = {}
 ) {
     val brandText = brandTextFromTitle(title)
     val brandColor = brandColorFromTitle(title)
+
+    var expanded by remember { mutableStateOf(false) }
 
     Box(
         modifier = modifier
             .fillMaxWidth()
             .padding(top = 15.dp)
             .height(50.dp)
+            .padding(horizontal = 14.dp),
     ) {
         Row(
             modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .fillMaxHeight()
+                .fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp))
-                .background(
-                    MaterialTheme.colorScheme.surface.copy(alpha = 0.6f)
-                )
-                .clickable(onClick = onClick)
+                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.6f))
                 .padding(horizontal = 12.dp, vertical = 6.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
 
-            // ---- Brand Icon + Glow ----
-            Box(
-                modifier = Modifier.size(32.dp),
-                contentAlignment = Alignment.Center
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.clickable {
+                    expanded = !expanded
+                    onClick(expanded)
+                }
             ) {
-                GlowEffects(
-                    modifier = Modifier.matchParentSize(),
-                    shape = GlowShape.Square,
-                    drawCore = false,
-                    glowIntensity = 0.5f,
-                    glowRadius = 220f,
-                    color = brandColor
-                )
-
+                // Left group
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            color = brandColor,
-                            shape = RoundedCornerShape(8.dp)
-                        ),
+                    modifier = Modifier.size(32.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = brandText,
-                        color = Color.White,
-                        style = MaterialTheme.typography.titleMedium
+
+                    // Brand + Title + Arrow
+                    GlowEffects(
+                        modifier = Modifier.matchParentSize(),
+                        shape = GlowShape.Square,
+                        drawCore = false,
+                        glowIntensity = 0.5f,
+                        glowRadius = 220f,
+                        color = brandColor
                     )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(color = brandColor, shape = RoundedCornerShape(8.dp)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = brandText,
+                            color = Color.White,
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
                 }
+
+                Spacer(Modifier.width(10.dp))
+
+                Text(
+                    text = title,
+                    fontSize = 15.sp,
+                    style = MaterialTheme.typography.headlineSmall
+                )
+
+                Spacer(Modifier.width(4.dp))
+
+                Icon(
+                    imageVector = if (expanded)
+                        Icons.Default.KeyboardArrowUp
+                    else
+                        Icons.Default.KeyboardArrowDown,
+                    contentDescription = "Toggle menu",
+                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                    modifier = Modifier.size(20.dp)
+                )
             }
 
-            Spacer(Modifier.width(10.dp))
+            // ----- Right group -----
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Default.Notifications,
+                    contentDescription = "Notifications",
+                    tint = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable {
+                            println("Notifications clicked")
+                        }
+                )
 
-            // ---- Title ----
-            Text(
-                text = title,
-                fontSize = 15.sp,
-                style = MaterialTheme.typography.headlineSmall
-            )
+                Spacer(Modifier.width(12.dp))
 
-            Spacer(Modifier.width(4.dp))
-
-            // ---- Arrow ----
-            Icon(
-                imageVector = Icons.Default.KeyboardArrowDown,
-                contentDescription = "Open menu",
-                tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-                modifier = Modifier.size(20.dp)
-            )
+                Icon(
+                    imageVector = Icons.Default.Reorder,
+                    contentDescription = "Reorder",
+                    tint = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable {
+                            println("Reorder clicked")
+                        }
+                )
+            }
         }
     }
+
 }
 
 
@@ -197,19 +235,18 @@ private fun brandColorFromTitle(title: String): Color {
 
 
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 private fun UtilityHeaderPreview() {
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background.copy(alpha = 0.9f)),
+            .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        UtilityHeader()
-        UtilityHeader(title = "ZapPOS")
-        UtilityHeader(title = "Demo")
-        UtilityHeader(title = "Zap POS")
-        UtilityHeader(title = "rushmi0")
+        TopBar()
+        TopBar(title = "ZapPOS")
+        TopBar(title = "Demo")
+        TopBar(title = "Zap POS")
+        TopBar(title = "rushmi0")
     }
 }

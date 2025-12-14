@@ -30,22 +30,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.siamdev.zappos.ui.components.UtilityHeader
+import org.siamdev.zappos.ui.components.TopBar
 
 @Composable
 fun EffectScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 30.dp)
             .background(MaterialTheme.colorScheme.background.copy(alpha = 0.9f)),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        UtilityHeader()
-        UtilityHeader(title = "ZapPOS")
-        UtilityHeader(title = "Demo")
-        UtilityHeader(title = "Zap POS")
-        UtilityHeader(title = "rushmi0")
+        TopBar()
+        TopBar(title = "ZapPOS")
+        TopBar(title = "Demo")
+        TopBar(title = "Zap POS")
+        TopBar(title = "rushmi0")
     }
 }
 
