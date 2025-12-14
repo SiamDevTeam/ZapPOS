@@ -166,6 +166,15 @@ fun MainMenuScreen() {
         }
     ) {
         // Screen content
+        Box(
+            modifier = Modifier
+                .background(Color.Red)
+                .width(100.dp)
+                .height(50.dp)
+        ) {
+
+        }
+
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()

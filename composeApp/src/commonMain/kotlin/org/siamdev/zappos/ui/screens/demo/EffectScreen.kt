@@ -21,38 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.siamdev.zappos.navigation
+package org.siamdev.zappos.ui.screens.demo
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
-import androidx.navigation3.runtime.NavKey
-import kotlinx.serialization.Serializable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.siamdev.zappos.ui.components.GlowEffects
+import org.siamdev.zappos.ui.components.GlowShape
 
-interface RouteAnimation {
-    @Composable
-    fun Animated(content: @Composable () -> Unit)
+@Composable
+fun EffectScreen() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            GlowEffects(shape = GlowShape.Circle)
+            GlowEffects(shape = GlowShape.Square)
+            GlowEffects(shape = GlowShape.Rounded)
+        }
+    }
 }
 
-
-@Serializable
-sealed interface Route : NavKey {
-
-    @Serializable
-    object Splash : Route, NavKey
-
-    @Serializable
-    object Login : Route, NavKey
-
-    @Serializable
-    object Home : Route, NavKey
-
-    @Serializable
-    object Menu : Route, NavKey
-
-
-    @Serializable
-    object Counter : Route, NavKey
-
-    @Serializable
-    object GlowEffects : Route, NavKey
-
+@Preview
+@Composable
+private fun EffectScreenPreview() {
+    EffectScreen()
 }

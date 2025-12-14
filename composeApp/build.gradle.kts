@@ -157,9 +157,15 @@ compose.desktop {
             packageName = "ZapPOS"
             packageVersion = "1.0.0"
 
+            val icProduct = "src/jvmMain/resources/ico_sizes/linux/ic_product_256.png"
             linux {
-                iconFile.set(project.file("src/jvmMain/resources/ico_sizes/linux/ic_zappos_256.png"))
+                iconFile.set(project.file(icProduct))
             }
+
+            windows {
+                iconFile.set(project.file(icProduct))
+            }
+
         }
     }
 }

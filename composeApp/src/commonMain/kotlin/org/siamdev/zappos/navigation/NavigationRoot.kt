@@ -42,7 +42,9 @@ import androidx.navigation3.runtime.NavEntry
 import androidx.savedstate.serialization.SavedStateConfiguration
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
+import org.siamdev.zappos.ui.components.GlowEffects
 import org.siamdev.zappos.ui.screens.demo.CounterScreen
+import org.siamdev.zappos.ui.screens.demo.EffectScreen
 import org.siamdev.zappos.ui.screens.login.LoginScreen
 import org.siamdev.zappos.ui.screens.home.HomeScreen
 import org.siamdev.zappos.ui.screens.menu.MainMenuScreen
@@ -64,6 +66,7 @@ fun NavigationRoot(
                     subclass(Route.Home::class, Route.Home.serializer())
                     subclass(Route.Menu::class, Route.Menu.serializer())
                     subclass(Route.Counter::class, Route.Counter.serializer())
+                    subclass(Route.GlowEffects::class, Route.GlowEffects.serializer())
                 }
             }
         },
@@ -111,12 +114,13 @@ fun NavigationRoot(
                             }
                         }
                         is Route.Login -> LoginScreen(
-                            onLoginNostr = { backStack.add(Route.Counter) },
+                            onLoginNostr = { backStack.add(Route.GlowEffects) },
                             onLoginAnonymous = { backStack.add(Route.Menu) }
                         )
                         is Route.Home -> HomeScreen()
                         is Route.Menu -> MainMenuScreen()
                         is Route.Counter -> CounterScreen()
+                        is Route.GlowEffects -> EffectScreen()
                         else -> error("Unknown NavKey: $key")
                     }
                 }
