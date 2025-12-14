@@ -28,10 +28,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Segment
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Reorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -43,6 +43,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import kotlin.math.abs
 
 @Composable
 fun TopBar(
@@ -71,91 +72,104 @@ fun TopBar(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            // ----- Left group -----
+            Box(contentAlignment = Alignment.CenterStart) {
+                GlowEffects(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .align(Alignment.CenterStart),
+                    shape = GlowShape.Square,
+                    drawCore = false,
+                    glowIntensity = 0.5f,
+                    glowRadius = 220f,
+                    color = brandColor
+                )
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable {
-                    expanded = !expanded
-                    onClick(expanded)
-                }
-            ) {
-                // Left group
-                Box(
-                    modifier = Modifier.size(32.dp),
-                    contentAlignment = Alignment.Center
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable {
+                            expanded = !expanded
+                            onClick(expanded)
+                        }
+                        .padding(horizontal = 6.dp, vertical = 2.dp)
+
                 ) {
-
-                    // Brand + Title + Arrow
-                    GlowEffects(
-                        modifier = Modifier.matchParentSize(),
-                        shape = GlowShape.Square,
-                        drawCore = false,
-                        glowIntensity = 0.5f,
-                        glowRadius = 220f,
-                        color = brandColor
-                    )
+                    // Brand
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(color = brandColor, shape = RoundedCornerShape(8.dp)),
+                        modifier = Modifier.size(32.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = brandText,
-                            color = Color.White,
-                            style = MaterialTheme.typography.titleMedium
-                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(color = brandColor, shape = RoundedCornerShape(8.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = brandText,
+                                color = Color.White,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
                     }
+
+                    Spacer(Modifier.width(10.dp))
+
+                    Text(
+                        text = title,
+                        fontSize = 15.sp,
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+
+                    Spacer(Modifier.width(4.dp))
+
+                    Icon(
+                        imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                        contentDescription = "Toggle menu",
+                        tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                        modifier = Modifier.size(20.dp)
+                    )
                 }
-
-                Spacer(Modifier.width(10.dp))
-
-                Text(
-                    text = title,
-                    fontSize = 15.sp,
-                    style = MaterialTheme.typography.headlineSmall
-                )
-
-                Spacer(Modifier.width(4.dp))
-
-                Icon(
-                    imageVector = if (expanded)
-                        Icons.Default.KeyboardArrowUp
-                    else
-                        Icons.Default.KeyboardArrowDown,
-                    contentDescription = "Toggle menu",
-                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-                    modifier = Modifier.size(20.dp)
-                )
             }
 
             // ----- Right group -----
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Default.Notifications,
-                    contentDescription = "Notifications",
-                    tint = MaterialTheme.colorScheme.onBackground,
+                Box(
                     modifier = Modifier
-                        .size(24.dp)
-                        .clickable {
-                            println("Notifications clicked")
-                        }
-                )
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable { println("Notifications clicked") },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Notifications,
+                        contentDescription = "Notifications",
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
 
                 Spacer(Modifier.width(12.dp))
 
-                Icon(
-                    imageVector = Icons.Default.Reorder,
-                    contentDescription = "Reorder",
-                    tint = MaterialTheme.colorScheme.onBackground,
+                Box(
                     modifier = Modifier
-                        .size(24.dp)
-                        .clickable {
-                            println("Reorder clicked")
-                        }
-                )
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable { println("Segment clicked") },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.Segment,
+                        contentDescription = "Segment",
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             }
         }
+
     }
 
 }
@@ -229,7 +243,7 @@ private fun brandColorFromTitle(title: String): Color {
     if (trimmed.isEmpty()) return MapLikeColors.first()
 
     val hash = trimmed.uppercase().hashCode()
-    val index = kotlin.math.abs(hash) % MapLikeColors.size
+    val index = abs(hash) % MapLikeColors.size
     return MapLikeColors[index]
 }
 
