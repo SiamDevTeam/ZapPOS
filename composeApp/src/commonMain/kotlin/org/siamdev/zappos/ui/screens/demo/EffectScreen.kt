@@ -40,11 +40,21 @@ fun EffectScreen() {
             .background(MaterialTheme.colorScheme.background.copy(alpha = 0.9f)),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        TopBar()
-        TopBar(title = "ZapPOS")
-        TopBar(title = "Demo")
-        TopBar(title = "Zap POS")
-        TopBar(title = "rushmi0")
+        Column(
+            modifier = Modifier
+                .windowInsetsPadding(WindowInsets.statusBars)
+        ) {
+            TopBar()
+            TopBar(title = "ZapPOS")
+            TopBar(title = "Demo")
+            TopBar(title = "Zap POS")
+            TopBar(title = "rushmi0")
+            TopBar(title = "lnwza007")
+            TopBar(title = "minseo")
+            TopBar(title = "Vaz")
+            TopBar(title = "Emperor13")
+        }
+
     }
 }
 
