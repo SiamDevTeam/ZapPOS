@@ -40,6 +40,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CurrencyLira
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -53,15 +54,21 @@ import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.di.viewModelOf
+import org.siamdev.zappos.ui.components.GlowEffects
+import org.siamdev.zappos.ui.components.GlowShape
 import org.siamdev.zappos.ui.components.MaterialButton
 import org.siamdev.zappos.ui.components.MenuItemCard
 import org.siamdev.zappos.ui.components.OrderItemCard
 import org.siamdev.zappos.ui.components.SlideBottomSheet
+import org.siamdev.zappos.ui.components.UtilityHeader
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.sat_unit
 
@@ -165,56 +172,60 @@ fun MainMenuScreen() {
             }
         }
     ) {
-        // Screen content
-        Box(
-            modifier = Modifier
-                .background(Color.Red)
-                .width(100.dp)
-                .height(50.dp)
+        // Screen conten
+
+        Column(
+            modifier = Modifier.fillMaxSize().padding(top = 20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-        }
+            // Top Header
+            UtilityHeader(title = "ZapPOS")
 
-        BoxWithConstraints(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background.copy(alpha = 0.9f))
-                .padding(top = 90.dp, bottom = 100.dp)
-        ) {
-            val horizontalPadding = if (maxWidth > 800.dp) {
-                (maxWidth - 650.dp) / 2
-            } else {
-                16.dp
-            }
-
-            Column(
+            // --- Detail Screen ---
+            BoxWithConstraints(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = horizontalPadding, end = horizontalPadding),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background.copy(alpha = 0.9f))
+                    .padding(top = 10.dp, bottom = 100.dp)
             ) {
+                val horizontalPadding = if (maxWidth > 800.dp) {
+                    (maxWidth - 650.dp) / 2
+                } else {
+                    16.dp
+                }
 
-                LazyColumn(
+                Column(
                     modifier = Modifier
-                        .wrapContentWidth()
-                        .fillMaxHeight(),
-                    verticalArrangement = Arrangement.spacedBy(3.dp),
+                        .fillMaxWidth()
+                        .padding(start = horizontalPadding, end = horizontalPadding),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    items(items.size) { index ->
-                        val item = items[index]
-                        MenuItemCard(
-                            imageUrl = item.imageUrl,
-                            name = item.name,
-                            priceBaht = item.priceBaht,
-                            priceSat = item.priceSat,
-                            count = item.count,
-                            onAddClick = { viewModel.addItem(item.id) },
-                            onReduceClick = { viewModel.reduceItem(item.id) }
-                        )
+
+                    LazyColumn(
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .fillMaxHeight(),
+                        verticalArrangement = Arrangement.spacedBy(3.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        items(items.size) { index ->
+                            val item = items[index]
+                            MenuItemCard(
+                                imageUrl = item.imageUrl,
+                                name = item.name,
+                                priceBaht = item.priceBaht,
+                                priceSat = item.priceSat,
+                                count = item.count,
+                                onAddClick = { viewModel.addItem(item.id) },
+                                onReduceClick = { viewModel.reduceItem(item.id) }
+                            )
+                        }
                     }
                 }
             }
+
+
         }
 
 

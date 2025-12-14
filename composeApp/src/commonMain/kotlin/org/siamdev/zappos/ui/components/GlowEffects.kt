@@ -82,7 +82,7 @@ fun GlowEffects(
             ),
             radius = glowRadius,
             center = center,
-            blendMode = BlendMode.Plus
+            blendMode = BlendMode.SrcOver
         )
 
         // -------- Core shape (optional) --------
