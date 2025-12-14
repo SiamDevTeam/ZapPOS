@@ -25,30 +25,27 @@ package org.siamdev.zappos.ui.screens.demo
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.siamdev.zappos.ui.components.GlowEffects
-import org.siamdev.zappos.ui.components.GlowShape
+import org.siamdev.zappos.ui.components.UtilityHeader
 
 @Composable
 fun EffectScreen() {
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .padding(top = 30.dp)
+            .background(MaterialTheme.colorScheme.background.copy(alpha = 0.9f)),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            GlowEffects(shape = GlowShape.Circle)
-            GlowEffects(shape = GlowShape.Square)
-            GlowEffects(shape = GlowShape.Rounded)
-        }
+        UtilityHeader()
+        UtilityHeader(title = "ZapPOS")
+        UtilityHeader(title = "Demo")
+        UtilityHeader(title = "Zap POS")
+        UtilityHeader(title = "rushmi0")
     }
 }
 
