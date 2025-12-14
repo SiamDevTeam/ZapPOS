@@ -248,10 +248,7 @@ fun MainMenuScreen() {
 
 
         }
-
-
     }
-
 }
 
 @Preview

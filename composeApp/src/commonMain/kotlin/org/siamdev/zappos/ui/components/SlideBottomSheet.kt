@@ -60,7 +60,7 @@ fun SlideBottomSheet(
             modifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp)
                 .fillMaxWidth()
-                .height(36.dp),
+                .height(30.dp),
             contentAlignment = Alignment.Center
         ) {
             Box(
@@ -75,7 +75,7 @@ fun SlideBottomSheet(
 
     BottomSheetScaffold(
         scaffoldState = sheetState,
-        sheetPeekHeight = 100.dp,
+        sheetPeekHeight = 80.dp,
         sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
         sheetDragHandle = customDragHandle,
         sheetShadowElevation = 10.dp,
