@@ -55,8 +55,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -66,6 +71,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.di.viewModelOf
 import org.siamdev.zappos.ui.components.MaterialButton
 import org.siamdev.zappos.ui.components.MenuItemCard
+import org.siamdev.zappos.ui.components.NavigationDrawer
 import org.siamdev.zappos.ui.components.OrderItemCard
 import org.siamdev.zappos.ui.components.SlideBottomSheet
 import org.siamdev.zappos.ui.components.TopBar
@@ -74,8 +80,14 @@ import zappos.composeapp.generated.resources.sat_unit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainMenuScreen() {
+fun MainMenuScreen(
+    onNavigateToHome: () -> Unit = {},
+    onNavigateToCounter: () -> Unit = {},
+    onNavigateToSetting: () -> Unit = {}
+) {
     val viewModel = viewModelOf { MainMenuViewModel() }
+    var isDrawerOpen by remember { mutableStateOf(false) }
+
     val sheetState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberStandardBottomSheetState(
             initialValue = SheetValue.PartiallyExpanded,
@@ -86,168 +98,217 @@ fun MainMenuScreen() {
 
     val items = viewModel.items
 
-    SlideBottomSheet(
-        sheetState = sheetState,
-        sheetMaxHeight = 420.dp,
-        topContent = {
-            viewModel.selectedKeys.forEach { key ->
-                val item = items.first { it.id == key }
-                OrderItemCard(
-                    item = item,
-                    onAddClick = { viewModel.addItem(item.id) },
-                    onReduceClick = { viewModel.reduceItem(item.id) }
-                )
-            }
-        },
+    Box(modifier = Modifier.fillMaxSize()) {
+        SlideBottomSheet(
+            sheetState = sheetState,
+            sheetMaxHeight = 420.dp,
+            topContent = {
+                viewModel.selectedKeys.forEach { key ->
+                    val item = items.first { it.id == key }
+                    OrderItemCard(
+                        item = item,
+                        onAddClick = { viewModel.addItem(item.id) },
+                        onReduceClick = { viewModel.reduceItem(item.id) }
+                    )
+                }
+            },
 
-        bottomContent = {
+            bottomContent = {
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Text(
-                    text = "Total Payment",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(bottom = 30.dp)
-                )
-
-                Box(
-                    contentAlignment = Alignment.TopEnd
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.End
+
+                    Text(
+                        text = "Total Payment",
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.padding(bottom = 30.dp)
+                    )
+
+                    Box(
+                        contentAlignment = Alignment.TopEnd
                     ) {
+                        Column(
+                            horizontalAlignment = Alignment.End
+                        ) {
 
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = Icons.Default.CurrencyLira,
-                                contentDescription = "Currency",
-                                modifier = Modifier.size(20.dp)
-                            )
-                            Spacer(Modifier.width(4.dp))
-                            Text(viewModel.totalFiat, style = MaterialTheme.typography.titleLarge)
-                        }
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = Icons.Default.CurrencyLira,
+                                    contentDescription = "Currency",
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Spacer(Modifier.width(4.dp))
+                                Text(viewModel.totalFiat, style = MaterialTheme.typography.titleLarge)
+                            }
 
-                        Spacer(Modifier.height(4.dp))
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Image(painterResource(
-                                resource = Res.drawable.sat_unit),
-                                contentDescription = "sat icon",
-                                modifier = Modifier.size(20.dp)
-                            )
-                            Spacer(Modifier.width(4.dp))
-                            Text(viewModel.totalSat, style = MaterialTheme.typography.titleMedium)
+                            Spacer(Modifier.height(4.dp))
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Image(painterResource(
+                                    resource = Res.drawable.sat_unit),
+                                    contentDescription = "sat icon",
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Spacer(Modifier.width(4.dp))
+                                Text(viewModel.totalSat, style = MaterialTheme.typography.titleMedium)
+                            }
                         }
                     }
                 }
+
+
+                Spacer(Modifier.height(16.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    MaterialButton(
+                        modifier = Modifier
+                            .weight(1f),
+                        text = "Clear Cart",
+                        buttonColor = Color.White,
+                        showBorder = true,
+                        onClick = { viewModel.clearAllItems() }
+                    )
+
+                    Spacer(Modifier.width(12.dp))
+
+                    MaterialButton(
+                        modifier = Modifier.weight(1f),
+                        text = "Checkout",
+                        iconStart = Icons.Default.ShoppingCart,
+                        onClick = {  }
+                    )
+                }
             }
-
-
-            Spacer(Modifier.height(16.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                MaterialButton(
-                    modifier = Modifier
-                        .weight(1f),
-                    text = "Clear Cart",
-                    buttonColor = Color.White,
-                    showBorder = true,
-                    onClick = { viewModel.clearAllItems() }
-                )
-
-                Spacer(Modifier.width(12.dp))
-
-                MaterialButton(
-                    modifier = Modifier.weight(1f),
-                    text = "Checkout",
-                    iconStart = Icons.Default.ShoppingCart,
-                    onClick = {  }
-                )
-            }
-        }
-    ) {
-        // Screen conten
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .windowInsetsPadding(WindowInsets.statusBars)
         ) {
-            // Top Header
-            TopBar(
-                title = "ZapPOS",
-                modifier = Modifier
-            )
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 32.dp, top = 5.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.MenuBook,
-                    contentDescription = "Currency",
-                    modifier = Modifier.size(27.dp)
-                )
-                Spacer(Modifier.width(4.dp))
-                Text(
-                    text = "Menus",
-                    fontSize = 12.sp,
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            // --- Detail Screen ---
-            BoxWithConstraints(
+            // Screen content
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background.copy(alpha = 0.9f))
-                    .padding(top = 5.dp, bottom = 100.dp)
+                    .windowInsetsPadding(WindowInsets.statusBars)
             ) {
-                val horizontalPadding = if (maxWidth > 800.dp) {
-                    (maxWidth - 650.dp) / 2
-                } else {
-                    16.dp
-                }
+                // Top Header
+                TopBar(
+                    title = "ZapPOS",
+                    modifier = Modifier,
+                    onSegmentClick = { isDrawerOpen = true }
+                )
 
-                Column(
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = horizontalPadding, end = horizontalPadding),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        //.padding(start = 32.dp, top = 5.dp)
+                        .padding(horizontal = 26.dp, vertical = 5.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.MenuBook,
+                        contentDescription = "Currency",
+                        modifier = Modifier.size(27.dp)
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Text(
+                        text = "Menus",
+                        fontSize = 12.sp,
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
 
-                    LazyColumn(
+                // --- Detail Screen ---
+                BoxWithConstraints(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background.copy(alpha = 0.9f))
+                        .padding(top = 5.dp, bottom = 80.dp)
+                ) {
+                    val horizontalPadding = if (maxWidth > 800.dp) {
+                        (maxWidth - 650.dp) / 2
+                    } else {
+                        16.dp
+                    }
+
+                    Column(
                         modifier = Modifier
-                            .wrapContentWidth()
-                            .fillMaxHeight(),
-                        verticalArrangement = Arrangement.spacedBy(3.dp),
+                            .fillMaxWidth()
+                            .padding(start = horizontalPadding, end = horizontalPadding),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        items(items.size) { index ->
-                            val item = items[index]
-                            MenuItemCard(
-                                imageUrl = item.imageUrl,
-                                name = item.name,
-                                priceBaht = item.priceBaht,
-                                priceSat = item.priceSat,
-                                count = item.count,
-                                onAddClick = { viewModel.addItem(item.id) },
-                                onReduceClick = { viewModel.reduceItem(item.id) }
+
+                        Box {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .wrapContentWidth()
+                                    .fillMaxHeight(),
+                                verticalArrangement = Arrangement.spacedBy(3.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                items(items.size) { index ->
+                                    val item = items[index]
+                                    MenuItemCard(
+                                        imageUrl = item.imageUrl,
+                                        name = item.name,
+                                        priceBaht = item.priceBaht,
+                                        priceSat = item.priceSat,
+                                        count = item.count,
+                                        onAddClick = { viewModel.addItem(item.id) },
+                                        onReduceClick = { viewModel.reduceItem(item.id) }
+                                    )
+                                }
+                            }
+
+                            // Fade ด้านบน
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(10.dp)
+                                    .align(Alignment.TopCenter)
+                                    .background(
+                                        Brush.verticalGradient(
+                                            colors = listOf(
+                                                MaterialTheme.colorScheme.background,
+                                                Color.Transparent
+                                            )
+                                        )
+                                    )
                             )
+
+                            // Fade ด้านล่าง
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(5.dp)
+                                    .align(Alignment.BottomCenter)
+                                    .background(
+                                        Brush.verticalGradient(
+                                            colors = listOf(
+                                                Color.Transparent,
+                                                MaterialTheme.colorScheme.background
+                                            )
+                                        )
+                                    )
+                            )
+
                         }
+
                     }
                 }
+
             }
-
-
         }
+
+        // Navigation Drawer
+        NavigationDrawer(
+            isOpen = isDrawerOpen,
+            onDismiss = { isDrawerOpen = false },
+            onNavigateToHome = onNavigateToHome,
+            onNavigateToCounter = onNavigateToCounter,
+            onNavigateToSetting = onNavigateToSetting
+        )
     }
 }
 

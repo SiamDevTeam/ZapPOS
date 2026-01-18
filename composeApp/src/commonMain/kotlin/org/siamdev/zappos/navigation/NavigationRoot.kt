@@ -42,12 +42,13 @@ import androidx.navigation3.runtime.NavEntry
 import androidx.savedstate.serialization.SavedStateConfiguration
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
-import org.siamdev.zappos.ui.components.GlowEffects
 import org.siamdev.zappos.ui.screens.demo.CounterScreen
 import org.siamdev.zappos.ui.screens.demo.EffectScreen
 import org.siamdev.zappos.ui.screens.login.LoginScreen
 import org.siamdev.zappos.ui.screens.home.HomeScreen
 import org.siamdev.zappos.ui.screens.menu.MainMenuScreen
+import org.siamdev.zappos.ui.screens.setting.SettingInfo
+import org.siamdev.zappos.ui.screens.setting.SettingScreen
 import org.siamdev.zappos.ui.screens.splash.SplashScreen
 import org.siamdev.zappos.ui.screens.splash.SplashViewModel
 
@@ -67,6 +68,7 @@ fun NavigationRoot(
                     subclass(Route.Menu::class, Route.Menu.serializer())
                     subclass(Route.Counter::class, Route.Counter.serializer())
                     subclass(Route.GlowEffects::class, Route.GlowEffects.serializer())
+                    subclass(Route.Setting::class, Route.Setting.serializer())
                 }
             }
         },
@@ -97,9 +99,7 @@ fun NavigationRoot(
                     is Route.Menu -> {
                         fadeIn(animationSpec = tween(400)) to fadeOut(animationSpec = tween(400))
                     }
-                    else -> {
-                        fadeIn() to fadeOut()
-                    }
+                    else -> fadeIn() to fadeOut()
                 }
 
                 AnimatedVisibility(
@@ -115,11 +115,39 @@ fun NavigationRoot(
                         }
                         is Route.Login -> LoginScreen(
                             onLoginNostr = { backStack.add(Route.GlowEffects) },
-                            onLoginAnonymous = { backStack.add(Route.Menu) }
+                            onLoginAnonymous = { backStack.add(Route.Home) }
                         )
-                        is Route.Home -> HomeScreen()
-                        is Route.Menu -> MainMenuScreen()
-                        is Route.Counter -> CounterScreen()
+                        is Route.Home -> HomeScreen(
+                            onNavigateToMenu = { backStack.add(Route.Menu) },
+                            onNavigateToCounter = { backStack.add(Route.Counter) },
+                            onNavigateToSetting = { backStack.add(Route.Setting) }
+                        )
+                        is Route.Menu -> MainMenuScreen(
+                            onNavigateToHome = { backStack.add(Route.Home) },
+                            onNavigateToCounter = { backStack.add(Route.Counter) },
+                            onNavigateToSetting = { backStack.add(Route.Setting) }
+                        )
+                        is Route.Counter -> CounterScreen(
+                            onNavigateToHome = { backStack.add(Route.Home) },
+                            onNavigateToMenu = { backStack.add(Route.Menu) },
+                            onNavigateToSetting = { backStack.add(Route.Setting) }
+                        )
+                        is Route.Setting -> SettingScreen(
+                            onNavigateBack = {
+                                backStack.removeAt(backStack.lastIndex)
+                            },
+                            onNavigateTo = { destination ->
+                                when (destination) {
+                                    SettingInfo.SIGN_OUT -> {
+                                        backStack.clear()
+                                        backStack.add(Route.Login)
+                                    }
+                                    else -> Unit
+                                }
+                            }
+                        )
+
+
                         is Route.GlowEffects -> EffectScreen()
                         else -> error("Unknown NavKey: $key")
                     }

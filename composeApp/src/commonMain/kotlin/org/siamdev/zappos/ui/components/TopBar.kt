@@ -43,16 +43,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.siamdev.zappos.theme.MapLikeColors
 import kotlin.math.abs
 
 @Composable
 fun TopBar(
     modifier: Modifier = Modifier,
     title: String = "Untitled",
-    onClick: (expanded: Boolean) -> Unit = {}
+    onClick: (expanded: Boolean) -> Unit = {},
+    onSegmentClick: () -> Unit = {}
 ) {
     val brandText = brandTextFromTitle(title)
-    val brandColor = brandColorFromTitle(title)
+    val brandColor = colorFromTitle(title)
 
     var expanded by remember { mutableStateOf(false) }
 
@@ -98,13 +100,13 @@ fun TopBar(
                 ) {
                     // Brand
                     Box(
-                        modifier = Modifier.size(32.dp),
+                        modifier = Modifier.size(28.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .background(color = brandColor, shape = RoundedCornerShape(8.dp)),
+                                .background(color = brandColor, shape = RoundedCornerShape(6.dp)),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
@@ -157,7 +159,7 @@ fun TopBar(
                     modifier = Modifier
                         .size(40.dp)
                         .clip(RoundedCornerShape(8.dp))
-                        .clickable { println("Segment clicked") },
+                        .clickable { onSegmentClick() },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -193,47 +195,7 @@ private fun brandTextFromTitle(title: String): String {
     }
 }
 
-
-private val MapLikeColors = listOf(
-    // Reds / Pinks
-    Color(0xFFEF5350), // Red
-    Color(0xFFE57373), // Light Red
-    Color(0xFFEC407A), // Pink
-    Color(0xFFD81B60), // Deep Pink
-
-    // Purples
-    Color(0xFFAB47BC), // Purple
-    Color(0xFF8E24AA), // Deep Purple
-    Color(0xFF7E57C2), // Soft Violet
-    Color(0xFF5E35B1), // Indigo Purple
-
-    // Blues
-    Color(0xFF5C6BC0), // Indigo
-    Color(0xFF3F51B5), // Deep Indigo
-    Color(0xFF29B6F6), // Light Blue
-    Color(0xFF0288D1), // Blue
-
-    // Teal / Cyan
-    Color(0xFF26A69A), // Teal
-    Color(0xFF009688), // Deep Teal
-    Color(0xFF00ACC1), // Cyan
-    Color(0xFF00838F), // Dark Cyan
-
-    // Greens
-    Color(0xFF66BB6A), // Green
-    Color(0xFF43A047), // Deep Green
-    Color(0xFF9CCC65), // Light Green
-    Color(0xFF558B2F), // Olive Green
-
-    // Oranges / Yellows
-    Color(0xFFFFCA28), // Amber
-    Color(0xFFFFA726), // Orange
-    Color(0xFFFDD835), // Yellow
-    Color(0xFFFF8F00)  // Deep Orange
-)
-
-
-private fun brandColorFromTitle(title: String): Color {
+fun colorFromTitle(title: String): Color {
     val trimmed = title.trim()
 
     if (trimmed.equals("ZapPOS", ignoreCase = true)) {
@@ -262,5 +224,9 @@ private fun UtilityHeaderPreview() {
         TopBar(title = "Demo")
         TopBar(title = "Zap POS")
         TopBar(title = "rushmi0")
+        TopBar(title = "lnwza007")
+        TopBar(title = "minseo")
+        TopBar(title = "Vaz")
+        TopBar(title = "Emperor13")
     }
 }

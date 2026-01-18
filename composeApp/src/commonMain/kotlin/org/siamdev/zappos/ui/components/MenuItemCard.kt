@@ -65,7 +65,7 @@ fun MenuItemCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(6.dp),
+            .padding(3.dp),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White

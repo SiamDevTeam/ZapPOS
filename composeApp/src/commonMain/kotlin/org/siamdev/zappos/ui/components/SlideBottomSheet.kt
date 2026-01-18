@@ -75,7 +75,7 @@ fun SlideBottomSheet(
 
     BottomSheetScaffold(
         scaffoldState = sheetState,
-        sheetPeekHeight = 80.dp,
+        sheetPeekHeight = 76.dp,
         sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
         sheetDragHandle = customDragHandle,
         sheetShadowElevation = 10.dp,

@@ -23,15 +23,8 @@
  */
 package org.siamdev.zappos.navigation
 
-import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
-
-interface RouteAnimation {
-    @Composable
-    fun Animated(content: @Composable () -> Unit)
-}
-
 
 @Serializable
 sealed interface Route : NavKey {
@@ -55,4 +48,6 @@ sealed interface Route : NavKey {
     @Serializable
     object GlowEffects : Route, NavKey
 
+    @Serializable
+    object Setting : Route, NavKey
 }
