@@ -34,6 +34,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
@@ -52,13 +53,12 @@ import org.siamdev.zappos.ui.screens.setting.SettingScreen
 import org.siamdev.zappos.ui.screens.splash.SplashScreen
 import org.siamdev.zappos.ui.screens.splash.SplashViewModel
 
-
 @Composable
 fun NavigationRoot(
     startDestination: Route,
     splashViewModel: SplashViewModel
 ) {
-    val backStack = rememberNavBackStack(
+    val backStack: NavBackStack<NavKey> = rememberNavBackStack(
         configuration = SavedStateConfiguration {
             serializersModule = SerializersModule {
                 polymorphic(NavKey::class) {
@@ -108,49 +108,66 @@ fun NavigationRoot(
                     exit = exitAnim
                 ) {
                     when (key) {
-                        is Route.Splash -> SplashScreen(viewModel = splashViewModel) {
+
+                        // ===== Splash =====
+                        is Route.Splash -> SplashScreen(
+                            viewModel = splashViewModel
+                        ) {
                             if (splashViewModel.relayReady.value) {
                                 backStack.add(Route.Login)
                             }
                         }
+
+                        // ===== Login =====
                         is Route.Login -> LoginScreen(
                             onLoginNostr = { backStack.add(Route.GlowEffects) },
                             onLoginAnonymous = { backStack.add(Route.Home) }
                         )
-                        is Route.Home -> HomeScreen(
-                            onNavigateToMenu = { backStack.add(Route.Menu) },
-                            onNavigateToCounter = { backStack.add(Route.Counter) },
-                            onNavigateToSetting = { backStack.add(Route.Setting) }
-                        )
-                        is Route.Menu -> MainMenuScreen(
-                            onNavigateToHome = { backStack.add(Route.Home) },
-                            onNavigateToCounter = { backStack.add(Route.Counter) },
-                            onNavigateToSetting = { backStack.add(Route.Setting) }
-                        )
-                        is Route.Counter -> CounterScreen(
-                            onNavigateToHome = { backStack.add(Route.Home) },
-                            onNavigateToMenu = { backStack.add(Route.Menu) },
-                            onNavigateToSetting = { backStack.add(Route.Setting) }
-                        )
-                        is Route.Setting -> SettingScreen(
-                            onNavigateBack = {
-                                backStack.removeAt(backStack.lastIndex)
-                            },
-                            onNavigateTo = { destination ->
-                                when (destination) {
-                                    SettingInfo.SIGN_OUT -> {
-                                        backStack.clear()
-                                        backStack.add(Route.Login)
-                                    }
-                                    else -> Unit
+
+                        // ===== Home =====
+                        is Route.Home -> NavConfig(
+                            backStack = backStack
+                        ) { _, openDrawer ->
+                            HomeScreen(
+                                onOpenDrawer = openDrawer
+                            )
+                        }
+
+                        // ===== Menu =====
+                        is Route.Menu -> NavConfig(
+                            backStack = backStack
+                        ) { _, openDrawer ->
+                            MainMenuScreen(
+                                onOpenDrawer = openDrawer
+                            )
+                        }
+
+                        // ===== Counter =====
+                        is Route.Counter -> NavConfig(
+                            backStack = backStack
+                        ) { _, openDrawer ->
+                            CounterScreen(
+                                onOpenDrawer = openDrawer
+                            )
+                        }
+
+                        // ===== Setting =====
+                        is Route.Setting -> NavConfig(
+                            backStack = backStack
+                        ) { navActions, _ ->
+                            SettingScreen(
+                                onNavigateBack = {
+                                    navActions.back()
                                 }
-                            }
-                        )
+                            )
+                        }
 
-
+                        // ===== Effect / Full Screen =====
                         is Route.GlowEffects -> EffectScreen()
+
                         else -> error("Unknown NavKey: $key")
                     }
+
                 }
             }
         }

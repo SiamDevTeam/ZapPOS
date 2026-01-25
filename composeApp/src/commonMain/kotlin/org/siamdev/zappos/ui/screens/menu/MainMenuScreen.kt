@@ -55,10 +55,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -67,11 +63,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.di.viewModelOf
 import org.siamdev.zappos.ui.components.MaterialButton
 import org.siamdev.zappos.ui.components.MenuItemCard
-import org.siamdev.zappos.ui.components.NavigationDrawer
 import org.siamdev.zappos.ui.components.OrderItemCard
 import org.siamdev.zappos.ui.components.SlideBottomSheet
 import org.siamdev.zappos.ui.components.TopBar
@@ -80,13 +74,8 @@ import zappos.composeapp.generated.resources.sat_unit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainMenuScreen(
-    onNavigateToHome: () -> Unit = {},
-    onNavigateToCounter: () -> Unit = {},
-    onNavigateToSetting: () -> Unit = {}
-) {
+fun MainMenuScreen(onOpenDrawer: () -> Unit = {}) {
     val viewModel = viewModelOf { MainMenuViewModel() }
-    var isDrawerOpen by remember { mutableStateOf(false) }
 
     val sheetState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberStandardBottomSheetState(
@@ -195,7 +184,7 @@ fun MainMenuScreen(
                 TopBar(
                     title = "ZapPOS",
                     modifier = Modifier,
-                    onSegmentClick = { isDrawerOpen = true }
+                    onSegmentClick = onOpenDrawer
                 )
 
                 Row(
@@ -301,19 +290,12 @@ fun MainMenuScreen(
             }
         }
 
-        // Navigation Drawer
-        NavigationDrawer(
-            isOpen = isDrawerOpen,
-            onDismiss = { isDrawerOpen = false },
-            onNavigateToHome = onNavigateToHome,
-            onNavigateToCounter = onNavigateToCounter,
-            onNavigateToSetting = onNavigateToSetting
-        )
     }
 }
 
+/*
 @Preview
 @Composable
 fun MainMenuScreenPreview() {
     MainMenuScreen()
-}
+}*/

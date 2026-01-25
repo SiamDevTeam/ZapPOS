@@ -24,7 +24,6 @@
 package org.siamdev.zappos.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -36,7 +35,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.Settings
@@ -44,7 +42,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,9 +51,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-
 @Composable
-fun NavigationDrawer(
+fun NavigationList(
     isOpen: Boolean,
     onDismiss: () -> Unit,
     onNavigateToHome: () -> Unit = {},
@@ -64,7 +60,6 @@ fun NavigationDrawer(
     onNavigateToMenu: () -> Unit = {},
     onNavigateToSetting: () -> Unit = {}
 ) {
-    // Background overlay
     AnimatedVisibility(
         visible = isOpen,
         enter = fadeIn(tween(300)),
@@ -73,12 +68,11 @@ fun NavigationDrawer(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.5f))
+                .background(Color.Black.copy(alpha = 0.3f))
                 .clickable { onDismiss() }
         )
     }
 
-    // Drawer content
     AnimatedVisibility(
         visible = isOpen,
         enter = slideInHorizontally(
@@ -102,7 +96,6 @@ fun NavigationDrawer(
                     .padding(16.dp)
                     .padding(top = 25.dp),
             ) {
-                // Header with close button
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -116,26 +109,10 @@ fun NavigationDrawer(
                         fontSize = 24.sp
                     )
 
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .clickable { onDismiss() }
-                            .background(MaterialTheme.colorScheme.surfaceVariant),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = "Close",
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Navigation items
                 DrawerNavigationItem(
                     icon = Icons.Default.Home,
                     title = "Home Screen",
@@ -177,8 +154,6 @@ fun NavigationDrawer(
                         onDismiss()
                     }
                 )
-
-
             }
         }
     }
@@ -217,7 +192,6 @@ private fun DrawerNavigationItem(
     }
 }
 
-
 @Preview(
     name = "Pixel 6",
     showBackground = true,
@@ -227,7 +201,7 @@ private fun DrawerNavigationItem(
 @Composable
 private fun NavigationDrawerPreview() {
     MaterialTheme {
-        NavigationDrawer(
+        NavigationList(
             isOpen = true,
             onDismiss = {},
             onNavigateToHome = {},

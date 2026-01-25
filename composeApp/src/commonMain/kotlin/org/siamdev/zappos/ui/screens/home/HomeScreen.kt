@@ -34,17 +34,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.siamdev.zappos.ui.components.NavigationDrawer
 import org.siamdev.zappos.ui.components.TopBar
 
 @Composable
-fun HomeScreen(
-    onNavigateToMenu: () -> Unit = {},
-    onNavigateToCounter: () -> Unit = {},
-    onNavigateToSetting: () -> Unit = {}
-) {
-    var isDrawerOpen by remember { mutableStateOf(false) }
-
+fun HomeScreen(onOpenDrawer: () -> Unit = {}) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -52,11 +45,10 @@ fun HomeScreen(
                 .background(MaterialTheme.colorScheme.background)
                 .windowInsetsPadding(WindowInsets.statusBars)
         ) {
-            // Top Bar
+
             TopBar(
                 title = "Home",
-                modifier = Modifier,
-                onSegmentClick = { isDrawerOpen = true }
+                onSegmentClick = onOpenDrawer
             )
 
             // Content
@@ -95,19 +87,11 @@ fun HomeScreen(
             }
         }
 
-        // Navigation Drawer
-        NavigationDrawer(
-            isOpen = isDrawerOpen,
-            onDismiss = { isDrawerOpen = false },
-            onNavigateToCounter = onNavigateToCounter,
-            onNavigateToMenu = onNavigateToMenu,
-            onNavigateToSetting = onNavigateToSetting
-        )
     }
 }
 
 @Preview
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen()
+    //HomeScreen()
 }

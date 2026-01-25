@@ -120,7 +120,9 @@ fun SettingScreen(
         Spacer(Modifier.height(24.dp))
 
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 20.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
 
@@ -158,10 +160,6 @@ fun SettingScreen(
         }
     }
 }
-
-/* ---------------------------------------------------
- * Data source
- * --------------------------------------------------- */
 
 private fun settingItems(): List<SettingItemData> = listOf(
     // General
@@ -232,10 +230,6 @@ private fun settingItems(): List<SettingItemData> = listOf(
         MapLikeColors[2]
     )
 )
-
-/* ---------------------------------------------------
- * UI Components
- * --------------------------------------------------- */
 
 @Composable
 private fun Header(onNavigateBack: () -> Unit) {
@@ -336,10 +330,6 @@ private fun SearchBox(
         )
     )
 }
-
-/* ---------------------------------------------------
- * Preview
- * --------------------------------------------------- */
 
 @Preview(showBackground = true, widthDp = 411, heightDp = 891)
 @Composable
