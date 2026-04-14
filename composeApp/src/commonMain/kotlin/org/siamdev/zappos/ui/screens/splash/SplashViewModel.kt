@@ -30,15 +30,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.siamdev.zappos.theme.ThemeMode
-import org.siamdev.zappos.data.source.remote.RelayConfig
+import kotlin.time.Duration.Companion.milliseconds
 
 class SplashViewModel : ViewModel() {
 
     private val _themeMode = MutableStateFlow(ThemeMode.LIGHT)
     val themeMode = _themeMode.asStateFlow()
-
-    private val _relayReady = MutableStateFlow(false)
-    val relayReady = _relayReady.asStateFlow()
 
     private val _splashDone = MutableStateFlow(false)
     val splashDone = _splashDone.asStateFlow()
@@ -49,24 +46,16 @@ class SplashViewModel : ViewModel() {
     init {
         viewModelScope.launch {
             runSplashDelay()
-            setupRelay()
             updateReadyState()
         }
     }
 
     private suspend fun runSplashDelay() {
-        delay(3000)
+        delay(3000.milliseconds)
         _splashDone.value = true
-        updateReadyState()
-    }
-
-    private suspend fun setupRelay() {
-        RelayConfig.setup()
-        _relayReady.value = true
-        updateReadyState()
     }
 
     private fun updateReadyState() {
-        _isReady.value = _splashDone.value && _relayReady.value
+        _isReady.value = _splashDone.value
     }
 }

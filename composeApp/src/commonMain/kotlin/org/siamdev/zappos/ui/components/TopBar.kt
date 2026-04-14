@@ -211,7 +211,7 @@ fun colorFromTitle(title: String): Color {
 
 
 
-@Preview
+@Preview(showBackground = true, widthDp = 411, heightDp = 891)
 @Composable
 private fun UtilityHeaderPreview() {
     Column(

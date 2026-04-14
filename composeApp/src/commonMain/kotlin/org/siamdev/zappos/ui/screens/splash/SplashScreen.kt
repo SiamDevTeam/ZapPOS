@@ -111,7 +111,7 @@ fun SplashScreen(
     }
 }
 
-@Preview
+@Preview(showBackground = true, widthDp = 411, heightDp = 891)
 @Composable
 fun SplashScreenPreview() {
     val fakeViewModel: SplashViewModel = viewModel()

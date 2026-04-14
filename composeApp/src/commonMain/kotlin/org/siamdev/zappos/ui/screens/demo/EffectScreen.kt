@@ -58,7 +58,7 @@ fun EffectScreen() {
     }
 }
 
-@Preview
+@Preview(showBackground = true, widthDp = 411, heightDp = 891)
 @Composable
 private fun EffectScreenPreview() {
     EffectScreen()

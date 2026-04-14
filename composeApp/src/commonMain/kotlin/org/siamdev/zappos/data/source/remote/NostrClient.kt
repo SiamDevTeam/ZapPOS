@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+/*
 package org.siamdev.zappos.data.source.remote
 
 import org.siamdev.zappos.data.source.remote.RelayConfig.getConnection
@@ -78,3 +79,4 @@ object NostrClient {
         getConnection().sendEvent(event)
 
 }
+*/

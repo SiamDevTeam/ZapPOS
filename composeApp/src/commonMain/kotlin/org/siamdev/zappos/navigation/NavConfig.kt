@@ -89,12 +89,25 @@ fun NavConfig(
 class NavActions(
     internal val backStack: NavBackStack<NavKey>
 ) {
-    fun to(route: NavKey) = backStack.add(route)
+
+    fun currentRoute(): NavKey? =
+        backStack.lastOrNull()
+
+    fun to(route: NavKey) {
+        if (currentRoute() != route) {
+            backStack.add(route)
+        }
+    }
 
     fun back() {
         if (backStack.size > 1) {
             backStack.removeAt(backStack.lastIndex)
         }
+    }
+
+    fun switchTo(route: NavKey) {
+        backStack.removeAt(backStack.lastIndex)
+        backStack.add(route)
     }
 
     fun clearAndTo(route: NavKey) {

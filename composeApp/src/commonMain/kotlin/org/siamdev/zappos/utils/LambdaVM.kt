@@ -21,7 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.siamdev.zappos.di
+/*
+package org.siamdev.zappos.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -56,3 +57,4 @@ inline fun <reified VM : ViewModel> viewModelOf(
     val factory = remember { LambdaVM(provider) }
     return viewModel(factory = factory)
 }
+*/

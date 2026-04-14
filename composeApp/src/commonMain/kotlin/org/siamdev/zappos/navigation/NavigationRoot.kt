@@ -75,6 +75,34 @@ fun NavigationRoot(
         startDestination
     )
 
+    // ✅ sync backStack → URL
+    LaunchedEffect(backStack.toList()) {
+        val current = backStack.lastOrNull() as? Route ?: return@LaunchedEffect
+        val path = RouteMapper.toPath(current)
+        if (path != BrowserHistory.currentPath()) {
+            BrowserHistory.push(path)
+        }
+    }
+
+    // ✅ sync URL → backStack (กด back ใน browser)
+    LaunchedEffect(Unit) {
+        BrowserHistory.onPopState { path ->
+            val route = RouteMapper.fromPath(path)
+            val current = backStack.lastOrNull()
+            if (current != route) {
+                // ถ้า route นั้นอยู่ใน backStack แล้ว → ตัดออกมา
+                val existingIndex = backStack.indexOfLast { it == route }
+                if (existingIndex >= 0) {
+                    while (backStack.lastIndex > existingIndex) {
+                        backStack.removeAt(backStack.lastIndex)
+                    }
+                } else {
+                    backStack.add(route)
+                }
+            }
+        }
+    }
+
     NavDisplay(
         backStack = backStack,
         entryDecorators = listOf(
@@ -109,22 +137,22 @@ fun NavigationRoot(
                 ) {
                     when (key) {
 
-                        // ===== Splash =====
+                        // Splash
                         is Route.Splash -> SplashScreen(
                             viewModel = splashViewModel
                         ) {
-                            if (splashViewModel.relayReady.value) {
+                            if (splashViewModel.isReady.value) {
                                 backStack.add(Route.Login)
                             }
                         }
 
-                        // ===== Login =====
+                        // Login
                         is Route.Login -> LoginScreen(
                             onLoginNostr = { backStack.add(Route.GlowEffects) },
                             onLoginAnonymous = { backStack.add(Route.Home) }
                         )
 
-                        // ===== Home =====
+                        // Home
                         is Route.Home -> NavConfig(
                             backStack = backStack
                         ) { _, openDrawer ->
@@ -133,7 +161,7 @@ fun NavigationRoot(
                             )
                         }
 
-                        // ===== Menu =====
+                        // Menu
                         is Route.Menu -> NavConfig(
                             backStack = backStack
                         ) { _, openDrawer ->
@@ -142,7 +170,7 @@ fun NavigationRoot(
                             )
                         }
 
-                        // ===== Counter =====
+                        // Counter
                         is Route.Counter -> NavConfig(
                             backStack = backStack
                         ) { _, openDrawer ->
@@ -151,7 +179,7 @@ fun NavigationRoot(
                             )
                         }
 
-                        // ===== Setting =====
+                        // Setting
                         is Route.Setting -> NavConfig(
                             backStack = backStack
                         ) { navActions, _ ->
@@ -162,7 +190,6 @@ fun NavigationRoot(
                             )
                         }
 
-                        // ===== Effect / Full Screen =====
                         is Route.GlowEffects -> EffectScreen()
 
                         else -> error("Unknown NavKey: $key")

@@ -103,7 +103,7 @@ fun CounterScreen(onOpenDrawer: () -> Unit = {}) {
 }
 
 
-@Preview
+@Preview(showBackground = true, widthDp = 411, heightDp = 891)
 @Composable
 fun CounterScreenPreview() {
     CounterScreen()

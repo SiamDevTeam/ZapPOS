@@ -79,10 +79,6 @@ data class SettingItemData(
     val iconBg: Color
 )
 
-/* ---------------------------------------------------
- * Screen
- * --------------------------------------------------- */
-
 @Composable
 fun SettingScreen(
     onNavigateBack: () -> Unit = {},

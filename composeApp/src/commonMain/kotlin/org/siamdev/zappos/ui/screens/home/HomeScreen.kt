@@ -90,8 +90,8 @@ fun HomeScreen(onOpenDrawer: () -> Unit = {}) {
     }
 }
 
-@Preview
+@Preview(showBackground = true, widthDp = 411, heightDp = 891)
 @Composable
 fun HomeScreenPreview() {
-    //HomeScreen()
+    HomeScreen()
 }

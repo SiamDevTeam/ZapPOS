@@ -31,9 +31,9 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 enum class GlowShape {
     Circle,
@@ -56,8 +56,6 @@ fun GlowEffects(
         modifier = modifier.size(size * 5)
     ) {
         val center = this.center
-
-        // -------- Glow (Radial falloff) --------
         val glowColors = if (glowIntensity == null) {
             listOf(
                 color.copy(alpha = 1f),
@@ -85,7 +83,6 @@ fun GlowEffects(
             blendMode = BlendMode.SrcOver
         )
 
-        // -------- Core shape (optional) --------
         if (!drawCore) return@Canvas
 
         val coreSize = size.toPx()

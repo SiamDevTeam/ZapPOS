@@ -46,13 +46,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.siamdev.zappos.data.source.local.fetch
-import org.siamdev.zappos.data.source.local.lmdbWrite
-import org.siamdev.zappos.data.source.remote.NostrClient
+//import org.siamdev.zappos.data.source.local.fetch
+//import org.siamdev.zappos.data.source.local.lmdbWrite
 import org.siamdev.zappos.ui.components.MaterialButton
-import rust.nostr.sdk.Event
-import rust.nostr.sdk.Kind
-import rust.nostr.sdk.PublicKey
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.zappos_dark_horizontal_v2
 
@@ -62,27 +58,21 @@ fun LoginScreen(
     onLoginAnonymous: () -> Unit = {}
 ) {
 
-    LaunchedEffect(Unit) {
-        val myPubKey = PublicKey.parse("e4b2c64f0e4e54abb34d5624cd040e05ecc77f0c467cc46e2cc4d5be98abe3e3")
-        val events: List<Event> = NostrClient.fetch {
-            authors = listOf(myPubKey)
-            kinds = listOf(Kind(0u))
-            limit = 1u
-        }
+    /*LaunchedEffect(Unit) {
 
         lmdbWrite {
             name = "profile"
-            key = events.first().id().toHex()
-            value = events.first().asJson()
+            key = "CS001"
+            value = "milko"
         }
 
         val profile = fetch<String> {
             name = "profile"
-            key = events.first().id().toHex()
+            key = "CS001"
         }
 
         println(profile)
-    }
+    }*/
 
     Column(
         modifier = Modifier
@@ -143,7 +133,7 @@ fun LoginScreen(
 
 
 
-@Preview
+@Preview(showBackground = true, widthDp = 411, heightDp = 891)
 @Composable
 fun LoginScreenPreview() {
     LoginScreen()

@@ -27,3 +27,17 @@ Nostr NWC based Point of Sale written in Kotlin Multi Platform
 - [ ] Backup & Recovery
 - [ ] Language selection
 
+
+
+
+
+
+# Web
+```bash
+./gradlew wasmJsBrowserDevelopmentRun
+
+./gradlew jsBrowserDevelopmentRun
+
+```
+
+

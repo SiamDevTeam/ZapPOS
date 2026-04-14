@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+/*
 package org.siamdev.zappos.data.source.remote
 
 import rust.nostr.sdk.Client
@@ -98,3 +99,4 @@ object RelayConfig {
     }
 
 }
+*/
