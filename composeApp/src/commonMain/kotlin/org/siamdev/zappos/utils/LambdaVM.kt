@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-/*
 package org.siamdev.zappos.utils
 
 import androidx.compose.runtime.Composable
@@ -32,29 +31,17 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlin.reflect.KClass
 
-class LambdaVM(
-    private val provider: () -> ViewModel
-) : ViewModelProvider.Factory {
-
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: KClass<T>, extras: CreationExtras): T {
-        val instance = provider()
-
-        return when {
-            modelClass.isInstance(instance) -> instance as T
-            else -> throw IllegalArgumentException(
-                "Factory created ${instance::class.qualifiedName}, " +
-                        "but expected ${modelClass.qualifiedName}"
-            )
-        }
-    }
-}
-
 @Composable
 inline fun <reified VM : ViewModel> viewModelOf(
     noinline provider: () -> VM
-): VM {
-    val factory = remember { LambdaVM(provider) }
-    return viewModel(factory = factory)
-}
-*/
+): VM = viewModel(
+    factory = remember {
+        object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(
+                modelClass: KClass<T>,
+                extras: CreationExtras
+            ): T = provider() as T
+        }
+    }
+)
