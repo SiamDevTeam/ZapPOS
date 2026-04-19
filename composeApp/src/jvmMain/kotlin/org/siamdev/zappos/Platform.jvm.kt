@@ -1,7 +1,7 @@
 package org.siamdev.zappos
 
-class JVMPlatform: Platform {
-    override val name: String = "Java ${System.getProperty("java.version")}"
+actual fun getPlatform(): Platform = object : Platform {
+    override val type = PlatformType.DESKTOP
+    override val name = "Desktop"
+    override val info = System.getProperty("os.name") ?: "Unknown"
 }
-
-actual fun getPlatform(): Platform = JVMPlatform()

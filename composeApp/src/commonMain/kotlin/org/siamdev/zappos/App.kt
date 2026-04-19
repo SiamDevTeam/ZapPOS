@@ -31,11 +31,18 @@ import org.siamdev.zappos.navigation.Route
 import org.siamdev.zappos.ui.screens.splash.SplashViewModel
 
 @Composable
-fun App(isDesktop: Boolean, splashViewModel: SplashViewModel) {
+fun App(platform: Platform, splashViewModel: SplashViewModel) {
     val themeMode = splashViewModel.themeMode.collectAsState()
-    val start = if (isDesktop) Route.Login else Route.Splash
+
+    val start = when (platform.type) {
+        PlatformType.DESKTOP -> Route.Login
+        PlatformType.MOBILE -> Route.Splash
+        PlatformType.WEB -> Route.Login
+    }
+
     ZapposTheme(themeMode = themeMode.value) {
         NavigationRoot(
+            platform = platform,
             startDestination = start,
             splashViewModel = splashViewModel
         )

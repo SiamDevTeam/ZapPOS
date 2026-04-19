@@ -43,6 +43,8 @@ import androidx.navigation3.runtime.NavEntry
 import androidx.savedstate.serialization.SavedStateConfiguration
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
+import org.siamdev.zappos.Platform
+import org.siamdev.zappos.PlatformType
 import org.siamdev.zappos.ui.screens.demo.CounterScreen
 import org.siamdev.zappos.ui.screens.demo.EffectScreen
 import org.siamdev.zappos.ui.screens.login.LoginScreen
@@ -55,6 +57,7 @@ import org.siamdev.zappos.ui.screens.splash.SplashViewModel
 
 @Composable
 fun NavigationRoot(
+    platform: Platform,
     startDestination: Route,
     splashViewModel: SplashViewModel
 ) {
@@ -75,29 +78,27 @@ fun NavigationRoot(
         startDestination
     )
 
-    // ✅ sync backStack → URL
-    LaunchedEffect(backStack.toList()) {
-        val current = backStack.lastOrNull() as? Route ?: return@LaunchedEffect
-        val path = RouteMapper.toPath(current)
-        if (path != BrowserHistory.currentPath()) {
-            BrowserHistory.push(path)
+    if (platform.type == PlatformType.WEB) {
+        LaunchedEffect(backStack.toList()) {
+            val current = backStack.lastOrNull() as? Route ?: return@LaunchedEffect
+            val path = RouteMapper.toPath(current)
+            if (path != BrowserHistory.currentPath()) {
+                BrowserHistory.push(path)
+            }
         }
-    }
-
-    // ✅ sync URL → backStack (กด back ใน browser)
-    LaunchedEffect(Unit) {
-        BrowserHistory.onPopState { path ->
-            val route = RouteMapper.fromPath(path)
-            val current = backStack.lastOrNull()
-            if (current != route) {
-                // ถ้า route นั้นอยู่ใน backStack แล้ว → ตัดออกมา
-                val existingIndex = backStack.indexOfLast { it == route }
-                if (existingIndex >= 0) {
-                    while (backStack.lastIndex > existingIndex) {
-                        backStack.removeAt(backStack.lastIndex)
+        LaunchedEffect(Unit) {
+            BrowserHistory.onPopState { path ->
+                val route = RouteMapper.fromPath(path)
+                val current = backStack.lastOrNull()
+                if (current != route) {
+                    val existingIndex = backStack.indexOfLast { it == route }
+                    if (existingIndex >= 0) {
+                        while (backStack.lastIndex > existingIndex) {
+                            backStack.removeAt(backStack.lastIndex)
+                        }
+                    } else {
+                        backStack.add(route)
                     }
-                } else {
-                    backStack.add(route)
                 }
             }
         }

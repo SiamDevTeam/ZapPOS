@@ -45,6 +45,7 @@ import javax.swing.SwingUtilities
 fun main() = application {
     val splashVM = remember { SplashViewModel() }
     var showMainWindow by remember { mutableStateOf(false) }
+    val platform = getPlatform()
 
     if (!showMainWindow) {
         DesktopSplashWindow(
@@ -62,7 +63,7 @@ fun main() = application {
                 position = WindowPosition(Alignment.Center)
             )
         ) {
-            App(isDesktop = true, splashViewModel = splashVM)
+            App(platform = platform, splashViewModel = splashVM)
         }
     }
 }

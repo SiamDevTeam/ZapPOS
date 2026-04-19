@@ -1,7 +1,9 @@
 package org.siamdev.zappos
 
-class WasmPlatform: Platform {
-    override val name: String = "wasm"
-}
+import kotlinx.browser.window
 
-actual fun getPlatform(): Platform = WasmPlatform()
+actual fun getPlatform(): Platform = object : Platform {
+    override val type = PlatformType.WEB
+    override val name = "Web"
+    override val info = window.navigator.userAgent
+}

@@ -40,10 +40,11 @@ class MainActivity : ComponentActivity() {
         /*        var isActive = true
                 lifecycleScope.launch { delay(2000L); isActive = false }
                 splashScreen.apply { setKeepOnScreenCondition { false } }*/
+        val platform = getPlatform()
 
         setContent {
             val splashVM: SplashViewModel = viewModel()
-            App(isDesktop = false, splashViewModel = splashVM)
+            App(platform = platform, splashViewModel = splashVM)
         }
 
     }

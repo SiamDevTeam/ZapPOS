@@ -1,7 +1,9 @@
 package org.siamdev.zappos
 
-class JsPlatform: Platform {
-    override val name: String = "Web with Kotlin/JS"
-}
+import kotlinx.browser.window
 
-actual fun getPlatform(): Platform = JsPlatform()
+actual fun getPlatform(): Platform = object : Platform {
+    override val type = PlatformType.WEB
+    override val name = "Web"
+    override val info = window.navigator.userAgent
+}

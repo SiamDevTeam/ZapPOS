@@ -9,13 +9,11 @@ import org.siamdev.zappos.ui.screens.splash.SplashViewModel
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
     val splashVM = SplashViewModel()
+    val platform = getPlatform()
 
     MainScope().launch {
         ComposeViewport {
-            App(
-                isDesktop = false,
-                splashViewModel = splashVM
-            )
+            App(platform = platform, splashViewModel = splashVM)
         }
     }
 }

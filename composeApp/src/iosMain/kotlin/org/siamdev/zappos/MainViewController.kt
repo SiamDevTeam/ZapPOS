@@ -29,5 +29,6 @@ import androidx.compose.runtime.remember
 
 fun MainViewController() = ComposeUIViewController {
     val splashVM = remember { SplashViewModel() }
-    App(isDesktop = false, splashViewModel = splashVM)
+    val platform = getPlatform()
+    App(platform = platform, splashViewModel = splashVM)
 }
