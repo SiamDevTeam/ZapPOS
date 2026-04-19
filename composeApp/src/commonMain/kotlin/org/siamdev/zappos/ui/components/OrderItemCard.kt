@@ -33,6 +33,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -40,6 +41,7 @@ import androidx.compose.material.icons.filled.CurrencyLira
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -49,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
@@ -63,112 +66,90 @@ fun OrderItemCard(
     onAddClick: () -> Unit,
     onReduceClick: () -> Unit
 ) {
-    val dividerColor = Color(0xFFC4C4C4)
-    val cardShape = RoundedCornerShape(12.dp)
-
-    Card(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 6.dp)
-            .clip(cardShape),
-        shape = cardShape,
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+            .padding(vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Column {
+        // Item info
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = item.name,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(Modifier.height(3.dp))
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 17.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        text = item.name,
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontWeight = FontWeight.Medium,
-                        ),
-                        fontSize = 17.sp
-                    )
-
-                    Spacer(Modifier.height(2.dp))
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 5.dp, end = 5.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = Icons.Default.CurrencyLira,
-                                contentDescription = "Currency",
-                                modifier = Modifier.size(18.dp)
-                            )
-                            Spacer(Modifier.width(4.dp))
-                            Text(text = item.priceBaht, style = MaterialTheme.typography.titleMedium, fontSize = 15.sp)
-                        }
-
-                        Spacer(Modifier.width(17.dp))
-
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                painter = painterResource(Res.drawable.sat_unit),
-                                contentDescription = "sat icon",
-                                tint = Color(0xFFFFB700),
-                                modifier = Modifier.size(16.dp)
-                            )
-                            Spacer(Modifier.width(4.dp))
-                            Text(
-                                text = item.priceSat,
-                                style = MaterialTheme.typography.titleMedium,
-                                color = Color(0xFFFFB700),
-                                fontSize = 15.sp
-                            )
-                        }
-                    }
-                }
-
-                Spacer(Modifier.width(40.dp))
-
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    MaterialButton(
-                        modifier = Modifier.size(32.dp),
-                        iconCenter = Icons.Default.Remove,
-                        iconColor = Color.White,
-                        buttonColor = Color(0xFFE12729),
-                        onClick = onReduceClick
+                    Icon(
+                        imageVector = Icons.Default.CurrencyLira,
+                        contentDescription = null,
+                        modifier = Modifier.size(12.dp),
+                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     )
-
                     Text(
-                        text = "x${item.count}",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(horizontal = 14.dp)
+                        text = item.priceBaht,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     )
-
-                    MaterialButton(
-                        modifier = Modifier.size(32.dp),
-                        iconCenter = Icons.Default.Add,
-                        iconColor = Color.White,
-                        buttonColor = Color(0xFF22BB2E),
-                        onClick = onAddClick
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(Res.drawable.sat_unit),
+                        contentDescription = null,
+                        tint = Color(0xFFFFB700),
+                        modifier = Modifier.size(11.dp)
+                    )
+                    Spacer(Modifier.width(3.dp))
+                    Text(
+                        text = item.priceSat,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color(0xFFFFB700)
                     )
                 }
             }
+        }
 
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .height(1.dp)
-                    .background(dividerColor)
-                    .align(Alignment.CenterHorizontally)
+        // Qty controls
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            MaterialButton(
+                modifier = Modifier.size(28.dp),
+                iconCenter = Icons.Default.Remove,
+                iconColor = Color.White,
+                buttonColor = Color(0xFFE12729),
+                onClick = onReduceClick
             )
 
-            Spacer(Modifier.height(2.dp))
+            Text(
+                text = "${item.count}",
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.widthIn(min = 20.dp),
+                textAlign = TextAlign.Center
+            )
+
+            MaterialButton(
+                modifier = Modifier.size(28.dp),
+                iconCenter = Icons.Default.Add,
+                iconColor = Color.White,
+                buttonColor = Color(0xFF22BB2E),
+                onClick = onAddClick
+            )
         }
     }
+
+    HorizontalDivider(
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f),
+        thickness = 1.dp
+    )
 }
 
 
@@ -176,5 +157,16 @@ fun OrderItemCard(
 @Preview
 @Composable
 fun OrderItemCardPreview() {
-    //OrderItemCard()
+    OrderItemCard(
+        item = MenuItem(
+            id = 1,
+            imageUrl = "",
+            name = "Matcha Latte",
+            priceBaht = "100.00",
+            priceSat = "26,000",
+            count = 2u
+        ),
+        onAddClick = {},
+        onReduceClick = {}
+    )
 }

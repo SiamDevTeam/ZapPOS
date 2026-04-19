@@ -51,6 +51,9 @@ import zappos.composeapp.generated.resources.sat_unit
 import org.jetbrains.compose.resources.painterResource
 import zappos.composeapp.generated.resources.compose_multiplatform
 
+
+enum class MenuViewMode { LIST, GRID }
+
 @Composable
 fun MenuItemCard(
     imageUrl: String,
@@ -58,139 +61,254 @@ fun MenuItemCard(
     priceBaht: String,
     priceSat: String? = null,
     count: UInt = 0u,
+    viewMode: MenuViewMode = MenuViewMode.LIST,
     onAddClick: () -> Unit = {},
     onReduceClick: () -> Unit = {}
 ) {
+    when (viewMode) {
+        MenuViewMode.LIST -> MenuItemCardList(
+            imageUrl, name, priceBaht, priceSat, count, onAddClick
+        )
+        MenuViewMode.GRID -> MenuItemCardGrid(
+            imageUrl, name, priceBaht, priceSat, count, onAddClick
+        )
+    }
+}
 
+// ─── LIST (แนวนอน) ───────────────────────────
+@Composable
+private fun MenuItemCardList(
+    imageUrl: String,
+    name: String,
+    priceBaht: String,
+    priceSat: String?,
+    count: UInt,
+    onAddClick: () -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(3.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        ),
-        elevation = CardDefaults.cardElevation(2.dp)
+            .padding(vertical = 4.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(0.dp),
+        border = CardDefaults.outlinedCardBorder()
     ) {
-
         Row(
             modifier = Modifier
-                .padding(5.dp),
+                .fillMaxWidth()
+                .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            MenuImage(imageUrl = imageUrl, size = 72.dp, cornerRadius = 12.dp)
 
-            AsyncImage(
-                model = ImageRequest.Builder(LocalPlatformContext.current)
-                    .data(imageUrl)
-                    .crossfade(true)
-                    .memoryCachePolicy(CachePolicy.ENABLED)
-                    .diskCachePolicy(CachePolicy.ENABLED)
-                    .listener(
-                        //onStart = { println("Coil start: ${it.data}") },
-                        //onSuccess = { _, _ -> println("Coil success") },
-                        onError = { _, result -> result.throwable.printStackTrace() }
-                    )
-                    .build(),
-                contentDescription = name,
-                modifier = Modifier
-                    .size(90.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(Color.LightGray),
-                contentScale = ContentScale.Crop,
-                placeholder = ColorPainter(Color.LightGray),
-                error = painterResource(Res.drawable.compose_multiplatform)
-            )
-            Spacer(Modifier.width(12.dp))
+            Spacer(Modifier.width(14.dp))
 
-
-            // Middle: Item Info
-            Column(
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier.weight(1f)
-            ) {
-
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = name,
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Bold,
-                    ),
-                    fontSize = 18.sp
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold
                 )
-
-                Spacer(Modifier.height(4.dp))
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Default.CurrencyLira,
-                        contentDescription = "Currency",
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Spacer(Modifier.width(4.dp))
-                    Text(text = priceBaht, style = MaterialTheme.typography.titleMedium)
-                }
-
-                Spacer(Modifier.height(4.dp))
-
-                // Sat price row
-                if (priceSat != null) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            painter = painterResource(Res.drawable.sat_unit),
-                            contentDescription = "sat icon",
-                            tint = Color(0xFFFFB700),
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(Modifier.width(4.dp))
-                        Text(
-                            text = priceSat,
-                            style = MaterialTheme.typography.titleMedium,
-                            color = Color(0xFFFFB700)
-                        )
-                    }
-                }
-
+                Spacer(Modifier.height(6.dp))
+                PriceRow(priceBaht = priceBaht, priceSat = priceSat)
             }
 
-
-            // Right: Qty + Add button
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                //verticalArrangement = Arrangement.Bottom,
                 verticalArrangement = Arrangement.Center
-
             ) {
-
-                Box(
-                    modifier = Modifier.height(35.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (count > 0u) {
-                        Text(
-                            text = "x$count",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    }
+                if (count > 0u) {
+                    CountBadge(count = count)
+                    Spacer(Modifier.height(6.dp))
                 }
-
-                Spacer(Modifier.height(10.dp))
-
-
-                MaterialButton(
-                    modifier = Modifier.size(40.dp),
-                    iconCenter = Icons.Default.Add,
-                    iconColor = Color.White,
-                    buttonColor = Color(0xFF070E1E),
-                    onClick = onAddClick
-                )
+                AddButton(onClick = onAddClick, size = 36.dp)
             }
 
-                Spacer(Modifier.width(12.dp))
-            }
+            Spacer(Modifier.width(4.dp))
         }
-
+    }
 }
 
+// ─── GRID (แนวตั้ง) ──────────────────────────
+@Composable
+private fun MenuItemCardGrid(
+    imageUrl: String,
+    name: String,
+    priceBaht: String,
+    priceSat: String?,
+    count: UInt,
+    onAddClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(4.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(0.dp),
+        border = CardDefaults.outlinedCardBorder()
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            // Image เต็มบน
+            MenuImage(
+                imageUrl = imageUrl,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(130.dp)
+                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
+                cornerRadius = 0.dp,
+                contentScale = ContentScale.Crop
+            )
 
+            Column(modifier = Modifier.padding(12.dp)) {
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1
+                )
+                Spacer(Modifier.height(4.dp))
+                PriceRow(priceBaht = priceBaht, priceSat = priceSat)
+                Spacer(Modifier.height(10.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (count > 0u) CountBadge(count = count)
+                    else Spacer(Modifier.weight(1f))
+                    AddButton(onClick = onAddClick, size = 34.dp)
+                }
+            }
+        }
+    }
+}
+
+// ─── Shared subcomponents ─────────────────────
+
+@Composable
+private fun MenuImage(
+    imageUrl: String,
+    modifier: Modifier = Modifier,
+    size: androidx.compose.ui.unit.Dp? = null,
+    cornerRadius: androidx.compose.ui.unit.Dp = 12.dp,
+    contentScale: ContentScale = ContentScale.Crop
+) {
+    val baseModifier = if (size != null) modifier.size(size) else modifier
+    AsyncImage(
+        model = ImageRequest.Builder(LocalPlatformContext.current)
+            .data(imageUrl)
+            .crossfade(true)
+            .memoryCachePolicy(CachePolicy.ENABLED)
+            .diskCachePolicy(CachePolicy.ENABLED)
+            .build(),
+        contentDescription = null,
+        modifier = baseModifier
+            .clip(RoundedCornerShape(cornerRadius))
+            .background(Color(0xFFF5F5F5)),
+        contentScale = contentScale,
+        placeholder = ColorPainter(Color(0xFFF5F5F5)),
+        error = painterResource(Res.drawable.compose_multiplatform)
+    )
+}
+
+@Composable
+private fun PriceRow(priceBaht: String, priceSat: String?) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                imageVector = Icons.Default.CurrencyLira,
+                contentDescription = null,
+                modifier = Modifier.size(13.dp),
+                tint = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = priceBaht,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Medium
+            )
+        }
+        if (priceSat != null) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(Res.drawable.sat_unit),
+                    contentDescription = null,
+                    tint = Color(0xFFFFB700),
+                    modifier = Modifier.size(12.dp)
+                )
+                Spacer(Modifier.width(3.dp))
+                Text(
+                    text = priceSat,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color(0xFFFFB700)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun CountBadge(count: UInt) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(6.dp))
+            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f))
+            .padding(horizontal = 10.dp, vertical = 3.dp)
+    ) {
+        Text(
+            text = "×$count",
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@Composable
+private fun AddButton(
+    onClick: () -> Unit,
+    size: androidx.compose.ui.unit.Dp
+) {
+    MaterialButton(
+        modifier = Modifier.size(size),
+        iconCenter = Icons.Default.Add,
+        iconColor = Color.White,
+        buttonColor = Color(0xFF070E1E),
+        onClick = onClick
+    )
+}
+
+// ─── Previews ────────────────────────────────
+
+@Preview
+@Composable
+fun MenuItemCardListPreview() {
+    MenuItemCard(
+        imageUrl = "",
+        name = "Mocha",
+        priceBaht = "70.00",
+        priceSat = "17,500",
+        count = 2u,
+        viewMode = MenuViewMode.LIST
+    )
+}
+
+@Preview
+@Composable
+fun MenuItemCardGridPreview() {
+    MenuItemCard(
+        imageUrl = "",
+        name = "Matcha Latte",
+        priceBaht = "100.00",
+        priceSat = "26,000",
+        count = 1u,
+        viewMode = MenuViewMode.GRID
+    )
+}
 
 @Preview
 @Composable

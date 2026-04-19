@@ -1,62 +1,25 @@
-/*
- * MIT License
- *
- * Copyright (c) 2025 SiamDevTeam
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 package org.siamdev.zappos.ui.screens.menu
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.CurrencyLira
+import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SheetValue
-import androidx.compose.material3.Text
-import androidx.compose.material3.rememberBottomSheetScaffoldState
-import androidx.compose.material3.rememberStandardBottomSheetState
-import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.filled.ViewList
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -64,10 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.siamdev.zappos.ui.components.MaterialButton
-import org.siamdev.zappos.ui.components.MenuItemCard
-import org.siamdev.zappos.ui.components.OrderItemCard
-import org.siamdev.zappos.ui.components.SlideBottomSheet
+import org.siamdev.zappos.theme.YellowPrimary
+import org.siamdev.zappos.ui.components.*
 import org.siamdev.zappos.ui.components.TopBar
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.sat_unit
@@ -75,18 +36,350 @@ import zappos.composeapp.generated.resources.sat_unit
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainMenuScreen(onOpenDrawer: () -> Unit = {}) {
-    //val viewModel = viewModelOf { MainMenuViewModel() }
-    val viewModel: MainMenuViewModel = MainMenuViewModel()
+    val viewModel = remember { MainMenuViewModel() }
+    val items = viewModel.items
+
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        val isDesktop = maxWidth >= 600.dp
+
+        if (isDesktop) {
+            DesktopMenuLayout(
+                viewModel = viewModel,
+                items = items,
+                onOpenDrawer = onOpenDrawer
+            )
+        } else {
+            MobileMenuLayout(
+                viewModel = viewModel,
+                items = items,
+                onOpenDrawer = onOpenDrawer
+            )
+        }
+    }
+}
+
+// ─────────────────────────────────────────────
+// Shared: Section Header with toggle
+// ─────────────────────────────────────────────
+@Composable
+private fun MenuSectionHeader(
+    viewMode: MenuViewMode,
+    onViewModeChange: (MenuViewMode) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.MenuBook,
+                contentDescription = null,
+                modifier = Modifier.size(22.dp),
+                tint = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(Modifier.width(8.dp))
+            Text(
+                text = "Menus",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        // Toggle buttons
+        Row(
+            modifier = Modifier
+                .clip(RoundedCornerShape(10.dp))
+                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f))
+                .padding(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            MenuViewMode.entries.forEach { mode ->
+                val isSelected = viewMode == mode
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(if (isSelected) YellowPrimary else Color.Transparent)
+                        .clickable { onViewModeChange(mode) }
+                        .padding(6.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = if (mode == MenuViewMode.LIST)
+                            Icons.Default.ViewList
+                        else
+                            Icons.Default.GridView,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                        tint = if (isSelected) Color(0xFF515151)
+                        else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                    )
+                }
+            }
+        }
+    }
+}
+
+// ─────────────────────────────────────────────
+// Shared: Menu Items (List or Grid)
+// ─────────────────────────────────────────────
+@Composable
+private fun MenuItemsContent(
+    items: List<MenuItem>,
+    viewMode: MenuViewMode,
+    viewModel: MainMenuViewModel,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(bottom = 24.dp)
+) {
+    if (viewMode == MenuViewMode.LIST) {
+        LazyColumn(
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = contentPadding
+        ) {
+            items(items.size) { index ->
+                val item = items[index]
+                MenuItemCard(
+                    imageUrl = item.imageUrl,
+                    name = item.name,
+                    priceBaht = item.priceBaht,
+                    priceSat = item.priceSat,
+                    count = item.count,
+                    viewMode = MenuViewMode.LIST,
+                    onAddClick = { viewModel.addItem(item.id) },
+                    onReduceClick = { viewModel.reduceItem(item.id) }
+                )
+            }
+        }
+    } else {
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(minSize = 160.dp),
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            contentPadding = contentPadding
+        ) {
+            items(items) { item ->
+                MenuItemCard(
+                    imageUrl = item.imageUrl,
+                    name = item.name,
+                    priceBaht = item.priceBaht,
+                    priceSat = item.priceSat,
+                    count = item.count,
+                    viewMode = MenuViewMode.GRID,
+                    onAddClick = { viewModel.addItem(item.id) },
+                    onReduceClick = { viewModel.reduceItem(item.id) }
+                )
+            }
+        }
+    }
+}
+
+// ─────────────────────────────────────────────
+// DESKTOP Layout
+// ─────────────────────────────────────────────
+@Composable
+private fun DesktopMenuLayout(
+    viewModel: MainMenuViewModel,
+    items: List<MenuItem>,
+    onOpenDrawer: () -> Unit
+) {
+    var viewMode by remember { mutableStateOf(MenuViewMode.LIST) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .windowInsetsPadding(WindowInsets.statusBars)
+    ) {
+        TopBar(title = "ZapPOS", onSegmentClick = onOpenDrawer)
+
+        Row(modifier = Modifier.fillMaxSize()) {
+
+            // ── Left: Menu List ──
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+                    .padding(start = 24.dp, end = 12.dp, top = 8.dp)
+            ) {
+                MenuSectionHeader(
+                    viewMode = viewMode,
+                    onViewModeChange = { viewMode = it },
+                    modifier = Modifier.padding(bottom = 12.dp)
+                )
+
+                Box(modifier = Modifier.fillMaxSize()) {
+                    MenuItemsContent(
+                        items = items,
+                        viewMode = viewMode,
+                        viewModel = viewModel,
+                        modifier = Modifier.fillMaxSize()
+                    )
+
+                    // Fade ด้านล่าง
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(32.dp)
+                            .align(Alignment.BottomCenter)
+                            .background(
+                                Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.Transparent,
+                                        MaterialTheme.colorScheme.background
+                                    )
+                                )
+                            )
+                    )
+                }
+            }
+
+            // ── Right: Order Panel ──
+            Column(
+                modifier = Modifier
+                    .width(300.dp)
+                    .fillMaxHeight()
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(horizontal = 20.dp, vertical = 16.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ShoppingCart,
+                        contentDescription = null,
+                        tint = YellowPrimary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        text = "Order",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f))
+                Spacer(Modifier.height(8.dp))
+
+                LazyColumn(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    if (viewModel.selectedKeys.isEmpty()) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 32.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "No items yet",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+                                )
+                            }
+                        }
+                    } else {
+                        items(viewModel.selectedKeys.size) { index ->
+                            val key = viewModel.selectedKeys[index]
+                            val item = items.first { it.id == key }
+                            OrderItemCard(
+                                item = item,
+                                onAddClick = { viewModel.addItem(item.id) },
+                                onReduceClick = { viewModel.reduceItem(item.id) }
+                            )
+                        }
+                    }
+                }
+
+                Spacer(Modifier.height(12.dp))
+                HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f))
+                Spacer(Modifier.height(12.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Total",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    )
+                    Column(horizontalAlignment = Alignment.End) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Default.CurrencyLira,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(Modifier.width(4.dp))
+                            Text(
+                                viewModel.totalFiat,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Image(
+                                painterResource(Res.drawable.sat_unit),
+                                contentDescription = null,
+                                modifier = Modifier.size(14.dp)
+                            )
+                            Spacer(Modifier.width(4.dp))
+                            Text(
+                                viewModel.totalSat,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                            )
+                        }
+                    }
+                }
+
+                Spacer(Modifier.height(16.dp))
+
+                MaterialButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "Checkout",
+                    iconStart = Icons.Default.ShoppingCart,
+                    onClick = {}
+                )
+                Spacer(Modifier.height(8.dp))
+                MaterialButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "Clear Cart",
+                    buttonColor = Color.Transparent,
+                    showBorder = true,
+                    onClick = { viewModel.clearAllItems() }
+                )
+            }
+        }
+    }
+}
+
+// ─────────────────────────────────────────────
+// MOBILE Layout
+// ─────────────────────────────────────────────
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun MobileMenuLayout(
+    viewModel: MainMenuViewModel,
+    items: List<MenuItem>,
+    onOpenDrawer: () -> Unit
+) {
+    var viewMode by remember { mutableStateOf(MenuViewMode.LIST) }
 
     val sheetState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberStandardBottomSheetState(
             initialValue = SheetValue.PartiallyExpanded,
-            //initialValue = SheetValue.Expanded,
             skipHiddenState = true
         )
     )
-
-    val items = viewModel.items
 
     Box(modifier = Modifier.fillMaxSize()) {
         SlideBottomSheet(
@@ -102,200 +395,117 @@ fun MainMenuScreen(onOpenDrawer: () -> Unit = {}) {
                     )
                 }
             },
-
             bottomContent = {
-
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-
                     Text(
                         text = "Total Payment",
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.padding(bottom = 30.dp)
                     )
-
-                    Box(
-                        contentAlignment = Alignment.TopEnd
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.End
-                        ) {
-
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    imageVector = Icons.Default.CurrencyLira,
-                                    contentDescription = "Currency",
-                                    modifier = Modifier.size(20.dp)
-                                )
-                                Spacer(Modifier.width(4.dp))
-                                Text(viewModel.totalFiat, style = MaterialTheme.typography.titleLarge)
-                            }
-
-                            Spacer(Modifier.height(4.dp))
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Image(painterResource(
-                                    resource = Res.drawable.sat_unit),
-                                    contentDescription = "sat icon",
-                                    modifier = Modifier.size(20.dp)
-                                )
-                                Spacer(Modifier.width(4.dp))
-                                Text(viewModel.totalSat, style = MaterialTheme.typography.titleMedium)
-                            }
+                    Column(horizontalAlignment = Alignment.End) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Default.CurrencyLira,
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(Modifier.width(4.dp))
+                            Text(viewModel.totalFiat, style = MaterialTheme.typography.titleLarge)
+                        }
+                        Spacer(Modifier.height(4.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Image(
+                                painterResource(Res.drawable.sat_unit),
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(Modifier.width(4.dp))
+                            Text(viewModel.totalSat, style = MaterialTheme.typography.titleMedium)
                         }
                     }
                 }
 
-
                 Spacer(Modifier.height(16.dp))
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
+                Row(modifier = Modifier.fillMaxWidth()) {
                     MaterialButton(
-                        modifier = Modifier
-                            .weight(1f),
+                        modifier = Modifier.weight(1f),
                         text = "Clear Cart",
                         buttonColor = Color.White,
                         showBorder = true,
                         onClick = { viewModel.clearAllItems() }
                     )
-
                     Spacer(Modifier.width(12.dp))
-
                     MaterialButton(
                         modifier = Modifier.weight(1f),
                         text = "Checkout",
                         iconStart = Icons.Default.ShoppingCart,
-                        onClick = {  }
+                        onClick = {}
                     )
                 }
             }
         ) {
-            // Screen content
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .windowInsetsPadding(WindowInsets.statusBars)
             ) {
-                // Top Header
-                TopBar(
-                    title = "ZapPOS",
-                    modifier = Modifier,
-                    onSegmentClick = onOpenDrawer
+                TopBar(title = "ZapPOS", onSegmentClick = onOpenDrawer)
+
+                // Section header with toggle
+                MenuSectionHeader(
+                    viewMode = viewMode,
+                    onViewModeChange = { viewMode = it },
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp)
                 )
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        //.padding(start = 32.dp, top = 5.dp)
-                        .padding(horizontal = 26.dp, vertical = 5.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.MenuBook,
-                        contentDescription = "Currency",
-                        modifier = Modifier.size(27.dp)
-                    )
-                    Spacer(Modifier.width(4.dp))
-                    Text(
-                        text = "Menus",
-                        fontSize = 12.sp,
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-
-                // --- Detail Screen ---
-                BoxWithConstraints(
+                Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(MaterialTheme.colorScheme.background.copy(alpha = 0.9f))
                         .padding(top = 5.dp, bottom = 80.dp)
                 ) {
-                    val horizontalPadding = if (maxWidth > 800.dp) {
-                        (maxWidth - 650.dp) / 2
-                    } else {
-                        16.dp
-                    }
+                    MenuItemsContent(
+                        items = items,
+                        viewMode = viewMode,
+                        viewModel = viewModel,
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp)
+                    )
 
-                    Column(
+                    // Fade ด้านบน
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = horizontalPadding, end = horizontalPadding),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-
-                        Box {
-                            LazyColumn(
-                                modifier = Modifier
-                                    .wrapContentWidth()
-                                    .fillMaxHeight(),
-                                verticalArrangement = Arrangement.spacedBy(3.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                items(items.size) { index ->
-                                    val item = items[index]
-                                    MenuItemCard(
-                                        imageUrl = item.imageUrl,
-                                        name = item.name,
-                                        priceBaht = item.priceBaht,
-                                        priceSat = item.priceSat,
-                                        count = item.count,
-                                        onAddClick = { viewModel.addItem(item.id) },
-                                        onReduceClick = { viewModel.reduceItem(item.id) }
+                            .height(10.dp)
+                            .align(Alignment.TopCenter)
+                            .background(
+                                Brush.verticalGradient(
+                                    colors = listOf(
+                                        MaterialTheme.colorScheme.background,
+                                        Color.Transparent
                                     )
-                                }
-                            }
-
-                            // Fade ด้านบน
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(10.dp)
-                                    .align(Alignment.TopCenter)
-                                    .background(
-                                        Brush.verticalGradient(
-                                            colors = listOf(
-                                                MaterialTheme.colorScheme.background,
-                                                Color.Transparent
-                                            )
-                                        )
-                                    )
+                                )
                             )
-
-                            // Fade ด้านล่าง
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(5.dp)
-                                    .align(Alignment.BottomCenter)
-                                    .background(
-                                        Brush.verticalGradient(
-                                            colors = listOf(
-                                                Color.Transparent,
-                                                MaterialTheme.colorScheme.background
-                                            )
-                                        )
-                                    )
-                            )
-
-                        }
-
-                    }
+                    )
                 }
-
             }
         }
-
     }
 }
 
 @Preview(showBackground = true, widthDp = 411, heightDp = 891)
 @Composable
 fun MainMenuScreenPreview() {
+    MainMenuScreen()
+}
+
+@Preview(showBackground = true, widthDp = 1280, heightDp = 800)
+@Composable
+fun MainMenuScreenDesktopPreview() {
     MainMenuScreen()
 }

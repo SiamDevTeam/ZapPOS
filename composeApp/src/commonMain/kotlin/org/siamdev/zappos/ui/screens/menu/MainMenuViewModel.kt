@@ -74,7 +74,79 @@ class MainMenuViewModel : ViewModel() {
                     name = "Matcha Coffee",
                     priceBaht = "100.00",
                     priceSat = "26,000"
+                ),
+
+                MenuItem(
+                    id = 5,
+                    imageUrl = "https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg",
+                    name = "Espresso",
+                    priceBaht = "50.00",
+                    priceSat = "12,500"
+                ),
+                MenuItem(
+                    id = 6,
+                    imageUrl = "https://images.pexels.com/photos/414555/pexels-photo-414555.jpeg",
+                    name = "Americano",
+                    priceBaht = "60.00",
+                    priceSat = "15,000"
+                ),
+                MenuItem(
+                    id = 7,
+                    imageUrl = "https://images.pexels.com/photos/585750/pexels-photo-585750.jpeg",
+                    name = "Cappuccino",
+                    priceBaht = "75.00",
+                    priceSat = "18,750"
+                ),
+                MenuItem(
+                    id = 8,
+                    imageUrl = "https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg",
+                    name = "Flat White",
+                    priceBaht = "80.00",
+                    priceSat = "20,000"
+                ),
+                MenuItem(
+                    id = 9,
+                    imageUrl = "https://images.pexels.com/photos/2103949/pexels-photo-2103949.jpeg",
+                    name = "Caramel Macchiato",
+                    priceBaht = "90.00",
+                    priceSat = "22,500"
+                ),
+                MenuItem(
+                    id = 10,
+                    imageUrl = "https://images.pexels.com/photos/302902/pexels-photo-302902.jpeg",
+                    name = "Iced Coffee",
+                    priceBaht = "65.00",
+                    priceSat = "16,250"
+                ),
+                MenuItem(
+                    id = 11,
+                    imageUrl = "https://images.pexels.com/photos/2907301/pexels-photo-2907301.jpeg",
+                    name = "Thai Tea",
+                    priceBaht = "60.00",
+                    priceSat = "15,000"
+                ),
+                MenuItem(
+                    id = 12,
+                    imageUrl = "https://images.pexels.com/photos/1337825/pexels-photo-1337825.jpeg",
+                    name = "Green Tea",
+                    priceBaht = "55.00",
+                    priceSat = "13,750"
+                ),
+                MenuItem(
+                    id = 13,
+                    imageUrl = "https://images.pexels.com/photos/374885/pexels-photo-374885.jpeg",
+                    name = "Hot Chocolate",
+                    priceBaht = "85.00",
+                    priceSat = "21,250"
+                ),
+                MenuItem(
+                    id = 14,
+                    imageUrl = "https://images.pexels.com/photos/416656/pexels-photo-416656.jpeg",
+                    name = "Milk",
+                    priceBaht = "50.00",
+                    priceSat = "12,500"
                 )
+
             )
         )
     }
