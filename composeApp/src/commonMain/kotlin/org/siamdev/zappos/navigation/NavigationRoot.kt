@@ -45,12 +45,12 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import org.siamdev.zappos.Platform
 import org.siamdev.zappos.PlatformType
-import org.siamdev.zappos.ui.screens.demo.CounterScreen
-import org.siamdev.zappos.ui.screens.demo.EffectScreen
+import org.siamdev.zappos.ui.screens.count.CounterScreen
+import org.siamdev.zappos.ui.screens.demo.TopBarScreen
+import org.siamdev.zappos.ui.screens.glow.GlowStyleScreen
 import org.siamdev.zappos.ui.screens.login.LoginScreen
 import org.siamdev.zappos.ui.screens.home.HomeScreen
 import org.siamdev.zappos.ui.screens.menu.MainMenuScreen
-import org.siamdev.zappos.ui.screens.setting.SettingInfo
 import org.siamdev.zappos.ui.screens.setting.SettingScreen
 import org.siamdev.zappos.ui.screens.splash.SplashScreen
 import org.siamdev.zappos.ui.screens.splash.SplashViewModel
@@ -71,6 +71,7 @@ fun NavigationRoot(
                     subclass(Route.Menu::class, Route.Menu.serializer())
                     subclass(Route.Counter::class, Route.Counter.serializer())
                     subclass(Route.GlowEffects::class, Route.GlowEffects.serializer())
+                    subclass(Route.TopBarStyle::class, Route.TopBarStyle.serializer())
                     subclass(Route.Setting::class, Route.Setting.serializer())
                 }
             }
@@ -149,7 +150,7 @@ fun NavigationRoot(
 
                         // Login
                         is Route.Login -> LoginScreen(
-                            onLoginNostr = { backStack.add(Route.GlowEffects) },
+                            onLoginNostr = { backStack.add(Route.TopBarStyle) },
                             onLoginAnonymous = { backStack.add(Route.Home) }
                         )
 
@@ -180,6 +181,14 @@ fun NavigationRoot(
                             )
                         }
 
+                        is Route.GlowEffects -> NavConfig(
+                            backStack = backStack
+                        ) { _, openDrawer ->
+                            GlowStyleScreen(
+                                onOpenDrawer = openDrawer
+                            )
+                        }
+
                         // Setting
                         is Route.Setting -> NavConfig(
                             backStack = backStack
@@ -191,7 +200,9 @@ fun NavigationRoot(
                             )
                         }
 
-                        is Route.GlowEffects -> EffectScreen()
+
+
+                        is Route.TopBarStyle -> TopBarScreen()
 
                         else -> error("Unknown NavKey: $key")
                     }

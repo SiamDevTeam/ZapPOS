@@ -29,15 +29,20 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -47,9 +52,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.siamdev.zappos.theme.GrayText
+import org.siamdev.zappos.theme.YellowPrimary
+import zappos.composeapp.generated.resources.Res
+import zappos.composeapp.generated.resources.zappos_dark_horizontal_v2
 
 @Composable
 fun NavigationList(
@@ -58,6 +69,7 @@ fun NavigationList(
     onNavigateToHome: () -> Unit = {},
     onNavigateToCounter: () -> Unit = {},
     onNavigateToMenu: () -> Unit = {},
+    onNavigateToGlow: () -> Unit = {},
     onNavigateToSetting: () -> Unit = {}
 ) {
     AnimatedVisibility(
@@ -68,21 +80,15 @@ fun NavigationList(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.3f))
+                .background(Color.Black.copy(alpha = 0.5f))
                 .clickable { onDismiss() }
         )
     }
 
     AnimatedVisibility(
         visible = isOpen,
-        enter = slideInHorizontally(
-            initialOffsetX = { it },
-            animationSpec = tween(300)
-        ),
-        exit = slideOutHorizontally(
-            targetOffsetX = { it },
-            animationSpec = tween(300)
-        )
+        enter = slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300)),
+        exit = slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300))
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -91,69 +97,116 @@ fun NavigationList(
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .width(280.dp)
+                    .width(300.dp)
                     .background(MaterialTheme.colorScheme.surface)
-                    .padding(16.dp)
-                    .padding(top = 25.dp),
+                    .windowInsetsPadding(WindowInsets.statusBars)
+                    .windowInsetsPadding(WindowInsets.navigationBars)
+                    .padding(horizontal = 20.dp)
             ) {
-                Row(
+                // Header
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 24.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                        .padding(top = 20.dp, bottom = 20.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(YellowPrimary.copy(alpha = 0.08f))
+                        .padding(horizontal = 16.dp, vertical = 20.dp)
                 ) {
-                    Text(
-                        text = "Navigation",
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontSize = 24.sp
-                    )
+                    /*val logo = if (isSystemInDarkTheme()) {
+                        Res.drawable.zappos_light_horizontal
+                    } else {
+                        Res.drawable.zappos_dark_horizontal_v2
+                    }*/
 
+                    Column {
+                        Image(
+                            painter = painterResource(Res.drawable.zappos_dark_horizontal_v2),
+                            contentDescription = "ZapPOS Logo",
+                            modifier = Modifier
+                                .height(36.dp)
+                                .wrapContentWidth(),
+                            contentScale = ContentScale.Fit
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        HorizontalDivider(
+                            color = YellowPrimary.copy(alpha = 0.2f),
+                            thickness = 1.dp
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(6.dp)
+                                    .clip(CircleShape)
+                                    .background(Color(0xFF4CAF50))
+                            )
+                            Text(
+                                text = "Point of Sale System",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                                letterSpacing = 0.5.sp
+                            )
+                        }
+                    }
                 }
+
+                // Divider
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f),
+                    thickness = 1.dp
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // Section label
+                Text(
+                    text = "MENU",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                    letterSpacing = 2.sp,
+                    modifier = Modifier.padding(horizontal = 4.dp, vertical = 8.dp)
+                )
+
                 DrawerNavigationItem(
                     icon = Icons.Default.Home,
-                    title = "Home Screen",
-                    onClick = {
-                        onNavigateToHome()
-                        onDismiss()
-                    }
+                    title = "Home",
+                    onClick = { onNavigateToHome(); onDismiss() }
                 )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
                 DrawerNavigationItem(
                     icon = Icons.Default.Restaurant,
-                    title = "Main Menu Screen",
-                    onClick = {
-                        onNavigateToMenu()
-                        onDismiss()
-                    }
+                    title = "Main Menu",
+                    onClick = { onNavigateToMenu(); onDismiss() }
                 )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
                 DrawerNavigationItem(
                     icon = Icons.Default.Add,
-                    title = "Counter Screen",
-                    onClick = {
-                        onNavigateToCounter()
-                        onDismiss()
-                    }
+                    title = "Counter",
+                    onClick = { onNavigateToCounter(); onDismiss() }
+                )
+                DrawerNavigationItem(
+                    icon = Icons.Default.AutoAwesome,
+                    title = "Glow Effects",
+                    onClick = { onNavigateToGlow(); onDismiss() }
                 )
 
+                Spacer(modifier = Modifier.weight(1f))
+
+                // Bottom Section
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f),
+                    thickness = 1.dp
+                )
                 Spacer(modifier = Modifier.height(8.dp))
 
                 DrawerNavigationItem(
                     icon = Icons.Default.Settings,
-                    title = "Setting",
-                    onClick = {
-                        onNavigateToSetting()
-                        onDismiss()
-                    }
+                    title = "Settings",
+                    onClick = { onNavigateToSetting(); onDismiss() }
                 )
+
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
@@ -170,24 +223,30 @@ private fun DrawerNavigationItem(
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
             .clickable { onClick() }
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
-            .padding(horizontal = 16.dp, vertical = 14.dp),
+            .padding(horizontal = 12.dp, vertical = 13.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = title,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(24.dp)
-        )
+        Box(
+            modifier = Modifier
+                .size(36.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(YellowPrimary.copy(alpha = 0.15f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = title,
+                tint = YellowPrimary,
+                modifier = Modifier.size(18.dp)
+            )
+        }
 
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(14.dp))
 
         Text(
             text = title,
             style = MaterialTheme.typography.bodyLarge,
-            fontSize = 16.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }
@@ -207,6 +266,7 @@ private fun NavigationDrawerPreview() {
             onNavigateToHome = {},
             onNavigateToCounter = {},
             onNavigateToMenu = {},
+            onNavigateToGlow = {},
             onNavigateToSetting = {}
         )
     }

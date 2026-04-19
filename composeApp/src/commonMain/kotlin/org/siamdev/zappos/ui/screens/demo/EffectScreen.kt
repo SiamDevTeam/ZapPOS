@@ -33,7 +33,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.ui.components.TopBar
 
 @Composable
-fun EffectScreen() {
+fun TopBarScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -60,6 +60,6 @@ fun EffectScreen() {
 
 @Preview(showBackground = true, widthDp = 411, heightDp = 891)
 @Composable
-private fun EffectScreenPreview() {
-    EffectScreen()
+private fun TopBarScreenPreview() {
+    TopBarScreen()
 }

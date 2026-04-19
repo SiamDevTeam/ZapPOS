@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.siamdev.zappos.ui.screens.demo
+package org.siamdev.zappos.ui.screens.count
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -38,12 +38,33 @@ import org.siamdev.zappos.ui.components.MaterialButton
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import org.siamdev.zappos.ui.components.TopBar
 
 @Composable
-fun CounterScreen(onOpenDrawer: () -> Unit = {}) {
-    var count by remember { mutableIntStateOf(0) }
+fun CounterScreen(
+    onOpenDrawer: () -> Unit = {},
+    vm: CounterViewModel = viewModel()
+) {
+    val count by vm.count.collectAsState()
 
+    CounterContent(
+        count = count,
+        onPlus = { vm.plus() },
+        onMinus = { vm.minus() },
+        onReset = { vm.reset() },
+        onOpenDrawer = onOpenDrawer
+    )
+}
+
+@Composable
+fun CounterContent(
+    count: Int,
+    onPlus: () -> Unit,
+    onMinus: () -> Unit,
+    onReset: () -> Unit,
+    onOpenDrawer: () -> Unit = {}
+) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -51,13 +72,7 @@ fun CounterScreen(onOpenDrawer: () -> Unit = {}) {
                 .background(MaterialTheme.colorScheme.background)
                 .windowInsetsPadding(WindowInsets.statusBars)
         ) {
-            // Top Bar
-            TopBar(
-                title = "Counter",
-                onSegmentClick = onOpenDrawer
-            )
-
-            // Content
+            TopBar(title = "Counter", onSegmentClick = onOpenDrawer)
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -69,42 +84,40 @@ fun CounterScreen(onOpenDrawer: () -> Unit = {}) {
                     style = MaterialTheme.typography.titleLarge,
                     fontSize = 48.sp
                 )
-
                 Spacer(modifier = Modifier.height(32.dp))
-
                 Row {
                     MaterialButton(
                         modifier = Modifier.size(50.dp),
                         iconCenter = Icons.Default.Remove,
                         iconSize = 28,
-                        onClick = { count-- }
+                        onClick = onMinus
                     )
                     Spacer(modifier = Modifier.width(16.dp))
-
                     MaterialButton(
                         modifier = Modifier.size(50.dp),
                         iconCenter = Icons.Default.Add,
                         iconSize = 28,
-                        onClick = { count++ }
+                        onClick = onPlus
                     )
                 }
-
                 Spacer(Modifier.height(20.dp))
-
                 MaterialButton(
                     modifier = Modifier.width(117.dp),
                     text = "reset count",
-                    onClick = { count = 0 }
+                    onClick = onReset
                 )
             }
         }
-
     }
 }
-
 
 @Preview(showBackground = true, widthDp = 411, heightDp = 891)
 @Composable
 fun CounterScreenPreview() {
-    CounterScreen()
+    CounterContent(
+        count = 42,
+        onPlus = {},
+        onMinus = {},
+        onReset = {}
+    )
 }

@@ -49,5 +49,8 @@ sealed interface Route : NavKey {
     object GlowEffects : Route, NavKey
 
     @Serializable
+    object TopBarStyle : Route, NavKey
+
+    @Serializable
     object Setting : Route, NavKey
 }

@@ -35,6 +35,9 @@ import org.siamdev.zappos.ui.components.NavigationList
 import androidx.compose.material3.MaterialTheme
 import androidx.navigation3.runtime.NavBackStack
 
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.ui.input.pointer.pointerInput
+
 @Composable
 fun NavConfig(
     backStack: NavBackStack<NavKey>,
@@ -51,6 +54,9 @@ fun NavConfig(
 
     val navActions = remember(backStack) { NavActions(backStack) }
 
+    var totalDragX by remember { mutableFloatStateOf(0f) }
+    val swipeThreshold = 80f
+
     Box(modifier.fillMaxSize()) {
 
         Box(
@@ -58,6 +64,22 @@ fun NavConfig(
                 .fillMaxSize()
                 .offset(x = offsetX)
                 .background(MaterialTheme.colorScheme.background)
+                .pointerInput(drawerOpen) {
+                    detectHorizontalDragGestures(
+                        onDragStart = { totalDragX = 0f },
+                        onHorizontalDrag = { _, dragAmount ->
+                            totalDragX += dragAmount
+                        },
+                        onDragEnd = {
+                            when {
+                                !drawerOpen && totalDragX < -swipeThreshold -> drawerOpen = true
+                                drawerOpen && totalDragX > swipeThreshold -> drawerOpen = false
+                            }
+                            totalDragX = 0f
+                        },
+                        onDragCancel = { totalDragX = 0f }
+                    )
+                }
         ) {
             content(navActions) { drawerOpen = true }
         }
@@ -65,22 +87,11 @@ fun NavConfig(
         NavigationList(
             isOpen = drawerOpen,
             onDismiss = { drawerOpen = false },
-            onNavigateToHome = {
-                navActions.to(Route.Home)
-                drawerOpen = false
-            },
-            onNavigateToMenu = {
-                navActions.to(Route.Menu)
-                drawerOpen = false
-            },
-            onNavigateToCounter = {
-                navActions.to(Route.Counter)
-                drawerOpen = false
-            },
-            onNavigateToSetting = {
-                navActions.to(Route.Setting)
-                drawerOpen = false
-            }
+            onNavigateToHome = { navActions.to(Route.Home); drawerOpen = false },
+            onNavigateToMenu = { navActions.to(Route.Menu); drawerOpen = false },
+            onNavigateToCounter = { navActions.to(Route.Counter); drawerOpen = false },
+            onNavigateToGlow = { navActions.to(Route.GlowEffects); drawerOpen = false },
+            onNavigateToSetting = { navActions.to(Route.Setting); drawerOpen = false }
         )
     }
 }
