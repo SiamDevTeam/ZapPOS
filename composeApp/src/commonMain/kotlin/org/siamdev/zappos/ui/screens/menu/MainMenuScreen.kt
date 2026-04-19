@@ -24,19 +24,19 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.components.*
 import org.siamdev.zappos.ui.components.TopBar
+import org.siamdev.zappos.utils.viewModelOf
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.sat_unit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainMenuScreen(onOpenDrawer: () -> Unit = {}) {
-    val viewModel = remember { MainMenuViewModel() }
+    val viewModel = viewModelOf { MainMenuViewModel() }
     val items = viewModel.items
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {

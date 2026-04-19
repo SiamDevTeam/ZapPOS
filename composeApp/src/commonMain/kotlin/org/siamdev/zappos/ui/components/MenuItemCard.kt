@@ -75,7 +75,7 @@ fun MenuItemCard(
     }
 }
 
-// ─── LIST (แนวนอน) ───────────────────────────
+
 @Composable
 private fun MenuItemCardList(
     imageUrl: String,
@@ -89,7 +89,7 @@ private fun MenuItemCardList(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(0.dp),
         border = CardDefaults.outlinedCardBorder()
@@ -144,7 +144,7 @@ private fun MenuItemCardGrid(
         modifier = Modifier
             .fillMaxWidth()
             .padding(4.dp),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(0.dp),
         border = CardDefaults.outlinedCardBorder()

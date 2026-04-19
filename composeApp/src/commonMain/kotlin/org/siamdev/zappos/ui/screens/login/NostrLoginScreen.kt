@@ -23,6 +23,8 @@ import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.components.MaterialButton
+import org.siamdev.zappos.utils.LockOrientation
+import org.siamdev.zappos.utils.Orientation
 
 
 private enum class NostrLoginTab { NSEC, MNEMONIC }
@@ -32,6 +34,7 @@ fun NostrLoginScreen(
     onBack: () -> Unit = {},
     onLoginSuccess: () -> Unit = {}
 ) {
+    LockOrientation(Orientation.PORTRAIT)
     var selectedTab by remember { mutableStateOf(NostrLoginTab.NSEC) }
 
     // nsec state

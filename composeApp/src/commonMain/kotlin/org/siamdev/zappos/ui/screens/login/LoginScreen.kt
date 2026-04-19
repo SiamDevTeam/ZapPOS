@@ -26,6 +26,8 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.components.MaterialButton
+import org.siamdev.zappos.utils.LockOrientation
+import org.siamdev.zappos.utils.Orientation
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.zappos_dark_horizontal_v2
 
@@ -34,6 +36,7 @@ fun LoginScreen(
     onLoginNostr: () -> Unit = {},
     onLoginAnonymous: () -> Unit = {}
 ) {
+    LockOrientation(Orientation.PORTRAIT)
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
