@@ -4,6 +4,7 @@ object RouteMapper {
     fun toPath(route: Route): String = when (route) {
         is Route.Splash  -> "/"
         is Route.Login   -> "/login"
+        is Route.NostrLogin -> "/nostr-login"
         is Route.Home    -> "/home"
         is Route.Menu    -> "/menu"
         is Route.Counter -> "/counter"
@@ -14,6 +15,7 @@ object RouteMapper {
 
     fun fromPath(path: String): Route = when (path) {
         "/login"   -> Route.Login
+        "/nostr-login" -> Route.NostrLogin
         "/home"    -> Route.Home
         "/menu"    -> Route.Menu
         "/counter" -> Route.Counter

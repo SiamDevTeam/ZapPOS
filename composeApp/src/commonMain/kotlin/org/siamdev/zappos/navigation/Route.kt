@@ -36,6 +36,9 @@ sealed interface Route : NavKey {
     object Login : Route, NavKey
 
     @Serializable
+    object NostrLogin : Route, NavKey
+
+    @Serializable
     object Home : Route, NavKey
 
     @Serializable

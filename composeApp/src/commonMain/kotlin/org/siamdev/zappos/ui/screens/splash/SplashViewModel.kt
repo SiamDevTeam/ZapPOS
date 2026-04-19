@@ -51,7 +51,7 @@ class SplashViewModel : ViewModel() {
     }
 
     private suspend fun runSplashDelay() {
-        delay(3000.milliseconds)
+        delay(2000.milliseconds)
         _splashDone.value = true
     }
 

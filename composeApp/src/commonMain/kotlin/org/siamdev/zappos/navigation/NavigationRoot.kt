@@ -50,6 +50,7 @@ import org.siamdev.zappos.ui.screens.demo.TopBarScreen
 import org.siamdev.zappos.ui.screens.glow.GlowStyleScreen
 import org.siamdev.zappos.ui.screens.login.LoginScreen
 import org.siamdev.zappos.ui.screens.home.HomeScreen
+import org.siamdev.zappos.ui.screens.login.NostrLoginScreen
 import org.siamdev.zappos.ui.screens.menu.MainMenuScreen
 import org.siamdev.zappos.ui.screens.setting.SettingScreen
 import org.siamdev.zappos.ui.screens.splash.SplashScreen
@@ -67,6 +68,7 @@ fun NavigationRoot(
                 polymorphic(NavKey::class) {
                     subclass(Route.Splash::class, Route.Splash.serializer())
                     subclass(Route.Login::class, Route.Login.serializer())
+                    subclass(Route.NostrLogin::class, Route.NostrLogin.serializer())
                     subclass(Route.Home::class, Route.Home.serializer())
                     subclass(Route.Menu::class, Route.Menu.serializer())
                     subclass(Route.Counter::class, Route.Counter.serializer())
@@ -150,8 +152,14 @@ fun NavigationRoot(
 
                         // Login
                         is Route.Login -> LoginScreen(
-                            onLoginNostr = { backStack.add(Route.TopBarStyle) },
+                            onLoginNostr = { backStack.add(Route.NostrLogin) },
                             onLoginAnonymous = { backStack.add(Route.Home) }
+                        )
+
+                        // Nostr Login
+                        is Route.NostrLogin -> NostrLoginScreen(
+                            onBack = { backStack.removeAt(backStack.lastIndex) },
+                            onLoginSuccess = { backStack.add(Route.Home) }
                         )
 
                         // Home
