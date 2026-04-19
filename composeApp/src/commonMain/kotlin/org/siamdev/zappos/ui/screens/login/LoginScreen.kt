@@ -71,7 +71,7 @@ fun LoginScreen(
                 .background(
                     brush = Brush.radialGradient(
                         colors = listOf(
-                            YellowPrimary.copy(alpha = 0.12f),
+                            YellowPrimary.copy(alpha = 0.22f),
                             Color.Transparent
                         )
                     )

@@ -61,7 +61,7 @@ fun NostrLoginScreen(
                 .offset(x = (-150).dp, y = (-150).dp)
                 .background(
                     brush = Brush.radialGradient(
-                        colors = listOf(YellowPrimary.copy(alpha = 0.18f), Color.Transparent)
+                        colors = listOf(YellowPrimary.copy(alpha = 0.22f), Color.Transparent)
                     )
                 )
         )
