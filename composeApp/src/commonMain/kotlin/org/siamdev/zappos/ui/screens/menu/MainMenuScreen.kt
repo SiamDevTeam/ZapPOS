@@ -58,9 +58,7 @@ fun MainMenuScreen(onOpenDrawer: () -> Unit = {}) {
     }
 }
 
-// ─────────────────────────────────────────────
-// Shared: Section Header with toggle
-// ─────────────────────────────────────────────
+
 @Composable
 private fun MenuSectionHeader(
     viewMode: MenuViewMode,
@@ -121,9 +119,7 @@ private fun MenuSectionHeader(
     }
 }
 
-// ─────────────────────────────────────────────
-// Shared: Menu Items (List or Grid)
-// ─────────────────────────────────────────────
+
 @Composable
 private fun MenuItemsContent(
     items: List<MenuItem>,
@@ -176,9 +172,6 @@ private fun MenuItemsContent(
     }
 }
 
-// ─────────────────────────────────────────────
-// DESKTOP Layout
-// ─────────────────────────────────────────────
 @Composable
 private fun DesktopMenuLayout(
     viewModel: MainMenuViewModel,
@@ -362,9 +355,6 @@ private fun DesktopMenuLayout(
     }
 }
 
-// ─────────────────────────────────────────────
-// MOBILE Layout
-// ─────────────────────────────────────────────
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MobileMenuLayout(
