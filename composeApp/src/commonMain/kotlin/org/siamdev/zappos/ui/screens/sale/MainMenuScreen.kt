@@ -1,4 +1,4 @@
-package org.siamdev.zappos.ui.screens.menu
+package org.siamdev.zappos.ui.screens.sale
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,17 +26,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.siamdev.zappos.LocalMainMenuViewModel
 import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.components.*
 import org.siamdev.zappos.ui.components.WorkspaceHeader
-import org.siamdev.zappos.utils.viewModelOf
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.sat_unit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainMenuScreen(onOpenDrawer: () -> Unit = {}) {
-    val viewModel = viewModelOf { MainMenuViewModel() }
+fun MainMenuScreen(
+    onOpenDrawer: () -> Unit = {},
+    onCheckout: () -> Unit = {}
+) {
+    val viewModel = LocalMainMenuViewModel.current
     val items = viewModel.items
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
@@ -46,13 +49,15 @@ fun MainMenuScreen(onOpenDrawer: () -> Unit = {}) {
             DesktopMenuLayout(
                 viewModel = viewModel,
                 items = items,
-                onOpenDrawer = onOpenDrawer
+                onOpenDrawer = onOpenDrawer,
+                onCheckout = onCheckout
             )
         } else {
             MobileMenuLayout(
                 viewModel = viewModel,
                 items = items,
-                onOpenDrawer = onOpenDrawer
+                onOpenDrawer = onOpenDrawer,
+                onCheckout = onCheckout
             )
         }
     }
@@ -185,7 +190,8 @@ private fun MenuItemsContent(
 private fun DesktopMenuLayout(
     viewModel: MainMenuViewModel,
     items: List<MenuItem>,
-    onOpenDrawer: () -> Unit
+    onOpenDrawer: () -> Unit,
+    onCheckout: () -> Unit
 ) {
     var viewMode by remember { mutableStateOf(MenuViewMode.LIST) }
 
@@ -350,7 +356,7 @@ private fun DesktopMenuLayout(
                     modifier = Modifier.fillMaxWidth(),
                     text = "Checkout",
                     iconStart = Icons.Default.ShoppingCart,
-                    onClick = {}
+                    onClick = { onCheckout() }
                 )
                 Spacer(Modifier.height(8.dp))
                 MaterialButton(
@@ -370,7 +376,8 @@ private fun DesktopMenuLayout(
 private fun MobileMenuLayout(
     viewModel: MainMenuViewModel,
     items: List<MenuItem>,
-    onOpenDrawer: () -> Unit
+    onOpenDrawer: () -> Unit,
+    onCheckout: () -> Unit
 ) {
     var viewMode by remember { mutableStateOf(MenuViewMode.LIST) }
 
@@ -444,7 +451,7 @@ private fun MobileMenuLayout(
                         modifier = Modifier.weight(1f),
                         text = "Checkout",
                         iconStart = Icons.Default.ShoppingCart,
-                        onClick = {}
+                        onClick = { onCheckout() }
                     )
                 }
             }

@@ -41,10 +41,12 @@ fun App(platform: Platform, splashViewModel: SplashViewModel) {
     }
 
     ZapposTheme(themeMode = themeMode.value) {
-        NavigationRoot(
-            platform = platform,
-            startDestination = start,
-            splashViewModel = splashViewModel
-        )
+        VMContainer {
+            NavigationRoot(
+                platform = platform,
+                startDestination = start,
+                splashViewModel = splashViewModel
+            )
+        }
     }
 }

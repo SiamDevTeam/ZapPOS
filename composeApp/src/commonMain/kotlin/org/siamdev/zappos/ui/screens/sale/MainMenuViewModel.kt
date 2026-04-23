@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.siamdev.zappos.ui.screens.menu
+package org.siamdev.zappos.ui.screens.sale
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

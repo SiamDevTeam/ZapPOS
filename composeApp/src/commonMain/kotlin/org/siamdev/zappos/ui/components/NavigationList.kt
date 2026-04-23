@@ -179,9 +179,10 @@ fun NavigationList(
                 DrawerNavigationItem(
                     icon = Icons.Default.Settings,
                     title = "Settings",
-                    onClick = { onNavigateToSetting(); onDismiss() }
+                    onClick = { onNavigateToSetting(); onDismiss() },
                 )
                 Spacer(modifier = Modifier.height(16.dp))
+
             }
         }
     }

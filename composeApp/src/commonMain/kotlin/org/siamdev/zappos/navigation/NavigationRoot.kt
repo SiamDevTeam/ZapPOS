@@ -1,26 +1,3 @@
-/*
- * MIT License
- *
- * Copyright (c) 2025 SiamDevTeam
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 package org.siamdev.zappos.navigation
 
 import androidx.compose.animation.AnimatedVisibility
@@ -45,13 +22,14 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import org.siamdev.zappos.Platform
 import org.siamdev.zappos.PlatformType
+import org.siamdev.zappos.ui.screens.checkout.CheckoutScreen
 import org.siamdev.zappos.ui.screens.count.CounterScreen
 import org.siamdev.zappos.ui.screens.demo.TopBarScreen
 import org.siamdev.zappos.ui.screens.glow.GlowStyleScreen
 import org.siamdev.zappos.ui.screens.login.LoginScreen
 import org.siamdev.zappos.ui.screens.home.HomeScreen
 import org.siamdev.zappos.ui.screens.login.NostrLoginScreen
-import org.siamdev.zappos.ui.screens.menu.MainMenuScreen
+import org.siamdev.zappos.ui.screens.sale.MainMenuScreen
 import org.siamdev.zappos.ui.screens.setting.SettingScreen
 import org.siamdev.zappos.ui.screens.splash.SplashScreen
 import org.siamdev.zappos.ui.screens.splash.SplashViewModel
@@ -71,6 +49,7 @@ fun NavigationRoot(
                     subclass(Route.NostrLogin::class, Route.NostrLogin.serializer())
                     subclass(Route.Home::class, Route.Home.serializer())
                     subclass(Route.Menu::class, Route.Menu.serializer())
+                    subclass(Route.Checkout::class, Route.Checkout.serializer())
                     subclass(Route.Counter::class, Route.Counter.serializer())
                     subclass(Route.GlowEffects::class, Route.GlowEffects.serializer())
                     subclass(Route.TopBarStyle::class, Route.TopBarStyle.serializer())
@@ -151,9 +130,7 @@ fun NavigationRoot(
                         }
 
                         // Login
-                        is Route.Login -> NavConfig(
-                            backStack = backStack
-                        ) { _, _ ->
+                        is Route.Login -> {
                             LoginScreen(
                                 onLoginNostr = { backStack.add(Route.NostrLogin) },
                                 onLoginAnonymous = { backStack.add(Route.Home) }
@@ -161,15 +138,20 @@ fun NavigationRoot(
                         }
 
                         // Nostr Login
-                        is Route.NostrLogin -> NavConfig(
-                            backStack = backStack
-                        ) { _, _ ->
+                        is Route.NostrLogin -> {
                             NostrLoginScreen(
                                 onBack = { backStack.removeAt(backStack.lastIndex) },
                                 onLoginSuccess = { backStack.add(Route.Home) }
                             )
                         }
 
+                        // Logout
+                        is Route.Logout -> {
+                            LaunchedEffect(Unit) {
+                                backStack.clear()
+                                backStack.add(Route.Login)
+                            }
+                        }
 
                         // Home
                         is Route.Home -> NavConfig(
@@ -183,11 +165,25 @@ fun NavigationRoot(
                         // Menu
                         is Route.Menu -> NavConfig(
                             backStack = backStack
-                        ) { _, openDrawer ->
+                        ) { navActions, openDrawer ->
                             MainMenuScreen(
-                                onOpenDrawer = openDrawer
+                                onOpenDrawer = openDrawer,
+                                onCheckout = { navActions.to(Route.Checkout) }
                             )
                         }
+
+                        // Checkout
+                        is Route.Checkout -> NavConfig(
+                            backStack = backStack
+                        ) { navActions, _ ->
+                            CheckoutScreen(
+                                onBack = { navActions.back() },
+                                onSuccess = {
+                                    navActions.back()
+                                }
+                            )
+                        }
+
 
                         // Counter
                         is Route.Counter -> NavConfig(
@@ -213,6 +209,12 @@ fun NavigationRoot(
                             SettingScreen(
                                 onNavigateBack = {
                                     navActions.back()
+                                },
+                                onNavigateTo = {
+                                    // Handle navigation to different settings options
+                                },
+                                onLogout = {
+                                    navActions.logout()
                                 }
                             )
                         }

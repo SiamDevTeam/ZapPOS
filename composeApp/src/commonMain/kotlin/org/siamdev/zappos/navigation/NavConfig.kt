@@ -42,6 +42,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 fun NavConfig(
     backStack: NavBackStack<NavKey>,
     modifier: Modifier = Modifier,
+    enableDrawer: Boolean = true,
     content: @Composable (NavActions, openDrawer: () -> Unit) -> Unit
 ) {
     val drawerWidth = 280.dp
@@ -64,7 +65,9 @@ fun NavConfig(
                 .fillMaxSize()
                 .offset(x = offsetX)
                 .background(MaterialTheme.colorScheme.background)
-                .pointerInput(drawerOpen) {
+                .pointerInput(enableDrawer, drawerOpen) {
+                    if (!enableDrawer) return@pointerInput
+
                     detectHorizontalDragGestures(
                         onDragStart = { totalDragX = 0f },
                         onHorizontalDrag = { _, dragAmount ->
@@ -81,18 +84,20 @@ fun NavConfig(
                     )
                 }
         ) {
-            content(navActions) { drawerOpen = true }
+            content(navActions) { if (enableDrawer) drawerOpen = true }
         }
 
-        NavigationList(
-            isOpen = drawerOpen,
-            onDismiss = { drawerOpen = false },
-            onNavigateToHome = { navActions.to(Route.Home); drawerOpen = false },
-            onNavigateToMenu = { navActions.to(Route.Menu); drawerOpen = false },
-            onNavigateToCounter = { navActions.to(Route.Counter); drawerOpen = false },
-            onNavigateToGlow = { navActions.to(Route.GlowEffects); drawerOpen = false },
-            onNavigateToSetting = { navActions.to(Route.Setting); drawerOpen = false }
-        )
+        if (enableDrawer) {
+            NavigationList(
+                isOpen = drawerOpen,
+                onDismiss = { drawerOpen = false },
+                onNavigateToHome = { navActions.to(Route.Home); drawerOpen = false },
+                onNavigateToMenu = { navActions.to(Route.Menu); drawerOpen = false },
+                onNavigateToCounter = { navActions.to(Route.Counter); drawerOpen = false },
+                onNavigateToGlow = { navActions.to(Route.GlowEffects); drawerOpen = false },
+                onNavigateToSetting = { navActions.to(Route.Setting); drawerOpen = false }
+            )
+        }
     }
 }
 
@@ -124,5 +129,9 @@ class NavActions(
     fun clearAndTo(route: NavKey) {
         backStack.clear()
         backStack.add(route)
+    }
+
+    fun logout() {
+        clearAndTo(Route.Login)
     }
 }

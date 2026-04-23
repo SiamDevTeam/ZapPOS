@@ -39,11 +39,16 @@ sealed interface Route : NavKey {
     object NostrLogin : Route, NavKey
 
     @Serializable
+    object Logout : Route, NavKey
+
+    @Serializable
     object Home : Route, NavKey
 
     @Serializable
     object Menu : Route, NavKey
 
+    @Serializable
+    object Checkout : Route, NavKey
 
     @Serializable
     object Counter : Route, NavKey
