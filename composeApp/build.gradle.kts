@@ -25,6 +25,7 @@ kotlin {
 
     compilerOptions {
         freeCompilerArgs.add("-Xdata-flow-based-exhaustiveness")
+        freeCompilerArgs.add("-Xexpect-actual-classes")
     }
 
     androidTarget {

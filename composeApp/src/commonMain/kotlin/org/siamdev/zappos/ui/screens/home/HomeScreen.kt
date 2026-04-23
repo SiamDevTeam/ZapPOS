@@ -1,97 +1,279 @@
-/*
- * MIT License
- *
- * Copyright (c) 2025 SiamDevTeam
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 package org.siamdev.zappos.ui.screens.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.CurrencyLira
+import androidx.compose.material.icons.filled.Receipt
+import androidx.compose.material.icons.filled.Restaurant
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.siamdev.zappos.theme.YellowPrimary
+import org.siamdev.zappos.ui.components.MaterialButton
 import org.siamdev.zappos.ui.components.TopBar
 
 @Composable
-fun HomeScreen(onOpenDrawer: () -> Unit = {}) {
-    Box(modifier = Modifier.fillMaxSize()) {
+fun HomeScreen(
+    onOpenDrawer: () -> Unit = {},
+    onNavigateToMenu: () -> Unit = {}
+) {
+    BoxWithConstraints(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        val isDesktop = maxWidth >= 600.dp
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
                 .windowInsetsPadding(WindowInsets.statusBars)
         ) {
+            TopBar(title = "ZapPOS", onSegmentClick = onOpenDrawer)
 
-            TopBar(
-                title = "Home",
-                onSegmentClick = onOpenDrawer
+            if (isDesktop) {
+                DesktopHomeContent(onNavigateToMenu = onNavigateToMenu)
+            } else {
+                MobileHomeContent(onNavigateToMenu = onNavigateToMenu)
+            }
+        }
+    }
+}
+
+@Composable
+private fun MobileHomeContent(onNavigateToMenu: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 20.dp, vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        GreetingSection()
+
+        // Stats row
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            StatCard(
+                modifier = Modifier.weight(1f),
+                icon = Icons.Default.CurrencyLira,
+                label = "Today Sales",
+                value = "0.00",
+                iconTint = YellowPrimary
             )
+            StatCard(
+                modifier = Modifier.weight(1f),
+                icon = Icons.Default.Receipt,
+                label = "Orders",
+                value = "0",
+                iconTint = Color(0xFF4CAF50)
+            )
+        }
 
-            // Content
-            Column(
+        QuickActionCard(onNavigateToMenu = onNavigateToMenu)
+
+        Spacer(Modifier.height(8.dp))
+    }
+}
+
+@Composable
+private fun DesktopHomeContent(onNavigateToMenu: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        horizontalArrangement = Arrangement.spacedBy(24.dp)
+    ) {
+        // Left column
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            GreetingSection()
+            QuickActionCard(onNavigateToMenu = onNavigateToMenu)
+        }
+
+        // Right column — stats
+        Column(
+            modifier = Modifier
+                .width(280.dp)
+                .fillMaxHeight(),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            StatCard(
+                modifier = Modifier.fillMaxWidth(),
+                icon = Icons.Default.CurrencyLira,
+                label = "Today Sales",
+                value = "0.00",
+                iconTint = YellowPrimary,
+                large = true
+            )
+            StatCard(
+                modifier = Modifier.fillMaxWidth(),
+                icon = Icons.Default.Receipt,
+                label = "Orders Today",
+                value = "0",
+                iconTint = Color(0xFF4CAF50),
+                large = true
+            )
+        }
+    }
+}
+
+// ─────────────────────────────────────────────
+// Shared components
+// ─────────────────────────────────────────────
+
+@Composable
+private fun GreetingSection() {
+    Column {
+        Text(
+            text = "Good morning 👋",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(
+            text = "Ready to take orders?",
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+    }
+}
+
+@Composable
+private fun StatCard(
+    modifier: Modifier = Modifier,
+    icon: ImageVector,
+    label: String,
+    value: String,
+    iconTint: Color,
+    large: Boolean = false
+) {
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(if (large) 20.dp else 16.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(36.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(iconTint.copy(alpha = 0.12f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = iconTint,
+                modifier = Modifier.size(18.dp)
+            )
+        }
+
+        Spacer(Modifier.height(12.dp))
+
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f),
+            letterSpacing = 0.5.sp
+        )
+
+        Spacer(Modifier.height(4.dp))
+
+        Text(
+            text = value,
+            style = if (large) MaterialTheme.typography.headlineMedium
+            else MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+    }
+}
+
+@Composable
+private fun QuickActionCard(onNavigateToMenu: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(YellowPrimary)
+            .clickable { onNavigateToMenu() }
+            .padding(20.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(14.dp)
+        ) {
+            Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                    .size(44.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Color.Black.copy(alpha = 0.1f)),
+                contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "Welcome to",
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontSize = 32.sp
+                Icon(
+                    imageVector = Icons.Default.Restaurant,
+                    contentDescription = null,
+                    tint = Color(0xFF515151),
+                    modifier = Modifier.size(22.dp)
                 )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
+            }
+            Column {
                 Text(
-                    text = "Home Screen",
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontSize = 48.sp,
+                    text = "New Order",
+                    style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
+                    color = Color(0xFF515151)
                 )
-
-                Spacer(modifier = Modifier.height(32.dp))
-
                 Text(
-                    text = "Use the menu button (☰) in the top right corner\nto navigate to other screens",
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-                    modifier = Modifier.padding(horizontal = 32.dp)
+                    text = "Open the menu to start",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color(0xFF515151).copy(alpha = 0.6f)
                 )
             }
         }
 
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+            contentDescription = null,
+            tint = Color(0xFF515151),
+            modifier = Modifier.size(20.dp)
+        )
     }
 }
 
 @Preview(showBackground = true, widthDp = 411, heightDp = 891)
 @Composable
 fun HomeScreenPreview() {
+    HomeScreen()
+}
+
+@Preview(showBackground = true, widthDp = 1280, heightDp = 800)
+@Composable
+fun HomeScreenDesktopPreview() {
     HomeScreen()
 }

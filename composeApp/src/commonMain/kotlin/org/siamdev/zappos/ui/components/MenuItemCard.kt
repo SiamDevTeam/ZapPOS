@@ -49,6 +49,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.sat_unit
 import org.jetbrains.compose.resources.painterResource
+import org.siamdev.zappos.theme.YellowPrimary
 import zappos.composeapp.generated.resources.compose_multiplatform
 
 
@@ -97,10 +98,10 @@ private fun MenuItemCardList(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
+                .padding(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            MenuImage(imageUrl = imageUrl, size = 72.dp, cornerRadius = 12.dp)
+            MenuImage(imageUrl = imageUrl, size = 75.dp, cornerRadius = 10.dp)
 
             Spacer(Modifier.width(14.dp))
 
@@ -130,7 +131,8 @@ private fun MenuItemCardList(
     }
 }
 
-// ─── GRID (แนวตั้ง) ──────────────────────────
+
+
 @Composable
 private fun MenuItemCardGrid(
     imageUrl: String,
@@ -156,7 +158,7 @@ private fun MenuItemCardGrid(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(130.dp)
-                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
+                    .clip(RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)),
                 cornerRadius = 0.dp,
                 contentScale = ContentScale.Crop
             )
@@ -186,14 +188,13 @@ private fun MenuItemCardGrid(
     }
 }
 
-// ─── Shared subcomponents ─────────────────────
 
 @Composable
 private fun MenuImage(
     imageUrl: String,
     modifier: Modifier = Modifier,
     size: androidx.compose.ui.unit.Dp? = null,
-    cornerRadius: androidx.compose.ui.unit.Dp = 12.dp,
+    cornerRadius: androidx.compose.ui.unit.Dp = 10.dp,
     contentScale: ContentScale = ContentScale.Crop
 ) {
     val baseModifier = if (size != null) modifier.size(size) else modifier
@@ -238,6 +239,7 @@ private fun PriceRow(priceBaht: String, priceSat: String?) {
                 Icon(
                     painter = painterResource(Res.drawable.sat_unit),
                     contentDescription = null,
+                    //tint = YellowPrimary,
                     tint = Color(0xFFFFB700),
                     modifier = Modifier.size(12.dp)
                 )
@@ -245,6 +247,7 @@ private fun PriceRow(priceBaht: String, priceSat: String?) {
                 Text(
                     text = priceSat,
                     style = MaterialTheme.typography.bodySmall,
+                    //color = YellowPrimary
                     color = Color(0xFFFFB700)
                 )
             }
@@ -257,12 +260,11 @@ private fun CountBadge(count: UInt) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(6.dp))
-            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f))
             .padding(horizontal = 10.dp, vertical = 3.dp)
     ) {
         Text(
             text = "×$count",
-            style = MaterialTheme.typography.labelMedium,
+            style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold
         )
     }
@@ -282,7 +284,7 @@ private fun AddButton(
     )
 }
 
-// ─── Previews ────────────────────────────────
+
 
 @Preview
 @Composable

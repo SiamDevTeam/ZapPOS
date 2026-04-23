@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.automirrored.filled.ViewList
 import androidx.compose.material.icons.filled.CurrencyLira
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -40,7 +41,7 @@ fun MainMenuScreen(onOpenDrawer: () -> Unit = {}) {
     val items = viewModel.items
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-        val isDesktop = maxWidth >= 600.dp
+        val isDesktop = maxWidth >= 600.dp && maxHeight >= 800.dp
 
         if (isDesktop) {
             DesktopMenuLayout(
@@ -105,7 +106,7 @@ private fun MenuSectionHeader(
                 ) {
                     Icon(
                         imageVector = if (mode == MenuViewMode.LIST)
-                            Icons.Default.ViewList
+                            Icons.AutoMirrored.Filled.ViewList
                         else
                             Icons.Default.GridView,
                         contentDescription = null,
@@ -125,9 +126,18 @@ private fun MenuItemsContent(
     items: List<MenuItem>,
     viewMode: MenuViewMode,
     viewModel: MainMenuViewModel,
+    isLoading: Boolean = false,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(bottom = 24.dp)
 ) {
+    if (isLoading) {
+        when (viewMode) {
+            MenuViewMode.LIST -> MenuListSkeleton()
+            MenuViewMode.GRID -> MenuGridSkeleton()
+        }
+        return
+    }
+
     if (viewMode == MenuViewMode.LIST) {
         LazyColumn(
             modifier = modifier,
@@ -190,7 +200,7 @@ private fun DesktopMenuLayout(
 
         Row(modifier = Modifier.fillMaxSize()) {
 
-            // ── Left: Menu List ──
+            // Left: Menu List
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -208,6 +218,7 @@ private fun DesktopMenuLayout(
                         items = items,
                         viewMode = viewMode,
                         viewModel = viewModel,
+                        isLoading = viewModel.isLoading,
                         modifier = Modifier.fillMaxSize()
                     )
 
@@ -229,10 +240,10 @@ private fun DesktopMenuLayout(
                 }
             }
 
-            // ── Right: Order Panel ──
+            // Right: Order Panel
             Column(
                 modifier = Modifier
-                    .width(300.dp)
+                    .width(400.dp)
                     .fillMaxHeight()
                     .background(MaterialTheme.colorScheme.surface)
                     .padding(horizontal = 20.dp, vertical = 16.dp)
@@ -463,6 +474,7 @@ private fun MobileMenuLayout(
                         items = items,
                         viewMode = viewMode,
                         viewModel = viewModel,
+                        isLoading = viewModel.isLoading,
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp)
                     )

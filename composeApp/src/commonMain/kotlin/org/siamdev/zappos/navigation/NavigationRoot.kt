@@ -151,16 +151,25 @@ fun NavigationRoot(
                         }
 
                         // Login
-                        is Route.Login -> LoginScreen(
-                            onLoginNostr = { backStack.add(Route.NostrLogin) },
-                            onLoginAnonymous = { backStack.add(Route.Home) }
-                        )
+                        is Route.Login -> NavConfig(
+                            backStack = backStack
+                        ) { _, _ ->
+                            LoginScreen(
+                                onLoginNostr = { backStack.add(Route.NostrLogin) },
+                                onLoginAnonymous = { backStack.add(Route.Home) }
+                            )
+                        }
 
                         // Nostr Login
-                        is Route.NostrLogin -> NostrLoginScreen(
-                            onBack = { backStack.removeAt(backStack.lastIndex) },
-                            onLoginSuccess = { backStack.add(Route.Home) }
-                        )
+                        is Route.NostrLogin -> NavConfig(
+                            backStack = backStack
+                        ) { _, _ ->
+                            NostrLoginScreen(
+                                onBack = { backStack.removeAt(backStack.lastIndex) },
+                                onLoginSuccess = { backStack.add(Route.Home) }
+                            )
+                        }
+
 
                         // Home
                         is Route.Home -> NavConfig(

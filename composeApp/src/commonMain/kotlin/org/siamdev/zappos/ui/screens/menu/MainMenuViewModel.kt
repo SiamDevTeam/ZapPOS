@@ -23,8 +23,14 @@
  */
 package org.siamdev.zappos.ui.screens.menu
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 data class MenuItem(
     val id: Int,
@@ -37,118 +43,129 @@ data class MenuItem(
 
 class MainMenuViewModel : ViewModel() {
 
+    var isLoading by mutableStateOf(true)
+        private set
+
     private val _items = mutableStateListOf<MenuItem>()
     val items: List<MenuItem> get() = _items
 
     private val _selectedKeys = mutableStateListOf<Int>()
     val selectedKeys: List<Int> get() = _selectedKeys
 
-
     init {
-        _items.addAll(
-            listOf(
-                MenuItem(
-                    id = 1,
-                    imageUrl = "https://images.pexels.com/photos/350478/pexels-photo-350478.jpeg",
-                    name = "Mocha",
-                    priceBaht = "70.00",
-                    priceSat = "17,500"
-                ),
-                MenuItem(
-                    id = 2,
-                    imageUrl = "https://images.pexels.com/photos/17486832/pexels-photo-17486832.jpeg",
-                    name = "Latte",
-                    priceBaht = "70.00",
-                    priceSat = "17,500"
-                ),
-                MenuItem(
-                    id = 3,
-                    imageUrl = "https://images.pexels.com/photos/2611811/pexels-photo-2611811.jpeg",
-                    name = "Matcha Latte",
-                    priceBaht = "100.00",
-                    priceSat = "26,000"
-                ),
-                MenuItem(
-                    id = 4,
-                    imageUrl = "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg",
-                    name = "Matcha Coffee",
-                    priceBaht = "100.00",
-                    priceSat = "26,000"
-                ),
+        loadItems()
+    }
 
-                MenuItem(
-                    id = 5,
-                    imageUrl = "https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg",
-                    name = "Espresso",
-                    priceBaht = "50.00",
-                    priceSat = "12,500"
-                ),
-                MenuItem(
-                    id = 6,
-                    imageUrl = "https://images.pexels.com/photos/414555/pexels-photo-414555.jpeg",
-                    name = "Americano",
-                    priceBaht = "60.00",
-                    priceSat = "15,000"
-                ),
-                MenuItem(
-                    id = 7,
-                    imageUrl = "https://images.pexels.com/photos/585750/pexels-photo-585750.jpeg",
-                    name = "Cappuccino",
-                    priceBaht = "75.00",
-                    priceSat = "18,750"
-                ),
-                MenuItem(
-                    id = 8,
-                    imageUrl = "https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg",
-                    name = "Flat White",
-                    priceBaht = "80.00",
-                    priceSat = "20,000"
-                ),
-                MenuItem(
-                    id = 9,
-                    imageUrl = "https://images.pexels.com/photos/2103949/pexels-photo-2103949.jpeg",
-                    name = "Caramel Macchiato",
-                    priceBaht = "90.00",
-                    priceSat = "22,500"
-                ),
-                MenuItem(
-                    id = 10,
-                    imageUrl = "https://images.pexels.com/photos/302902/pexels-photo-302902.jpeg",
-                    name = "Iced Coffee",
-                    priceBaht = "65.00",
-                    priceSat = "16,250"
-                ),
-                MenuItem(
-                    id = 11,
-                    imageUrl = "https://images.pexels.com/photos/2907301/pexels-photo-2907301.jpeg",
-                    name = "Thai Tea",
-                    priceBaht = "60.00",
-                    priceSat = "15,000"
-                ),
-                MenuItem(
-                    id = 12,
-                    imageUrl = "https://images.pexels.com/photos/1337825/pexels-photo-1337825.jpeg",
-                    name = "Green Tea",
-                    priceBaht = "55.00",
-                    priceSat = "13,750"
-                ),
-                MenuItem(
-                    id = 13,
-                    imageUrl = "https://images.pexels.com/photos/374885/pexels-photo-374885.jpeg",
-                    name = "Hot Chocolate",
-                    priceBaht = "85.00",
-                    priceSat = "21,250"
-                ),
-                MenuItem(
-                    id = 14,
-                    imageUrl = "https://images.pexels.com/photos/416656/pexels-photo-416656.jpeg",
-                    name = "Milk",
-                    priceBaht = "50.00",
-                    priceSat = "12,500"
+    private fun loadItems() {
+        viewModelScope.launch {
+
+            delay(1500)
+
+            _items.addAll(
+                listOf(
+                    MenuItem(
+                        id = 1,
+                        imageUrl = "https://images.pexels.com/photos/350478/pexels-photo-350478.jpeg",
+                        name = "Mocha",
+                        priceBaht = "70.00",
+                        priceSat = "17,500"
+                    ),
+                    MenuItem(
+                        id = 2,
+                        imageUrl = "https://images.pexels.com/photos/17486832/pexels-photo-17486832.jpeg",
+                        name = "Latte",
+                        priceBaht = "70.00",
+                        priceSat = "17,500"
+                    ),
+                    MenuItem(
+                        id = 3,
+                        imageUrl = "https://images.pexels.com/photos/2611811/pexels-photo-2611811.jpeg",
+                        name = "Matcha Latte",
+                        priceBaht = "100.00",
+                        priceSat = "26,000"
+                    ),
+                    MenuItem(
+                        id = 4,
+                        imageUrl = "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg",
+                        name = "Matcha Coffee",
+                        priceBaht = "100.00",
+                        priceSat = "26,000"
+                    ),
+                    MenuItem(
+                        id = 5,
+                        imageUrl = "https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg",
+                        name = "Espresso",
+                        priceBaht = "50.00",
+                        priceSat = "12,500"
+                    ),
+                    MenuItem(
+                        id = 6,
+                        imageUrl = "https://images.pexels.com/photos/414555/pexels-photo-414555.jpeg",
+                        name = "Americano",
+                        priceBaht = "60.00",
+                        priceSat = "15,000"
+                    ),
+                    MenuItem(
+                        id = 7,
+                        imageUrl = "https://images.pexels.com/photos/585750/pexels-photo-585750.jpeg",
+                        name = "Cappuccino",
+                        priceBaht = "75.00",
+                        priceSat = "18,750"
+                    ),
+                    MenuItem(
+                        id = 8,
+                        imageUrl = "https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg",
+                        name = "Flat White",
+                        priceBaht = "80.00",
+                        priceSat = "20,000"
+                    ),
+                    MenuItem(
+                        id = 9,
+                        imageUrl = "https://images.pexels.com/photos/2103949/pexels-photo-2103949.jpeg",
+                        name = "Caramel Macchiato",
+                        priceBaht = "90.00",
+                        priceSat = "22,500"
+                    ),
+                    MenuItem(
+                        id = 10,
+                        imageUrl = "https://images.pexels.com/photos/302902/pexels-photo-302902.jpeg",
+                        name = "Iced Coffee",
+                        priceBaht = "65.00",
+                        priceSat = "16,250"
+                    ),
+                    MenuItem(
+                        id = 11,
+                        imageUrl = "https://images.pexels.com/photos/2907301/pexels-photo-2907301.jpeg",
+                        name = "Thai Tea",
+                        priceBaht = "60.00",
+                        priceSat = "15,000"
+                    ),
+                    MenuItem(
+                        id = 12,
+                        imageUrl = "https://images.pexels.com/photos/1337825/pexels-photo-1337825.jpeg",
+                        name = "Green Tea",
+                        priceBaht = "55.00",
+                        priceSat = "13,750"
+                    ),
+                    MenuItem(
+                        id = 13,
+                        imageUrl = "https://images.pexels.com/photos/374885/pexels-photo-374885.jpeg",
+                        name = "Hot Chocolate",
+                        priceBaht = "85.00",
+                        priceSat = "21,250"
+                    ),
+                    MenuItem(
+                        id = 14,
+                        imageUrl = "https://images.pexels.com/photos/416656/pexels-photo-416656.jpeg",
+                        name = "Milk",
+                        priceBaht = "50.00",
+                        priceSat = "12,500"
+                    )
                 )
-
             )
-        )
+
+            isLoading = false
+        }
     }
 
     private fun updateSelectedKeys(id: Int) {
@@ -159,7 +176,6 @@ class MainMenuViewModel : ViewModel() {
             _selectedKeys.remove(id)
         }
     }
-
 
     fun addItem(id: Int) {
         val index = _items.indexOfFirst { it.id == id }
@@ -210,15 +226,11 @@ class MainMenuViewModel : ViewModel() {
             return formatNumber(total)
         }
 
-
-
     fun formatNumber(value: Double): String {
         val intPart = value.toLong()
         val decimalPart = ((value - intPart) * 100).toInt()
-
         val intStr = intPart.toString().reversed().chunked(3).joinToString(",").reversed()
         val decimalStr = decimalPart.toString().padStart(2, '0')
         return "$intStr.$decimalStr"
     }
-
 }
