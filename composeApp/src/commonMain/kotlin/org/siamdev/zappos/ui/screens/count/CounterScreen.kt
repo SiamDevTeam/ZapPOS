@@ -38,7 +38,7 @@ import org.siamdev.zappos.ui.components.MaterialButton
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.sp
-import org.siamdev.zappos.ui.components.TopBar
+import org.siamdev.zappos.ui.components.WorkspaceHeader
 import org.siamdev.zappos.utils.viewModelOf
 
 @Composable
@@ -73,7 +73,7 @@ fun CounterContent(
                 .background(MaterialTheme.colorScheme.background)
                 .windowInsetsPadding(WindowInsets.statusBars)
         ) {
-            TopBar(title = "Counter", onSegmentClick = onOpenDrawer)
+            WorkspaceHeader(title = "Counter", onSegmentClick = onOpenDrawer)
             Column(
                 modifier = Modifier
                     .fillMaxSize()

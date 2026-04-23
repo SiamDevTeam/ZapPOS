@@ -15,7 +15,6 @@ import androidx.compose.material.icons.automirrored.filled.ViewList
 import androidx.compose.material.icons.filled.CurrencyLira
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.filled.ViewList
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -29,7 +28,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.components.*
-import org.siamdev.zappos.ui.components.TopBar
+import org.siamdev.zappos.ui.components.WorkspaceHeader
 import org.siamdev.zappos.utils.viewModelOf
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.sat_unit
@@ -196,7 +195,7 @@ private fun DesktopMenuLayout(
             .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(WindowInsets.statusBars)
     ) {
-        TopBar(title = "ZapPOS", onSegmentClick = onOpenDrawer)
+        WorkspaceHeader(title = "ZapPOS", onSegmentClick = onOpenDrawer)
 
         Row(modifier = Modifier.fillMaxSize()) {
 
@@ -455,7 +454,7 @@ private fun MobileMenuLayout(
                     .fillMaxSize()
                     .windowInsetsPadding(WindowInsets.statusBars)
             ) {
-                TopBar(title = "ZapPOS", onSegmentClick = onOpenDrawer)
+                WorkspaceHeader(title = "ZapPOS", onSegmentClick = onOpenDrawer)
 
                 // Section header with toggle
                 MenuSectionHeader(

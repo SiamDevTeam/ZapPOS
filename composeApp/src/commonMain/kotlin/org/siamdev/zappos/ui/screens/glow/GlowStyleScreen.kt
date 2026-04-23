@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.ui.components.GlowEffects
 import org.siamdev.zappos.ui.components.GlowShape
-import org.siamdev.zappos.ui.components.TopBar
+import org.siamdev.zappos.ui.components.WorkspaceHeader
 
 @Composable
 fun BalancedRow(
@@ -50,7 +50,7 @@ fun GlowStyleScreen(
                 .background(MaterialTheme.colorScheme.background)
                 .windowInsetsPadding(WindowInsets.statusBars)
         ) {
-            TopBar(title = "Glow Effects", onSegmentClick = onOpenDrawer)
+            WorkspaceHeader(title = "Glow Effects", onSegmentClick = onOpenDrawer)
             Column(
                 modifier = Modifier
                     .fillMaxSize()

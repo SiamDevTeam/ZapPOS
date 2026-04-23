@@ -30,7 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.siamdev.zappos.ui.components.TopBar
+import org.siamdev.zappos.ui.components.WorkspaceHeader
 
 @Composable
 fun TopBarScreen() {
@@ -44,15 +44,15 @@ fun TopBarScreen() {
             modifier = Modifier
                 .windowInsetsPadding(WindowInsets.statusBars)
         ) {
-            TopBar()
-            TopBar(title = "ZapPOS")
-            TopBar(title = "Demo")
-            TopBar(title = "Zap POS")
-            TopBar(title = "rushmi0")
-            TopBar(title = "lnwza007")
-            TopBar(title = "minseo")
-            TopBar(title = "Vaz")
-            TopBar(title = "Emperor13")
+            WorkspaceHeader()
+            WorkspaceHeader(title = "ZapPOS")
+            WorkspaceHeader(title = "Demo")
+            WorkspaceHeader(title = "Zap POS")
+            WorkspaceHeader(title = "rushmi0")
+            WorkspaceHeader(title = "lnwza007")
+            WorkspaceHeader(title = "minseo")
+            WorkspaceHeader(title = "Vaz")
+            WorkspaceHeader(title = "Emperor13")
         }
 
     }

@@ -47,7 +47,7 @@ import org.siamdev.zappos.theme.MapLikeColors
 import kotlin.math.abs
 
 @Composable
-fun TopBar(
+fun WorkspaceHeader(
     modifier: Modifier = Modifier,
     title: String = "Untitled",
     onClick: (expanded: Boolean) -> Unit = {},
@@ -213,20 +213,20 @@ fun colorFromTitle(title: String): Color {
 
 @Preview(showBackground = true, widthDp = 411, heightDp = 891)
 @Composable
-private fun UtilityHeaderPreview() {
+private fun WorkspaceHeaderPreview() {
     Column(
         modifier = Modifier
             .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        TopBar()
-        TopBar(title = "ZapPOS")
-        TopBar(title = "Demo")
-        TopBar(title = "Zap POS")
-        TopBar(title = "rushmi0")
-        TopBar(title = "lnwza007")
-        TopBar(title = "minseo")
-        TopBar(title = "Vaz")
-        TopBar(title = "Emperor13")
+        WorkspaceHeader()
+        WorkspaceHeader(title = "ZapPOS")
+        WorkspaceHeader(title = "Demo")
+        WorkspaceHeader(title = "Zap POS")
+        WorkspaceHeader(title = "rushmi0")
+        WorkspaceHeader(title = "lnwza007")
+        WorkspaceHeader(title = "minseo")
+        WorkspaceHeader(title = "Vaz")
+        WorkspaceHeader(title = "Emperor13")
     }
 }

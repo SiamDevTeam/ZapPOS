@@ -23,8 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.theme.YellowPrimary
-import org.siamdev.zappos.ui.components.MaterialButton
-import org.siamdev.zappos.ui.components.TopBar
+import org.siamdev.zappos.ui.components.WorkspaceHeader
 
 @Composable
 fun HomeScreen(
@@ -43,7 +42,7 @@ fun HomeScreen(
                 .fillMaxSize()
                 .windowInsetsPadding(WindowInsets.statusBars)
         ) {
-            TopBar(title = "ZapPOS", onSegmentClick = onOpenDrawer)
+            WorkspaceHeader(title = "ZapPOS", onSegmentClick = onOpenDrawer)
 
             if (isDesktop) {
                 DesktopHomeContent(onNavigateToMenu = onNavigateToMenu)

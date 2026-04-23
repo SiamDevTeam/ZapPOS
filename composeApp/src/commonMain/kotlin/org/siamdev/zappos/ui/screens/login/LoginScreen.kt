@@ -62,7 +62,7 @@ fun LoginScreen(
         )
 
 
-        // glow ขวาล่าง — เพิ่มใหม่ให้สมดุล
+        // glow ขวาล่าง
         Box(
             modifier = Modifier
                 .size(400.dp)
