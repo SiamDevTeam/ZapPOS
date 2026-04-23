@@ -42,6 +42,10 @@ fun MainMenuScreen(
     val viewModel = LocalMainMenuViewModel.current
     val items = viewModel.items
 
+    LaunchedEffect(Unit) {
+        viewModel.loadIfNeeded()
+    }
+
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val isDesktop = maxWidth >= 600.dp && maxHeight >= 800.dp
 

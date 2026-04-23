@@ -159,7 +159,7 @@ fun MenuItemCardGridSkeleton() {
     }
 }
 
-// List skeleton — แสดง N item
+// List skeleton
 @Composable
 fun MenuListSkeleton(count: Int = 6) {
     LazyColumn(
@@ -188,7 +188,6 @@ fun MenuGridSkeleton(count: Int = 6) {
         }
     }
 }
-
 
 @Preview(showBackground = true, widthDp = 411)
 @Composable

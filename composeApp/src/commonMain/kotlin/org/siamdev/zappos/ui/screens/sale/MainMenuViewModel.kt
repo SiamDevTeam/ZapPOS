@@ -43,8 +43,10 @@ data class MenuItem(
 
 class MainMenuViewModel : ViewModel() {
 
-    var isLoading by mutableStateOf(true)
+    var isLoading by mutableStateOf(false)
         private set
+
+    private var hasLoaded = false // guard ไม่ให้ load ซ้ำ
 
     private val _items = mutableStateListOf<MenuItem>()
     val items: List<MenuItem> get() = _items
@@ -52,12 +54,12 @@ class MainMenuViewModel : ViewModel() {
     private val _selectedKeys = mutableStateListOf<Int>()
     val selectedKeys: List<Int> get() = _selectedKeys
 
-    init {
-        loadItems()
-    }
-
-    private fun loadItems() {
+    fun loadIfNeeded() {
+        if (hasLoaded || isLoading) return
+        isLoading = true
+        hasLoaded = true
         viewModelScope.launch {
+            println("start...")
 
             delay(1500)
 
@@ -165,6 +167,7 @@ class MainMenuViewModel : ViewModel() {
             )
 
             isLoading = false
+            println("end...")
         }
     }
 
