@@ -138,9 +138,6 @@ private fun DesktopHomeContent(onNavigateToMenu: () -> Unit) {
     }
 }
 
-// ─────────────────────────────────────────────
-// Shared components
-// ─────────────────────────────────────────────
 
 @Composable
 private fun GreetingSection() {

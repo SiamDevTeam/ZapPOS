@@ -156,9 +156,10 @@ fun NavigationRoot(
                         // Home
                         is Route.Home -> NavConfig(
                             backStack = backStack
-                        ) { _, openDrawer ->
+                        ) { navActions, openDrawer ->
                             HomeScreen(
-                                onOpenDrawer = openDrawer
+                                onOpenDrawer = openDrawer,
+                                onNavigateToMenu = { navActions.to(Route.Menu) }
                             )
                         }
 

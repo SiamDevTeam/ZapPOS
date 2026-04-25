@@ -148,8 +148,7 @@ fun PaymentMethodDialogCard(
         ) {
             PaymentMethodDialogContent(
                 selectedMethod = selectedMethod,
-                onSelectMethod = onSelectMethod,
-                onDismiss = onDismiss
+                onSelectMethod = onSelectMethod
             )
         }
     }
@@ -158,8 +157,7 @@ fun PaymentMethodDialogCard(
 @Composable
 fun PaymentMethodDialogContent(
     selectedMethod: PaymentMethod?,
-    onSelectMethod: (PaymentMethod) -> Unit,
-    onDismiss: () -> Unit
+    onSelectMethod: (PaymentMethod) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -195,8 +193,7 @@ private fun PaymentMethodDialogContentPreview() {
     MaterialTheme {
         PaymentMethodDialogContent(
             selectedMethod = null,
-            onSelectMethod = {},
-            onDismiss = {}
+            onSelectMethod = {}
         )
     }
 }
@@ -207,8 +204,7 @@ private fun PaymentMethodDialogContentSelectedPreview() {
     MaterialTheme {
         PaymentMethodDialogContent(
             selectedMethod = PaymentMethod.CASH,
-            onSelectMethod = {},
-            onDismiss = {}
+            onSelectMethod = {}
         )
     }
 }
