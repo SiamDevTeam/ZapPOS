@@ -37,7 +37,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.ui.components.WorkspaceHeader
 
 @Composable
-fun HomeScreen(onOpenDrawer: () -> Unit = {}) {
+fun DemoScreen(onOpenDrawer: () -> Unit = {}) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -85,6 +85,6 @@ fun HomeScreen(onOpenDrawer: () -> Unit = {}) {
 
 @Preview(showBackground = true, widthDp = 411, heightDp = 891)
 @Composable
-fun HomeScreenPreview() {
-    HomeScreen()
+fun DemoScreenPreview() {
+    DemoScreen()
 }

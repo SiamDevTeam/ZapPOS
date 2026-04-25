@@ -38,7 +38,7 @@ import org.siamdev.zappos.ui.components.MaterialButton
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.sp
-import org.siamdev.zappos.LocalCounterViewModel
+import org.siamdev.zappos.LocalCounterVM
 import org.siamdev.zappos.ui.components.WorkspaceHeader
 
 @Composable
@@ -46,7 +46,7 @@ fun CounterScreen(
     onOpenDrawer: () -> Unit = {}
 ) {
 
-    val viewModel = LocalCounterViewModel.current
+    val viewModel = LocalCounterVM.current
     val count by viewModel.count.collectAsState()
 
     CounterContent(

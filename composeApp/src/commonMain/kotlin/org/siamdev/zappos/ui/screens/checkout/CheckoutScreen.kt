@@ -5,7 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -19,13 +19,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.siamdev.zappos.LocalMainMenuViewModel
+import org.siamdev.zappos.LocalMenuVM
 import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.components.MaterialButton
+import org.siamdev.zappos.ui.components.PaymentMethodDialogCard
+import org.siamdev.zappos.ui.components.PaymentMethodList
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.sat_unit
 
@@ -34,30 +34,21 @@ fun CheckoutScreen(
     onBack: () -> Unit = {},
     onSuccess: () -> Unit = {}
 ) {
-    val menuViewModel = LocalMainMenuViewModel.current
+    val menuViewModel = LocalMenuVM.current
     val checkoutViewModel = remember(menuViewModel.selectedKeys.toList()) {
         CheckoutViewModel(
             orderItems = menuViewModel.selectedKeys.map { key ->
                 val item = menuViewModel.items.first { it.id == key }
-                CheckoutItem(
-                    name = item.name,
-                    count = item.count,
-                    priceBaht = item.priceBaht,
-                    priceSat = item.priceSat
-                )
+                CheckoutItem(name = item.name, count = item.count, priceBaht = item.priceBaht, priceSat = item.priceSat)
             },
             totalFiat = menuViewModel.totalFiat,
             totalSat = menuViewModel.totalSat
         )
     }
-
     CheckoutContent(
         viewModel = checkoutViewModel,
         onBack = onBack,
-        onSuccess = {
-            menuViewModel.clearAllItems()
-            onSuccess()
-        }
+        onSuccess = { menuViewModel.clearAllItems(); onSuccess() }
     )
 }
 
@@ -69,19 +60,13 @@ fun CheckoutContent(
 ) {
     when (viewModel.step) {
         CheckoutStep.CASH_CALCULATOR -> {
-            CashCalculatorScreen(
-                viewModel = viewModel,
-                onBack = { viewModel.backToSelectPayment() }
-            )
+            CashCalculatorScreen(viewModel = viewModel, onBack = { viewModel.backToSelectPayment() })
             return
         }
         CheckoutStep.PROCESSING -> {
             PaymentProcessingScreen(
                 viewModel = viewModel,
-                onConfirm = {
-                    viewModel.confirmProcessing()
-                    onSuccess()
-                },
+                onConfirm = { viewModel.confirmProcessing(); onSuccess() },
                 onBack = { viewModel.backToSelectPayment() }
             )
             return
@@ -102,22 +87,25 @@ fun CheckoutContent(
             DesktopCheckoutLayout(viewModel = viewModel, onBack = onBack)
         } else {
             MobileCheckoutLayout(viewModel = viewModel, onBack = onBack)
-        }
-
-        if (viewModel.step == CheckoutStep.SELECT_PAYMENT) {
-            PaymentMethodDialog(
-                viewModel = viewModel,
-                onDismiss = { viewModel.backToOrder() }
-            )
+            if (viewModel.step == CheckoutStep.SELECT_PAYMENT) {
+                PaymentMethodDialogCard(
+                    selectedMethod = viewModel.selectedMethod,
+                    onSelectMethod = { method -> viewModel.selectMethod(method); viewModel.confirmPayment() },
+                    onDismiss = { viewModel.backToOrder() }
+                )
+            }
         }
     }
 }
+
 
 @Composable
 private fun MobileCheckoutLayout(
     viewModel: CheckoutViewModel,
     onBack: () -> Unit
 ) {
+    var taxPercent by remember { mutableStateOf(7f) }
+
     Column(modifier = Modifier.fillMaxSize()) {
         CheckoutHeader(onBack = onBack)
 
@@ -129,25 +117,46 @@ private fun MobileCheckoutLayout(
             modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)
         )
 
-        LazyColumn(
-            modifier = Modifier.weight(1f),
-            contentPadding = PaddingValues(horizontal = 20.dp, vertical = 4.dp)
-        ) {
-            items(viewModel.orderItems) { item ->
-                CheckoutItemRow(item = item)
-            }
-        }
+        CheckoutOrderList(
+            viewModel = viewModel,
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .padding(horizontal = 20.dp)
+        )
+
+        Spacer(Modifier.height(12.dp))
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp)
+                .padding(horizontal = 20.dp, vertical = 8.dp)
         ) {
-            CheckoutTotalSection(
+            Text(
+                text = "SUMMARY",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                letterSpacing = 2.sp,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
+            CheckoutSummaryCard(
                 viewModel = viewModel,
-                onCheckout = { viewModel.openSelectPayment() }
+                taxPercent = taxPercent,
+                onTaxChange = { taxPercent = it }
+            )
+
+            Spacer(Modifier.height(12.dp))
+
+            MaterialButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = "Choose Payment Method",
+                iconStart = Icons.Default.Payment,
+                onClick = { viewModel.openSelectPayment() }
             )
         }
+
+        Spacer(Modifier.height(8.dp))
     }
 }
 
@@ -156,127 +165,243 @@ private fun DesktopCheckoutLayout(
     viewModel: CheckoutViewModel,
     onBack: () -> Unit
 ) {
-    Row(modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight()
-                .padding(start = 32.dp, end = 16.dp, bottom = 24.dp)
-        ) {
-            CheckoutHeader(onBack = onBack)
+    var taxPercent by remember { mutableStateOf(7f) }
 
+    Column(modifier = Modifier.fillMaxSize()) {
+        CheckoutHeader(onBack = onBack)
+
+        // Labels
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
             Text(
                 text = "ORDER SUMMARY",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
                 letterSpacing = 2.sp,
-                modifier = Modifier.padding(vertical = 12.dp)
+                modifier = Modifier.weight(1f)
             )
-
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(bottom = 24.dp)
-            ) {
-                items(viewModel.orderItems) { item ->
-                    CheckoutItemRow(item = item)
-                }
-            }
+            Text(
+                text = "SUMMARY",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                letterSpacing = 2.sp,
+                modifier = Modifier.width(380.dp)
+            )
         }
 
-        Column(
+        // Content row
+        Row(
             modifier = Modifier
-                .width(360.dp)
-                .fillMaxHeight()
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(24.dp)
+                .fillMaxWidth()
+                .weight(1f)
+                .padding(start = 32.dp, end = 32.dp, bottom = 24.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.Top
         ) {
-            Text(
-                text = "Payment Summary",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = "${viewModel.orderItems.sumOf { it.count.toInt() }} items · ${viewModel.orderItems.size} types",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f),
-                modifier = Modifier.padding(top = 2.dp, bottom = 20.dp)
+            // Left: Order list
+            CheckoutOrderList(
+                viewModel = viewModel,
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
             )
 
-            HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f))
-            Spacer(Modifier.height(16.dp))
+            // Right: Summary card + Payment
+            Column(
+                modifier = Modifier
+                    .width(380.dp)
+                    .wrapContentHeight(),
+                verticalArrangement = Arrangement.spacedBy(0.dp)
+            ) {
+                // Summary card — กรอบแยกชัดเจน
+                CheckoutSummaryCard(
+                    viewModel = viewModel,
+                    taxPercent = taxPercent,
+                    onTaxChange = { taxPercent = it }
+                )
 
-            viewModel.orderItems.forEach { item ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 5.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.weight(1f)
+                Spacer(Modifier.height(20.dp))
+
+                Text(
+                    text = "PAYMENT METHOD",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                    letterSpacing = 2.sp,
+                    modifier = Modifier.padding(bottom = 12.dp)
+                )
+
+                PaymentMethodList(
+                    selectedMethod = viewModel.selectedMethod,
+                    onSelectMethod = { method ->
+                        viewModel.selectMethod(method)
+                        viewModel.confirmPayment()
+                    },
+                    showBorder = true
+                )
+            }
+        }
+    }
+}
+
+
+@Composable
+private fun CheckoutOrderList(
+    viewModel: CheckoutViewModel,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(12.dp))
+            .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(8.dp)
+    ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(vertical = 4.dp)
+        ) {
+            itemsIndexed(viewModel.orderItems) { index, item ->
+                CheckoutItemRow(item = item, isEven = index % 2 == 1)
+            }
+        }
+    }
+}
+
+@Composable
+private fun CheckoutSummaryCard(
+    viewModel: CheckoutViewModel,
+    taxPercent: Float,
+    onTaxChange: (Float) -> Unit
+) {
+    val subtotal = viewModel.totalFiat.replace(",", "").toDoubleOrNull() ?: 0.0
+    val taxAmount = subtotal * taxPercent / 100
+    val grandTotal = subtotal + taxAmount
+    val satValue = viewModel.totalSat.replace(",", "").toDoubleOrNull() ?: 0.0
+    val grandTotalSat = satValue * (1 + taxPercent / 100)
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f), RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        // Subtotal
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Subtotal", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
+            Column(horizontalAlignment = Alignment.End) {
+                PriceRowFiat(value = viewModel.totalFiat, iconSize = 13.dp, textStyle = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+                PriceRowSat(value = viewModel.totalSat, iconSize = 12.dp, textStyle = MaterialTheme.typography.bodySmall)
+            }
+        }
+
+        HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f))
+
+        // VAT selector
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("VAT", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                listOf(0f, 7f, 10f).forEach { rate ->
+                    val isActive = taxPercent == rate
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(if (isActive) YellowPrimary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f))
+                            .clickable { onTaxChange(rate) }
+                            .padding(horizontal = 10.dp, vertical = 5.dp),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .size(22.dp)
-                                .clip(RoundedCornerShape(6.dp))
-                                .background(YellowPrimary.copy(alpha = 0.12f)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "${item.count}",
-                                style = MaterialTheme.typography.labelSmall,
-                                fontWeight = FontWeight.Bold,
-                                color = YellowPrimary,
-                                fontSize = 10.sp
-                            )
-                        }
                         Text(
-                            text = item.name,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                            maxLines = 1
-                        )
-                    }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(3.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.CurrencyLira,
-                            contentDescription = null,
-                            modifier = Modifier.size(11.dp),
-                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                        )
-                        Text(
-                            text = item.priceBaht,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                            text = if (rate == 0f) "No VAT" else "${rate.toInt()}%",
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.SemiBold,
+                            color = if (isActive) Color(0xFF515151) else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
                         )
                     }
                 }
             }
-
-            Spacer(Modifier.weight(1f))
-            HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f))
-            Spacer(Modifier.height(16.dp))
-
-            CheckoutTotalSection(
-                viewModel = viewModel,
-                onCheckout = { viewModel.openSelectPayment() }
-            )
         }
+
+        // VAT amount
+        if (taxPercent > 0f) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("VAT ${taxPercent.toInt()}%", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f))
+                PriceRowFiat(
+                    value = formatDouble(taxAmount),
+                    iconSize = 12.dp,
+                    textStyle = MaterialTheme.typography.bodySmall,
+                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f)
+                )
+            }
+        }
+
+        HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f))
+
+        // Grand total
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Total", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+            Column(horizontalAlignment = Alignment.End) {
+                PriceRowFiat(value = formatDouble(grandTotal), iconSize = 16.dp, textStyle = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                PriceRowSat(value = formatDouble(grandTotalSat), iconSize = 13.dp, textStyle = MaterialTheme.typography.bodySmall)
+            }
+        }
+    }
+}
+
+@Composable
+private fun PriceRowFiat(
+    value: String,
+    iconSize: androidx.compose.ui.unit.Dp,
+    textStyle: androidx.compose.ui.text.TextStyle,
+    fontWeight: FontWeight = FontWeight.Normal,
+    tint: Color = MaterialTheme.colorScheme.onSurface,
+    color: Color = MaterialTheme.colorScheme.onSurface
+) {
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        Icon(Icons.Default.CurrencyLira, null, modifier = Modifier.size(iconSize), tint = tint)
+        Text(value, style = textStyle, fontWeight = fontWeight, color = color)
+    }
+}
+
+@Composable
+private fun PriceRowSat(
+    value: String,
+    iconSize: androidx.compose.ui.unit.Dp,
+    textStyle: androidx.compose.ui.text.TextStyle
+) {
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        Icon(painter = painterResource(Res.drawable.sat_unit), contentDescription = null, tint = Color(0xFFFFB700), modifier = Modifier.size(iconSize))
+        Text(value, style = textStyle, color = Color(0xFFFFB700))
     }
 }
 
 @Composable
 internal fun CheckoutHeader(onBack: () -> Unit) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 12.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
@@ -287,276 +412,50 @@ internal fun CheckoutHeader(onBack: () -> Unit) {
                 .clickable { onBack() },
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = null,
-                tint = YellowPrimary,
-                modifier = Modifier.size(18.dp)
-            )
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = YellowPrimary, modifier = Modifier.size(18.dp))
         }
         Spacer(Modifier.width(14.dp))
         Column {
-            Text(
-                "Checkout",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                "Review your order",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f)
-            )
+            Text("Checkout", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+            Text("Review your order", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f))
         }
     }
 }
 
 @Composable
-internal fun CheckoutItemRow(item: CheckoutItem) {
+internal fun CheckoutItemRow(item: CheckoutItem, isEven: Boolean = false) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 12.dp),
+            .clip(RoundedCornerShape(10.dp))
+            .background(if (isEven) MaterialTheme.colorScheme.onSurface.copy(alpha = 0.04f) else Color.Transparent)
+            .padding(horizontal = 12.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = item.name,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold
-            )
-            Text(
-                text = "×${item.count}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f)
-            )
+            Text(text = item.name, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+            Text(text = "×${item.count}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f))
         }
         Column(horizontalAlignment = Alignment.End) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.CurrencyLira,
-                    contentDescription = null,
-                    modifier = Modifier.size(13.dp),
-                    tint = MaterialTheme.colorScheme.onSurface
-                )
-                Text(
-                    text = item.priceBaht,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                Icon(
-                    painter = painterResource(Res.drawable.sat_unit),
-                    contentDescription = null,
-                    tint = Color(0xFFFFB700),
-                    modifier = Modifier.size(12.dp)
-                )
-                Text(
-                    text = item.priceSat,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color(0xFFFFB700)
-                )
-            }
-        }
-    }
-    HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f))
-}
-
-@Composable
-internal fun CheckoutTotalSection(
-    viewModel: CheckoutViewModel,
-    onCheckout: () -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(20.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                "Total",
-                style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-            )
-            Column(horizontalAlignment = Alignment.End) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.CurrencyLira,
-                        contentDescription = null,
-                        modifier = Modifier.size(15.dp),
-                        tint = MaterialTheme.colorScheme.onSurface
-                    )
-                    Text(
-                        viewModel.totalFiat,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(Res.drawable.sat_unit),
-                        contentDescription = null,
-                        tint = Color(0xFFFFB700),
-                        modifier = Modifier.size(13.dp)
-                    )
-                    Text(
-                        viewModel.totalSat,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color(0xFFFFB700)
-                    )
-                }
-            }
-        }
-
-        Spacer(Modifier.height(16.dp))
-
-        MaterialButton(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Choose Payment Method",
-            iconStart = Icons.Default.Payment,
-            onClick = onCheckout
-        )
-    }
-}
-
-@Composable
-private fun PaymentMethodDialog(
-    viewModel: CheckoutViewModel,
-    onDismiss: () -> Unit
-) {
-    Dialog(
-        onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.3f))
-                .clickable { onDismiss() },
-            contentAlignment = Alignment.Center
-        ) {
-            Column(
-                modifier = Modifier
-                    .width(340.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(MaterialTheme.colorScheme.surface)
-                    .clickable(enabled = false) {}
-                    .padding(24.dp)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        "Choose payment method",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Box(
-                        modifier = Modifier
-                            .size(28.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f))
-                            .clickable { onDismiss() },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(Icons.Default.Close, null, modifier = Modifier.size(16.dp))
-                    }
-                }
-
-                Spacer(Modifier.height(16.dp))
-
-                PaymentMethod.entries.forEach { method ->
-                    val isSelected = viewModel.selectedMethod == method
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(
-                                if (isSelected) YellowPrimary.copy(alpha = 0.1f)
-                                else MaterialTheme.colorScheme.background
-                            )
-                            .border(
-                                width = if (isSelected) 1.5.dp else 0.dp,
-                                color = if (isSelected) YellowPrimary else Color.Transparent,
-                                shape = RoundedCornerShape(12.dp)
-                            )
-                            .clickable { viewModel.selectMethod(method) }
-                            .padding(14.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(14.dp)
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .size(36.dp)
-                                .clip(RoundedCornerShape(10.dp))
-                                .background(
-                                    if (isSelected) YellowPrimary.copy(alpha = 0.2f)
-                                    else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f)
-                                ),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = paymentMethodIcon(method),
-                                contentDescription = null,
-                                tint = if (isSelected) YellowPrimary
-                                else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-                                modifier = Modifier.size(18.dp)
-                            )
-                        }
-                        Text(
-                            text = method.label,
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
-                            color = if (isSelected) MaterialTheme.colorScheme.onSurface
-                            else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                        )
-                    }
-                }
-
-                Spacer(Modifier.height(16.dp))
-
-                MaterialButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = "Confirm",
-                    onClick = { if (viewModel.selectedMethod != null) viewModel.confirmPayment() }
-                )
-            }
+            PriceRowFiat(value = item.priceBaht, iconSize = 13.dp, textStyle = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
+            PriceRowSat(value = item.priceSat, iconSize = 12.dp, textStyle = MaterialTheme.typography.bodySmall)
         }
     }
 }
 
-internal fun paymentMethodIcon(method: PaymentMethod) = when (method) {
-    PaymentMethod.NFC_LIGHTNING -> Icons.Default.CreditCard
-    PaymentMethod.BITCOIN_LIGHTNING -> Icons.Default.Bolt
-    PaymentMethod.PROMPT_PAY -> Icons.Default.QrCode
-    PaymentMethod.CASH -> Icons.Default.Money
+internal fun formatDouble(value: Double): String {
+    val intPart = value.toLong()
+    val decPart = ((value - intPart) * 100).toInt()
+    val intStr = intPart.toString().reversed().chunked(3).joinToString(",").reversed()
+    return "$intStr.${decPart.toString().padStart(2, '0')}"
 }
 
+// Previews
 private val previewItems = listOf(
     CheckoutItem("Mocha", 2u, "70.00", "17,500"),
     CheckoutItem("Matcha Latte", 1u, "100.00", "26,000"),
-    CheckoutItem("Latte", 3u, "70.00", "17,500")
+    CheckoutItem("Latte", 3u, "70.00", "17,500"),
+    CheckoutItem("Espresso", 1u, "50.00", "12,500")
 )
 
 private val previewViewModel = CheckoutViewModel(

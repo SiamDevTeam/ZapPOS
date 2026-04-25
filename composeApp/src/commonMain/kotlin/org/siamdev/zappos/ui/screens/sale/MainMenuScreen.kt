@@ -26,7 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.siamdev.zappos.LocalMainMenuViewModel
+import org.siamdev.zappos.LocalMenuVM
 import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.components.*
 import org.siamdev.zappos.ui.components.WorkspaceHeader
@@ -39,7 +39,7 @@ fun MainMenuScreen(
     onOpenDrawer: () -> Unit = {},
     onCheckout: () -> Unit = {}
 ) {
-    val viewModel = LocalMainMenuViewModel.current
+    val viewModel = LocalMenuVM.current
     val items = viewModel.items
 
     LaunchedEffect(Unit) {
@@ -47,7 +47,7 @@ fun MainMenuScreen(
     }
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-        val isDesktop = maxWidth >= 600.dp && maxHeight >= 800.dp
+        val isDesktop = maxWidth >= 600.dp && maxHeight >= 300.dp
 
         if (isDesktop) {
             DesktopMenuLayout(

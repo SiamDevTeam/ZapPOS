@@ -4,7 +4,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import org.siamdev.zappos.ui.screens.sale.MainMenuViewModel
 
 enum class PaymentMethod(val label: String) {
     NFC_LIGHTNING("NFC Lightning Card"),
@@ -92,21 +91,4 @@ class CheckoutViewModel(
         return "$intStr.${decPart.toString().padStart(2, '0')}"
     }
 
-    companion object {
-        fun from(menu: MainMenuViewModel): CheckoutViewModel {
-            return CheckoutViewModel(
-                orderItems = menu.selectedKeys.map { key ->
-                    val item = menu.items.first { it.id == key }
-                    CheckoutItem(
-                        name = item.name,
-                        count = item.count,
-                        priceBaht = item.priceBaht,
-                        priceSat = item.priceSat
-                    )
-                },
-                totalFiat = menu.totalFiat,
-                totalSat = menu.totalSat
-            )
-        }
-    }
 }

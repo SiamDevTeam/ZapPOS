@@ -12,11 +12,11 @@ import org.siamdev.zappos.ui.screens.count.CounterViewModel
 import androidx.compose.runtime.remember
 import org.siamdev.zappos.ui.screens.sale.MainMenuViewModel
 
-val LocalMainMenuViewModel = staticCompositionLocalOf<MainMenuViewModel> {
+val LocalMenuVM = staticCompositionLocalOf<MainMenuViewModel> {
     error("MainMenuViewModel not provided")
 }
 
-val LocalCounterViewModel = staticCompositionLocalOf<CounterViewModel> {
+val LocalCounterVM = staticCompositionLocalOf<CounterViewModel> {
     error("CounterViewModel not provided")
 }
 
@@ -44,8 +44,8 @@ fun VMContainer(
     val counterVM  = viewModelOf { CounterViewModel() }
 
     CompositionLocalProvider(
-        LocalMainMenuViewModel provides mainMenuVM,
-        LocalCounterViewModel  provides counterVM,
+        LocalMenuVM provides mainMenuVM,
+        LocalCounterVM  provides counterVM,
         content = content
     )
 }
