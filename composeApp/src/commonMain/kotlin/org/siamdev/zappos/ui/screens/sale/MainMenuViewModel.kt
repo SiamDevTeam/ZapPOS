@@ -54,6 +54,7 @@ class MainMenuViewModel : ViewModel() {
     private val _selectedKeys = mutableStateListOf<Int>()
     val selectedKeys: List<Int> get() = _selectedKeys
 
+
     fun loadIfNeeded() {
         if (hasLoaded || isLoading) return
         isLoading = true

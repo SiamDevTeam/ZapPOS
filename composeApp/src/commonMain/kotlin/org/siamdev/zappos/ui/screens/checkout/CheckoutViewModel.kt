@@ -4,6 +4,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
+import org.siamdev.zappos.LocalMenuVM
 
 enum class PaymentMethod(val label: String) {
     NFC_LIGHTNING("NFC Lightning Card"),
@@ -13,11 +16,7 @@ enum class PaymentMethod(val label: String) {
 }
 
 enum class CheckoutStep {
-    ORDER,
-    SELECT_PAYMENT,
-    CASH_CALCULATOR,
-    PROCESSING,
-    SUCCESS
+    ORDER, SELECT_PAYMENT, CASH_CALCULATOR, PROCESSING, SUCCESS
 }
 
 data class CheckoutItem(
@@ -27,11 +26,16 @@ data class CheckoutItem(
     val priceSat: String
 )
 
-class CheckoutViewModel(
-    val orderItems: List<CheckoutItem>,
-    val totalFiat: String,
-    val totalSat: String
-) : ViewModel() {
+class CheckoutViewModel : ViewModel() {
+
+    var orderItems by mutableStateOf<List<CheckoutItem>>(emptyList())
+        private set
+
+    var totalFiat by mutableStateOf("0.00")
+        private set
+
+    var totalSat by mutableStateOf("0")
+        private set
 
     var step by mutableStateOf(CheckoutStep.ORDER)
         private set
@@ -41,6 +45,33 @@ class CheckoutViewModel(
 
     var receivedAmount by mutableStateOf("")
         private set
+
+    var taxPercent by mutableStateOf(7f)
+        private set
+
+    fun syncFromMenu(
+        items: List<CheckoutItem>,
+        fiat: String,
+        sat: String
+    ) {
+        orderItems = items
+        totalFiat = fiat
+        totalSat = sat
+    }
+
+    fun setTax(percent: Float) { taxPercent = percent }
+
+    val grandTotalFiat: String
+        get() {
+            val subtotal = totalFiat.replace(",", "").toDoubleOrNull() ?: 0.0
+            return formatDouble(subtotal * (1 + taxPercent / 100))
+        }
+
+    val grandTotalSat: String
+        get() {
+            val subtotal = totalSat.replace(",", "").toDoubleOrNull() ?: 0.0
+            return formatDouble(subtotal * (1 + taxPercent / 100))
+        }
 
     val changeAmount: Double
         get() {
@@ -59,7 +90,6 @@ class CheckoutViewModel(
     fun openSelectPayment() { step = CheckoutStep.SELECT_PAYMENT }
     fun backToOrder() { step = CheckoutStep.ORDER }
     fun backToSelectPayment() { step = CheckoutStep.SELECT_PAYMENT }
-
     fun selectMethod(method: PaymentMethod) { selectedMethod = method }
 
     fun confirmPayment() {
@@ -73,22 +103,11 @@ class CheckoutViewModel(
         receivedAmount += digit
     }
 
-    fun deleteCashDigit() {
-        receivedAmount = receivedAmount.dropLast(1)
-    }
+    fun deleteCashDigit() { receivedAmount = receivedAmount.dropLast(1) }
 
-    fun confirmCash() {
-        if (isChangeValid) step = CheckoutStep.PROCESSING
-    }
+    fun confirmCash() { if (isChangeValid) step = CheckoutStep.PROCESSING }
 
     fun confirmProcessing() { step = CheckoutStep.SUCCESS }
 
-    fun formatChange(): String {
-        val v = changeAmount
-        val intPart = v.toLong()
-        val decPart = ((v - intPart) * 100).toInt()
-        val intStr = intPart.toString().reversed().chunked(3).joinToString(",").reversed()
-        return "$intStr.${decPart.toString().padStart(2, '0')}"
-    }
-
+    fun formatChange(): String = formatDouble(changeAmount)
 }

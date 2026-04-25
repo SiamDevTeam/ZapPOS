@@ -597,17 +597,19 @@ private fun CashNumpad(viewModel: CheckoutViewModel) {
     }
 }
 
+private val cashPreviewViewModel = CheckoutViewModel().apply {
+    syncFromMenu(
+        items = listOf(CheckoutItem("Mocha", 2u, "70.00", "17,500")),
+        fiat = "790.00",
+        sat = "35,000"
+    )
+}
+
 @Preview(showBackground = true, widthDp = 411, heightDp = 891)
 @Composable
 fun CashCalculatorMobilePreview() {
     MaterialTheme {
-        CashCalculatorScreen(
-            viewModel = CheckoutViewModel(
-                orderItems = listOf(CheckoutItem("Mocha", 2u, "70.00", "17,500")),
-                totalFiat = "790.00",
-                totalSat = "35,000"
-            )
-        )
+        CashCalculatorScreen(viewModel = cashPreviewViewModel)
     }
 }
 
@@ -615,12 +617,6 @@ fun CashCalculatorMobilePreview() {
 @Composable
 fun CashCalculatorDesktopPreview() {
     MaterialTheme {
-        CashCalculatorScreen(
-            viewModel = CheckoutViewModel(
-                orderItems = listOf(CheckoutItem("Mocha", 2u, "70.00", "17,500")),
-                totalFiat = "790.00",
-                totalSat = "35,000"
-            )
-        )
+        CashCalculatorScreen(viewModel = cashPreviewViewModel)
     }
 }

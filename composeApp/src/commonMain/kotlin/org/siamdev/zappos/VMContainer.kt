@@ -8,18 +8,22 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlin.reflect.KClass
-import org.siamdev.zappos.ui.screens.count.CounterViewModel
 import androidx.compose.runtime.remember
+import org.siamdev.zappos.ui.screens.checkout.CheckoutViewModel
+import org.siamdev.zappos.ui.screens.count.CounterViewModel
 import org.siamdev.zappos.ui.screens.sale.MainMenuViewModel
 
 val LocalMenuVM = staticCompositionLocalOf<MainMenuViewModel> {
-    error("MainMenuViewModel not provided")
+    error("Missing VMContainer in composition tree")
+}
+
+val LocalCheckoutVM = staticCompositionLocalOf<CheckoutViewModel> {
+    error("Missing VMContainer in composition tree")
 }
 
 val LocalCounterVM = staticCompositionLocalOf<CounterViewModel> {
-    error("CounterViewModel not provided")
+    error("Missing VMContainer in composition tree")
 }
-
 
 @Composable
 inline fun <reified VM : ViewModel> viewModelOf(
@@ -37,15 +41,15 @@ inline fun <reified VM : ViewModel> viewModelOf(
 )
 
 @Composable
-fun VMContainer(
-    content: @Composable () -> Unit
-) {
-    val mainMenuVM = viewModelOf { MainMenuViewModel() }
-    val counterVM  = viewModelOf { CounterViewModel() }
+fun VMContainer(content: @Composable () -> Unit) {
+    val menuVM = viewModelOf { MainMenuViewModel() }
+    val checkoutVM = viewModelOf { CheckoutViewModel() }
+    val counterVM = viewModelOf { CounterViewModel() }
 
     CompositionLocalProvider(
-        LocalMenuVM provides mainMenuVM,
-        LocalCounterVM  provides counterVM,
+        LocalMenuVM provides menuVM,
+        LocalCheckoutVM provides checkoutVM,
+        LocalCounterVM provides counterVM,
         content = content
     )
 }

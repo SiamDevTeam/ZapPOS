@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.siamdev.zappos.LocalCheckoutVM
 import org.siamdev.zappos.LocalMenuVM
 import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.components.MaterialButton
@@ -34,24 +35,34 @@ fun CheckoutScreen(
     onBack: () -> Unit = {},
     onSuccess: () -> Unit = {}
 ) {
-    val menuViewModel = LocalMenuVM.current
-    val checkoutViewModel = remember(menuViewModel.selectedKeys.toList()) {
-        CheckoutViewModel(
-            orderItems = menuViewModel.selectedKeys.map { key ->
-                val item = menuViewModel.items.first { it.id == key }
-                CheckoutItem(name = item.name, count = item.count, priceBaht = item.priceBaht, priceSat = item.priceSat)
+    val menuVM = LocalMenuVM.current
+    val checkoutVM = LocalCheckoutVM.current
+
+    LaunchedEffect(menuVM.selectedKeys.toList()) {
+        checkoutVM.syncFromMenu(
+            items = menuVM.selectedKeys.map { key ->
+                val item = menuVM.items.first { it.id == key }
+                CheckoutItem(
+                    name = item.name,
+                    count = item.count,
+                    priceBaht = item.priceBaht,
+                    priceSat = item.priceSat
+                )
             },
-            totalFiat = menuViewModel.totalFiat,
-            totalSat = menuViewModel.totalSat
+            fiat = menuVM.totalFiat,
+            sat = menuVM.totalSat
         )
     }
+
     CheckoutContent(
-        viewModel = checkoutViewModel,
+        viewModel = checkoutVM,
         onBack = onBack,
-        onSuccess = { menuViewModel.clearAllItems(); onSuccess() }
+        onSuccess = {
+            menuVM.clearAllItems()
+            onSuccess()
+        }
     )
 }
-
 @Composable
 fun CheckoutContent(
     viewModel: CheckoutViewModel,
@@ -104,8 +115,6 @@ private fun MobileCheckoutLayout(
     viewModel: CheckoutViewModel,
     onBack: () -> Unit
 ) {
-    var taxPercent by remember { mutableStateOf(7f) }
-
     Column(modifier = Modifier.fillMaxSize()) {
         CheckoutHeader(onBack = onBack)
 
@@ -142,10 +151,9 @@ private fun MobileCheckoutLayout(
 
             CheckoutSummaryCard(
                 viewModel = viewModel,
-                taxPercent = taxPercent,
-                onTaxChange = { taxPercent = it }
+                taxPercent = viewModel.taxPercent,
+                onTaxChange = { viewModel.setTax(it) }
             )
-
             Spacer(Modifier.height(12.dp))
 
             MaterialButton(
@@ -165,7 +173,6 @@ private fun DesktopCheckoutLayout(
     viewModel: CheckoutViewModel,
     onBack: () -> Unit
 ) {
-    var taxPercent by remember { mutableStateOf(7f) }
 
     Column(modifier = Modifier.fillMaxSize()) {
         CheckoutHeader(onBack = onBack)
@@ -220,8 +227,8 @@ private fun DesktopCheckoutLayout(
                 // Summary card — กรอบแยกชัดเจน
                 CheckoutSummaryCard(
                     viewModel = viewModel,
-                    taxPercent = taxPercent,
-                    onTaxChange = { taxPercent = it }
+                    taxPercent = viewModel.taxPercent,
+                    onTaxChange = { viewModel.setTax(it) }
                 )
 
                 Spacer(Modifier.height(20.dp))
@@ -458,11 +465,19 @@ private val previewItems = listOf(
     CheckoutItem("Espresso", 1u, "50.00", "12,500")
 )
 
-private val previewViewModel = CheckoutViewModel(
-    orderItems = previewItems,
-    totalFiat = "380.00",
-    totalSat = "95,000"
-)
+private val previewViewModel = CheckoutViewModel().apply {
+    syncFromMenu(
+        items = listOf(
+            CheckoutItem("Mocha", 2u, "70.00", "17,500"),
+            CheckoutItem("Matcha Latte", 1u, "100.00", "26,000"),
+            CheckoutItem("Latte", 3u, "70.00", "17,500"),
+            CheckoutItem("Espresso", 1u, "50.00", "12,500")
+        ),
+        fiat = "380.00",
+        sat = "95,000"
+    )
+}
+
 
 @Preview(showBackground = true, widthDp = 411, heightDp = 891)
 @Composable
