@@ -1,9 +1,14 @@
 package org.siamdev.zappos.ui.screens.checkout
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -17,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.theme.YellowPrimary
@@ -73,7 +79,6 @@ fun PaymentProcessingScreen(
     }
 }
 
-
 @Composable
 private fun MobileProcessingLayout(
     viewModel: CheckoutViewModel,
@@ -83,11 +88,11 @@ private fun MobileProcessingLayout(
     onConfirm: () -> Unit,
     onBack: () -> Unit
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        // Header — back left, title center
+    var orderExpanded by remember { mutableStateOf(false) }
+
+    Column(modifier = Modifier.fillMaxSize()) {
+
+        // Header
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -102,11 +107,7 @@ private fun MobileProcessingLayout(
                     .align(Alignment.CenterStart),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    Icons.AutoMirrored.Filled.ArrowBack, null,
-                    tint = YellowPrimary,
-                    modifier = Modifier.size(18.dp)
-                )
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = YellowPrimary, modifier = Modifier.size(18.dp))
             }
             Text(
                 text = title,
@@ -131,65 +132,158 @@ private fun MobileProcessingLayout(
             )
         }
 
-        if (showQr) {
-            Spacer(Modifier.height(28.dp))
-
+        // Scrollable content
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
             // QR
-            Box(
-                modifier = Modifier
-                    .size(240.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(MaterialTheme.colorScheme.surface),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    Icons.Default.QrCode2, null,
-                    modifier = Modifier.size(200.dp),
-                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
-                )
+            if (showQr) {
+                item {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f), RoundedCornerShape(12.dp))
+                            .background(MaterialTheme.colorScheme.surface)
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(200.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(MaterialTheme.colorScheme.background),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                Icons.Default.QrCode2, null,
+                                modifier = Modifier.size(170.dp),
+                                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(MaterialTheme.colorScheme.background)
+                                .padding(horizontal = 12.dp, vertical = 8.dp)
+                        ) {
+                            Text(
+                                text = "lnbc50n1p588zyfpp.....52mczpfq7fatgrfh",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                                maxLines = 1
+                            )
+                        }
+                    }
+                }
             }
 
-            Spacer(Modifier.height(16.dp))
+            // Order Summary toggle
+            item {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(
+                                RoundedCornerShape(
+                                    topStart = 12.dp, topEnd = 12.dp,
+                                    bottomStart = if (orderExpanded) 0.dp else 12.dp,
+                                    bottomEnd = if (orderExpanded) 0.dp else 12.dp
+                                )
+                            )
+                            .background(MaterialTheme.colorScheme.surface)
+                            .border(
+                                1.dp,
+                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
+                                RoundedCornerShape(
+                                    topStart = 12.dp, topEnd = 12.dp,
+                                    bottomStart = if (orderExpanded) 0.dp else 12.dp,
+                                    bottomEnd = if (orderExpanded) 0.dp else 12.dp
+                                )
+                            )
+                            .clickable { orderExpanded = !orderExpanded }
+                            .padding(horizontal = 16.dp, vertical = 12.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Icon(Icons.Default.Receipt, null, modifier = Modifier.size(16.dp), tint = YellowPrimary)
+                            Text(
+                                text = "Order Summary",
+                                style = MaterialTheme.typography.labelMedium,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(6.dp))
+                                    .background(YellowPrimary.copy(alpha = 0.15f))
+                                    .padding(horizontal = 8.dp, vertical = 2.dp)
+                            ) {
+                                Text(
+                                    text = "${viewModel.orderItems.size} items",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = YellowPrimary,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                        Icon(
+                            imageVector = if (orderExpanded) Icons.Default.KeyboardArrowUp
+                            else Icons.Default.KeyboardArrowDown,
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp),
+                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                        )
+                    }
 
-            // Invoice string
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .border(
-                        1.dp,
-                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f),
-                        RoundedCornerShape(10.dp)
-                    )
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(horizontal = 14.dp, vertical = 10.dp)
-            ) {
-                Text(
-                    text = "lnbc50n1p588zyfpp.....52mczpfq7fatgrfh",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                    maxLines = 1
-                )
+                    AnimatedVisibility(
+                        visible = orderExpanded,
+                        enter = expandVertically(),
+                        exit = shrinkVertically()
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp))
+                                .border(
+                                    1.dp,
+                                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
+                                    RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp)
+                                )
+                                .background(MaterialTheme.colorScheme.surface)
+                                .padding(8.dp)
+                        ) {
+                            viewModel.orderItems.forEachIndexed { index, item ->
+                                CheckoutItemRow(item = item, isEven = index % 2 == 1)
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Detail card
+            item {
+                ProcessingDetailCard(viewModel = viewModel, txId = txId)
             }
         }
 
-        Spacer(Modifier.height(20.dp))
-
-        // Order details card
-        ProcessingDetailCard(viewModel = viewModel, txId = txId)
-
-        Spacer(Modifier.weight(1f))
-
+        // Done button
         MaterialButton(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp),
+                .padding(horizontal = 20.dp, vertical = 12.dp),
             text = "Done",
             onClick = onConfirm
         )
-
-        Spacer(Modifier.height(16.dp))
     }
 }
 
@@ -203,123 +297,205 @@ private fun DesktopProcessingLayout(
     onConfirm: () -> Unit,
     onBack: () -> Unit
 ) {
-    Row(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize()) {
 
-        // Left: QR + invoice string
-        Column(
+        Row(
             modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight()
-                .padding(32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            if (showQr) {
-                Box(
-                    modifier = Modifier
-                        .size(320.dp)
-                        .clip(RoundedCornerShape(20.dp))
-                        .background(MaterialTheme.colorScheme.surface),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        Icons.Default.QrCode2, null,
-                        modifier = Modifier.size(280.dp),
-                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
-                    )
-                }
-
-                Spacer(Modifier.height(20.dp))
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(10.dp))
-                        .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f), RoundedCornerShape(10.dp))
-                        .background(MaterialTheme.colorScheme.surface)
-                        .padding(horizontal = 16.dp, vertical = 12.dp)
-                ) {
-                    Text(
-                        text = "lnbc50n1p588zyfpp.....52mczpfq7fatgrfh",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                        maxLines = 1
-                    )
-                }
-            } else {
-                Icon(
-                    Icons.Default.CheckCircle, null,
-                    modifier = Modifier.size(120.dp),
-                    tint = YellowPrimary.copy(alpha = 0.3f)
-                )
+            Box(
+                modifier = Modifier
+                    .size(36.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(YellowPrimary.copy(alpha = 0.15f))
+                    .clickable { onBack() },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = YellowPrimary, modifier = Modifier.size(18.dp))
+            }
+            Spacer(Modifier.width(14.dp))
+            Column {
+                Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                Text(txId, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f))
             }
         }
 
-        // Right: header + detail card + button
-        Column(
+        Row(
             modifier = Modifier
-                .width(400.dp)
-                .fillMaxHeight()
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(32.dp),
-            verticalArrangement = Arrangement.SpaceBetween
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Column {
-                // Back + title
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                ) {
-                    Box(
+            Text(
+                text = "ORDER SUMMARY",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                letterSpacing = 2.sp,
+                modifier = Modifier.weight(1f)
+            )
+            Text(
+                text = "PAYMENT DETAIL",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                letterSpacing = 2.sp,
+                modifier = Modifier.width(380.dp)
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .padding(start = 32.dp, end = 32.dp, bottom = 24.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.Top
+        ) {
+            // Left: QR ขนาดคงที่บน + list ล่างใช้พื้นที่ที่เหลือ
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                if (showQr) {
+                    // QR — กว้างเต็ม สูงคงที่ ไม่ใช้ aspectRatio
+                    ProcessingQrSection(
                         modifier = Modifier
-                            .size(36.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(YellowPrimary.copy(alpha = 0.15f))
-                            .clickable { onBack() },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = YellowPrimary, modifier = Modifier.size(18.dp))
-                    }
-                    Spacer(Modifier.width(12.dp))
-                    Text(text = title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                            .fillMaxWidth()
+                            .height(200.dp)
+                    )
                 }
 
-                // TX ID
-                Text(
-                    text = txId,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                    modifier = Modifier.padding(bottom = 24.dp)
+                // List — ขยายพื้นที่ที่เหลือ
+                ProcessingOrderList(
+                    viewModel = viewModel,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
                 )
-
-                ProcessingDetailCard(viewModel = viewModel, txId = txId)
             }
 
-            MaterialButton(
-                modifier = Modifier.fillMaxWidth(),
-                text = "Done",
-                onClick = onConfirm
+            // Right: Detail card + Done button
+            Column(
+                modifier = Modifier
+                    .width(380.dp)
+                    .wrapContentHeight(),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                ProcessingDetailCard(viewModel = viewModel, txId = txId)
+
+                MaterialButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "Done",
+                    onClick = onConfirm
+                )
+            }
+        }
+    }
+}
+
+// แก้ QrSection — ไม่ใช้ aspectRatio แล้ว ใช้ fillMaxHeight แทน
+@Composable
+private fun ProcessingQrSection(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier
+            .clip(RoundedCornerShape(12.dp))
+            .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f), RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // QR code section
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .aspectRatio(1f)
+                .clip(RoundedCornerShape(8.dp))
+                .background(MaterialTheme.colorScheme.background),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                Icons.Default.QrCode2, null,
+                modifier = Modifier.fillMaxSize(0.85f),
+                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
             )
+        }
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight(),
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "Invoice",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                letterSpacing = 1.sp,
+                modifier = Modifier.padding(bottom = 6.dp)
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(horizontal = 10.dp, vertical = 8.dp)
+            ) {
+                Text(
+                    text = "lnbc50n1p588zyfpp.....52mczpfq7fatgrfh",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                    maxLines = 2
+                )
+            }
         }
     }
 }
 
 @Composable
+private fun ProcessingOrderList(
+    viewModel: CheckoutViewModel,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(12.dp))
+            .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(8.dp)
+    ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(vertical = 4.dp)
+        ) {
+            itemsIndexed(viewModel.orderItems) { index, item ->
+                CheckoutItemRow(item = item, isEven = index % 2 == 1)
+            }
+        }
+    }
+}
+
+
+@Composable
 private fun ProcessingDetailCard(
     viewModel: CheckoutViewModel,
-    txId: String
+    txId: String,
+    modifier: Modifier = Modifier
 ) {
     val taxPercent = viewModel.taxPercent
     val hasVat = taxPercent > 0f
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f), RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(12.dp))
+            .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f), RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surface)
-            .padding(20.dp)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(0.dp)
     ) {
         listOf(
             "Order ID" to txId,
@@ -341,7 +517,6 @@ private fun ProcessingDetailCard(
             }
         }
 
-        // VAT row
         Row(
             modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
             horizontalArrangement = Arrangement.SpaceBetween
@@ -380,10 +555,30 @@ private fun ProcessingDetailCard(
     }
 }
 
-
 private val processingPreviewViewModel = CheckoutViewModel().apply {
     syncFromMenu(
-        items = listOf(CheckoutItem("Mocha", 2u, "70.00", "17,500")),
+        items = listOf(
+            CheckoutItem("Mocha", 2u, "70.00", "17,500"),
+            CheckoutItem("Matcha Latte", 1u, "100.00", "26,000"),
+            CheckoutItem("Latte", 3u, "70.00", "17,500"),
+            CheckoutItem("Espresso", 2u, "50.00", "12,500"),
+            CheckoutItem("Americano", 1u, "60.00", "15,000"),
+            CheckoutItem("Cappuccino", 2u, "75.00", "18,750"),
+            CheckoutItem("Flat White", 1u, "80.00", "20,000"),
+            CheckoutItem("Caramel Macchiato", 3u, "90.00", "22,500"),
+            CheckoutItem("Iced Coffee", 2u, "65.00", "16,250"),
+            CheckoutItem("Thai Tea", 4u, "60.00", "15,000"),
+            CheckoutItem("Green Tea", 1u, "55.00", "13,750"),
+            CheckoutItem("Hot Chocolate", 2u, "85.00", "21,250"),
+            CheckoutItem("Milk", 1u, "50.00", "12,500"),
+            CheckoutItem("Matcha Coffee", 2u, "100.00", "26,000"),
+            CheckoutItem("Vanilla Latte", 1u, "85.00", "21,250"),
+            CheckoutItem("Hazelnut Latte", 2u, "90.00", "22,500"),
+            CheckoutItem("Cold Brew", 1u, "75.00", "18,750"),
+            CheckoutItem("Nitro Coffee", 2u, "95.00", "23,750"),
+            CheckoutItem("Oat Milk Latte", 1u, "90.00", "22,500"),
+            CheckoutItem("Coconut Latte", 3u, "85.00", "21,250")
+        ),
         fiat = "61,020.00",
         sat = "1,683,138"
     )
@@ -394,15 +589,11 @@ private val processingPreviewViewModel = CheckoutViewModel().apply {
 @Preview(showBackground = true, widthDp = 411, heightDp = 891)
 @Composable
 fun PaymentProcessingMobilePreview() {
-    MaterialTheme {
-        PaymentProcessingScreen(viewModel = processingPreviewViewModel)
-    }
+    MaterialTheme { PaymentProcessingScreen(viewModel = processingPreviewViewModel) }
 }
 
 @Preview(showBackground = true, widthDp = 1280, heightDp = 800)
 @Composable
 fun PaymentProcessingDesktopPreview() {
-    MaterialTheme {
-        PaymentProcessingScreen(viewModel = processingPreviewViewModel)
-    }
+    MaterialTheme { PaymentProcessingScreen(viewModel = processingPreviewViewModel) }
 }

@@ -457,13 +457,7 @@ internal fun formatDouble(value: Double): String {
     return "$intStr.${decPart.toString().padStart(2, '0')}"
 }
 
-// Previews
-private val previewItems = listOf(
-    CheckoutItem("Mocha", 2u, "70.00", "17,500"),
-    CheckoutItem("Matcha Latte", 1u, "100.00", "26,000"),
-    CheckoutItem("Latte", 3u, "70.00", "17,500"),
-    CheckoutItem("Espresso", 1u, "50.00", "12,500")
-)
+
 
 private val previewViewModel = CheckoutViewModel().apply {
     syncFromMenu(
@@ -471,10 +465,26 @@ private val previewViewModel = CheckoutViewModel().apply {
             CheckoutItem("Mocha", 2u, "70.00", "17,500"),
             CheckoutItem("Matcha Latte", 1u, "100.00", "26,000"),
             CheckoutItem("Latte", 3u, "70.00", "17,500"),
-            CheckoutItem("Espresso", 1u, "50.00", "12,500")
+            CheckoutItem("Espresso", 2u, "50.00", "12,500"),
+            CheckoutItem("Americano", 1u, "60.00", "15,000"),
+            CheckoutItem("Cappuccino", 2u, "75.00", "18,750"),
+            CheckoutItem("Flat White", 1u, "80.00", "20,000"),
+            CheckoutItem("Caramel Macchiato", 3u, "90.00", "22,500"),
+            CheckoutItem("Iced Coffee", 2u, "65.00", "16,250"),
+            CheckoutItem("Thai Tea", 4u, "60.00", "15,000"),
+            CheckoutItem("Green Tea", 1u, "55.00", "13,750"),
+            CheckoutItem("Hot Chocolate", 2u, "85.00", "21,250"),
+            CheckoutItem("Milk", 1u, "50.00", "12,500"),
+            CheckoutItem("Matcha Coffee", 2u, "100.00", "26,000"),
+            CheckoutItem("Vanilla Latte", 1u, "85.00", "21,250"),
+            CheckoutItem("Hazelnut Latte", 2u, "90.00", "22,500"),
+            CheckoutItem("Cold Brew", 1u, "75.00", "18,750"),
+            CheckoutItem("Nitro Coffee", 2u, "95.00", "23,750"),
+            CheckoutItem("Oat Milk Latte", 1u, "90.00", "22,500"),
+            CheckoutItem("Coconut Latte", 3u, "85.00", "21,250")
         ),
-        fiat = "380.00",
-        sat = "95,000"
+        fiat = "61,020.00",
+        sat = "1,683,138"
     )
 }
 
