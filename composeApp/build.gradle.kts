@@ -130,8 +130,7 @@ kotlin {
             implementation(libs.androidx.core.splashscreen)
 
             implementation("io.ktor:ktor-client-android:3.3.0")
-            implementation("androidx.sqlite:sqlite-ktx:2.6.2")
-
+            implementation(project(":module"))
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -166,8 +165,7 @@ kotlin {
             implementation(libs.kotlinx.coroutinesSwing)
             implementation("io.ktor:ktor-client-java:3.3.0")
             implementation("io.coil-kt.coil3:coil-network-okhttp:3.3.0")
-            implementation("androidx.sqlite:sqlite:2.6.2")
-
+            implementation(project(":module"))
         }
 
         jsMain.dependencies { implementation("org.jetbrains.kotlinx:kotlinx-browser:0.5.0") }
@@ -175,7 +173,7 @@ kotlin {
         iosMain.dependencies {
             //implementation(libs.nostr.sdk.kmp)
             implementation("io.ktor:ktor-client-darwin:3.3.0")
-            implementation("androidx.sqlite:sqlite-ktx:2.6.2")
+            implementation(project(":module"))
         }
     }
 }

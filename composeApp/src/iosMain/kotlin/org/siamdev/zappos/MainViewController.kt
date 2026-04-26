@@ -23,12 +23,17 @@
  */
 package org.siamdev.zappos
 
-import androidx.compose.ui.window.ComposeUIViewController
-import org.siamdev.zappos.ui.screens.splash.SplashViewModel
 import androidx.compose.runtime.remember
+import androidx.compose.ui.window.ComposeUIViewController
+import org.siamdev.core.database.DatabaseInitializer
+import org.siamdev.zappos.ui.screens.splash.SplashViewModel
 
 fun MainViewController() = ComposeUIViewController {
     val splashVM = remember { SplashViewModel() }
     val platform = getPlatform()
     App(platform = platform, splashViewModel = splashVM)
+}
+
+fun initializeDatabase() {
+    DatabaseInitializer.initialize()
 }

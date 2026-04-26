@@ -39,10 +39,12 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import org.siamdev.zappos.ui.screens.splash.SplashScreen
 import org.siamdev.zappos.ui.screens.splash.SplashViewModel
+import org.siamdev.core.database.DatabaseInitializer
 import javax.swing.SwingUtilities
 
 
 fun main() = application {
+    DatabaseInitializer.initialize()
     val splashVM = remember { SplashViewModel() }
     var showMainWindow by remember { mutableStateOf(false) }
     val platform = getPlatform()
