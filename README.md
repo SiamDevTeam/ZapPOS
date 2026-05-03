@@ -32,7 +32,10 @@ Android · Desktop (JVM) · Web (Wasm · JS)
 
 ---
 
-## Run
+**SqlDelight**
+```bash
+./gradlew generateSqlDelightInterface
+```
 
 **Android**
 ```bash
@@ -46,8 +49,6 @@ Android · Desktop (JVM) · Web (Wasm · JS)
 
 **Web**
 ```bash
- # Wasm
-./gradlew wasmJsBrowserDevelopmentRun
 # JS
 ./gradlew jsBrowserDevelopmentRun
 ```
