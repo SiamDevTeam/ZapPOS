@@ -8,7 +8,7 @@ import org.siamdev.module.db.sys.ZapPOSSys
 import org.w3c.dom.Worker
 
 private fun workerDriver(): Worker =
-    Worker(js("""new URL("@cashapp/sqldelight-sqljs-worker/sqljs.worker.js", import.meta.url)""").unsafeCast<String>())
+    js("""new Worker(new URL("@cashapp/sqldelight-sqljs-worker/sqljs.worker.js", import.meta.url), {type: "module"})""").unsafeCast<Worker>()
 
 actual suspend fun createBizDriver(): SqlDriver {
     val driver = WebWorkerDriver(workerDriver())
