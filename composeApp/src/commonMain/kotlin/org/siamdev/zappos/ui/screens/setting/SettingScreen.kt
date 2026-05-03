@@ -37,7 +37,9 @@ enum class SettingInfo(val title: String, val subtitle: String? = null) {
     LANGUAGE("Display Language", "English"), APPEARANCE("Appearance"),
     LOCK("Lock Screen"), NOTIFICATION("Notifications"),
     DATA("Data and Storage"), RELAY("Relay"),
-    NWC("NWC", "Nostr Wallet Connect"), SIGN_OUT("Sign out")
+    NWC("NWC", "Nostr Wallet Connect"),
+    ACCOUNT_KEYS("Account Keys", "Private key & mnemonic"),
+    SIGN_OUT("Sign out")
 }
 
 data class SettingItemData(val destination: SettingInfo, val group: SettingGroup, val icon: ImageVector)
@@ -327,6 +329,7 @@ private fun getSettingItems() = listOf(
     SettingItemData(SettingInfo.DATA, SettingGroup.NETWORK, Icons.Default.Storage),
     SettingItemData(SettingInfo.RELAY, SettingGroup.NETWORK, Icons.Default.Cloud),
     SettingItemData(SettingInfo.NWC, SettingGroup.NETWORK, Icons.Default.Link),
+    SettingItemData(SettingInfo.ACCOUNT_KEYS, SettingGroup.ACCOUNT, Icons.Default.Key),
     SettingItemData(SettingInfo.SIGN_OUT, SettingGroup.ACCOUNT, Icons.AutoMirrored.Filled.Logout)
 )
 

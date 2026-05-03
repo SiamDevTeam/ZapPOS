@@ -43,7 +43,7 @@ import org.siamdev.zappos.ui.screens.splash.SplashViewModel
 import org.siamdev.module.db.appDatabase
 import javax.swing.SwingUtilities
 
-private val database = runBlocking { appDatabase() }
+private val database = runBlocking { appDatabase() }.also { it.registerDependencies() }
 
 fun main() = application {
     database

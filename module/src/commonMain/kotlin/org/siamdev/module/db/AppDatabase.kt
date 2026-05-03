@@ -21,11 +21,11 @@ class AppDatabase(
         sysDb = ZapPOSSys(sysDriver)
     }
 
-    fun <R> biz(block: ZapPOSBiz.() -> R): R = block(bizDb)
-    fun <R> sys(block: ZapPOSSys.() -> R): R = block(sysDb)
+    suspend fun <R> biz(block: suspend ZapPOSBiz.() -> R): R = block(bizDb)
+    suspend fun <R> sys(block: suspend ZapPOSSys.() -> R): R = block(sysDb)
 
-    fun <R> bizResult(block: ZapPOSBiz.() -> R): Result<R> = runCatching { block(bizDb) }
-    fun <R> sysResult(block: ZapPOSSys.() -> R): Result<R> = runCatching { block(sysDb) }
+    suspend fun <R> bizResult(block: ZapPOSBiz.() -> R): Result<R> = runCatching { block(bizDb) }
+    suspend fun <R> sysResult(block: suspend ZapPOSSys.() -> R): Result<R> = runCatching { block(sysDb) }
 }
 
 suspend fun appDatabase(): AppDatabase = AppDatabase(createBizDriver(), createSysDriver())

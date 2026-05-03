@@ -32,6 +32,27 @@ private val DarkColors = darkColorScheme(
     surface = DarkBackground
 )
 
+
+/*val colorsTheme = if (isDark) {
+    darkColorScheme(
+        primary = theme.primary.toColor(),
+        onPrimary = theme.onPrimary.toColor(),
+        primaryContainer = theme.primaryContainer.toColor(),
+        onPrimaryContainer = theme.onPrimaryContainer.toColor(),
+        background = theme.background.toColor(),
+        surface = theme.surface.toColor()
+    )
+} else {
+    lightColorScheme(
+        primary = theme.primary.toColor(),
+        onPrimary = theme.onPrimary.toColor(),
+        primaryContainer = theme.primaryContainer.toColor(),
+        onPrimaryContainer = theme.onPrimaryContainer.toColor(),
+        background = theme.background.toColor(),
+        surface = theme.surface.toColor()
+    )
+}*/
+
 @Composable
 fun ZapposTheme(
     themeMode: ThemeMode,

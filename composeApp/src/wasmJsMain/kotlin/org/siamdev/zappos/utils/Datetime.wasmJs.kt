@@ -12,4 +12,6 @@ actual object DateTimeUtils {
     actual fun currentDateTimeString(): String {
         TODO("Not yet implemented")
     }
+
+    actual fun nowEpochMillis(): Long = 0L
 }

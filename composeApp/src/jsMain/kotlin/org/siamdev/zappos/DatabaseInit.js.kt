@@ -11,6 +11,7 @@ actual fun initDatabase() {
     }
     MainScope().launch(handler) {
         database = appDatabase()
+        database.registerDependencies()
         checkDatabase(database)
     }
 }

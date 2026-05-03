@@ -21,4 +21,6 @@ actual object DateTimeUtils {
 
     actual fun currentDateTimeString(): String =
         "${currentDateString()} ${currentTimeString()}"
+
+    actual fun nowEpochMillis(): Long = System.currentTimeMillis()
 }

@@ -1,0 +1,21 @@
+selectAll:
+SELECT * FROM M_SYS_FONT ORDER BY I_NAME;
+
+selectById:
+SELECT * FROM M_SYS_FONT WHERE I_SF_ID = :id;
+
+insert:
+INSERT OR IGNORE INTO M_SYS_FONT(
+    I_SF_ID, I_NAME, I_SIZE,
+    I_CREATED_AT, I_UPDATED_AT, I_MODIFY_COUNT, I_CREATED_BY, I_UPDATED_BY
+)
+VALUES (:id, :name, :size, :createdAt, NULL, 0, :createdBy, NULL);
+
+update:
+UPDATE M_SYS_FONT
+SET I_NAME         = :name,
+    I_SIZE         = :size,
+    I_UPDATED_AT   = :updatedAt,
+    I_MODIFY_COUNT = I_MODIFY_COUNT + 1,
+    I_UPDATED_BY   = :updatedBy
+WHERE I_SF_ID = :id;

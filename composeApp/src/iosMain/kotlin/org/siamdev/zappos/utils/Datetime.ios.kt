@@ -37,4 +37,6 @@ actual object DateTimeUtils {
 
     actual fun currentDateTimeString(): String =
         "${currentDateString()} ${currentTimeString()}"
+
+    actual fun nowEpochMillis(): Long = (NSDate().timeIntervalSince1970 * 1000).toLong()
 }

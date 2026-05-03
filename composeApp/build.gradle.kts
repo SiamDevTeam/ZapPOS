@@ -61,77 +61,27 @@ kotlin {
         binaries.executable()
     }
 
-    /*sourceSets {
-
-        val nativeAndJvmMain by creating {
-            dependsOn(commonMain.get())
-        }
-        androidMain.get().dependsOn(nativeAndJvmMain)
-        jvmMain.get().dependsOn(nativeAndJvmMain)
-        iosMain.get().dependsOn(nativeAndJvmMain)
-
-        nativeAndJvmMain.dependencies {
-            implementation(libs.nostr.sdk.kmp)
-        }
-
-        androidMain.dependencies {
-            implementation(compose.preview)
-            implementation(libs.androidx.activity.compose)
-            implementation(libs.androidx.core.splashscreen)
-            implementation("io.ktor:ktor-client-android:3.3.0")
-            implementation("androidx.sqlite:sqlite-ktx:2.6.2")
-        }
-
-        commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(libs.material.icons.extended)
-            implementation(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
-            implementation(libs.kotlinx.serialization)
-            implementation(libs.jetbrains.navigation3.ui)
-            implementation(libs.jetbrains.lifecycle.viewmodel.nav3)
-            implementation(libs.jetbrains.lifecycle.viewmodel)
-            implementation("io.coil-kt.coil3:coil-network-ktor3:3.3.0")
-            implementation("io.coil-kt.coil3:coil-compose:3.3.0")
-        }
-
-        jsMain.dependencies {
-            implementation(npm("@rust-nostr/nostr-sdk", "0.44.0"))
-        }
-
-        jvmMain.dependencies {
-            implementation(compose.desktop.currentOs)
-            implementation(libs.kotlinx.coroutinesSwing)
-            implementation("io.ktor:ktor-client-java:3.3.0")
-            implementation("io.coil-kt.coil3:coil-network-okhttp:3.3.0")
-            implementation("androidx.sqlite:sqlite:2.6.2")
-        }
-
-        iosMain.dependencies {
-            implementation("io.ktor:ktor-client-darwin:3.3.0")
-            implementation("androidx.sqlite:sqlite-ktx:2.6.2")
-        }
-
-        wasmWasiMain.dependencies {
-            implementation("androidx.sqlite:sqlite-ktx:2.6.2")
-        }
-    }*/
-
     sourceSets {
 
-        androidMain.dependencies {
-            implementation(compose.preview)
-            implementation(libs.androidx.activity.compose)
-            implementation(libs.androidx.core.splashscreen)
-
-            implementation("io.ktor:ktor-client-android:3.3.0")
-            implementation(project(":module"))
+        // Intermediate source set shared by all platforms that support the database module.
+        // wasmJs is excluded because the :module does not target wasmJs.
+        val withModuleMain by creating {
+            dependsOn(commonMain.get())
+            dependencies {
+                implementation(project(":module"))
+            }
         }
+
+        val androidMain by getting {
+            dependsOn(withModuleMain)
+            dependencies {
+                implementation(compose.preview)
+                implementation(libs.androidx.activity.compose)
+                implementation(libs.androidx.core.splashscreen)
+                implementation("io.ktor:ktor-client-android:3.3.0")
+            }
+        }
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -148,35 +98,38 @@ kotlin {
             implementation(libs.jetbrains.lifecycle.viewmodel.nav3)
             implementation(libs.jetbrains.lifecycle.viewmodel)
 
-
             implementation("io.coil-kt.coil3:coil-network-ktor3:3.3.0")
             implementation("io.coil-kt.coil3:coil-compose:3.3.0")
-
-            //implementation(libs.nostr.sdk.kmp)
-
-
         }
+
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
 
-        jvmMain.dependencies {
-            implementation(compose.desktop.currentOs)
-            implementation(libs.kotlinx.coroutinesSwing)
-            implementation("io.ktor:ktor-client-java:3.3.0")
-            implementation("io.coil-kt.coil3:coil-network-okhttp:3.3.0")
-            implementation(project(":module"))
+        val jvmMain by getting {
+            dependsOn(withModuleMain)
+            dependencies {
+                implementation(compose.desktop.currentOs)
+                implementation(libs.kotlinx.coroutinesSwing)
+                implementation("io.ktor:ktor-client-java:3.3.0")
+                implementation("io.coil-kt.coil3:coil-network-okhttp:3.3.0")
+            }
         }
 
-        jsMain.dependencies {
-            implementation("org.jetbrains.kotlinx:kotlinx-browser:0.5.0")
-            implementation(project(":module"))
+        val jsMain by getting {
+            dependsOn(withModuleMain)
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-browser:0.5.0")
+            }
         }
+
+        // iosMain is lazily created by the default hierarchy, so "by getting" fails.
+        // Apply withModuleMain to each iOS target source set directly instead.
+        val iosArm64Main by getting { dependsOn(withModuleMain) }
+        val iosSimulatorArm64Main by getting { dependsOn(withModuleMain) }
 
         iosMain.dependencies {
-            //implementation(libs.nostr.sdk.kmp)
             implementation("io.ktor:ktor-client-darwin:3.3.0")
-            implementation(project(":module"))
         }
     }
 }

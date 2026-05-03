@@ -1,7 +1,0 @@
-CREATE TABLE IF NOT EXISTS L_SESSION_H (
-    session_id  TEXT NOT NULL PRIMARY KEY,
-    user_name   TEXT NOT NULL,
-    login_at    TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
-    logout_at   TEXT,
-    device_info TEXT
-);

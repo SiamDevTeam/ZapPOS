@@ -1,0 +1,22 @@
+CREATE TABLE M_SYS_ACCOUNT (
+    I_SA_ID                 TEXT    PRIMARY KEY NOT NULL,
+
+    I_USER_NAME             TEXT    NOT NULL UNIQUE,
+    I_NPUB_KEY              TEXT    UNIQUE,
+
+    I_PIN_ENABLED           INTEGER NOT NULL DEFAULT 0,  -- 0 = disabled, 1 = enabled
+    I_PIN_HASH              TEXT,
+
+    I_FAILED_ATTEMPT_COUNT  INTEGER NOT NULL DEFAULT 0,
+    I_LOCK_UNTIL            INTEGER,                     -- NULL = not locked
+    I_LAST_UNLOCK_AT        INTEGER,
+
+    I_CREATED_AT            INTEGER NOT NULL,
+    I_UPDATED_AT            INTEGER,
+    I_MODIFY_COUNT          INTEGER NOT NULL DEFAULT 0,
+
+    I_CREATED_BY            TEXT    NOT NULL,
+    I_UPDATED_BY            TEXT
+);
+
+CREATE INDEX IDX_SA_NPUB ON M_SYS_ACCOUNT(I_NPUB_KEY);

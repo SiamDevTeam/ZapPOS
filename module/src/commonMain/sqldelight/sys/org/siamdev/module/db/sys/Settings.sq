@@ -1,6 +1,43 @@
-CREATE TABLE IF NOT EXISTS M_SETTINGS (
-    setting_key   TEXT NOT NULL PRIMARY KEY,
-    setting_value TEXT NOT NULL,
-    setting_group TEXT NOT NULL DEFAULT 'GENERAL',
-    updated_at    TEXT NOT NULL DEFAULT (datetime('now', 'localtime'))
-);
+selectSystem:
+SELECT * FROM M_SYS_SETTINGS WHERE I_SS_ID = 'SYSTEM';
+
+initSystem:
+INSERT OR IGNORE INTO M_SYS_SETTINGS(
+    I_SS_ID, I_ACCOUNT_ID, I_THEME_ID, I_FONT_ID, I_LANGUAGE_ID,
+    I_PRIMARY_CURRENCY_ID, I_SECONDARY_CURRENCY_ID,
+    I_SHOW_SECONDARY_CURRENCY, I_NOTIFICATION_ENABLED,
+    I_CREATED_AT, I_UPDATED_AT, I_MODIFY_COUNT, I_CREATED_BY, I_UPDATED_BY
+)
+VALUES ('SYSTEM', NULL, :themeId, :fontId, NULL, :primaryCurrencyId, NULL, 0, 1, :createdAt, NULL, 0, 'SYSTEM', NULL);
+
+updateTheme:
+UPDATE M_SYS_SETTINGS
+SET I_THEME_ID     = :themeId,
+    I_UPDATED_AT   = :updatedAt,
+    I_MODIFY_COUNT = I_MODIFY_COUNT + 1,
+    I_UPDATED_BY   = :updatedBy
+WHERE I_SS_ID = 'SYSTEM';
+
+updateFont:
+UPDATE M_SYS_SETTINGS
+SET I_FONT_ID      = :fontId,
+    I_UPDATED_AT   = :updatedAt,
+    I_MODIFY_COUNT = I_MODIFY_COUNT + 1,
+    I_UPDATED_BY   = :updatedBy
+WHERE I_SS_ID = 'SYSTEM';
+
+updatePrimaryCurrency:
+UPDATE M_SYS_SETTINGS
+SET I_PRIMARY_CURRENCY_ID = :currencyId,
+    I_UPDATED_AT          = :updatedAt,
+    I_MODIFY_COUNT        = I_MODIFY_COUNT + 1,
+    I_UPDATED_BY          = :updatedBy
+WHERE I_SS_ID = 'SYSTEM';
+
+updateSecondaryCurrency:
+UPDATE M_SYS_SETTINGS
+SET I_SECONDARY_CURRENCY_ID = :currencyId,
+    I_UPDATED_AT            = :updatedAt,
+    I_MODIFY_COUNT          = I_MODIFY_COUNT + 1,
+    I_UPDATED_BY            = :updatedBy
+WHERE I_SS_ID = 'SYSTEM';

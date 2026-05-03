@@ -30,9 +30,13 @@ import org.siamdev.zappos.ui.screens.login.LoginScreen
 import org.siamdev.zappos.ui.screens.home.HomeScreen
 import org.siamdev.zappos.ui.screens.login.NostrLoginScreen
 import org.siamdev.zappos.ui.screens.sale.MainMenuScreen
+import org.siamdev.zappos.ui.screens.setting.AppearanceSettingScreen
+import org.siamdev.zappos.ui.screens.setting.CurrencySettingScreen
 import org.siamdev.zappos.ui.screens.setting.SettingScreen
+import org.siamdev.zappos.ui.screens.setting.SettingInfo
 import org.siamdev.zappos.ui.screens.splash.SplashScreen
 import org.siamdev.zappos.ui.screens.splash.SplashViewModel
+import org.siamdev.zappos.LocalSettingVM
 
 @Composable
 fun NavigationRoot(
@@ -54,6 +58,8 @@ fun NavigationRoot(
                     subclass(Route.GlowEffects::class, Route.GlowEffects.serializer())
                     subclass(Route.TopBarStyle::class, Route.TopBarStyle.serializer())
                     subclass(Route.Setting::class, Route.Setting.serializer())
+                    subclass(Route.AppearanceSetting::class, Route.AppearanceSetting.serializer())
+                    subclass(Route.CurrencySetting::class, Route.CurrencySetting.serializer())
                 }
             }
         },
@@ -208,15 +214,39 @@ fun NavigationRoot(
                             backStack = backStack
                         ) { navActions, _ ->
                             SettingScreen(
-                                onNavigateBack = {
-                                    navActions.back()
+                                onNavigateBack = { navActions.back() },
+                                onNavigateTo = { info ->
+                                    when (info) {
+                                        SettingInfo.APPEARANCE -> navActions.to(Route.AppearanceSetting)
+                                        SettingInfo.CURRENCY -> navActions.to(Route.CurrencySetting)
+                                        else -> { /* TODO */ }
+                                    }
                                 },
-                                onNavigateTo = {
-                                    // Handle navigation to different settings options
-                                },
-                                onLogout = {
-                                    navActions.logout()
-                                }
+                                onLogout = { navActions.logout() }
+                            )
+                        }
+
+                        // Appearance Setting (theme + font)
+                        is Route.AppearanceSetting -> NavConfig(
+                            backStack = backStack,
+                            enableDrawer = false
+                        ) { navActions, _ ->
+                            val vm = LocalSettingVM.current
+                            AppearanceSettingScreen(
+                                onNavigateBack = { navActions.back() },
+                                viewModel = vm
+                            )
+                        }
+
+                        // Currency Setting
+                        is Route.CurrencySetting -> NavConfig(
+                            backStack = backStack,
+                            enableDrawer = false
+                        ) { navActions, _ ->
+                            val vm = LocalSettingVM.current
+                            CurrencySettingScreen(
+                                onNavigateBack = { navActions.back() },
+                                viewModel = vm
                             )
                         }
 

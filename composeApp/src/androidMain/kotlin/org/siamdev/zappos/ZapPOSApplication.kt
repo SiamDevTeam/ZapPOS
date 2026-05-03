@@ -14,5 +14,6 @@ class ZapPOSApplication : Application() {
         super.onCreate()
         AppContext.value = this
         database = runBlocking { appDatabase() }
+        database.registerDependencies()
     }
 }

@@ -19,4 +19,6 @@ actual object DateTimeUtils {
 
     actual fun currentDateTimeString(): String =
         "${currentDateString()} ${currentTimeString()}"
+
+    actual fun nowEpochMillis(): Long = (js("Date.now()") as Double).toLong()
 }

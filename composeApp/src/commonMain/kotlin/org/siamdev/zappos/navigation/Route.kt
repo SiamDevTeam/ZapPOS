@@ -61,4 +61,10 @@ sealed interface Route : NavKey {
 
     @Serializable
     object Setting : Route, NavKey
+
+    @Serializable
+    object AppearanceSetting : Route, NavKey
+
+    @Serializable
+    object CurrencySetting : Route, NavKey
 }

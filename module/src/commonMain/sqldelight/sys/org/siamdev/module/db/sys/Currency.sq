@@ -1,0 +1,25 @@
+selectAll:
+SELECT * FROM M_SYS_CURRENCY ORDER BY I_CODE;
+
+selectById:
+SELECT * FROM M_SYS_CURRENCY WHERE I_SCY_ID = :id;
+
+selectByCode:
+SELECT * FROM M_SYS_CURRENCY WHERE I_CODE = :code;
+
+insert:
+INSERT OR IGNORE INTO M_SYS_CURRENCY(
+    I_SCY_ID, I_CODE, I_NAME, I_SYMBOL,
+    I_CREATED_AT, I_UPDATED_AT, I_MODIFY_COUNT, I_CREATED_BY, I_UPDATED_BY
+)
+VALUES (:id, :code, :name, :symbol, :createdAt, NULL, 0, :createdBy, NULL);
+
+update:
+UPDATE M_SYS_CURRENCY
+SET I_CODE         = :code,
+    I_NAME         = :name,
+    I_SYMBOL       = :symbol,
+    I_UPDATED_AT   = :updatedAt,
+    I_MODIFY_COUNT = I_MODIFY_COUNT + 1,
+    I_UPDATED_BY   = :updatedBy
+WHERE I_SCY_ID = :id;

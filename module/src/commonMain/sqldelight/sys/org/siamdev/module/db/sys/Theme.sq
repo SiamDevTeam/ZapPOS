@@ -1,0 +1,19 @@
+selectAll:
+SELECT * FROM M_SYS_THEME ORDER BY I_NAME;
+
+selectById:
+SELECT * FROM M_SYS_THEME WHERE I_STH_ID = :id;
+
+insert:
+INSERT OR IGNORE INTO M_SYS_THEME(
+    I_STH_ID, I_NAME, I_MODE, I_IS_DEFAULT,
+    I_CREATED_AT, I_UPDATED_AT, I_MODIFY_COUNT, I_CREATED_BY, I_UPDATED_BY
+)
+VALUES (:id, :name, :mode, :isDefault, :createdAt, NULL, 0, :createdBy, NULL);
+
+setDefault:
+UPDATE M_SYS_THEME
+SET I_IS_DEFAULT   = CASE WHEN I_STH_ID = :id THEN 1 ELSE 0 END,
+    I_UPDATED_AT   = :updatedAt,
+    I_MODIFY_COUNT = I_MODIFY_COUNT + 1,
+    I_UPDATED_BY   = :updatedBy;

@@ -1,0 +1,29 @@
+-- Singleton config row (always one row, I_SS_ID = 'SYSTEM').
+-- Acts as a pointer table: each column holds the ID of the active record
+-- in its corresponding lookup table.
+CREATE TABLE M_SYS_SETTINGS (
+    I_SS_ID                     TEXT    PRIMARY KEY NOT NULL,  -- always 'SYSTEM'
+
+    -- active account
+    I_ACCOUNT_ID                TEXT,
+
+    -- appearance
+    I_THEME_ID                  TEXT,
+    I_FONT_ID                   TEXT,
+    I_LANGUAGE_ID               TEXT,
+
+    -- currency display
+    I_PRIMARY_CURRENCY_ID       TEXT,
+    I_SECONDARY_CURRENCY_ID     TEXT,
+    I_SHOW_SECONDARY_CURRENCY   INTEGER NOT NULL DEFAULT 0,    -- 0 = off, 1 = on
+
+    -- misc flags
+    I_NOTIFICATION_ENABLED      INTEGER NOT NULL DEFAULT 1,    -- 0 = off, 1 = on
+
+    I_CREATED_AT                INTEGER NOT NULL,
+    I_UPDATED_AT                INTEGER,
+    I_MODIFY_COUNT              INTEGER NOT NULL DEFAULT 0,
+
+    I_CREATED_BY                TEXT    NOT NULL,
+    I_UPDATED_BY                TEXT
+);

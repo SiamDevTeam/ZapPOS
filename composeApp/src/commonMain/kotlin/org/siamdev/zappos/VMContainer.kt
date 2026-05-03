@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import org.siamdev.zappos.ui.screens.checkout.CheckoutViewModel
 import org.siamdev.zappos.ui.screens.count.CounterViewModel
 import org.siamdev.zappos.ui.screens.sale.MainMenuViewModel
+import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 
 val LocalMenuVM = staticCompositionLocalOf<MainMenuViewModel> {
     error("Missing VMContainer in composition tree")
@@ -22,6 +23,10 @@ val LocalCheckoutVM = staticCompositionLocalOf<CheckoutViewModel> {
 }
 
 val LocalCounterVM = staticCompositionLocalOf<CounterViewModel> {
+    error("Missing VMContainer in composition tree")
+}
+
+val LocalSettingVM = staticCompositionLocalOf<SettingViewModel> {
     error("Missing VMContainer in composition tree")
 }
 
@@ -45,11 +50,13 @@ fun VMContainer(content: @Composable () -> Unit) {
     val menuVM = viewModelOf { MainMenuViewModel() }
     val checkoutVM = viewModelOf { CheckoutViewModel() }
     val counterVM = viewModelOf { CounterViewModel() }
+    val settingVM = viewModelOf { SettingViewModel() }
 
     CompositionLocalProvider(
         LocalMenuVM provides menuVM,
         LocalCheckoutVM provides checkoutVM,
         LocalCounterVM provides counterVM,
+        LocalSettingVM provides settingVM,
         content = content
     )
 }
