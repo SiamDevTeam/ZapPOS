@@ -10,4 +10,5 @@ plugins {
     alias(libs.plugins.androidKotlinMultiplatformLibrary) apply false
     alias(libs.plugins.androidLint) apply false
     alias(libs.plugins.serialization) apply false
+    alias(libs.plugins.sqldelight) apply false
 }

@@ -168,7 +168,10 @@ kotlin {
             implementation(project(":module"))
         }
 
-        jsMain.dependencies { implementation("org.jetbrains.kotlinx:kotlinx-browser:0.5.0") }
+        jsMain.dependencies {
+            implementation("org.jetbrains.kotlinx:kotlinx-browser:0.5.0")
+            implementation(project(":module"))
+        }
 
         iosMain.dependencies {
             //implementation(libs.nostr.sdk.kmp)

@@ -39,6 +39,11 @@ val DarkPrimary = YellowPrimary
 val DarkOnPrimary = Color.White
 val DarkBackground = Color(0xFF1B1B1B)
 
+val YellowLight = Color(0xFFFFE082)
+val YellowSoft = Color(0xFFFFD54F)
+val YellowDeep = Color(0xFFFFA000)
+
+
 val MapLikeColors = listOf(
     // Reds / Pinks
     Color(0xFFEF5350), // Red

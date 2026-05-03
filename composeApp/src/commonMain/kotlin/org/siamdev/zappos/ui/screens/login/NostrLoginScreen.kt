@@ -2,6 +2,7 @@ package org.siamdev.zappos.ui.screens.login
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -21,14 +22,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.siamdev.zappos.theme.YellowDeep
+import org.siamdev.zappos.theme.YellowLight
 import org.siamdev.zappos.theme.YellowPrimary
+import org.siamdev.zappos.theme.YellowSoft
+import org.siamdev.zappos.ui.components.GlassCard
 import org.siamdev.zappos.ui.components.MaterialButton
 import org.siamdev.zappos.utils.LockOrientation
 import org.siamdev.zappos.utils.Orientation
 
 
 private enum class NostrLoginTab { NSEC, MNEMONIC }
-
 
 
 @Composable
@@ -56,27 +60,51 @@ fun NostrLoginScreen(
         val isWide = maxWidth >= 600.dp
         val cardWidth = if (isWide) 420.dp else maxWidth
 
-        // Glow บนซ้าย
+        // Glow layer 1 (ใหญ่ ฟุ้ง)
         Box(
             modifier = Modifier
-                .size(500.dp)
-                .offset(x = (-150).dp, y = (-150).dp)
+                .size(420.dp)
+                .offset(x = (-120).dp, y = (-120).dp)
                 .background(
                     brush = Brush.radialGradient(
-                        colors = listOf(YellowPrimary.copy(alpha = 0.22f), Color.Transparent)
+                        colors = listOf(
+                            YellowLight.copy(alpha = 0.25f),
+                            YellowPrimary.copy(alpha = 0.15f),
+                            Color.Transparent
+                        )
                     )
                 )
         )
 
-        // Glow ขวาล่าง
+        // Glow layer 2 (เข้มขึ้น)
         Box(
             modifier = Modifier
-                .size(400.dp)
-                .align(Alignment.BottomEnd)
-                .offset(x = 100.dp, y = 100.dp)
+                .size(300.dp)
+                .offset(x = (-60).dp, y = (-60).dp)
                 .background(
                     brush = Brush.radialGradient(
-                        colors = listOf(YellowPrimary.copy(alpha = 0.12f), Color.Transparent)
+                        colors = listOf(
+                            YellowPrimary.copy(alpha = 0.25f),
+                            YellowDeep.copy(alpha = 0.15f),
+                            Color.Transparent
+                        )
+                    )
+                )
+        )
+
+        // Glow ขวาล่าง (balance)
+        Box(
+            modifier = Modifier
+                .size(420.dp)
+                .align(Alignment.BottomEnd)
+                .offset(x = 120.dp, y = 120.dp)
+                .background(
+                    brush = Brush.radialGradient(
+                        colors = listOf(
+                            YellowSoft.copy(alpha = 0.18f),
+                            YellowPrimary.copy(alpha = 0.10f),
+                            Color.Transparent
+                        )
                     )
                 )
         )
@@ -86,13 +114,10 @@ fun NostrLoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Column(
+            GlassCard(
                 modifier = Modifier
                     .width(cardWidth)
-                    .padding(horizontal = if (isWide) 0.dp else 24.dp)
-                    .clip(RoundedCornerShape(24.dp))
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(horizontal = 28.dp, vertical = 32.dp),
+                    .padding(horizontal = if (isWide) 0.dp else 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 

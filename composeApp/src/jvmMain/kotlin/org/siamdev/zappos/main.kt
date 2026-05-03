@@ -37,14 +37,16 @@ import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import kotlinx.coroutines.runBlocking
 import org.siamdev.zappos.ui.screens.splash.SplashScreen
 import org.siamdev.zappos.ui.screens.splash.SplashViewModel
-import org.siamdev.core.database.DatabaseInitializer
+import org.siamdev.module.db.appDatabase
 import javax.swing.SwingUtilities
 
+private val database = runBlocking { appDatabase() }
 
 fun main() = application {
-    DatabaseInitializer.initialize()
+    database
     val splashVM = remember { SplashViewModel() }
     var showMainWindow by remember { mutableStateOf(false) }
     val platform = getPlatform()

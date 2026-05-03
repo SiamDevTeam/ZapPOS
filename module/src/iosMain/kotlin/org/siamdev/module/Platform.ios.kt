@@ -21,20 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.siamdev.zappos
+package org.siamdev.module
 
-import androidx.compose.runtime.remember
-import androidx.compose.ui.window.ComposeUIViewController
-import org.siamdev.module.db.AppDatabase
-import org.siamdev.module.db.appDatabase
-import org.siamdev.zappos.ui.screens.splash.SplashViewModel
+import platform.Foundation.*
+import platform.UIKit.UIDevice
+import kotlinx.cinterop.ExperimentalForeignApi
 
-private val database: AppDatabase = appDatabase()
+@OptIn(ExperimentalForeignApi::class)
+class IOSPlatform : Platform {
 
-fun MainViewController() = ComposeUIViewController {
-    val splashVM = remember { SplashViewModel() }
-    val platform = getPlatform()
-    App(platform = platform, splashViewModel = splashVM)
+    override val name: String =
+        UIDevice.currentDevice.systemName() + " " + UIDevice.currentDevice.systemVersion
+
+
+    override val dataDir: String
+        get() {
+            val paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, true)
+            val documentsDir = paths.first() as NSString
+            val lmdbDir = documentsDir.stringByAppendingPathComponent("lmdb")
+            val fileManager = NSFileManager.defaultManager
+            if (!fileManager.fileExistsAtPath(lmdbDir)) {
+                fileManager.createDirectoryAtPath(
+                    path = lmdbDir,
+                    withIntermediateDirectories = true,
+                    attributes = null,
+                    error = null
+                )
+            }
+            return lmdbDir
+        }
 }
 
-fun initializeDatabase(): AppDatabase = appDatabase()
+actual fun getPlatform(): Platform = IOSPlatform()

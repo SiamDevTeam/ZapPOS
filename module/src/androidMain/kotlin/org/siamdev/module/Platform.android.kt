@@ -21,20 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.siamdev.zappos
+package org.siamdev.module
 
-import androidx.compose.runtime.remember
-import androidx.compose.ui.window.ComposeUIViewController
-import org.siamdev.module.db.AppDatabase
-import org.siamdev.module.db.appDatabase
-import org.siamdev.zappos.ui.screens.splash.SplashViewModel
+import android.content.Context
+import android.os.Build
+import java.io.File
 
-private val database: AppDatabase = appDatabase()
+private lateinit var appContext: Context
 
-fun MainViewController() = ComposeUIViewController {
-    val splashVM = remember { SplashViewModel() }
-    val platform = getPlatform()
-    App(platform = platform, splashViewModel = splashVM)
+fun initAndroidPlatform(context: Context) {
+    appContext = context.applicationContext
 }
 
-fun initializeDatabase(): AppDatabase = appDatabase()
+class AndroidPlatform : Platform {
+
+    override val name: String = "Android ${Build.VERSION.SDK_INT}"
+
+    override val dataDir: String
+        get() {
+            val lmdbDir = File(appContext.filesDir, "lmdb")
+            if (!lmdbDir.exists()) lmdbDir.mkdirs()
+            return lmdbDir.absolutePath
+        }
+
+}
+
+actual fun getPlatform(): Platform = AndroidPlatform()

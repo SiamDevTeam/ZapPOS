@@ -11,7 +11,7 @@
 
 ## Platforms
 
-Android · iOS · Desktop (JVM) · Web (Wasm · JS)
+Android · Desktop (JVM) · Web (Wasm · JS)
 
 ---
 

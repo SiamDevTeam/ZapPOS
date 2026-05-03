@@ -4,6 +4,22 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.androidLint)
+    alias(libs.plugins.sqldelight)
+}
+
+sqldelight {
+    databases {
+        register("ZapPOSBiz") {
+            packageName.set("org.siamdev.module.db.biz")
+            srcDirs.setFrom("src/commonMain/sqldelight/biz")
+            generateAsync = true
+        }
+        register("ZapPOSSys") {
+            packageName.set("org.siamdev.module.db.sys")
+            srcDirs.setFrom("src/commonMain/sqldelight/sys")
+            generateAsync = true
+        }
+    }
 }
 
 kotlin {
@@ -12,31 +28,6 @@ kotlin {
         freeCompilerArgs.add("-Xexpect-actual-classes")
     }
 
-    // Target declarations - add or remove as needed below. These define
-    // which platforms this KMP module supports.
-    // See: https://kotlinlang.org/docs/multiplatform-discover-project.html#targets
-    androidLibrary {
-        namespace = "org.siamdev.core"
-        compileSdk = 36
-        minSdk = 24
-
-        withHostTestBuilder {
-        }
-
-        withDeviceTestBuilder {
-            sourceSetTreeName = "test"
-        }.configure {
-            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        }
-    }
-
-    // For iOS targets, this is also where you should
-    // configure native binary output. For more information, see:
-    // https://kotlinlang.org/docs/multiplatform-build-native-binaries.html#build-xcframeworks
-
-    // A step-by-step guide on how to include this library in an XCode
-    // project can be found here:
-    // https://developer.android.com/kotlin/multiplatform/migrate
     val xcfName = "coreKit"
 
     iosX64 {
@@ -57,23 +48,36 @@ kotlin {
         }
     }
 
+    androidLibrary {
+        namespace = "org.siamdev.module"
+        compileSdk = 36
+        minSdk = 24
+
+        withHostTestBuilder {
+        }
+
+        withDeviceTestBuilder {
+            sourceSetTreeName = "test"
+        }.configure {
+            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        }
+    }
+
     jvm {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_21)
         }
     }
 
+    js {
+        browser()
+    }
 
-    // Source set declarations.
-    // Declaring a target automatically creates a source set with the same name. By default, the
-    // Kotlin Gradle Plugin creates additional source sets that depend on each other, since it is
-    // common to share sources between related targets.
-    // See: https://kotlinlang.org/docs/multiplatform-hierarchy.html
     sourceSets {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
-                implementation(libs.androidx.sqlite)
+                implementation(libs.sqldelight.runtime)
             }
         }
 
@@ -85,13 +89,12 @@ kotlin {
 
         jvmMain {
             dependencies {
-                implementation(libs.androidx.sqlite.bundled)
+                implementation(libs.sqldelight.sqlite.driver)
             }
         }
 
         jvmTest {
             dependencies {
-                //implementation("net.java.dev.jna:jna:5.18.1")
                 implementation(libs.kotlin.test)
             }
         }
@@ -99,13 +102,12 @@ kotlin {
         androidMain {
             dependencies {
                 implementation(libs.androidx.annotation.jvm)
-                implementation(libs.androidx.sqlite.bundled)
+                implementation(libs.sqldelight.android.driver)
             }
         }
 
         androidUnitTest {
             dependencies {
-                //implementation("net.java.dev.jna:jna:5.18.1@aar")
                 implementation(libs.kotlin.test)
             }
         }
@@ -118,12 +120,19 @@ kotlin {
             }
         }
 
-        iosMain {
+        nativeMain {
             dependencies {
-                implementation(libs.androidx.sqlite.bundled)
+                implementation(libs.sqldelight.native.driver)
+            }
+        }
+
+        jsMain {
+            dependencies {
+                implementation(libs.sqldelight.web.worker.driver)
+                implementation(devNpm("copy-webpack-plugin", "9.1.0"))
+                implementation(npm("@cashapp/sqldelight-sqljs-worker", "2.3.2"))
+                implementation(npm("sql.js", "1.8.0"))
             }
         }
     }
-
-
 }

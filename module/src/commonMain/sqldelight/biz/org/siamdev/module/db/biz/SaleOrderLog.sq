@@ -1,0 +1,18 @@
+CREATE TABLE IF NOT EXISTS L_SALE_ORDER_H (
+    log_id    TEXT NOT NULL PRIMARY KEY,
+    order_id  TEXT NOT NULL,
+    action    TEXT NOT NULL,
+    action_by TEXT,
+    action_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
+    FOREIGN KEY (order_id) REFERENCES T_SALE_ORDER_H(order_id)
+);
+
+CREATE TABLE IF NOT EXISTS L_SALE_ORDER_D (
+    log_id     TEXT    NOT NULL,
+    line_no    INTEGER NOT NULL,
+    field_name TEXT    NOT NULL,
+    old_value  TEXT,
+    new_value  TEXT,
+    PRIMARY KEY (log_id, line_no),
+    FOREIGN KEY (log_id) REFERENCES L_SALE_ORDER_H(log_id)
+);

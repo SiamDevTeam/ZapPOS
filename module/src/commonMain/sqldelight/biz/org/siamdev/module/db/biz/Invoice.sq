@@ -1,0 +1,32 @@
+CREATE TABLE IF NOT EXISTS T_INVOICE_H (
+    invoice_id   TEXT NOT NULL PRIMARY KEY,
+    invoice_no   TEXT NOT NULL UNIQUE,
+    invoice_date TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
+    order_id     TEXT,
+    customer_id  TEXT,
+    status       TEXT NOT NULL DEFAULT 'UNPAID',
+    subtotal     REAL NOT NULL DEFAULT 0,
+    tax_amount   REAL NOT NULL DEFAULT 0,
+    discount     REAL NOT NULL DEFAULT 0,
+    total_amount REAL NOT NULL DEFAULT 0,
+    due_date     TEXT,
+    note         TEXT,
+    created_at   TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
+    updated_at   TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
+    FOREIGN KEY (order_id) REFERENCES T_SALE_ORDER_H(order_id)
+);
+
+CREATE TABLE IF NOT EXISTS T_INVOICE_D (
+    invoice_id  TEXT    NOT NULL,
+    line_no     INTEGER NOT NULL,
+    product_id  TEXT    NOT NULL,
+    qty         REAL    NOT NULL DEFAULT 1,
+    unit_price  REAL    NOT NULL,
+    discount    REAL    NOT NULL DEFAULT 0,
+    tax_rate    REAL    NOT NULL DEFAULT 0,
+    line_amount REAL    NOT NULL,
+    PRIMARY KEY (invoice_id, line_no),
+    FOREIGN KEY (invoice_id) REFERENCES T_INVOICE_H(invoice_id),
+    FOREIGN KEY (product_id) REFERENCES M_PRODUCT_H(product_id)
+);
+

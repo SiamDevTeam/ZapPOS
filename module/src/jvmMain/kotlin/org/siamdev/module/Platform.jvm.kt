@@ -21,20 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.siamdev.zappos
+package org.siamdev.module
 
-import androidx.compose.runtime.remember
-import androidx.compose.ui.window.ComposeUIViewController
-import org.siamdev.module.db.AppDatabase
-import org.siamdev.module.db.appDatabase
-import org.siamdev.zappos.ui.screens.splash.SplashViewModel
+import java.io.File
 
-private val database: AppDatabase = appDatabase()
+class JVMPlatform : Platform {
 
-fun MainViewController() = ComposeUIViewController {
-    val splashVM = remember { SplashViewModel() }
-    val platform = getPlatform()
-    App(platform = platform, splashViewModel = splashVM)
+    private val runtimeVersion = System.getProperty("java.runtime.version")
+    private val runtimeVendor = System.getProperty("java.vm.vendor")
+
+    override val name: String = "Runtime $runtimeVersion by $runtimeVendor"
+
+    override val dataDir: String
+        get() {
+            val dir = File(System.getProperty("user.home"), ".zappos/lmdb")
+            if (!dir.exists()) dir.mkdirs()
+            return dir.absolutePath
+        }
 }
 
-fun initializeDatabase(): AppDatabase = appDatabase()
+actual fun getPlatform(): Platform = JVMPlatform()

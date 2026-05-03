@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS M_CATEGORY (
+    cat_id     TEXT    NOT NULL PRIMARY KEY,
+    cat_name   TEXT    NOT NULL,
+    cat_desc   TEXT,
+    sort_order INTEGER NOT NULL DEFAULT 0,
+    is_active  INTEGER NOT NULL DEFAULT 1
+);

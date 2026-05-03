@@ -1,0 +1,22 @@
+CREATE TABLE IF NOT EXISTS T_PAYMENT_H (
+    payment_id   TEXT NOT NULL PRIMARY KEY,
+    payment_no   TEXT NOT NULL UNIQUE,
+    payment_date TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
+    invoice_id   TEXT NOT NULL,
+    total_paid   REAL NOT NULL DEFAULT 0,
+    status       TEXT NOT NULL DEFAULT 'COMPLETED',
+    note         TEXT,
+    created_at   TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
+    FOREIGN KEY (invoice_id) REFERENCES T_INVOICE_H(invoice_id)
+);
+
+CREATE TABLE IF NOT EXISTS T_PAYMENT_D (
+    payment_id   TEXT    NOT NULL,
+    line_no      INTEGER NOT NULL,
+    pay_type_id  TEXT    NOT NULL,
+    amount_paid  REAL    NOT NULL,
+    reference_no TEXT,
+    PRIMARY KEY (payment_id, line_no),
+    FOREIGN KEY (payment_id)  REFERENCES T_PAYMENT_H(payment_id),
+    FOREIGN KEY (pay_type_id) REFERENCES M_PAYMENT_TYPE(pay_type_id)
+);

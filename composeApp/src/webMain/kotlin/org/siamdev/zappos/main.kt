@@ -8,6 +8,7 @@ import org.siamdev.zappos.ui.screens.splash.SplashViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
+    initDatabase()
     val splashVM = SplashViewModel()
     val platform = getPlatform()
 

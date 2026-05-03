@@ -14,7 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -24,7 +24,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.siamdev.zappos.theme.YellowDeep
+import org.siamdev.zappos.theme.YellowLight
 import org.siamdev.zappos.theme.YellowPrimary
+import org.siamdev.zappos.theme.YellowSoft
+import org.siamdev.zappos.ui.components.GlassCard
 import org.siamdev.zappos.ui.components.MaterialButton
 import org.siamdev.zappos.utils.LockOrientation
 import org.siamdev.zappos.utils.Orientation
@@ -84,12 +88,10 @@ fun LoginScreen(
             verticalArrangement = Arrangement.Center
         ) {
             // Card หลัก
-            Column(
+            GlassCard(
                 modifier = Modifier
                     .width(cardWidth)
                     .padding(horizontal = if (isWide) 0.dp else 24.dp)
-                    .clip(RoundedCornerShape(24.dp))
-                    .background(MaterialTheme.colorScheme.surface)
                     .padding(horizontal = 28.dp, vertical = 36.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

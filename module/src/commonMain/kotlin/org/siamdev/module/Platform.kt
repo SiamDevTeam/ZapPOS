@@ -21,20 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.siamdev.zappos
+package org.siamdev.module
 
-import androidx.compose.runtime.remember
-import androidx.compose.ui.window.ComposeUIViewController
-import org.siamdev.module.db.AppDatabase
-import org.siamdev.module.db.appDatabase
-import org.siamdev.zappos.ui.screens.splash.SplashViewModel
+interface Platform {
+    val name: String
 
-private val database: AppDatabase = appDatabase()
-
-fun MainViewController() = ComposeUIViewController {
-    val splashVM = remember { SplashViewModel() }
-    val platform = getPlatform()
-    App(platform = platform, splashViewModel = splashVM)
+    val dataDir: String
 }
 
-fun initializeDatabase(): AppDatabase = appDatabase()
+expect fun getPlatform(): Platform
+
+fun getDatabasePath(): String = getPlatform().dataDir

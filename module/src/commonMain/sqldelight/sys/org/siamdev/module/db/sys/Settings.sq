@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS M_SETTINGS (
+    setting_key   TEXT NOT NULL PRIMARY KEY,
+    setting_value TEXT NOT NULL,
+    setting_group TEXT NOT NULL DEFAULT 'GENERAL',
+    updated_at    TEXT NOT NULL DEFAULT (datetime('now', 'localtime'))
+);
