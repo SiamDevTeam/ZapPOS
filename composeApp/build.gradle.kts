@@ -204,6 +204,7 @@ compose.desktop {
 
         nativeDistributions {
             modules("java.sql", "java.naming")
+            includeAllModules = true
 
             targetFormats(
                 TargetFormat.Dmg
