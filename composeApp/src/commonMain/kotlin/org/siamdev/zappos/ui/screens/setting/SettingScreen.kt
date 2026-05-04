@@ -167,7 +167,7 @@ private fun DesktopLayout(
                 )
                 Spacer(Modifier.width(12.dp))
                 Column {
-                    Text("User Name", fontWeight = FontWeight.Bold)
+                    Text("User Name", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                     Text("nostr:npub1...", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
                 }
             }
@@ -217,7 +217,7 @@ private fun StatusItem(label: String, value: String) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(label, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text(value, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.SemiBold)
+        Text(value, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
     }
 }
 
@@ -231,7 +231,7 @@ private fun SettingHeader(onBack: () -> Unit, isCompact: Boolean = true) {
             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = YellowPrimary, modifier = Modifier.size(18.dp))
         }
         Spacer(Modifier.width(12.dp))
-        Text("Settings", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+        Text("Settings", color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
     }
 }
 
@@ -244,7 +244,7 @@ private fun SettingList(
     contentPadding: PaddingValues,
     showLogout: Boolean
 ) {
-    LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = contentPadding, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    LazyColumn(modifier = Modifier.fillMaxSize().padding(top = 10.dp), contentPadding = contentPadding, verticalArrangement = Arrangement.spacedBy(8.dp)) {
         if (search.isBlank()) {
             SettingGroup.entries.forEach { group ->
                 val groupItems = allItems.filter {
@@ -290,7 +290,7 @@ private fun SettingItemRow(item: SettingItemData, onClick: () -> Unit) {
         Spacer(Modifier.width(16.dp))
 
         Column(modifier = Modifier.weight(1f)) {
-            Text(item.destination.title, style = MaterialTheme.typography.bodyLarge, color = if (isLogout) tintColor else Color.Unspecified)
+            Text(item.destination.title, style = MaterialTheme.typography.bodyLarge, color = if (isLogout) tintColor else MaterialTheme.colorScheme.onSurface)
             item.destination.subtitle?.let {
                 Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }

@@ -47,11 +47,11 @@ fun GlassCard(
                     )
                 )
             )
-            .border(
+            /*.border(
                 width = 1.dp,
                 color = Color.White.copy(alpha = 0.2f),
                 shape = shape
-            )
+            )*/
             .padding(horizontal = 28.dp, vertical = 36.dp)
             .graphicsLayer { alpha = 0.99f },
         horizontalAlignment = horizontalAlignment,

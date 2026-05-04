@@ -52,11 +52,16 @@ fun MaterialButton(
     iconCenter: ImageVector? = null,
     iconEnd: ImageVector? = null,
     iconSize: Int = 25,
-    iconColor: Color = MaterialTheme.colorScheme.onPrimary,
+    iconColor: Color = Color.Unspecified,
     buttonColor: Color = MaterialTheme.colorScheme.primary,
     showBorder: Boolean = false,
     onClick: () -> Unit,
 ) {
+    val resolvedIconColor = when {
+        iconColor != Color.Unspecified -> iconColor
+        buttonColor == Color.Transparent -> MaterialTheme.colorScheme.onSurface
+        else -> MaterialTheme.colorScheme.onPrimary
+    }
 
     val interactionSource = remember { MutableInteractionSource() }
     var isPressed by remember { mutableStateOf(false) }
@@ -100,7 +105,7 @@ fun MaterialButton(
                 onClick = onClick
             )
             .padding(contentPadding)
-            .heightIn(min = 40.dp)
+            .heightIn(min = 40.dp),
     ) {
 
         if (iconCenter != null) {
@@ -110,7 +115,7 @@ fun MaterialButton(
                 modifier = Modifier
                     .size(iconSize.dp)
                     .align(Alignment.Center),
-                tint = iconColor
+                tint = resolvedIconColor
             )
             return@Box
         }
@@ -129,13 +134,13 @@ fun MaterialButton(
                     imageVector = iconStart,
                     contentDescription = null,
                     modifier = Modifier.size(20.dp),
-                    tint = iconColor
+                    tint = resolvedIconColor
                 )
                 Spacer(Modifier.width(8.dp))
             }
 
             // Optional text
-            if (text.isNotEmpty()) Text(text, color = iconColor)
+            if (text.isNotEmpty()) Text(text, color = resolvedIconColor)
 
             // Optional end icon
             if (iconEnd != null) {
@@ -144,7 +149,7 @@ fun MaterialButton(
                     imageVector = iconEnd,
                     contentDescription = null,
                     modifier = Modifier.size(20.dp),
-                    tint = iconColor
+                    tint = resolvedIconColor
                 )
             }
         }

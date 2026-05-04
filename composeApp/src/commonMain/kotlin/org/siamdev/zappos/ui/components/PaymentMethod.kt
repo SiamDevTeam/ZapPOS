@@ -178,6 +178,7 @@ fun PaymentMethodDialogContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 20.dp),
+            color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center
         )
 

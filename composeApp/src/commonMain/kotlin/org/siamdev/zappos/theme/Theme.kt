@@ -16,46 +16,39 @@ enum class ThemeMode {
     DARK
 }
 
-private val LightColors = lightColorScheme(
-    primary = LightPrimary,
-    onPrimary = LightOnPrimary,
-    primaryContainer = LightPrimary,
-    onPrimaryContainer = LightOnPrimary,
-
-    background = LightBackground,
-    surface = LightBackground
-)
-
 private val DarkColors = darkColorScheme(
-    primary = DarkPrimary,
-    onPrimary = DarkOnPrimary,
-    primaryContainer = DarkPrimary,
-    onPrimaryContainer = DarkOnPrimary,
+    primary              = DarkPrimary,
+    onPrimary            = DarkOnPrimary,
+    primaryContainer     = DarkPrimaryContainer,
+    onPrimaryContainer   = DarkOnPrimaryContainer,
 
-    background = DarkBackground,
-    surface = DarkBackground
+    background           = DarkBackground,
+    onBackground         = DarkOnBackground,
+    surface              = DarkSurface,
+    onSurface            = DarkOnSurface,
+    surfaceVariant       = DarkSurfaceVariant,
+    onSurfaceVariant     = DarkOnSurfaceVariant,
+
+    outline              = DarkOutline,
+    outlineVariant       = DarkOutlineVariant,
 )
 
+private val LightColors = lightColorScheme(
+    primary              = LightPrimary,
+    onPrimary            = LightOnPrimary,
+    primaryContainer     = LightPrimaryContainer,
+    onPrimaryContainer   = LightOnPrimaryContainer,
 
-/*val colorsTheme = if (isDark) {
-    darkColorScheme(
-        primary = theme.primary.toColor(),
-        onPrimary = theme.onPrimary.toColor(),
-        primaryContainer = theme.primaryContainer.toColor(),
-        onPrimaryContainer = theme.onPrimaryContainer.toColor(),
-        background = theme.background.toColor(),
-        surface = theme.surface.toColor()
-    )
-} else {
-    lightColorScheme(
-        primary = theme.primary.toColor(),
-        onPrimary = theme.onPrimary.toColor(),
-        primaryContainer = theme.primaryContainer.toColor(),
-        onPrimaryContainer = theme.onPrimaryContainer.toColor(),
-        background = theme.background.toColor(),
-        surface = theme.surface.toColor()
-    )
-}*/
+    background           = LightBackground,
+    onBackground         = LightOnBackground,
+    surface              = LightSurface,
+    onSurface            = LightOnSurface,
+    surfaceVariant       = LightSurfaceVariant,
+    onSurfaceVariant     = LightOnSurfaceVariant,
+
+    outline              = LightOutline,
+    outlineVariant       = LightOutlineVariant,
+)
 
 @Composable
 fun ZapposTheme(
@@ -65,15 +58,13 @@ fun ZapposTheme(
 ) {
     val isDark = when (themeMode) {
         ThemeMode.SYSTEM -> isSystemInDarkTheme()
-        ThemeMode.LIGHT -> false
-        ThemeMode.DARK -> true
+        ThemeMode.LIGHT  -> false
+        ThemeMode.DARK   -> true
     }
 
-    val colors = if (isDark) DarkColors else LightColors
-
     MaterialTheme(
-        colorScheme = colors,
-        typography = appTypography(fontScale),
-        content = content
+        colorScheme = if (isDark) DarkColors else LightColors,
+        typography  = appTypography(fontScale),
+        content     = content
     )
 }

@@ -165,7 +165,8 @@ private fun DesktopCashLayout(
                                 Text(
                                     text = item.priceBaht,
                                     style = MaterialTheme.typography.bodyMedium,
-                                    fontWeight = FontWeight.SemiBold
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                             }
                             Row(
@@ -223,7 +224,8 @@ private fun DesktopCashLayout(
                     Text(
                         viewModel.totalFiat,
                         style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
@@ -379,7 +381,8 @@ private fun DesktopCashLayout(
                                     Text(
                                         text = key,
                                         style = MaterialTheme.typography.headlineSmall,
-                                        fontWeight = FontWeight.Medium
+                                        fontWeight = FontWeight.Medium,
+                                        color = MaterialTheme.colorScheme.onSurface
                                     )
                                 }
                             }
@@ -431,7 +434,8 @@ private fun CashHeader(
         Text(
             "Cash Payment",
             style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }
@@ -460,7 +464,8 @@ private fun CashTotalDue(totalFiat: String) {
             Text(
                 totalFiat,
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }
@@ -591,7 +596,8 @@ private fun CashNumpad(viewModel: CheckoutViewModel) {
                             Text(
                                 text = key,
                                 style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Medium
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         }
                     }

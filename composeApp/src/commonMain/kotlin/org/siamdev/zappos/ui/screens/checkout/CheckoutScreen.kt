@@ -373,7 +373,7 @@ private fun CheckoutSummaryCard(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Total", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+            Text("Total", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
             Column(horizontalAlignment = Alignment.End) {
                 PriceRowFiat(value = formatDouble(grandTotal), iconSize = 16.dp, textStyle = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 PriceRowSat(value = formatDouble(grandTotalSat), iconSize = 13.dp, textStyle = MaterialTheme.typography.bodySmall)
@@ -427,7 +427,7 @@ internal fun CheckoutHeader(onBack: () -> Unit) {
         }
         Spacer(Modifier.width(14.dp))
         Column {
-            Text("Checkout", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+            Text("Checkout", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
             Text("Review your order", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f))
         }
     }
@@ -444,7 +444,7 @@ internal fun CheckoutItemRow(item: CheckoutItem, isEven: Boolean = false) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            Text(text = item.name, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+            Text(text = item.name, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
             Text(text = "×${item.count}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f))
         }
         Column(horizontalAlignment = Alignment.End) {

@@ -121,7 +121,7 @@ private fun CurrencyHeader(onBack: () -> Unit) {
             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = YellowPrimary, modifier = Modifier.size(18.dp))
         }
         Spacer(Modifier.width(12.dp))
-        Text("Currency", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+        Text("Currency", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
     }
 }
 
@@ -151,7 +151,8 @@ private fun CurrencyCard(currency: CurrencyItem, isActive: Boolean, onClick: () 
             Text(
                 currency.name,
                 style = MaterialTheme.typography.bodyLarge,
-                fontWeight = if (isActive) FontWeight.SemiBold else FontWeight.Normal
+                fontWeight = if (isActive) FontWeight.SemiBold else FontWeight.Normal,
+                color = MaterialTheme.colorScheme.onSurface
             )
             Text(currency.code, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }

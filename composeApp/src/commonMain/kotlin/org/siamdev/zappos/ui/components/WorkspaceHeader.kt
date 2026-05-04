@@ -103,7 +103,8 @@ fun WorkspaceHeader(
                     Text(
                         text = title,
                         fontSize = 15.sp,
-                        style = MaterialTheme.typography.headlineSmall
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
 
                     Spacer(Modifier.width(4.dp))
