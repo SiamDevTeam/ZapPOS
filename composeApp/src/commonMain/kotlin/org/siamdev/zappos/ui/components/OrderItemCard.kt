@@ -107,6 +107,7 @@ fun OrderItemCard(
                 text = "${item.count}",
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.widthIn(min = 20.dp),
                 textAlign = TextAlign.Center
             )

@@ -47,7 +47,7 @@ fun MainMenuScreen(
     }
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-        val isDesktop = maxWidth >= 600.dp && maxHeight >= 300.dp
+        val isDesktop = maxWidth >= 750.dp && maxHeight >= 300.dp
 
         if (isDesktop) {
             DesktopMenuLayout(
@@ -90,7 +90,8 @@ private fun MenuSectionHeader(
             Text(
                 text = "Menus",
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
 
@@ -207,7 +208,7 @@ private fun DesktopMenuLayout(
     ) {
         WorkspaceHeader(title = "ZapPOS", onSegmentClick = onOpenDrawer)
 
-        Row(modifier = Modifier.fillMaxSize()) {
+        Row(modifier = Modifier.fillMaxSize().padding(top = 10.dp)) {
 
             // Left: Menu List
             Column(
@@ -271,7 +272,8 @@ private fun DesktopMenuLayout(
                     Text(
                         text = "Order",
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
 
@@ -329,13 +331,15 @@ private fun DesktopMenuLayout(
                             Icon(
                                 imageVector = Icons.Default.CurrencyLira,
                                 contentDescription = null,
-                                modifier = Modifier.size(16.dp)
+                                tint = MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier.size(16.dp),
                             )
                             Spacer(Modifier.width(4.dp))
                             Text(
                                 viewModel.totalFiat,
                                 style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         }
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -415,6 +419,7 @@ private fun MobileMenuLayout(
                     Text(
                         text = "Total Payment",
                         style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.padding(bottom = 30.dp)
                     )
                     Column(horizontalAlignment = Alignment.End) {
@@ -422,10 +427,11 @@ private fun MobileMenuLayout(
                             Icon(
                                 imageVector = Icons.Default.CurrencyLira,
                                 contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurface,
                                 modifier = Modifier.size(20.dp)
                             )
                             Spacer(Modifier.width(4.dp))
-                            Text(viewModel.totalFiat, style = MaterialTheme.typography.titleLarge)
+                            Text(viewModel.totalFiat, style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface)
                         }
                         Spacer(Modifier.height(4.dp))
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -435,7 +441,7 @@ private fun MobileMenuLayout(
                                 modifier = Modifier.size(20.dp)
                             )
                             Spacer(Modifier.width(4.dp))
-                            Text(viewModel.totalSat, style = MaterialTheme.typography.titleMedium)
+                            Text(viewModel.totalSat, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                         }
                     }
                 }
@@ -471,7 +477,7 @@ private fun MobileMenuLayout(
                 MenuSectionHeader(
                     viewMode = viewMode,
                     onViewModeChange = { viewMode = it },
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp)
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp).padding(top = 10.dp)
                 )
 
                 Box(

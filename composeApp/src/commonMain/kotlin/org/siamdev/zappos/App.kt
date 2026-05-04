@@ -11,6 +11,7 @@ import org.siamdev.zappos.theme.ThemeMode
 import org.siamdev.zappos.theme.ZapposTheme
 import org.siamdev.zappos.navigation.NavigationRoot
 import org.siamdev.zappos.navigation.Route
+import org.siamdev.zappos.ui.components.DebugScreenSize
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 import org.siamdev.zappos.ui.screens.splash.SplashViewModel
 
@@ -44,5 +45,6 @@ fun App(platform: Platform, splashViewModel: SplashViewModel) {
                 splashViewModel = splashViewModel
             )
         }
+        DebugScreenSize()
     }
 }
