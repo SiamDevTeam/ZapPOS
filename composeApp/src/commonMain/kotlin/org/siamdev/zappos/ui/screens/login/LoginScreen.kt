@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -38,6 +39,7 @@ import org.siamdev.zappos.utils.LockOrientation
 import org.siamdev.zappos.utils.Orientation
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.zappos_dark_horizontal_v2
+import zappos.composeapp.generated.resources.zappos_white_horizontal_v2
 
 @Composable
 fun LoginScreen(
@@ -100,8 +102,10 @@ fun LoginScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // Logo
+                val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
+                val logoRes = if (isDark) Res.drawable.zappos_white_horizontal_v2 else Res.drawable.zappos_dark_horizontal_v2
                 Image(
-                    painter = painterResource(Res.drawable.zappos_dark_horizontal_v2),
+                    painter = painterResource(logoRes),
                     contentDescription = "ZapPOS Logo",
                     modifier = Modifier
                         .height(48.dp)

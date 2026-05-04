@@ -36,11 +36,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.graphics.luminance
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.theme.YellowPrimary
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.zappos_dark_horizontal_v2
+import zappos.composeapp.generated.resources.zappos_white_horizontal_v2
 
 @Composable
 fun NavigationList(
@@ -92,9 +94,11 @@ fun NavigationList(
                         .background(YellowPrimary.copy(alpha = 0.08f))
                         .padding(horizontal = 16.dp, vertical = 20.dp)
                 ) {
+                    val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
+                    val logoRes = if (isDark) Res.drawable.zappos_white_horizontal_v2 else Res.drawable.zappos_dark_horizontal_v2
                     Column {
                         Image(
-                            painter = painterResource(Res.drawable.zappos_dark_horizontal_v2),
+                            painter = painterResource(logoRes),
                             contentDescription = "ZapPOS Logo",
                             modifier = Modifier
                                 .height(36.dp)
