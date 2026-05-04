@@ -1,4 +1,4 @@
-package org.siamdev.zappos.ui.screens.setting
+package org.siamdev.zappos.ui.screens.setting.currency
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import org.siamdev.zappos.data.source.local.CurrencyItem
 import org.siamdev.zappos.theme.YellowPrimary
+import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 
 private enum class CurrencyTab { PRIMARY, SECONDARY }
 
@@ -42,20 +42,29 @@ fun CurrencySettingScreen(
     ) {
         CurrencyHeader(onNavigateBack)
 
-        TabRow(
+        SecondaryTabRow(
             selectedTabIndex = selectedTab.ordinal,
             containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = YellowPrimary
+            indicator = {
+                TabRowDefaults.SecondaryIndicator(
+                    modifier = Modifier.tabIndicatorOffset(selectedTabIndex = selectedTab.ordinal),
+                    color = YellowPrimary
+                )
+            }
         ) {
             Tab(
                 selected = selectedTab == CurrencyTab.PRIMARY,
                 onClick = { selectedTab = CurrencyTab.PRIMARY },
-                text = { Text("Primary") }
+                text = { Text("Primary") },
+                selectedContentColor = YellowPrimary,
+                unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Tab(
                 selected = selectedTab == CurrencyTab.SECONDARY,
                 onClick = { selectedTab = CurrencyTab.SECONDARY },
-                text = { Text("Secondary") }
+                text = { Text("Secondary") },
+                selectedContentColor = YellowPrimary,
+                unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 
@@ -80,7 +89,7 @@ fun CurrencySettingScreen(
                     CurrencyTab.PRIMARY -> "Select the main currency displayed in prices"
                     CurrencyTab.SECONDARY -> "Optional secondary currency shown alongside prices"
                 }
-                Text(hint, style = MaterialTheme.typography.bodySmall, color = Color.Gray, modifier = Modifier.padding(bottom = 8.dp))
+                Text(hint, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(bottom = 8.dp))
             }
 
             items(currencies) { currency ->
@@ -144,7 +153,7 @@ private fun CurrencyCard(currency: CurrencyItem, isActive: Boolean, onClick: () 
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = if (isActive) FontWeight.SemiBold else FontWeight.Normal
             )
-            Text(currency.code, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+            Text(currency.code, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         RadioButton(
             selected = isActive,

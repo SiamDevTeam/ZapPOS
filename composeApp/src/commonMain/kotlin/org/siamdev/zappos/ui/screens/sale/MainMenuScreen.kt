@@ -119,7 +119,7 @@ private fun MenuSectionHeader(
                             Icons.Default.GridView,
                         contentDescription = null,
                         modifier = Modifier.size(18.dp),
-                        tint = if (isSelected) Color(0xFF515151)
+                        tint = if (isSelected) MaterialTheme.colorScheme.onSurface
                         else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
                     )
                 }

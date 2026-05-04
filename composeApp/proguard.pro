@@ -50,8 +50,15 @@
 
 
 # ===== UniFFI / LMDB =====
--keep class rust.nostr.sdk.** { *; }
--keep class lmdb.** { *; }
+#-keep class rust.nostr.sdk.** { *; }
+#-keep class lmdb.** { *; }
+
+
+# ===== SQLDelight / SQLite JDBC =====
+-keep class app.cash.sqldelight.** { *; }
+-keep class org.sqlite.** { *; }
+-keep class java.sql.** { *; }
+-dontwarn java.sql.**
 
 
 # ===== Logging =====

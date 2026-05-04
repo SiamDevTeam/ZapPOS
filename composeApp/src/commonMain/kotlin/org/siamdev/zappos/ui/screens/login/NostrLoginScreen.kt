@@ -1,3 +1,7 @@
+/*
+ * MIT License
+ * Copyright (c) 2025 SiamDevTeam
+ */
 package org.siamdev.zappos.ui.screens.login
 
 import androidx.compose.animation.*
@@ -190,7 +194,7 @@ fun NostrLoginScreen(
                                     },
                                     style = MaterialTheme.typography.labelMedium,
                                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                                    color = if (isSelected) Color(0xFF515151)
+                                    color = if (isSelected) MaterialTheme.colorScheme.onSurface
                                     else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
                                 )
                             }

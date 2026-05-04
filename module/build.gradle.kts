@@ -7,17 +7,21 @@ plugins {
     alias(libs.plugins.sqldelight)
 }
 
+// https://sqldelight.github.io/sqldelight/latest/multiplatform_sqlite/migrations/
 sqldelight {
     databases {
         register("ZapPOSBiz") {
             packageName.set("org.siamdev.module.db.biz")
             srcDirs.setFrom("src/commonMain/sqldelight/biz")
             generateAsync = true
+            schemaOutputDirectory.set(file("src/commonMain/sqldelight/biz"))
         }
         register("ZapPOSSys") {
             packageName.set("org.siamdev.module.db.sys")
             srcDirs.setFrom("src/commonMain/sqldelight/sys")
             generateAsync = true
+            schemaOutputDirectory.set(file("src/commonMain/sqldelight/sys"))
+            verifyMigrations = true
         }
     }
 }

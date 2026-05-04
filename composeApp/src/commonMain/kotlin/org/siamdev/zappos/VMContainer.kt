@@ -1,3 +1,7 @@
+/*
+ * MIT License
+ * Copyright (c) 2025 SiamDevTeam
+ */
 package org.siamdev.zappos
 
 import androidx.compose.runtime.Composable
@@ -46,11 +50,10 @@ inline fun <reified VM : ViewModel> viewModelOf(
 )
 
 @Composable
-fun VMContainer(content: @Composable () -> Unit) {
+fun VMContainer(settingVM: SettingViewModel, content: @Composable () -> Unit) {
     val menuVM = viewModelOf { MainMenuViewModel() }
     val checkoutVM = viewModelOf { CheckoutViewModel() }
     val counterVM = viewModelOf { CounterViewModel() }
-    val settingVM = viewModelOf { SettingViewModel() }
 
     CompositionLocalProvider(
         LocalMenuVM provides menuVM,

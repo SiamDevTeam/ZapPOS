@@ -1,4 +1,8 @@
-package org.siamdev.zappos.ui.screens.setting
+/*
+ * MIT License
+ * Copyright (c) 2025 SiamDevTeam
+ */
+package org.siamdev.zappos.ui.screens.setting.appearance
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import org.siamdev.zappos.data.source.local.FontItem
 import org.siamdev.zappos.data.source.local.ThemeItem
 import org.siamdev.zappos.theme.YellowPrimary
+import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 
 @Composable
 fun AppearanceSettingScreen(
@@ -101,7 +106,7 @@ private fun SectionLabel(text: String) {
     Text(
         text = text.uppercase(),
         style = MaterialTheme.typography.labelSmall,
-        color = Color.Gray,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
         modifier = Modifier.padding(vertical = 4.dp)
     )
 }
@@ -164,7 +169,7 @@ private fun OptionCard(
         Spacer(Modifier.width(16.dp))
         Column(Modifier.weight(1f)) {
             Text(label, style = MaterialTheme.typography.bodyLarge, fontWeight = if (isActive) FontWeight.SemiBold else FontWeight.Normal)
-            Text(subtitle, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+            Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         RadioButton(
             selected = isActive,

@@ -31,7 +31,7 @@ kotlin {
 
     androidTarget {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_21)
         }
     }
 
@@ -70,6 +70,12 @@ kotlin {
             dependencies {
                 implementation(project(":module"))
             }
+        }
+
+        // Intermediate source set shared by JS and WasmJS (web targets).
+        // Holds the main() entry point and web resources (index.html, styles.css, assets).
+        val webMain by creating {
+            dependsOn(commonMain.get())
         }
 
         val androidMain by getting {
@@ -118,9 +124,14 @@ kotlin {
 
         val jsMain by getting {
             dependsOn(withModuleMain)
+            dependsOn(webMain)
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-browser:0.5.0")
             }
+        }
+
+        val wasmJsMain by getting {
+            dependsOn(webMain)
         }
 
         // iosMain is lazily created by the default hierarchy, so "by getting" fails.
@@ -172,8 +183,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 }
 
@@ -192,11 +203,14 @@ compose.desktop {
         }
 
         nativeDistributions {
+            modules("java.sql", "java.naming")
+
             targetFormats(
                 TargetFormat.Dmg
                 , TargetFormat.Msi
                 , TargetFormat.Deb
                 , TargetFormat.Rpm
+                , TargetFormat.AppImage
             )
             packageName = "ZapPOS"
             packageVersion = "1.0.0"

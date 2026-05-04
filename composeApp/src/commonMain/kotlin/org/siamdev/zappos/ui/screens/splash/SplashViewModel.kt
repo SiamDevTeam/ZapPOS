@@ -29,13 +29,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.siamdev.zappos.theme.ThemeMode
 import kotlin.time.Duration.Companion.milliseconds
 
 class SplashViewModel : ViewModel() {
-
-    private val _themeMode = MutableStateFlow(ThemeMode.LIGHT)
-    val themeMode = _themeMode.asStateFlow()
 
     private val _splashDone = MutableStateFlow(false)
     val splashDone = _splashDone.asStateFlow()

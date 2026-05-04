@@ -1,38 +1,34 @@
 /*
  * MIT License
- *
  * Copyright (c) 2025 SiamDevTeam
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
  */
 package org.siamdev.zappos
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import org.siamdev.zappos.theme.ThemeMode
 import org.siamdev.zappos.theme.ZapposTheme
 import org.siamdev.zappos.navigation.NavigationRoot
 import org.siamdev.zappos.navigation.Route
+import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 import org.siamdev.zappos.ui.screens.splash.SplashViewModel
+
+private const val DEFAULT_FONT_SIZE = 14f
 
 @Composable
 fun App(platform: Platform, splashViewModel: SplashViewModel) {
-    val themeMode = splashViewModel.themeMode.collectAsState()
+    val settingVM = viewModelOf { SettingViewModel() }
+    val activeTheme by settingVM.activeTheme.collectAsState()
+    val activeFont by settingVM.activeFont.collectAsState()
+
+    val themeMode = when (activeTheme?.mode) {
+        "DARK" -> ThemeMode.DARK
+        "LIGHT" -> ThemeMode.LIGHT
+        "SYSTEM" -> ThemeMode.SYSTEM
+        else -> ThemeMode.SYSTEM
+    }
+    val fontScale = (activeFont?.size?.toFloat() ?: DEFAULT_FONT_SIZE) / DEFAULT_FONT_SIZE
 
     val start = when (platform.type) {
         PlatformType.DESKTOP -> Route.Login
@@ -40,8 +36,8 @@ fun App(platform: Platform, splashViewModel: SplashViewModel) {
         PlatformType.WEB -> Route.Login
     }
 
-    ZapposTheme(themeMode = themeMode.value) {
-        VMContainer {
+    ZapposTheme(themeMode = themeMode, fontScale = fontScale) {
+        VMContainer(settingVM = settingVM) {
             NavigationRoot(
                 platform = platform,
                 startDestination = start,

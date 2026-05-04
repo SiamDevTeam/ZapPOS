@@ -1,3 +1,7 @@
+/*
+ * MIT License
+ * Copyright (c) 2025 SiamDevTeam
+ */
 package org.siamdev.zappos
 
 import android.app.Application

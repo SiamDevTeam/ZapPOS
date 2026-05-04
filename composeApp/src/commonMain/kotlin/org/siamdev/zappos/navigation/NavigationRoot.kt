@@ -1,3 +1,7 @@
+/*
+ * MIT License
+ * Copyright (c) 2025 SiamDevTeam
+ */
 package org.siamdev.zappos.navigation
 
 import androidx.compose.animation.AnimatedVisibility
@@ -30,8 +34,8 @@ import org.siamdev.zappos.ui.screens.login.LoginScreen
 import org.siamdev.zappos.ui.screens.home.HomeScreen
 import org.siamdev.zappos.ui.screens.login.NostrLoginScreen
 import org.siamdev.zappos.ui.screens.sale.MainMenuScreen
-import org.siamdev.zappos.ui.screens.setting.AppearanceSettingScreen
-import org.siamdev.zappos.ui.screens.setting.CurrencySettingScreen
+import org.siamdev.zappos.ui.screens.setting.appearance.AppearanceSettingScreen
+import org.siamdev.zappos.ui.screens.setting.currency.CurrencySettingScreen
 import org.siamdev.zappos.ui.screens.setting.SettingScreen
 import org.siamdev.zappos.ui.screens.setting.SettingInfo
 import org.siamdev.zappos.ui.screens.splash.SplashScreen

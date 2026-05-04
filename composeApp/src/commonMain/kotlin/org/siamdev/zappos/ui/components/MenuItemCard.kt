@@ -1,25 +1,6 @@
 /*
  * MIT License
- *
  * Copyright (c) 2025 SiamDevTeam
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
  */
 package org.siamdev.zappos.ui.components
 
@@ -91,7 +72,7 @@ private fun MenuItemCardList(
             .fillMaxWidth()
             .padding(vertical = 4.dp),
         shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(0.dp),
         border = CardDefaults.outlinedCardBorder()
     ) {
@@ -147,7 +128,7 @@ private fun MenuItemCardGrid(
             .fillMaxWidth()
             .padding(4.dp),
         shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(0.dp),
         border = CardDefaults.outlinedCardBorder()
     ) {
@@ -208,9 +189,9 @@ private fun MenuImage(
         contentDescription = null,
         modifier = baseModifier
             .clip(RoundedCornerShape(cornerRadius))
-            .background(Color(0xFFF5F5F5)),
+            .background(MaterialTheme.colorScheme.surfaceVariant),
         contentScale = contentScale,
-        placeholder = ColorPainter(Color(0xFFF5F5F5)),
+        placeholder = ColorPainter(MaterialTheme.colorScheme.surfaceVariant),
         error = painterResource(Res.drawable.compose_multiplatform)
     )
 }
@@ -240,7 +221,7 @@ private fun PriceRow(priceBaht: String, priceSat: String?) {
                     painter = painterResource(Res.drawable.sat_unit),
                     contentDescription = null,
                     //tint = YellowPrimary,
-                    tint = Color(0xFFFFB700),
+                    tint = YellowPrimary,
                     modifier = Modifier.size(12.dp)
                 )
                 Spacer(Modifier.width(3.dp))
@@ -248,7 +229,7 @@ private fun PriceRow(priceBaht: String, priceSat: String?) {
                     text = priceSat,
                     style = MaterialTheme.typography.bodySmall,
                     //color = YellowPrimary
-                    color = Color(0xFFFFB700)
+                    color = YellowPrimary
                 )
             }
         }

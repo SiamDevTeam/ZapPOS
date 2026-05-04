@@ -1,3 +1,7 @@
+/*
+ * MIT License
+ * Copyright (c) 2025 SiamDevTeam
+ */
 package org.siamdev.zappos.data.source.local
 
 import org.siamdev.module.db.AppDatabase
@@ -5,6 +9,9 @@ import org.siamdev.module.db.sys.dao.CurrencyDao
 import org.siamdev.module.db.sys.dao.FontDao
 import org.siamdev.module.db.sys.dao.SettingsDao
 import org.siamdev.module.db.sys.dao.ThemeDao
+import org.siamdev.module.db.sys.schema.M_SYS_CURRENCY
+import org.siamdev.module.db.sys.schema.M_SYS_FONT
+import org.siamdev.module.db.sys.schema.M_SYS_THEME
 import org.siamdev.zappos.utils.DateTimeUtils
 
 class SettingLocalInterfaceImpl(db: AppDatabase) : SettingLocalInterface {
@@ -75,11 +82,11 @@ class SettingLocalInterfaceImpl(db: AppDatabase) : SettingLocalInterface {
     private fun now() = DateTimeUtils.nowEpochMillis()
 }
 
-private fun org.siamdev.module.db.sys.M_SYS_THEME.toThemeItem() =
+private fun M_SYS_THEME.toThemeItem() =
     ThemeItem(I_STH_ID, I_NAME, I_MODE, I_IS_DEFAULT == 1L)
 
-private fun org.siamdev.module.db.sys.M_SYS_FONT.toFontItem() =
+private fun M_SYS_FONT.toFontItem() =
     FontItem(I_SF_ID, I_NAME, I_SIZE)
 
-private fun org.siamdev.module.db.sys.M_SYS_CURRENCY.toCurrencyItem() =
+private fun M_SYS_CURRENCY.toCurrencyItem() =
     CurrencyItem(I_SCY_ID, I_CODE, I_NAME, I_SYMBOL)

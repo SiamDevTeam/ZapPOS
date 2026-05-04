@@ -1,3 +1,7 @@
+/*
+ * MIT License
+ * Copyright (c) 2025 SiamDevTeam
+ */
 package org.siamdev.zappos.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -56,6 +60,7 @@ private val DarkColors = darkColorScheme(
 @Composable
 fun ZapposTheme(
     themeMode: ThemeMode,
+    fontScale: Float = 1f,
     content: @Composable () -> Unit
 ) {
     val isDark = when (themeMode) {
@@ -68,7 +73,7 @@ fun ZapposTheme(
 
     MaterialTheme(
         colorScheme = colors,
-        typography = AppTypography,
+        typography = appTypography(fontScale),
         content = content
     )
 }

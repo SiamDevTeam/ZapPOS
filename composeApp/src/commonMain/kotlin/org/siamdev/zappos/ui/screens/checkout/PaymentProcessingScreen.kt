@@ -1,3 +1,7 @@
+/*
+ * MIT License
+ * Copyright (c) 2025 SiamDevTeam
+ */
 package org.siamdev.zappos.ui.screens.checkout
 
 import androidx.compose.animation.AnimatedVisibility

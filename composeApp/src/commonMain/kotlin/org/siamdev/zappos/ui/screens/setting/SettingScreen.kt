@@ -1,3 +1,7 @@
+/*
+ * MIT License
+ * Copyright (c) 2025 SiamDevTeam
+ */
 package org.siamdev.zappos.ui.screens.setting
 
 import androidx.compose.foundation.background
@@ -123,7 +127,7 @@ private fun DesktopLayout(
     allItems: List<SettingItemData>, filteredItems: List<SettingItemData>,
     onBack: () -> Unit,
     onNavigate: (SettingInfo) -> Unit,
-    onLogout: () -> Unit // ✅ เพิ่ม
+    onLogout: () -> Unit
 ) {
     val desktopFilteredItems = remember(filteredItems) {
         filteredItems.filter { it.destination != SettingInfo.SIGN_OUT }
@@ -144,7 +148,7 @@ private fun DesktopLayout(
 
             Spacer(Modifier.height(32.dp))
 
-            Text("CURRENT ACCOUNT", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+            Text("CURRENT ACCOUNT", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(Modifier.height(12.dp))
 
             Row(
@@ -164,13 +168,13 @@ private fun DesktopLayout(
                 Spacer(Modifier.width(12.dp))
                 Column {
                     Text("User Name", fontWeight = FontWeight.Bold)
-                    Text("nostr:npub1...", color = Color.Gray, fontSize = 12.sp)
+                    Text("nostr:npub1...", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
                 }
             }
 
             Spacer(Modifier.height(32.dp))
 
-            Text("SYSTEM STATUS", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+            Text("SYSTEM STATUS", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(Modifier.height(16.dp))
             StatusItem("Version", "1.0")
             StatusItem("Database", "12.5 MB")
@@ -212,7 +216,7 @@ private fun StatusItem(label: String, value: String) {
         modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(label, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+        Text(label, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text(value, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.SemiBold)
     }
 }
@@ -249,7 +253,7 @@ private fun SettingList(
 
                 if (groupItems.isNotEmpty()) {
                     item {
-                        Text(group.title.uppercase(), style = MaterialTheme.typography.labelSmall, color = Color.Gray, modifier = Modifier.padding(vertical = 8.dp))
+                        Text(group.title.uppercase(), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(vertical = 8.dp))
                     }
                     items(groupItems) { item ->
                         SettingItemRow(item) { onNavigate(item.destination) }
@@ -288,12 +292,12 @@ private fun SettingItemRow(item: SettingItemData, onClick: () -> Unit) {
         Column(modifier = Modifier.weight(1f)) {
             Text(item.destination.title, style = MaterialTheme.typography.bodyLarge, color = if (isLogout) tintColor else Color.Unspecified)
             item.destination.subtitle?.let {
-                Text(it, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
 
         if (!isLogout) {
-            Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color.LightGray)
+            Icon(Icons.Default.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.outline)
         }
     }
 }
@@ -305,14 +309,14 @@ private fun SettingSearchBox(query: String, onQueryChange: (String) -> Unit, mod
             .background(MaterialTheme.colorScheme.surface).padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(Icons.Default.Search, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(20.dp))
+        Icon(Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(20.dp))
         Spacer(Modifier.width(8.dp))
         BasicTextField(
             value = query,
             onValueChange = onQueryChange,
             modifier = Modifier.weight(1f),
             decorationBox = { inner ->
-                if (query.isEmpty()) Text("Search settings...", color = Color.Gray)
+                if (query.isEmpty()) Text("Search settings...", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 inner()
             }
         )

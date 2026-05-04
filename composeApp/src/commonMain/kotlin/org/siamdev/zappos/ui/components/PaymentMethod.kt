@@ -1,3 +1,7 @@
+/*
+ * MIT License
+ * Copyright (c) 2025 SiamDevTeam
+ */
 package org.siamdev.zappos.ui.components
 
 import androidx.compose.foundation.Image
@@ -63,7 +67,7 @@ fun PaymentMethodList(
                     .background(
                         when {
                             isSelected && showBorder -> YellowPrimary.copy(alpha = 0.1f)
-                            isSelected -> Color(0xFFF0F0F0)
+                            isSelected -> MaterialTheme.colorScheme.surfaceVariant
                             else -> Color.Transparent
                         }
                     )
@@ -90,7 +94,7 @@ fun PaymentMethodList(
                             contentDescription = null,
                             tint = when {
                                 isSelected && showBorder -> YellowPrimary
-                                isSelected -> Color(0xFF515151)
+                                isSelected -> MaterialTheme.colorScheme.onSurface
                                 else -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                             },
                             modifier = Modifier.size(icon.size)
@@ -110,7 +114,7 @@ fun PaymentMethodList(
                     fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
                     color = when {
                         isSelected && showBorder -> MaterialTheme.colorScheme.onSurface
-                        isSelected -> Color(0xFF515151)
+                        isSelected -> MaterialTheme.colorScheme.onSurface
                         else -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
                     },
                     modifier = Modifier.weight(1f)

@@ -1,3 +1,7 @@
+/*
+ * MIT License
+ * Copyright (c) 2025 SiamDevTeam
+ */
 package org.siamdev.zappos.ui.screens.home
 
 import androidx.compose.foundation.background
@@ -228,13 +232,13 @@ private fun QuickActionCard(onNavigateToMenu: () -> Unit) {
                 modifier = Modifier
                     .size(44.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(Color.Black.copy(alpha = 0.1f)),
+                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Default.Restaurant,
                     contentDescription = null,
-                    tint = Color(0xFF515151),
+                    tint = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.size(22.dp)
                 )
             }
@@ -243,12 +247,12 @@ private fun QuickActionCard(onNavigateToMenu: () -> Unit) {
                     text = "New Order",
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF515151)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     text = "Open the menu to start",
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color(0xFF515151).copy(alpha = 0.6f)
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                 )
             }
         }
@@ -256,7 +260,7 @@ private fun QuickActionCard(onNavigateToMenu: () -> Unit) {
         Icon(
             imageVector = Icons.AutoMirrored.Filled.ArrowForward,
             contentDescription = null,
-            tint = Color(0xFF515151),
+            tint = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.size(20.dp)
         )
     }

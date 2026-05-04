@@ -1,3 +1,7 @@
+/*
+ * MIT License
+ * Copyright (c) 2025 SiamDevTeam
+ */
 package org.siamdev.zappos.ui.screens.checkout
 
 import androidx.compose.foundation.background
@@ -336,7 +340,7 @@ private fun CheckoutSummaryCard(
                             text = if (rate == 0f) "No VAT" else "${rate.toInt()}%",
                             style = MaterialTheme.typography.labelSmall,
                             fontWeight = FontWeight.SemiBold,
-                            color = if (isActive) Color(0xFF515151) else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                            color = if (isActive) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
                         )
                     }
                 }
