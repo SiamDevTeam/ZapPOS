@@ -146,11 +146,11 @@ fun OrderItemCard(
                         .padding(horizontal = 6.dp, vertical = 2.dp)
                         .focusRequester(focusRequester)
                         .onKeyEvent { event ->
-                            when {
-                                event.key == Key.Enter && event.type == KeyEventType.KeyDown -> {
+                            when (event.key) {
+                                Key.Enter if event.type == KeyEventType.KeyDown -> {
                                     confirmEdit(); true
                                 }
-                                event.key == Key.Escape && event.type == KeyEventType.KeyDown -> {
+                                Key.Escape if event.type == KeyEventType.KeyDown -> {
                                     isEditing = false; true
                                 }
                                 else -> false

@@ -104,10 +104,22 @@ class CheckoutViewModel : ViewModel() {
 
     fun appendCashDigit(digit: String) {
         if (digit == "." && receivedAmount.contains(".")) return
-        receivedAmount += digit
+        receivedAmount = when {
+            digit != "." && (receivedAmount == "0" || receivedAmount.isEmpty()) -> digit
+            else -> receivedAmount + digit
+        }
     }
 
     fun deleteCashDigit() { receivedAmount = receivedAmount.dropLast(1) }
+
+    fun appendQuickAmount(amount: String) {
+        val add = amount.toDoubleOrNull() ?: return
+        val current = receivedAmount.toDoubleOrNull() ?: 0.0
+        val result = current + add
+        receivedAmount = if (result == result.toLong().toDouble())
+            result.toLong().toString()
+        else "%.2f".format(result)
+    }
 
     fun confirmCash() { if (isChangeValid) step = CheckoutStep.PROCESSING }
 
