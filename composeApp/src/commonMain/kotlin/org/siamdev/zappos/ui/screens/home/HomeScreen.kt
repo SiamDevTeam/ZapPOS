@@ -39,7 +39,7 @@ fun HomeScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        val isDesktop = maxWidth >= 600.dp
+        val isDesktop = maxWidth >= 750.dp
 
         Column(
             modifier = Modifier

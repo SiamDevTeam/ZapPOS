@@ -96,7 +96,7 @@ fun CheckoutContent(
             .windowInsetsPadding(WindowInsets.statusBars)
             .windowInsetsPadding(WindowInsets.navigationBars)
     ) {
-        val isDesktop = maxWidth >= 600.dp
+        val isDesktop = maxWidth >= 750.dp
 
         if (isDesktop) {
             DesktopCheckoutLayout(viewModel = viewModel, onBack = onBack)

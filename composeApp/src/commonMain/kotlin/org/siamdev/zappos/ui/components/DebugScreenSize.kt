@@ -14,7 +14,7 @@ fun DebugScreenSize() {
         val h = maxHeight
         LaunchedEffect(w, h) {
             val layout = if (w >= 600.dp) "Desktop" else "Mobile"
-            println("[Screen] ${w.value.toInt()} × ${h.value.toInt()} dp  [$layout]")
+            println("[Screen] Width=${w.value.toInt()} × Height=${h.value.toInt()} dp [$layout]")
         }
     }
 }
