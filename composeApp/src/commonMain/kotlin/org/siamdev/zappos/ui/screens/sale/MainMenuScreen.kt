@@ -446,7 +446,7 @@ private fun MobileMenuLayout(
                     MaterialButton(
                         modifier = Modifier.weight(1f),
                         text = "Clear Cart",
-                        buttonColor = Color.White,
+                        buttonColor = Color.Transparent,
                         showBorder = true,
                         onClick = { viewModel.clearAllItems() }
                     )
