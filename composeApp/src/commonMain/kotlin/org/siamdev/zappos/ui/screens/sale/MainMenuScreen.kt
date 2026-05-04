@@ -47,7 +47,7 @@ fun MainMenuScreen(
     }
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-        val isDesktop = maxWidth >= 750.dp && maxHeight >= 300.dp
+        val isDesktop = maxWidth >= 750.dp && maxHeight >= 500.dp
 
         if (isDesktop) {
             DesktopMenuLayout(
@@ -306,7 +306,9 @@ private fun DesktopMenuLayout(
                             OrderItemCard(
                                 item = item,
                                 onAddClick = { viewModel.addItem(item.id) },
-                                onReduceClick = { viewModel.reduceItem(item.id) }
+                                onReduceClick = { viewModel.reduceItem(item.id) },
+                                onCountChange = { viewModel.setItemCount(item.id, it) },
+                                isDesktop = true
                             )
                         }
                     }
@@ -406,7 +408,8 @@ private fun MobileMenuLayout(
                     OrderItemCard(
                         item = item,
                         onAddClick = { viewModel.addItem(item.id) },
-                        onReduceClick = { viewModel.reduceItem(item.id) }
+                        onReduceClick = { viewModel.reduceItem(item.id) },
+                        onCountChange = { viewModel.setItemCount(item.id, it) }
                     )
                 }
             },

@@ -182,6 +182,14 @@ class MainMenuViewModel : ViewModel() {
         }
     }
 
+    fun setItemCount(id: Int, count: UInt) {
+        val index = _items.indexOfFirst { it.id == id }
+        if (index != -1) {
+            _items[index] = _items[index].copy(count = count)
+            updateSelectedKeys(id)
+        }
+    }
+
     fun clearAllItems() {
         for (i in _items.indices) {
             val item = _items[i]
