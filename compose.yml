@@ -8,6 +8,15 @@ services:
       - "8080:80"
     restart: unless-stopped
 
+  web-wasm:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: zappos-web-wasm
+    ports:
+      - "8181:80"
+    restart: unless-stopped
+
 #  cloudflared-tunnel:
 #    container_name: cloudflared-tunnel
 #    image: cloudflare/cloudflared:latest
