@@ -21,6 +21,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Inventory
+import androidx.compose.material.icons.filled.Storefront
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.HorizontalDivider
@@ -52,6 +54,8 @@ fun NavigationList(
     onNavigateToCounter: () -> Unit = {},
     onNavigateToMenu: () -> Unit = {},
     onNavigateToGlow: () -> Unit = {},
+    onNavigateToProductList: () -> Unit = {},
+    onNavigateToProductEntry: () -> Unit = {},
     onNavigateToSetting: () -> Unit = {}
 ) {
     AnimatedVisibility(
@@ -146,7 +150,6 @@ fun NavigationList(
                     modifier = Modifier.padding(horizontal = 4.dp, vertical = 8.dp)
                 )
 
-                // เมนูหลัก scroll ได้
                 LazyColumn(modifier = Modifier.weight(1f)) {
                     item {
                         DrawerNavigationItem(
@@ -164,6 +167,20 @@ fun NavigationList(
                     }
                     item {
                         DrawerNavigationItem(
+                            icon = Icons.Default.Inventory,
+                            title = "Product Entry",
+                            onClick = { onNavigateToProductEntry(); onDismiss() }
+                        )
+                    }
+                    item {
+                        DrawerNavigationItem(
+                            icon = Icons.Default.Storefront,
+                            title = "Products List",
+                            onClick = { onNavigateToProductList(); onDismiss() }
+                        )
+                    }
+                    /*item {
+                        DrawerNavigationItem(
                             icon = Icons.Default.Add,
                             title = "Counter",
                             onClick = { onNavigateToCounter(); onDismiss() }
@@ -175,7 +192,7 @@ fun NavigationList(
                             title = "Glow Effects",
                             onClick = { onNavigateToGlow(); onDismiss() }
                         )
-                    }
+                    }*/
                 }
 
                 // Settings ติดด้านล่างเสมอ

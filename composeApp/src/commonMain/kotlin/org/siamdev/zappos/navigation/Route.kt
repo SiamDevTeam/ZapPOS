@@ -48,4 +48,10 @@ sealed interface Route : NavKey {
 
     @Serializable
     object CurrencySetting : Route, NavKey
+
+    @Serializable
+    object ProductEntryMaster : Route, NavKey
+
+    @Serializable
+    object ProductList : Route, NavKey
 }

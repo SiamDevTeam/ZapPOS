@@ -34,6 +34,8 @@ import org.siamdev.zappos.ui.screens.login.LoginScreen
 import org.siamdev.zappos.ui.screens.home.HomeScreen
 import org.siamdev.zappos.ui.screens.login.NostrLoginScreen
 import org.siamdev.zappos.ui.screens.sale.MainMenuScreen
+import org.siamdev.zappos.ui.screens.product.ProductEntryMasterScreen
+import org.siamdev.zappos.ui.screens.product.ProductListDetailScreen
 import org.siamdev.zappos.ui.screens.setting.appearance.AppearanceSettingScreen
 import org.siamdev.zappos.ui.screens.setting.currency.CurrencySettingScreen
 import org.siamdev.zappos.ui.screens.setting.SettingScreen
@@ -64,6 +66,8 @@ fun NavigationRoot(
                     subclass(Route.Setting::class, Route.Setting.serializer())
                     subclass(Route.AppearanceSetting::class, Route.AppearanceSetting.serializer())
                     subclass(Route.CurrencySetting::class, Route.CurrencySetting.serializer())
+                    subclass(Route.ProductEntryMaster::class, Route.ProductEntryMaster.serializer())
+                    subclass(Route.ProductList::class, Route.ProductList.serializer())
                 }
             }
         },
@@ -183,6 +187,30 @@ fun NavigationRoot(
                             )
                         }
 
+                        // Product Entry Master
+                        is Route.ProductList -> NavConfig(
+                            backStack = backStack,
+                            enableDrawer = true
+                        ) { navActions, openDrawer ->
+                            ProductListDetailScreen(
+                                onOpenDrawer = openDrawer,
+                                onEditProduct = { navActions.to(Route.ProductEntryMaster) }
+                            )
+                        }
+
+                        is Route.ProductEntryMaster -> NavConfig(
+                            backStack = backStack,
+                            enableDrawer = true
+                        ) { navActions, openDrawer ->
+                            val prevRoute = backStack.toList().dropLast(1).lastOrNull()
+                            ProductEntryMasterScreen(
+                                onNavigateBack = { navActions.back() },
+                                onOpenDrawer = openDrawer,
+                                onSave = { navActions.back() },
+                                showBackButton = prevRoute is Route.ProductList
+                            )
+                        }
+
                         // Checkout
                         is Route.Checkout -> NavConfig(
                             backStack = backStack
@@ -257,6 +285,7 @@ fun NavigationRoot(
 
 
                         is Route.TopBarStyle -> TopBarScreen()
+
 
                         else -> error("Unknown NavKey: $key")
                     }

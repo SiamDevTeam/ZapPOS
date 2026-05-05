@@ -231,7 +231,6 @@ private fun DesktopCheckoutLayout(
     }
 }
 
-/** Uppercase spaced section label — reused in both layouts. */
 @Composable
 internal fun SectionLabel(text: String, modifier: Modifier = Modifier) {
     Text(

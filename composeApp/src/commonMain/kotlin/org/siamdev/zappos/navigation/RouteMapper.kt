@@ -19,6 +19,8 @@ object RouteMapper {
         is Route.TopBarStyle -> "/top-bar"
         is Route.AppearanceSetting -> "/setting/appearance"
         is Route.CurrencySetting -> "/setting/currency"
+        is Route.ProductEntryMaster -> "/product/new"
+        is Route.ProductList -> "/product"
     }
 
     fun fromPath(path: String): Route = when (path) {
@@ -32,6 +34,8 @@ object RouteMapper {
         "/setting" -> Route.Setting
         "/setting/appearance" -> Route.AppearanceSetting
         "/setting/currency" -> Route.CurrencySetting
+        "/product/new" -> Route.ProductEntryMaster
+        "/product" -> Route.ProductList
         "/effects" -> Route.GlowEffects
         "/top-bar" -> Route.TopBarStyle
         else       -> Route.Login

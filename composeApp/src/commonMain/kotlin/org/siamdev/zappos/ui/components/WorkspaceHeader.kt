@@ -9,6 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Segment
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -32,7 +33,8 @@ fun WorkspaceHeader(
     modifier: Modifier = Modifier,
     title: String = "Untitled",
     onClick: (expanded: Boolean) -> Unit = {},
-    onSegmentClick: () -> Unit = {}
+    onSegmentClick: () -> Unit = {},
+    onNavigateBack: (() -> Unit)? = null
 ) {
     val brandText = brandTextFromTitle(title)
     val brandColor = colorFromTitle(title)
@@ -43,20 +45,21 @@ fun WorkspaceHeader(
         modifier = modifier
             .fillMaxWidth()
             .padding(top = 15.dp)
-            .height(50.dp)
             .padding(horizontal = 14.dp),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp))
-                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.6f))
                 .padding(horizontal = 12.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             // ----- Left group -----
-            Box(contentAlignment = Alignment.CenterStart) {
+            Box(
+                contentAlignment = Alignment.CenterStart,
+                modifier = Modifier.weight(1f)
+            ) {
                 GlowEffects(
                     modifier = Modifier
                         .size(32.dp)
@@ -80,22 +83,22 @@ fun WorkspaceHeader(
 
                 ) {
                     // Brand
+                    val textStyle = MaterialTheme.typography.titleMedium
                     Box(
-                        modifier = Modifier.size(28.dp),
+                        modifier = Modifier
+                            .height(textStyle.fontSize.value.dp * 2)
+                            .aspectRatio(1f)
+                            .background(
+                                color = brandColor,
+                                shape = RoundedCornerShape(6.dp)
+                            ),
                         contentAlignment = Alignment.Center
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(color = brandColor, shape = RoundedCornerShape(6.dp)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = brandText,
-                                color = Color.White,
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                        }
+                        Text(
+                            text = brandText,
+                            color = Color.White,
+                            style = textStyle
+                        )
                     }
 
                     Spacer(Modifier.width(10.dp))
@@ -141,12 +144,12 @@ fun WorkspaceHeader(
                     modifier = Modifier
                         .size(40.dp)
                         .clip(RoundedCornerShape(8.dp))
-                        .clickable { onSegmentClick() },
+                        .clickable { if (onNavigateBack != null) onNavigateBack() else onSegmentClick() },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.AutoMirrored.Filled.Segment,
-                        contentDescription = "Segment",
+                        imageVector = if (onNavigateBack != null) Icons.AutoMirrored.Filled.ArrowBack else Icons.AutoMirrored.Filled.Segment,
+                        contentDescription = if (onNavigateBack != null) "Back" else "Menu",
                         tint = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.size(24.dp)
                     )

@@ -76,6 +76,8 @@ fun NavConfig(
                 onNavigateToMenu = { navActions.to(Route.Menu); drawerOpen = false },
                 onNavigateToCounter = { navActions.to(Route.Counter); drawerOpen = false },
                 onNavigateToGlow = { navActions.to(Route.GlowEffects); drawerOpen = false },
+                onNavigateToProductList = { navActions.to(Route.ProductList); drawerOpen = false },
+                onNavigateToProductEntry = { navActions.to(Route.ProductEntryMaster); drawerOpen = false },
                 onNavigateToSetting = { navActions.to(Route.Setting); drawerOpen = false }
             )
         }
