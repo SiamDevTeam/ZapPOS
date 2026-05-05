@@ -112,13 +112,19 @@ class CheckoutViewModel : ViewModel() {
 
     fun deleteCashDigit() { receivedAmount = receivedAmount.dropLast(1) }
 
+    fun clearReceivedAmount() { receivedAmount = "" }
+
     fun appendQuickAmount(amount: String) {
         val add = amount.toDoubleOrNull() ?: return
-        val current = receivedAmount.toDoubleOrNull() ?: 0.0
+        val current = receivedAmount.replace(",", "").toDoubleOrNull() ?: 0.0
         val result = current + add
-        receivedAmount = if (result == result.toLong().toDouble())
+        receivedAmount = if (result == result.toLong().toDouble()) {
             result.toLong().toString()
-        else "%.2f".format(result)
+        } else {
+            val intPart = result.toLong()
+            val decPart = ((result - intPart) * 100).toLong()
+            "$intPart.${decPart.toString().padStart(2, '0')}"
+        }
     }
 
     fun confirmCash() { if (isChangeValid) step = CheckoutStep.PROCESSING }

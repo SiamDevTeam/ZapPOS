@@ -366,6 +366,7 @@ private fun DesktopMenuLayout(
                     modifier = Modifier.fillMaxWidth(),
                     text = "Checkout",
                     iconStart = Icons.Default.ShoppingCart,
+                    enabled = viewModel.selectedKeys.isNotEmpty(),
                     onClick = { onCheckout() }
                 )
                 Spacer(Modifier.height(8.dp))
@@ -464,6 +465,7 @@ private fun MobileMenuLayout(
                         modifier = Modifier.weight(1f),
                         text = "Checkout",
                         iconStart = Icons.Default.ShoppingCart,
+                        enabled = viewModel.selectedKeys.isNotEmpty(),
                         onClick = { onCheckout() }
                     )
                 }

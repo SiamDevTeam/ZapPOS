@@ -55,9 +55,11 @@ fun MaterialButton(
     iconColor: Color = Color.Unspecified,
     buttonColor: Color = MaterialTheme.colorScheme.primary,
     showBorder: Boolean = false,
+    enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
     val resolvedIconColor = when {
+        !enabled -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
         iconColor != Color.Unspecified -> iconColor
         buttonColor == Color.Transparent -> MaterialTheme.colorScheme.onSurface
         else -> MaterialTheme.colorScheme.onPrimary
@@ -72,7 +74,8 @@ fun MaterialButton(
         }
     }
 
-    val targetColor = if (isPressed) buttonColor.copy(alpha = 0.6f) else buttonColor
+    val effectiveColor = if (!enabled) buttonColor.copy(alpha = 0.38f) else buttonColor
+    val targetColor = if (isPressed && enabled) effectiveColor.copy(alpha = 0.6f) else effectiveColor
 
     val backgroundColor by animateColorAsState(
         targetValue = targetColor,
@@ -80,7 +83,7 @@ fun MaterialButton(
     )
 
     val scale by animateFloatAsState(
-        targetValue = if (isPressed) 0.96f else 1f,
+        targetValue = if (isPressed && enabled) 0.96f else 1f,
         animationSpec = tween(durationMillis = 90)
     )
 
@@ -102,6 +105,7 @@ fun MaterialButton(
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
+                enabled = enabled,
                 onClick = onClick
             )
             .padding(contentPadding)

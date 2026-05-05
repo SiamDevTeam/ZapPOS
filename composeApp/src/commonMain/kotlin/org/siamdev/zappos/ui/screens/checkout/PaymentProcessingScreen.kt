@@ -12,7 +12,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -31,6 +30,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.components.MaterialButton
+import org.siamdev.zappos.ui.components.OrderItemList
 import org.siamdev.zappos.utils.DateTimeUtils
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.sat_unit
@@ -375,8 +375,8 @@ private fun DesktopProcessingLayout(
                 }
 
                 // List — ขยายพื้นที่ที่เหลือ
-                ProcessingOrderList(
-                    viewModel = viewModel,
+                OrderItemList(
+                    items = viewModel.orderItems,
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
@@ -456,29 +456,6 @@ private fun ProcessingQrSection(modifier: Modifier = Modifier) {
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
                     maxLines = 2
                 )
-            }
-        }
-    }
-}
-
-@Composable
-private fun ProcessingOrderList(
-    viewModel: CheckoutViewModel,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier
-            .clip(RoundedCornerShape(12.dp))
-            .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(8.dp)
-    ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(vertical = 4.dp)
-        ) {
-            itemsIndexed(viewModel.orderItems) { index, item ->
-                CheckoutItemRow(item = item, isEven = index % 2 == 1)
             }
         }
     }
