@@ -1,0 +1,13 @@
+services:
+  web:
+    build: .
+    container_name: zappos-web
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+
+#  cloudflared-tunnel:
+#    container_name: cloudflared-tunnel
+#    image: cloudflare/cloudflared:latest
+#    restart: unless-stopped
+#    command: tunnel --no-autoupdate run --token
