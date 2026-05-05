@@ -14,10 +14,12 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -28,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -133,35 +136,92 @@ private fun ExpandedLayout(
     onOpenDrawer: () -> Unit,
     onEdit: (String) -> Unit
 ) {
+    var splitRatio by remember { mutableStateOf(0.30f) }
+    val minRatio = 0.20f
+    val maxRatio = 0.55f
+
     Column(Modifier.fillMaxSize()) {
         WorkspaceHeader(title = "Products List", onSegmentClick = onOpenDrawer)
 
-        Row(Modifier.fillMaxSize()) {
-            ProductListPane(
-                products = products,
-                selectedId = selectedId,
-                onSelect = onSelect,
-                modifier = Modifier
-                    .width(360.dp)
-                    .fillMaxHeight()
-            )
+        BoxWithConstraints(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 12.dp, vertical = 8.dp)
+        ) {
+            val totalWidth = maxWidth
 
-            VerticalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                if (selected != null) {
-                    ProductDetailPane(
-                        product = selected,
-                        showBackButton = false,
-                        onBack = {},
-                        onEdit = { onEdit(selected.id) }
+                // List pane — rounded card floating above the layout
+                Surface(
+                    modifier = Modifier
+                        .width(totalWidth * splitRatio)
+                        .fillMaxHeight(),
+                    shape = RoundedCornerShape(16.dp),
+                    color = MaterialTheme.colorScheme.surfaceContainer,
+                    shadowElevation = 0.dp,
+                    tonalElevation = 0.dp
+                ) {
+                    ProductListPane(
+                        products = products,
+                        selectedId = selectedId,
+                        onSelect = onSelect,
+                        modifier = Modifier.fillMaxSize()
                     )
-                } else {
-                    EmptyDetailState()
+                }
+
+                // Draggable divider handle
+                Box(
+                    modifier = Modifier
+                        .width(18.dp)
+                        .fillMaxHeight()
+                        .pointerInput(totalWidth) {
+                            val totalPx = totalWidth.toPx()
+                            detectHorizontalDragGestures { change, dragAmount ->
+                                change.consume()
+                                splitRatio = (splitRatio + dragAmount / totalPx)
+                                    .coerceIn(minRatio, maxRatio)
+                            }
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(5.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        repeat(5) {
+                            Box(
+                                modifier = Modifier
+                                    .size(3.dp)
+                                    .clip(RoundedCornerShape(50))
+                                    .background(MaterialTheme.colorScheme.outlineVariant)
+                            )
+                        }
+                    }
+                }
+
+                // Detail pane — rounded card
+                Surface(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight(),
+                    shape = RoundedCornerShape(16.dp),
+                    color = MaterialTheme.colorScheme.surfaceContainer,
+                    shadowElevation = 0.dp,
+                    tonalElevation = 0.dp
+                ) {
+                    if (selected != null) {
+                        ProductDetailPane(
+                            product = selected,
+                            showBackButton = false,
+                            onBack = {},
+                            onEdit = { onEdit(selected.id) }
+                        )
+                    } else {
+                        EmptyDetailState()
+                    }
                 }
             }
         }
@@ -254,26 +314,27 @@ private fun ProductListPane(
                 .padding(horizontal = 16.dp, vertical = 12.dp)
         )
 
-        LazyRow(
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.padding(bottom = 8.dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            item {
-                val allSelected = categoryFilter == null
-                FilterChip(
-                    selected = allSelected,
-                    onClick = { categoryFilter = null },
-                    label = { Text("All") },
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = YellowPrimary.copy(alpha = 0.18f),
-                        selectedLabelColor = MaterialTheme.colorScheme.onSurface
-                    ),
-                    border = if (allSelected) BorderStroke(1.5.dp, YellowPrimary)
-                             else BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
-                )
-            }
-            items(DefaultProductCategories) { cat ->
+            val allSelected = categoryFilter == null
+            FilterChip(
+                selected = allSelected,
+                onClick = { categoryFilter = null },
+                label = { Text("All") },
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = YellowPrimary.copy(alpha = 0.18f),
+                    selectedLabelColor = MaterialTheme.colorScheme.onSurface
+                ),
+                border = if (allSelected) BorderStroke(1.5.dp, YellowPrimary)
+                         else BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+            )
+            DefaultProductCategories.forEach { cat ->
                 val isSelected = categoryFilter == cat.id
                 FilterChip(
                     selected = isSelected,
@@ -446,11 +507,7 @@ private fun ProductDetailPane(
         .find { it.id == product.category }
         ?.subCategories?.find { it.id == product.subCategory }?.name
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
         if (showBackButton) {
             Row(
                 modifier = Modifier
