@@ -8,50 +8,50 @@ import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed interface Route : NavKey {
+sealed class Route : NavKey {
 
     @Serializable
-    object Splash : Route, NavKey
+    object Splash : Route()
 
     @Serializable
-    object Login : Route, NavKey
+    object Login : Route()
 
     @Serializable
-    object NostrLogin : Route, NavKey
+    object NostrLogin : Route()
 
     @Serializable
-    object Logout : Route, NavKey
+    object Logout : Route()
 
     @Serializable
-    object Home : Route, NavKey
+    object Home : Route()
 
     @Serializable
-    object Menu : Route, NavKey
+    object Menu : Route()
 
     @Serializable
-    object Checkout : Route, NavKey
+    object Checkout : Route()
 
     @Serializable
-    object Counter : Route, NavKey
+    object Counter : Route()
 
     @Serializable
-    object GlowEffects : Route, NavKey
+    object GlowEffects : Route()
 
     @Serializable
-    object TopBarStyle : Route, NavKey
+    object TopBarStyle : Route()
 
     @Serializable
-    object Setting : Route, NavKey
+    object Setting : Route()
 
     @Serializable
-    object AppearanceSetting : Route, NavKey
+    object AppearanceSetting : Route()
 
     @Serializable
-    object CurrencySetting : Route, NavKey
+    object CurrencySetting : Route()
 
     @Serializable
-    object ProductEntryMaster : Route, NavKey
+    object ProductEntryMaster : Route()
 
     @Serializable
-    object ProductList : Route, NavKey
+    object ProductList : Route()
 }

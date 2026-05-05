@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Label
 import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -162,7 +163,7 @@ private fun MobileEntryLayout(
             EntryTextField(
                 value = name, onValueChange = onNameChange,
                 label = "Product Name", placeholder = "e.g. Green Tea Latte",
-                leadingIcon = Icons.Default.Label, required = true
+                leadingIcon = Icons.AutoMirrored.Filled.Label, required = true
             )
         }
         item {
