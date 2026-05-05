@@ -37,14 +37,14 @@ class MainMenuViewModel : ViewModel() {
     val selectedKeys: List<Int> get() = _selectedKeys
 
 
-    fun loadIfNeeded() {
+    fun loadProductsData() {
         if (hasLoaded || isLoading) return
         isLoading = true
         hasLoaded = true
         viewModelScope.launch {
             println("start...")
 
-            delay(1500)
+            delay(3000)
 
             _items.addAll(
                 listOf(

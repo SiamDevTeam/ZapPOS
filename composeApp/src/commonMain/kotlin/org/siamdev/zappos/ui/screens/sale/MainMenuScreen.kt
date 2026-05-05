@@ -1,3 +1,7 @@
+/*
+ * MIT License
+ * Copyright (c) 2025 SiamDevTeam
+ */
 package org.siamdev.zappos.ui.screens.sale
 
 import androidx.compose.foundation.BorderStroke
@@ -14,7 +18,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.automirrored.filled.ViewList
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.CurrencyLira
@@ -51,7 +54,7 @@ fun MainMenuScreen(
     val items = viewModel.items
 
     LaunchedEffect(Unit) {
-        viewModel.loadIfNeeded()
+        viewModel.loadProductsData()
     }
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
@@ -77,74 +80,14 @@ fun MainMenuScreen(
 
 
 @Composable
-private fun MenuSectionHeader(
-    viewMode: MenuViewMode,
-    onViewModeChange: (MenuViewMode) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.MenuBook,
-                contentDescription = null,
-                modifier = Modifier.size(22.dp),
-                tint = MaterialTheme.colorScheme.onSurface
-            )
-            Spacer(Modifier.width(8.dp))
-            Text(
-                text = "Menus",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-        }
-
-        // Toggle buttons
-        Row(
-            modifier = Modifier
-                .clip(RoundedCornerShape(10.dp))
-                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f))
-                .padding(4.dp),
-            horizontalArrangement = Arrangement.spacedBy(2.dp)
-        ) {
-            MenuViewMode.entries.forEach { mode ->
-                val isSelected = viewMode == mode
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(if (isSelected) YellowPrimary else Color.Transparent)
-                        .clickable { onViewModeChange(mode) }
-                        .padding(6.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = if (mode == MenuViewMode.LIST)
-                            Icons.AutoMirrored.Filled.ViewList
-                        else
-                            Icons.Default.GridView,
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp),
-                        tint = if (isSelected) MaterialTheme.colorScheme.onSurface
-                        else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
-                    )
-                }
-            }
-        }
-    }
-}
-
-
-@Composable
 private fun MenuSearchFilter(
     searchQuery: String,
     onSearchChange: (String) -> Unit,
     categories: List<String>,
     selectedCategory: String?,
     onCategorySelect: (String?) -> Unit,
+    viewMode: MenuViewMode,
+    onViewModeChange: (MenuViewMode) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -176,35 +119,75 @@ private fun MenuSearchFilter(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
                 .padding(bottom = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            val allSelected = selectedCategory == null
-            FilterChip(
-                selected = allSelected,
-                onClick = { onCategorySelect(null) },
-                label = { Text("All") },
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = YellowPrimary.copy(alpha = 0.18f),
-                    selectedLabelColor = MaterialTheme.colorScheme.onSurface
-                ),
-                border = if (allSelected) BorderStroke(1.5.dp, YellowPrimary)
-                         else BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
-            )
-            categories.forEach { cat ->
-                val isSelected = selectedCategory == cat
+            // Category chips — scrollable, takes remaining width
+            Row(
+                modifier = Modifier
+                    .weight(1f)
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                val allSelected = selectedCategory == null
                 FilterChip(
-                    selected = isSelected,
-                    onClick = { onCategorySelect(if (isSelected) null else cat) },
-                    label = { Text(cat.replaceFirstChar { it.uppercase() }) },
+                    selected = allSelected,
+                    onClick = { onCategorySelect(null) },
+                    label = { Text("All") },
                     colors = FilterChipDefaults.filterChipColors(
                         selectedContainerColor = YellowPrimary.copy(alpha = 0.18f),
                         selectedLabelColor = MaterialTheme.colorScheme.onSurface
                     ),
-                    border = if (isSelected) BorderStroke(1.5.dp, YellowPrimary)
+                    border = if (allSelected) BorderStroke(1.5.dp, YellowPrimary)
                              else BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
                 )
+                categories.forEach { cat ->
+                    val isSelected = selectedCategory == cat
+                    FilterChip(
+                        selected = isSelected,
+                        onClick = { onCategorySelect(if (isSelected) null else cat) },
+                        label = { Text(cat.replaceFirstChar { it.uppercase() }) },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = YellowPrimary.copy(alpha = 0.18f),
+                            selectedLabelColor = MaterialTheme.colorScheme.onSurface
+                        ),
+                        border = if (isSelected) BorderStroke(1.5.dp, YellowPrimary)
+                                 else BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+                    )
+                }
+            }
+
+            // View mode toggle
+            Row(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f))
+                    .padding(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                MenuViewMode.entries.forEach { mode ->
+                    val isSelected = viewMode == mode
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(if (isSelected) YellowPrimary else Color.Transparent)
+                            .clickable { onViewModeChange(mode) }
+                            .padding(6.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = if (mode == MenuViewMode.LIST)
+                                Icons.AutoMirrored.Filled.ViewList
+                            else
+                                Icons.Default.GridView,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                            tint = if (isSelected) MaterialTheme.colorScheme.onSurface
+                                   else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                        )
+                    }
+                }
             }
         }
     }
@@ -307,13 +290,17 @@ private fun DesktopMenuLayout(
     val maxRatio = 0.45f
     val panelColor = MaterialTheme.colorScheme.surfaceContainer
 
-    val categories = remember(items) {
-        items.map { it.category }.filter { it.isNotBlank() }.distinct().sorted()
+    val categories by remember {
+        derivedStateOf {
+            items.map { it.category }.filter { it.isNotBlank() }.distinct().sorted()
+        }
     }
-    val filteredItems = remember(items, searchQuery, categoryFilter) {
-        items.filter { item ->
-            (categoryFilter == null || item.category == categoryFilter) &&
-            (searchQuery.isBlank() || item.name.contains(searchQuery, ignoreCase = true))
+    val filteredItems by remember {
+        derivedStateOf {
+            items.filter { item ->
+                (categoryFilter == null || item.category == categoryFilter) &&
+                (searchQuery.isBlank() || item.name.contains(searchQuery, ignoreCase = true))
+            }
         }
     }
 
@@ -323,7 +310,7 @@ private fun DesktopMenuLayout(
             .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(WindowInsets.statusBars)
     ) {
-        WorkspaceHeader(title = "ZapPOS", onSegmentClick = onOpenDrawer)
+        WorkspaceHeader(title = "Main Menu", onSegmentClick = onOpenDrawer)
 
         BoxWithConstraints(
             modifier = Modifier
@@ -356,13 +343,9 @@ private fun DesktopMenuLayout(
                             onSearchChange = { searchQuery = it },
                             categories = categories,
                             selectedCategory = categoryFilter,
-                            onCategorySelect = { categoryFilter = it }
-                        )
-
-                        MenuSectionHeader(
+                            onCategorySelect = { categoryFilter = it },
                             viewMode = viewMode,
-                            onViewModeChange = { viewMode = it },
-                            modifier = Modifier.padding(bottom = 12.dp)
+                            onViewModeChange = { viewMode = it }
                         )
 
                         Box(modifier = Modifier.fillMaxSize()) {
@@ -572,13 +555,17 @@ private fun MobileMenuLayout(
     var searchQuery by remember { mutableStateOf("") }
     var categoryFilter by remember { mutableStateOf<String?>(null) }
 
-    val categories = remember(items) {
-        items.map { it.category }.filter { it.isNotBlank() }.distinct().sorted()
+    val categories by remember {
+        derivedStateOf {
+            items.map { it.category }.filter { it.isNotBlank() }.distinct().sorted()
+        }
     }
-    val filteredItems = remember(items, searchQuery, categoryFilter) {
-        items.filter { item ->
-            (categoryFilter == null || item.category == categoryFilter) &&
-            (searchQuery.isBlank() || item.name.contains(searchQuery, ignoreCase = true))
+    val filteredItems by remember {
+        derivedStateOf {
+            items.filter { item ->
+                (categoryFilter == null || item.category == categoryFilter) &&
+                (searchQuery.isBlank() || item.name.contains(searchQuery, ignoreCase = true))
+            }
         }
     }
 
@@ -666,7 +653,7 @@ private fun MobileMenuLayout(
                     .fillMaxSize()
                     .windowInsetsPadding(WindowInsets.statusBars)
             ) {
-                WorkspaceHeader(title = "ZapPOS", onSegmentClick = onOpenDrawer)
+                WorkspaceHeader(title = "Main Menu", onSegmentClick = onOpenDrawer)
 
                 MenuSearchFilter(
                     searchQuery = searchQuery,
@@ -674,14 +661,9 @@ private fun MobileMenuLayout(
                     categories = categories,
                     selectedCategory = categoryFilter,
                     onCategorySelect = { categoryFilter = it },
-                    modifier = Modifier.padding(horizontal = 20.dp).padding(top = 10.dp)
-                )
-
-                // Section header with toggle
-                MenuSectionHeader(
                     viewMode = viewMode,
                     onViewModeChange = { viewMode = it },
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp)
+                    modifier = Modifier.padding(horizontal = 20.dp).padding(top = 10.dp)
                 )
 
                 Box(
@@ -723,11 +705,17 @@ private fun MobileMenuLayout(
 @Preview(showBackground = true, widthDp = 411, heightDp = 891)
 @Composable
 fun MainMenuScreenPreview() {
-    MainMenuScreen()
+    val vm = remember { MainMenuViewModel() }
+    CompositionLocalProvider(LocalMenuVM provides vm) {
+        MainMenuScreen()
+    }
 }
 
 @Preview(showBackground = true, widthDp = 1280, heightDp = 800)
 @Composable
 fun MainMenuScreenDesktopPreview() {
-    MainMenuScreen()
+    val vm = remember { MainMenuViewModel() }
+    CompositionLocalProvider(LocalMenuVM provides vm) {
+        MainMenuScreen()
+    }
 }
