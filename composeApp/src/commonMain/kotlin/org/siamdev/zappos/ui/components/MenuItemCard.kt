@@ -5,22 +5,27 @@
 package org.siamdev.zappos.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.CurrencyLira
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.CachePolicy
@@ -42,17 +47,24 @@ fun MenuItemCard(
     name: String,
     priceBaht: String,
     priceSat: String? = null,
+    category: String = "",
+    isRecommended: Boolean = false,
+    isAvailable: Boolean = true,
     count: UInt = 0u,
     viewMode: MenuViewMode = MenuViewMode.LIST,
+    showChevron: Boolean = false,
     onAddClick: () -> Unit = {},
-    onReduceClick: () -> Unit = {}
+    onReduceClick: () -> Unit = {},
+    onClick: () -> Unit = {}
 ) {
     when (viewMode) {
         MenuViewMode.LIST -> MenuItemCardList(
-            imageUrl, name, priceBaht, priceSat, count, onAddClick
+            imageUrl, name, priceBaht, priceSat, category, isRecommended, isAvailable,
+            count, showChevron, onAddClick, onClick
         )
         MenuViewMode.GRID -> MenuItemCardGrid(
-            imageUrl, name, priceBaht, priceSat, count, onAddClick
+            imageUrl, name, priceBaht, priceSat, category, isRecommended, isAvailable,
+            count, onAddClick
         )
     }
 }
@@ -64,13 +76,22 @@ private fun MenuItemCardList(
     name: String,
     priceBaht: String,
     priceSat: String?,
+    category: String,
+    isRecommended: Boolean,
+    isAvailable: Boolean,
     count: UInt,
-    onAddClick: () -> Unit
+    showChevron: Boolean,
+    onAddClick: () -> Unit,
+    onClick: () -> Unit
 ) {
+    val fontScale = LocalDensity.current.fontScale
+    val imageSize = (72f * fontScale.coerceIn(1f, 1.5f)).dp
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
+            .padding(vertical = 4.dp)
+            .then(if (showChevron) Modifier.clickable { onClick() } else Modifier),
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(0.dp),
@@ -80,34 +101,90 @@ private fun MenuItemCardList(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(10.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.Top
         ) {
-            MenuImage(imageUrl = imageUrl, size = 75.dp, cornerRadius = 10.dp)
+            MenuImage(imageUrl = imageUrl, size = imageSize, cornerRadius = 10.dp)
 
-            Spacer(Modifier.width(14.dp))
+            Spacer(Modifier.width(12.dp))
 
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = name,
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Spacer(Modifier.height(6.dp))
-                PriceRow(priceBaht = priceBaht, priceSat = priceSat)
-            }
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                if (count > 0u) {
-                    CountBadge(count = count)
-                    Spacer(Modifier.height(6.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = name,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f, fill = false)
+                    )
+                    if (isRecommended) {
+                        Spacer(Modifier.width(6.dp))
+                        Icon(
+                            Icons.Default.Star,
+                            contentDescription = null,
+                            tint = YellowPrimary,
+                            modifier = Modifier.size(14.dp)
+                        )
+                    }
                 }
-                AddButton(onClick = onAddClick, size = 36.dp)
+                if (category.isNotBlank()) {
+                    Spacer(Modifier.height(3.dp))
+                    Text(
+                        text = category,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                Spacer(Modifier.height(6.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    PriceRow(priceBaht = priceBaht, priceSat = priceSat)
+                    if (!isAvailable) {
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(MaterialTheme.colorScheme.errorContainer)
+                                .padding(horizontal = 6.dp, vertical = 2.dp)
+                        ) {
+                            Text(
+                                "Unavailable",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onErrorContainer
+                            )
+                        }
+                    }
+                }
             }
 
             Spacer(Modifier.width(4.dp))
+
+            if (showChevron) {
+                Icon(
+                    Icons.Default.ChevronRight,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+                    modifier = Modifier
+                        .size(18.dp)
+                        .align(Alignment.CenterVertically)
+                )
+            } else {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.align(Alignment.Bottom)
+                ) {
+                    if (count > 0u) {
+                        CountBadge(count = count)
+                        Spacer(Modifier.height(6.dp))
+                    }
+                    AddButton(onClick = onAddClick, size = 36.dp)
+                }
+            }
         }
     }
 }
@@ -120,49 +197,119 @@ private fun MenuItemCardGrid(
     name: String,
     priceBaht: String,
     priceSat: String?,
+    category: String,
+    isRecommended: Boolean,
+    isAvailable: Boolean,
     count: UInt,
     onAddClick: () -> Unit
 ) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(4.dp),
-        shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(0.dp),
-        border = CardDefaults.outlinedCardBorder()
-    ) {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            // Image เต็มบน
-            MenuImage(
-                imageUrl = imageUrl,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(130.dp)
-                    .clip(RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)),
-                cornerRadius = 0.dp,
-                contentScale = ContentScale.Crop
-            )
+    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+        val cardWidth = maxWidth
 
-            Column(modifier = Modifier.padding(12.dp)) {
-                Text(
-                    text = name,
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.SemiBold,
-                    maxLines = 1
+        val scale = (cardWidth / 160.dp).coerceIn(0.85f, 1.25f)
+
+        val imageHeight = 170.dp * scale
+        val padding = 10.dp * scale
+        val titleSize = MaterialTheme.typography.bodyLarge.fontSize * scale
+        val smallSize = MaterialTheme.typography.bodySmall.fontSize * scale
+        val iconSize = 15.dp * scale
+        val buttonSize = 32.dp * scale
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp),
+            shape = RoundedCornerShape(10.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            elevation = CardDefaults.cardElevation(0.dp),
+            border = CardDefaults.outlinedCardBorder()
+        ) {
+            Column {
+                MenuImage(
+                    imageUrl = imageUrl,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1.2f)
+                        .height(imageHeight)
+                        .clip(RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)),
+                    cornerRadius = 0.dp
                 )
-                Spacer(Modifier.height(4.dp))
-                PriceRow(priceBaht = priceBaht, priceSat = priceSat)
-                Spacer(Modifier.height(10.dp))
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    if (count > 0u) CountBadge(count = count)
-                    else Spacer(Modifier.weight(1f))
-                    AddButton(onClick = onAddClick, size = 34.dp)
+                Column(Modifier.padding(padding)) {
+
+                    // Title
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = name,
+                            fontSize = titleSize,
+                            fontWeight = FontWeight.SemiBold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f, false)
+                        )
+
+                        if (isRecommended) {
+                            Spacer(Modifier.width(4.dp))
+                            Icon(
+                                Icons.Default.Star,
+                                contentDescription = null,
+                                tint = YellowPrimary,
+                                modifier = Modifier.size(iconSize)
+                            )
+                        }
+                    }
+
+                    if (category.isNotBlank()) {
+                        Spacer(Modifier.height(2.dp))
+                        Text(
+                            text = category,
+                            fontSize = smallSize,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1
+                        )
+                    }
+
+                    Spacer(Modifier.height(4.dp * scale))
+
+                    PriceRow(
+                        priceBaht = priceBaht,
+                        priceSat = priceSat
+                    )
+
+                    Spacer(Modifier.height(4.dp))
+                    Box(
+                        modifier = Modifier
+                            .alpha(if (isAvailable) 0f else 1f)
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(MaterialTheme.colorScheme.errorContainer)
+                            .padding(horizontal = 6.dp, vertical = 2.dp)
+                    ) {
+                        Text(
+                            "Unavailable",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onErrorContainer,
+                            maxLines = 1
+                        )
+                    }
+
+                    Spacer(Modifier.height(8.dp * scale))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (count > 0u) {
+                            CountBadge(count = count)
+                        } else {
+                            Spacer(Modifier.weight(1f))
+                        }
+
+                        AddButton(
+                            onClick = onAddClick,
+                            size = buttonSize
+                        )
+                    }
                 }
             }
         }
@@ -212,7 +359,9 @@ private fun PriceRow(priceBaht: String, priceSat: String?) {
             Text(
                 text = priceBaht,
                 style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
         if (priceSat != null) {
@@ -220,7 +369,6 @@ private fun PriceRow(priceBaht: String, priceSat: String?) {
                 Icon(
                     painter = painterResource(Res.drawable.sat_unit),
                     contentDescription = null,
-                    //tint = YellowPrimary,
                     tint = YellowPrimary,
                     modifier = Modifier.size(12.dp)
                 )
@@ -228,8 +376,9 @@ private fun PriceRow(priceBaht: String, priceSat: String?) {
                 Text(
                     text = priceSat,
                     style = MaterialTheme.typography.bodySmall,
-                    //color = YellowPrimary
-                    color = YellowPrimary
+                    color = YellowPrimary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }
@@ -246,7 +395,8 @@ private fun CountBadge(count: UInt) {
         Text(
             text = "×$count",
             style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            maxLines = 1
         )
     }
 }
@@ -267,79 +417,81 @@ private fun AddButton(
 
 
 
+// LIST — count + category + recommended
 @Preview
 @Composable
 fun MenuItemCardListPreview() {
-    MenuItemCard(
-        imageUrl = "",
-        name = "Mocha",
-        priceBaht = "70.00",
-        priceSat = "17,500",
-        count = 2u,
-        viewMode = MenuViewMode.LIST
-    )
-}
-
-@Preview
-@Composable
-fun MenuItemCardGridPreview() {
-    MenuItemCard(
-        imageUrl = "",
-        name = "Matcha Latte",
-        priceBaht = "100.00",
-        priceSat = "26,000",
-        count = 1u,
-        viewMode = MenuViewMode.GRID
-    )
-}
-
-@Preview
-@Composable
-fun Item1CardPreview() {
     MenuItemCard(
         imageUrl = "https://images.pexels.com/photos/350478/pexels-photo-350478.jpeg",
         name = "Mocha",
         priceBaht = "70.00",
         priceSat = "17,500",
-        count = 21u
+        category = "Beverages · Coffee",
+        isRecommended = true,
+        count = 2u,
+        viewMode = MenuViewMode.LIST
     )
 }
 
+// LIST — no count, unavailable
 @Preview
 @Composable
-fun Item2CardPreview() {
+fun MenuItemCardListUnavailablePreview() {
     MenuItemCard(
         imageUrl = "https://images.pexels.com/photos/17486832/pexels-photo-17486832.jpeg",
         name = "Latte",
         priceBaht = "70.00",
         priceSat = "17,500",
-        count = 2u
+        category = "Beverages · Coffee",
+        isAvailable = false,
+        viewMode = MenuViewMode.LIST
     )
 }
 
-
+// LIST — chevron mode (ProductListDetailScreen usage)
 @Preview
 @Composable
-fun Item3CardPreview() {
+fun MenuItemCardChevronPreview() {
     MenuItemCard(
         imageUrl = "https://images.pexels.com/photos/2611811/pexels-photo-2611811.jpeg",
         name = "Matcha Latte",
         priceBaht = "100.00",
-        //priceSat = "26,000",
-        count = 4u
+        category = "Beverages · Tea",
+        isRecommended = true,
+        showChevron = true,
+        viewMode = MenuViewMode.LIST
     )
 }
 
-
+// GRID — recommended, with count
 @Preview
 @Composable
-fun Item4CardPreview() {
+fun MenuItemCardGridPreview() {
     MenuItemCard(
         imageUrl = "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg",
         name = "Matcha Coffee",
         priceBaht = "100.00",
-        //priceSat = "26,000",
-        count = 1u
+        priceSat = "26,000",
+        category = "Matcha",
+        isRecommended = true,
+        count = 1u,
+        viewMode = MenuViewMode.GRID
     )
 }
 
+
+
+// GRID — unavailable, no count
+@Preview
+@Composable
+fun MenuItemCardGridUnavailablePreview() {
+    MenuItemCard(
+        imageUrl = "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg",
+        name = "Milk",
+        priceBaht = "50.00",
+        priceSat = "12,500",
+        category = "Other",
+        isAvailable = false,
+        viewMode = MenuViewMode.GRID
+    )
+}

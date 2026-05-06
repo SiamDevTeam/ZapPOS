@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.theme.MapLikeColors
+import org.siamdev.zappos.theme.YellowPrimary
 import kotlin.math.abs
 
 @Composable
@@ -37,7 +38,7 @@ fun WorkspaceHeader(
     onNavigateBack: (() -> Unit)? = null
 ) {
     val brandText = brandTextFromTitle(title)
-    val brandColor = colorFromTitle(title)
+    val brandColor = YellowPrimary//colorFromTitle(title)
 
     var expanded by remember { mutableStateOf(false) }
 

@@ -26,7 +26,8 @@ val DarkOnPrimary         = Color(0xFF1A1A1A)   // text/icon on yellow
 val DarkPrimaryContainer  = Color(0xFF3A2D00)   // tinted yellow container
 val DarkOnPrimaryContainer = YellowLight        // text inside container
 
-// ─── Light Theme ─────────────────────────────────────────────────────────────
+
+// Light Theme
 val LightBackground        = Color(0xFFF2F2F2)  // main screen background
 val LightSurface           = Color(0xFFFFFFFF)  // elevated cards
 val LightSurfaceVariant    = Color(0xFFEBECF0)  // inputs, list rows

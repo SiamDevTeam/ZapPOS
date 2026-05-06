@@ -14,8 +14,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ViewList
@@ -36,6 +38,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
+import androidx.compose.ui.input.pointer.pointerHoverIcon
+import androidx.compose.ui.input.pointer.PointerIcon
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.LocalMenuVM
 import org.siamdev.zappos.theme.YellowPrimary
@@ -194,82 +198,95 @@ private fun MenuSearchFilter(
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MenuItemsContent(
     items: List<MenuItem>,
     viewMode: MenuViewMode,
     viewModel: MainMenuViewModel,
     isLoading: Boolean = false,
+    onRefresh: () -> Unit = {},
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(bottom = 24.dp)
 ) {
-    if (isLoading) {
-        when (viewMode) {
-            MenuViewMode.LIST -> MenuListSkeleton()
-            MenuViewMode.GRID -> MenuGridSkeleton()
-        }
-        return
-    }
-
-    if (items.isEmpty()) {
-        Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Icon(
-                    Icons.Default.SearchOff,
-                    contentDescription = null,
-                    modifier = Modifier.size(40.dp),
-                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
-                )
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    "No menus found",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+    PullToRefreshBox(
+        isRefreshing = isLoading,
+        onRefresh = onRefresh,
+        modifier = modifier
+    ) {
+        when {
+            isLoading -> when (viewMode) {
+                MenuViewMode.LIST -> MenuListSkeleton()
+                MenuViewMode.GRID -> MenuGridSkeleton()
             }
-        }
-        return
-    }
 
-    if (viewMode == MenuViewMode.LIST) {
-        LazyColumn(
-            modifier = modifier,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = contentPadding
-        ) {
-            items(items.size) { index ->
-                val item = items[index]
-                MenuItemCard(
-                    imageUrl = item.imageUrl,
-                    name = item.name,
-                    priceBaht = item.priceBaht,
-                    priceSat = item.priceSat,
-                    count = item.count,
-                    viewMode = MenuViewMode.LIST,
-                    onAddClick = { viewModel.addItem(item.id) },
-                    onReduceClick = { viewModel.reduceItem(item.id) }
-                )
+            items.isEmpty() -> Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(
+                        Icons.Default.SearchOff,
+                        contentDescription = null,
+                        modifier = Modifier.size(40.dp),
+                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        "No menus found",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
-        }
-    } else {
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = 160.dp),
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-            contentPadding = contentPadding
-        ) {
-            items(items) { item ->
-                MenuItemCard(
-                    imageUrl = item.imageUrl,
-                    name = item.name,
-                    priceBaht = item.priceBaht,
-                    priceSat = item.priceSat,
-                    count = item.count,
-                    viewMode = MenuViewMode.GRID,
-                    onAddClick = { viewModel.addItem(item.id) },
-                    onReduceClick = { viewModel.reduceItem(item.id) }
-                )
+
+            viewMode == MenuViewMode.LIST -> LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = contentPadding
+            ) {
+                items(items.size) { index ->
+                    val item = items[index]
+                    MenuItemCard(
+                        imageUrl = item.imageUrl,
+                        name = item.name,
+                        priceBaht = item.priceBaht,
+                        priceSat = item.priceSat,
+                        category = item.category.replaceFirstChar { it.uppercase() },
+                        isRecommended = item.isRecommended,
+                        isAvailable = item.isAvailable,
+                        count = item.count,
+                        viewMode = MenuViewMode.LIST,
+                        onAddClick = { viewModel.addItem(item.id) },
+                        onReduceClick = { viewModel.reduceItem(item.id) }
+                    )
+                }
+            }
+
+            else -> LazyVerticalGrid(
+                columns = GridCells.Adaptive(minSize = 250.dp),
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                contentPadding = contentPadding
+            ) {
+                items(items) { item ->
+                    MenuItemCard(
+                        imageUrl = item.imageUrl,
+                        name = item.name,
+                        priceBaht = item.priceBaht,
+                        priceSat = item.priceSat,
+                        category = item.category.replaceFirstChar { it.uppercase() },
+                        isRecommended = item.isRecommended,
+                        isAvailable = item.isAvailable,
+                        count = item.count,
+                        viewMode = MenuViewMode.GRID,
+                        onAddClick = { viewModel.addItem(item.id) },
+                        onReduceClick = { viewModel.reduceItem(item.id) }
+                    )
+                }
             }
         }
     }
@@ -288,7 +305,7 @@ private fun DesktopMenuLayout(
     var splitRatio by remember { mutableStateOf(0.25f) }
     val minRatio = 0.15f
     val maxRatio = 0.45f
-    val panelColor = MaterialTheme.colorScheme.surfaceContainer
+    val panelColor = MaterialTheme.colorScheme.surfaceContainerHigh
 
     val categories by remember {
         derivedStateOf {
@@ -354,6 +371,7 @@ private fun DesktopMenuLayout(
                                 viewMode = viewMode,
                                 viewModel = viewModel,
                                 isLoading = viewModel.isLoading,
+                                onRefresh = { viewModel.reloadProductsData() },
                                 modifier = Modifier.fillMaxSize()
                             )
 
@@ -377,6 +395,7 @@ private fun DesktopMenuLayout(
                     modifier = Modifier
                         .width(18.dp)
                         .fillMaxHeight()
+                        .pointerHoverIcon(PointerIcon.Hand)
                         .pointerInput(totalWidth) {
                             val totalPx = totalWidth.toPx()
                             detectHorizontalDragGestures { change, dragAmount ->
@@ -677,6 +696,7 @@ private fun MobileMenuLayout(
                         viewMode = viewMode,
                         viewModel = viewModel,
                         isLoading = viewModel.isLoading,
+                        onRefresh = { viewModel.reloadProductsData() },
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp)
                     )

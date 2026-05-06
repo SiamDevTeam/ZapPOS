@@ -268,7 +268,7 @@ private fun DesktopEntryLayout(
                 EntryTextField(
                     value = name, onValueChange = onNameChange,
                     label = "Product Name", placeholder = "e.g. Green Tea Latte",
-                    leadingIcon = Icons.Default.Label, required = true
+                    leadingIcon = Icons.AutoMirrored.Filled.Label, required = true
                 )
             }
             item {
@@ -495,7 +495,7 @@ private fun UnitDropdown(
                 focusedBorderColor = YellowPrimary,
                 focusedLabelColor = YellowPrimary
             ),
-            modifier = Modifier.fillMaxWidth().menuAnchor(MenuAnchorType.PrimaryNotEditable)
+            modifier = Modifier.fillMaxWidth().menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
         )
         ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             units.forEach { u ->
