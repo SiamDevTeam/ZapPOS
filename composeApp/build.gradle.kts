@@ -1,6 +1,3 @@
-@file:OptIn(ExperimentalWasmDsl::class)
-
-import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -14,24 +11,10 @@ plugins {
     alias(libs.plugins.serialization)
 }
 
-/*
-configurations.all {
-    resolutionStrategy {
-        force("net.java.dev.jna:jna:5.18.0")
-        force("net.java.dev.jna:jna-platform:5.18.0")
-    }
-}*/
-
 kotlin {
-
-    compilerOptions {
-        freeCompilerArgs.add("-Xdata-flow-based-exhaustiveness")
-        freeCompilerArgs.add("-Xexpect-actual-classes")
-    }
-
     androidTarget {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_21)
+            jvmTarget.set(JvmTarget.JVM_11)
         }
     }
 
@@ -56,15 +39,13 @@ kotlin {
         binaries.executable()
     }
 
+    @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         browser()
         binaries.executable()
     }
 
     sourceSets {
-
-        // Intermediate source set shared by all platforms that support the database module.
-        // wasmJs is excluded because the :module does not target wasmJs.
         val withModuleMain by creating {
             dependsOn(commonMain.get())
             dependencies {
@@ -72,75 +53,72 @@ kotlin {
             }
         }
 
-        // Intermediate source set shared by JS and WasmJS (web targets).
-        // Holds the main() entry point and web resources (index.html, styles.css, assets).
         val webMain by creating {
             dependsOn(commonMain.get())
         }
 
-        val androidMain by getting {
+        androidMain {
             dependsOn(withModuleMain)
             dependencies {
-                implementation(compose.preview)
+                implementation(libs.compose.uiToolingPreview)
                 implementation(libs.androidx.activity.compose)
                 implementation(libs.androidx.core.splashscreen)
-                implementation("io.ktor:ktor-client-android:3.3.0")
+                implementation(libs.ktor.client.android)
             }
         }
 
         commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
+            implementation(libs.compose.runtime)
+            implementation(libs.compose.foundation)
+            implementation(libs.compose.material3)
+            implementation(libs.compose.ui)
+            implementation(libs.compose.components.resources)
+            implementation(libs.compose.uiToolingPreview)
             implementation(libs.material.icons.extended)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.kotlinx.serialization)
-
             implementation(libs.jetbrains.navigation3.ui)
             implementation(libs.jetbrains.lifecycle.viewmodel.nav3)
             implementation(libs.jetbrains.lifecycle.viewmodel)
-
-            implementation("io.coil-kt.coil3:coil-network-ktor3:3.3.0")
-            implementation("io.coil-kt.coil3:coil-compose:3.3.0")
+            implementation(libs.coil.network.ktor3)
+            implementation(libs.coil.compose)
         }
 
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
 
-        val jvmMain by getting {
+        jvmMain {
             dependsOn(withModuleMain)
             dependencies {
                 implementation(compose.desktop.currentOs)
                 implementation(libs.kotlinx.coroutinesSwing)
-                implementation("io.ktor:ktor-client-java:3.3.0")
-                implementation("io.coil-kt.coil3:coil-network-okhttp:3.3.0")
+                implementation(libs.ktor.client.java)
+                implementation(libs.coil.network.okhttp)
             }
         }
 
-        val jsMain by getting {
+        jsMain {
             dependsOn(withModuleMain)
             dependsOn(webMain)
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-browser:0.5.0")
+                implementation(libs.kotlinx.browser)
             }
         }
 
-        val wasmJsMain by getting {
+        wasmJsMain {
             dependsOn(webMain)
+            dependencies {
+                implementation(devNpm("copy-webpack-plugin", "9.1.0"))
+            }
         }
 
-        // iosMain is lazily created by the default hierarchy, so "by getting" fails.
-        // Apply withModuleMain to each iOS target source set directly instead.
-        val iosArm64Main by getting { dependsOn(withModuleMain) }
-        val iosSimulatorArm64Main by getting { dependsOn(withModuleMain) }
+        iosArm64Main { dependsOn(withModuleMain) }
+        iosSimulatorArm64Main { dependsOn(withModuleMain) }
 
         iosMain.dependencies {
-            implementation("io.ktor:ktor-client-darwin:3.3.0")
+            implementation(libs.ktor.client.darwin)
         }
     }
 }
@@ -156,40 +134,24 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
-    // project.setProperty("archivesBaseName", "ZapPOS-v1.0")
-    applicationVariants.all {
-        val variant = this
-        variant.outputs
-            .map { it as BaseVariantOutputImpl }
-            .forEach { output ->
-                output.outputFileName = "ZapPOS-${variant.buildType.name}-v${variant.versionName}.apk"
-            }
-    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
-        /*jniLibs {
-            pickFirsts += setOf("lib/arm64-v8a/libxxxx.so",
-                "lib/armeabi-v7a/libxxxx.so",
-                "lib/x86_64/libxxxx.so",
-                "lib/x86/libxxxx.so")
-        }*/
     }
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
-
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 }
 
 dependencies {
-    debugImplementation(compose.uiTooling)
+    debugImplementation(libs.compose.uiTooling)
 }
 
 compose.desktop {
@@ -214,18 +176,18 @@ compose.desktop {
                 , TargetFormat.Rpm
                 , TargetFormat.AppImage
             )
-            packageName = "ZapPOS"
+            packageName = "org.siamdev.zappos"
             packageVersion = "1.0.0"
 
-            val icProduct = "src/jvmMain/resources/ico_sizes/linux/ic_product_256.png"
             linux {
-                iconFile.set(project.file(icProduct))
+                iconFile.set(project.file("src/jvmMain/resources/ico_sizes/linux/ic_product_256.png"))
             }
-
+            macOS {
+                iconFile.set(project.file("src/jvmMain/resources/ico_sizes/macos/ic_zappos512x512.png"))
+            }
             windows {
-                iconFile.set(project.file(icProduct))
+                iconFile.set(project.file("src/jvmMain/resources/ico_sizes/windows/ic_zappos_256.ico"))
             }
-
         }
     }
 }

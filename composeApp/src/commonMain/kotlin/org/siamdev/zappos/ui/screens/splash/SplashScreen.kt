@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.ic_app_logo
 import zappos.composeapp.generated.resources.siamdev_logo

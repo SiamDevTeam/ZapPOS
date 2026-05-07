@@ -5,7 +5,7 @@
 package org.siamdev.zappos.ui.screens
 
 import androidx.compose.runtime.Composable
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun NewScreen() {

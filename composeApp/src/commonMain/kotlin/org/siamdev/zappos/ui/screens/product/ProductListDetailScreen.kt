@@ -40,7 +40,7 @@ import coil3.compose.LocalPlatformContext
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.components.DefaultProductCategories
 import org.siamdev.zappos.ui.components.WorkspaceHeader
@@ -420,7 +420,7 @@ private fun ProductListCard(
         Row(verticalAlignment = Alignment.CenterVertically) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalPlatformContext.current)
-                    .data(product.imageUrl.ifBlank { null })
+                    .data(product.imageUrl.ifBlank { "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg" })
                     .crossfade(true)
                     .memoryCachePolicy(CachePolicy.ENABLED)
                     .build(),

@@ -1,24 +1,26 @@
 services:
-  web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: zappos-web
-    ports:
-      - "8080:80"
-    restart: unless-stopped
+#  web:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    container_name: zappos-web
+#    ports:
+#      - "8080:80"
+#    restart: unless-stopped
 
   web-wasm:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.wasm
     container_name: zappos-web-wasm
     ports:
       - "8181:80"
     restart: unless-stopped
 
-#  cloudflared-tunnel:
-#    container_name: cloudflared-tunnel
-#    image: cloudflare/cloudflared:latest
-#    restart: unless-stopped
-#    command: tunnel --no-autoupdate run --token
+  cloudflared-tunnel:
+    container_name: cloudflared-tunnel
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    env_file:
+      - .env
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARED_TOKEN}
