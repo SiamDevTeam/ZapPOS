@@ -1,0 +1,20 @@
+selectByCodeType:
+SELECT * FROM T_SYS_NUMBERING_CONFIG
+WHERE I_CODE_TYPE = :codeType;
+
+insertNew:
+INSERT INTO T_SYS_NUMBERING_CONFIG (I_CODE_TYPE, I_FORMAT, I_LAST_SEQ, I_LAST_BREAK_KEY)
+VALUES (:codeType, :format, 0, '');
+
+resetFormat:
+UPDATE T_SYS_NUMBERING_CONFIG
+SET I_FORMAT         = :format,
+    I_LAST_SEQ       = 0,
+    I_LAST_BREAK_KEY = ''
+WHERE I_CODE_TYPE = :codeType;
+
+updateSeq:
+UPDATE T_SYS_NUMBERING_CONFIG
+SET I_LAST_SEQ       = :seq,
+    I_LAST_BREAK_KEY = :breakKey
+WHERE I_CODE_TYPE = :codeType;

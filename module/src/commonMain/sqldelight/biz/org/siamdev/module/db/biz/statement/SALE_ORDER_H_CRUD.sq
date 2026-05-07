@@ -1,0 +1,14 @@
+insert:
+INSERT INTO T_SALE_ORDER_H (
+    I_SO_ID, I_CUS_ID, I_CURRENCY_CODE, I_SO_DATE, I_STATUS, I_REMARK,
+    I_CREATED_AT, I_UPDATED_AT, I_MODIFY_COUNT, I_CREATED_BY, I_UPDATED_BY
+) VALUES (
+    :soId, :cusId, :currencyCode, :soDate, '01', :remark,
+    :createdAt, NULL, 0, :createdBy, NULL
+);
+
+selectById:
+SELECT * FROM T_SALE_ORDER_H WHERE I_SO_ID = :soId;
+
+selectAll:
+SELECT * FROM T_SALE_ORDER_H ORDER BY I_SO_DATE DESC;

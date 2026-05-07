@@ -82,6 +82,7 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.stdlib)
                 implementation(libs.sqldelight.runtime)
+                implementation(libs.kotlinx.datetime)
             }
         }
 
