@@ -7,8 +7,6 @@ plugins {
     alias(libs.plugins.sqldelight)
 }
 
-
-
 // https://sqldelight.github.io/sqldelight/latest/multiplatform_sqlite/migrations/
 sqldelight {
     databases {

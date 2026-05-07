@@ -1,12 +1,12 @@
 services:
-#  web:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    container_name: zappos-web
-#    ports:
-#      - "8080:80"
-#    restart: unless-stopped
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: zappos-web
+    ports:
+      - "8080:80"
+    restart: unless-stopped
 
   web-wasm:
     build:

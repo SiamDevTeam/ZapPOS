@@ -49,19 +49,19 @@ class SettingLocalInterfaceImpl(db: AppDatabase) : SettingLocalInterface {
     override suspend fun seedFont(id: String, name: String, size: Double) =
         fontDao.insert(id, name, size, now(), "SYSTEM")
 
-    // ── Currency ──────────────────────────────────────────────────────────────
+    // Currency
 
     override suspend fun getCurrencies(): List<CurrencyItem> =
         currencyDao.selectAll().map { it.toCurrencyItem() }
 
     override suspend fun getPrimaryCurrency(): CurrencyItem? {
         val id = settingsDao.selectSystem()?.I_PRIMARY_CURRENCY_ID ?: return null
-        return currencyDao.selectById(id)?.toCurrencyItem()
+        return currencyDao.selectByCode(id)?.toCurrencyItem()
     }
 
     override suspend fun getSecondaryCurrency(): CurrencyItem? {
         val id = settingsDao.selectSystem()?.I_SECONDARY_CURRENCY_ID ?: return null
-        return currencyDao.selectById(id)?.toCurrencyItem()
+        return currencyDao.selectByCode(id)?.toCurrencyItem()
     }
 
     override suspend fun setPrimaryCurrency(currencyId: String) =
@@ -71,7 +71,7 @@ class SettingLocalInterfaceImpl(db: AppDatabase) : SettingLocalInterface {
         settingsDao.updateSecondaryCurrency(currencyId, now(), "USER")
 
     override suspend fun seedCurrency(id: String, code: String, name: String, symbol: String) =
-        currencyDao.insert(id, code, name, symbol, now(), "SYSTEM")
+        currencyDao.insert(code, name, symbol, now(), "SYSTEM")
 
 
     override suspend fun initSettings() {
@@ -89,4 +89,4 @@ private fun M_SYS_FONT.toFontItem() =
     FontItem(I_SF_ID, I_NAME, I_SIZE)
 
 private fun M_SYS_CURRENCY.toCurrencyItem() =
-    CurrencyItem(I_SCY_ID, I_CODE, I_NAME, I_SYMBOL)
+    CurrencyItem(I_CURRENCY_CODE, I_CURRENCY_CODE, I_NAME, I_SYMBOL)

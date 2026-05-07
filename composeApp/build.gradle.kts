@@ -83,6 +83,11 @@ kotlin {
             implementation(libs.jetbrains.lifecycle.viewmodel)
             implementation(libs.coil.network.ktor3)
             implementation(libs.coil.compose)
+
+            implementation("io.github.vinceglb:filekit-core:0.14.1")
+            implementation("io.github.vinceglb:filekit-dialogs:0.14.1")
+            implementation("io.github.vinceglb:filekit-dialogs-compose:0.14.1")
+            implementation("io.github.vinceglb:filekit-coil:0.14.1")
         }
 
         commonTest.dependencies {
