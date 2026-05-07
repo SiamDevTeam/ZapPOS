@@ -1,0 +1,20 @@
+CREATE TABLE T_SALE_ORDER_D (
+    I_SO_ID             TEXT    NOT NULL,
+    I_INTERNAL_NO       TEXT    NOT NULL,
+
+    I_PRD_ID            TEXT    NOT NULL,
+    I_TAX_ID            TEXT    NOT NULL,   -- tax rate snapshot at time of sale
+    I_UNIT_PRICE        REAL    NOT NULL    CHECK (I_UNIT_PRICE >= 0),
+    I_QTY               REAL    NOT NULL    CHECK (I_QTY        >  0),
+    I_DISCOUNT_AMT      REAL    NOT NULL DEFAULT 0  CHECK (I_DISCOUNT_AMT >= 0),
+    I_AMOUNT            REAL    NOT NULL    CHECK (I_AMOUNT     >= 0),
+
+    I_CREATED_AT        INTEGER,
+    I_UPDATED_AT        INTEGER,
+    I_MODIFY_COUNT      INTEGER DEFAULT 0,
+
+    I_CREATED_BY        TEXT,
+    I_UPDATED_BY        TEXT,
+
+    PRIMARY KEY (I_SO_ID, I_INTERNAL_NO)
+);

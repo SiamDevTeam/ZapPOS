@@ -9,17 +9,14 @@ import org.siamdev.module.db.sys.schema.M_SYS_CURRENCY
 
 class CurrencyDao(private val db: AppDatabase) {
 
-    suspend fun insert(id: String, code: String, name: String, symbol: String, createdAt: Long, createdBy: String) =
-        db.sys { cURRENCY_CRUDQueries.insert(id, code, name, symbol, createdAt, createdBy) }
+    suspend fun insert(code: String, name: String, symbol: String, createdAt: Long, createdBy: String) =
+        db.sys { cURRENCY_CRUDQueries.insert(code, name, symbol, createdAt, createdBy) }
 
-    suspend fun update(code: String, name: String, symbol: String, updatedAt: Long, updatedBy: String, id: String) =
-        db.sys { cURRENCY_CRUDQueries.update(code, name, symbol, updatedAt, updatedBy, id) }
+    suspend fun update(name: String, symbol: String, updatedAt: Long, updatedBy: String, code: String) =
+        db.sys { cURRENCY_CRUDQueries.update(name, symbol, updatedAt, updatedBy, code) }
 
     suspend fun selectAll(): List<M_SYS_CURRENCY> =
         db.sys { cURRENCY_CRUDQueries.selectAll().executeAsList() }
-
-    suspend fun selectById(id: String): M_SYS_CURRENCY? =
-        db.sys { cURRENCY_CRUDQueries.selectById(id).executeAsOneOrNull() }
 
     suspend fun selectByCode(code: String): M_SYS_CURRENCY? =
         db.sys { cURRENCY_CRUDQueries.selectByCode(code).executeAsOneOrNull() }

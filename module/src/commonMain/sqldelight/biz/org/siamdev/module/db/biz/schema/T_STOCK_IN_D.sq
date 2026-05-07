@@ -1,0 +1,17 @@
+CREATE TABLE T_STOCK_IN_D (
+    I_SIN_ID            TEXT    NOT NULL,
+    I_INTERNAL_NO       TEXT    NOT NULL,
+
+    I_PRD_ID            TEXT    NOT NULL,
+    I_QTY               REAL    NOT NULL    CHECK (I_QTY  > 0),
+    I_COST              REAL    NOT NULL    CHECK (I_COST >= 0),
+
+    I_CREATED_AT        INTEGER,
+    I_UPDATED_AT        INTEGER,
+    I_MODIFY_COUNT      INTEGER DEFAULT 0,
+
+    I_CREATED_BY        TEXT,
+    I_UPDATED_BY        TEXT,
+
+    PRIMARY KEY (I_SIN_ID, I_INTERNAL_NO)
+);

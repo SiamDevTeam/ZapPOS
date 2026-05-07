@@ -1,0 +1,17 @@
+CREATE TABLE T_SALE_ORDER_H (
+    I_SO_ID             TEXT    PRIMARY KEY NOT NULL,
+
+    I_CUS_ID            TEXT,               -- NULL = walk-in customer
+    I_CURRENCY_CODE     TEXT    NOT NULL,   -- ref ZapPOSSys.M_SYS_CURRENCY.I_CODE
+    I_SO_DATE           INTEGER NOT NULL,
+    -- 01=DRAFT, 02=CONFIRMED, 03=CANCELLED, 04=COMPLETED
+    I_STATUS            TEXT    NOT NULL    CHECK (I_STATUS IN ('01','02','03','04')),
+    I_REMARK            TEXT,
+
+    I_CREATED_AT        INTEGER,
+    I_UPDATED_AT        INTEGER,
+    I_MODIFY_COUNT      INTEGER DEFAULT 0,
+
+    I_CREATED_BY        TEXT,
+    I_UPDATED_BY        TEXT
+);

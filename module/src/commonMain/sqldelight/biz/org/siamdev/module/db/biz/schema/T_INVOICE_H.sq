@@ -1,0 +1,19 @@
+CREATE TABLE T_INVOICE_H (
+    I_IV_ID             TEXT    PRIMARY KEY NOT NULL,
+
+    I_SO_ID             TEXT    NOT NULL,
+    I_INVOICE_DATE      INTEGER NOT NULL,
+    -- 01=DRAFT, 02=ISSUED, 03=PAID, 04=VOIDED, 05=OVERDUE
+    I_STATUS            TEXT    NOT NULL    CHECK (I_STATUS IN ('01','02','03','04','05')),
+    I_DISCOUNT_AMT      REAL    NOT NULL DEFAULT 0  CHECK (I_DISCOUNT_AMT >= 0),
+    I_TAX_AMT           REAL    NOT NULL DEFAULT 0  CHECK (I_TAX_AMT      >= 0),
+    I_NET_AMT           REAL    NOT NULL            CHECK (I_NET_AMT      >= 0),
+    I_IS_ACTIVE         INTEGER NOT NULL            CHECK (I_IS_ACTIVE    IN (0, 1)), -- 0=inactive, 1=active
+
+    I_CREATED_AT        INTEGER,
+    I_UPDATED_AT        INTEGER,
+    I_MODIFY_COUNT      INTEGER DEFAULT 0,
+
+    I_CREATED_BY        TEXT,
+    I_UPDATED_BY        TEXT
+);

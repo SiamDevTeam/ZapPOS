@@ -1,0 +1,16 @@
+CREATE TABLE M_CUSTOMER (
+    I_CUS_ID            TEXT    PRIMARY KEY NOT NULL,
+
+    I_CUSTOMER_NAME     TEXT    NOT NULL,
+    I_PHONE             TEXT,
+    I_EMAIL             TEXT,
+    I_REMARK            TEXT,
+    I_IS_ACTIVE         INTEGER NOT NULL    CHECK (I_IS_ACTIVE IN (0, 1)), -- 0=inactive, 1=active
+
+    I_CREATED_AT        INTEGER,
+    I_UPDATED_AT        INTEGER,
+    I_MODIFY_COUNT      INTEGER DEFAULT 0,
+
+    I_CREATED_BY        TEXT,
+    I_UPDATED_BY        TEXT
+);

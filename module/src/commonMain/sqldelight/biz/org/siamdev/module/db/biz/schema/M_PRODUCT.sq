@@ -1,0 +1,22 @@
+CREATE TABLE M_PRODUCT (
+    I_PRD_ID            TEXT    PRIMARY KEY NOT NULL,
+
+    I_CAT_ID            TEXT    NOT NULL,
+    I_TAX_ID            TEXT    NOT NULL,
+    I_PRODUCT_NAME      TEXT    NOT NULL,
+    I_IMAGE_PATH        TEXT,
+    I_UNIT              TEXT    NOT NULL,
+    I_PRICE             REAL    NOT NULL    CHECK (I_PRICE >= 0),
+    I_COST              REAL    NOT NULL    CHECK (I_COST  >= 0),
+    I_DESCRIPTION       TEXT,
+    I_TRACK_STOCK       INTEGER NOT NULL    CHECK (I_TRACK_STOCK     IN (0, 1)), -- 0=no, 1=yes
+    I_IS_RECOMMENDED    INTEGER NOT NULL    CHECK (I_IS_RECOMMENDED  IN (0, 1)), -- 0=no, 1=yes
+    I_IS_ACTIVE         INTEGER NOT NULL    CHECK (I_IS_ACTIVE       IN (0, 1)), -- 0=inactive, 1=active
+
+    I_CREATED_AT        INTEGER,
+    I_UPDATED_AT        INTEGER,
+    I_MODIFY_COUNT      INTEGER DEFAULT 0,
+
+    I_CREATED_BY        TEXT,
+    I_UPDATED_BY        TEXT
+);

@@ -1,0 +1,22 @@
+-- I_MOV_TYPE: 01=SALE_OUT, 02=SALE_CANCEL, 03=STOCK_IN, 04=ADJUST_INC, 05=ADJUST_DEC, 06=TRANSFER_IN, 07=TRANSFER_OUT
+-- I_QTY_CHANGE: positive = stock increase, negative = stock decrease
+-- Reconcile: SUM(I_QTY_CHANGE) WHERE I_PRD_ID = ? must equal T_STOCK.I_QTY_ON_HAND
+CREATE TABLE T_STOCK_MOVEMENT (
+    I_MOV_ID            TEXT    PRIMARY KEY NOT NULL,
+
+    I_PRD_ID            TEXT    NOT NULL,
+    I_MOV_TYPE          TEXT    NOT NULL    CHECK (I_MOV_TYPE IN ('01','02','03','04','05','06','07')),
+    I_QTY_CHANGE        REAL    NOT NULL,
+    I_QTY_BEFORE        REAL    NOT NULL,
+    I_QTY_AFTER         REAL    NOT NULL,
+    I_REF_SO_ID         TEXT,               -- ref T_SALE_ORDER_H (01=SALE_OUT, 02=SALE_CANCEL)
+    I_REF_SIN_ID        TEXT,               -- ref T_STOCK_IN_H (03=STOCK_IN)
+    I_REMARK            TEXT,
+
+    I_CREATED_AT        INTEGER,
+    I_UPDATED_AT        INTEGER,
+    I_MODIFY_COUNT      INTEGER DEFAULT 0,
+
+    I_CREATED_BY        TEXT,
+    I_UPDATED_BY        TEXT
+);

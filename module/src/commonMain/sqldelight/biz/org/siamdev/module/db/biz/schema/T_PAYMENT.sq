@@ -1,0 +1,19 @@
+CREATE TABLE T_PAYMENT (
+    I_PAY_ID            TEXT    PRIMARY KEY NOT NULL,
+
+    I_SO_ID             TEXT    NOT NULL,
+    I_IV_ID             TEXT,               -- NULL = payment before invoice is issued
+    I_PTY_ID            TEXT    NOT NULL,
+    I_PAYMENT_DATE      INTEGER NOT NULL,
+    I_AMOUNT            REAL    NOT NULL    CHECK (I_AMOUNT > 0),
+    I_REFDOC_NO         TEXT,
+    -- 01=PENDING, 02=CONFIRMED, 03=VOIDED, 04=REFUNDED
+    I_STATUS            TEXT    NOT NULL    CHECK (I_STATUS IN ('01','02','03','04')),
+
+    I_CREATED_AT        INTEGER,
+    I_UPDATED_AT        INTEGER,
+    I_MODIFY_COUNT      INTEGER DEFAULT 0,
+
+    I_CREATED_BY        TEXT,
+    I_UPDATED_BY        TEXT
+);

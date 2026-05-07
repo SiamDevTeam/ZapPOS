@@ -1,0 +1,18 @@
+CREATE TABLE T_CREDIT (
+    I_CRD_ID            TEXT    PRIMARY KEY NOT NULL,
+
+    I_CUS_ID            TEXT    NOT NULL,
+    I_SO_ID             TEXT    NOT NULL,
+    I_AMOUNT            REAL    NOT NULL    CHECK (I_AMOUNT > 0),
+    I_DUE_DATE          INTEGER,
+    -- 01=OPEN, 02=PARTIAL, 03=SETTLED, 04=OVERDUE, 05=CANCELLED
+    I_STATUS            TEXT    NOT NULL    CHECK (I_STATUS IN ('01','02','03','04','05')),
+    I_REMARK            TEXT,
+
+    I_CREATED_AT        INTEGER,
+    I_UPDATED_AT        INTEGER,
+    I_MODIFY_COUNT      INTEGER DEFAULT 0,
+
+    I_CREATED_BY        TEXT,
+    I_UPDATED_BY        TEXT
+);

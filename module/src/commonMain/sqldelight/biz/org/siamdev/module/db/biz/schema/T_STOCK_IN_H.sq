@@ -1,0 +1,16 @@
+CREATE TABLE T_STOCK_IN_H (
+    I_SIN_ID            TEXT    PRIMARY KEY NOT NULL,
+
+    I_SIN_DATE          INTEGER NOT NULL,
+    I_REFDOC_NO         TEXT,
+    I_REMARK            TEXT,
+    -- 01=DRAFT, 02=CONFIRMED, 03=CANCELLED
+    I_STATUS            TEXT    NOT NULL    CHECK (I_STATUS IN ('01','02','03')),
+
+    I_CREATED_AT        INTEGER,
+    I_UPDATED_AT        INTEGER,
+    I_MODIFY_COUNT      INTEGER DEFAULT 0,
+
+    I_CREATED_BY        TEXT,
+    I_UPDATED_BY        TEXT
+);
