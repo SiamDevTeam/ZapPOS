@@ -1,0 +1,45 @@
+insert:
+INSERT INTO M_PRODUCT (
+    I_PRD_ID, I_CAT_ID, I_TAX_ID, I_PRODUCT_NAME,
+    I_IMAGE_PATH, I_UNIT, I_PRICE, I_COST, I_DESCRIPTION,
+    I_TRACK_STOCK, I_IS_RECOMMENDED, I_IS_ACTIVE,
+    I_CREATED_AT, I_UPDATED_AT, I_MODIFY_COUNT, I_CREATED_BY, I_UPDATED_BY
+) VALUES (
+    :prdId, :catId, :taxId, :productName,
+    :imagePath, :unit, :price, :cost, :description,
+    :trackStock, :isRecommended, :isActive,
+    :createdAt, NULL, 0, :createdBy, NULL
+);
+
+update:
+UPDATE M_PRODUCT
+SET I_CAT_ID         = :catId,
+    I_TAX_ID         = :taxId,
+    I_PRODUCT_NAME   = :productName,
+    I_IMAGE_PATH     = :imagePath,
+    I_UNIT           = :unit,
+    I_PRICE          = :price,
+    I_COST           = :cost,
+    I_DESCRIPTION    = :description,
+    I_TRACK_STOCK    = :trackStock,
+    I_IS_RECOMMENDED = :isRecommended,
+    I_IS_ACTIVE      = :isActive,
+    I_UPDATED_AT     = :updatedAt,
+    I_MODIFY_COUNT   = I_MODIFY_COUNT + 1,
+    I_UPDATED_BY     = :updatedBy
+WHERE I_PRD_ID = :prdId;
+
+delete:
+DELETE FROM M_PRODUCT WHERE I_PRD_ID = :prdId;
+
+selectAll:
+SELECT * FROM M_PRODUCT ORDER BY I_PRODUCT_NAME;
+
+selectById:
+SELECT * FROM M_PRODUCT WHERE I_PRD_ID = :prdId;
+
+selectActive:
+SELECT * FROM M_PRODUCT WHERE I_IS_ACTIVE = 1 ORDER BY I_PRODUCT_NAME;
+
+selectByCategory:
+SELECT * FROM M_PRODUCT WHERE I_CAT_ID = :catId ORDER BY I_PRODUCT_NAME;

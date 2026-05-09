@@ -12,6 +12,7 @@ object RouteMapper {
         is Route.Logout  -> "/"
         is Route.Home    -> "/home"
         is Route.Menu    -> "/menu"
+        is Route.ConfirmOrder -> "/confirm-order"
         is Route.Checkout -> "/checkout"
         is Route.Counter -> "/counter"
         is Route.Setting -> "/setting"
@@ -29,6 +30,7 @@ object RouteMapper {
         "/"        -> Route.Login
         "/home"    -> Route.Home
         "/menu"    -> Route.Menu
+        "/confirm-order" -> Route.ConfirmOrder
         "/checkout" -> Route.Checkout
         "/counter" -> Route.Counter
         "/setting" -> Route.Setting

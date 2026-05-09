@@ -14,6 +14,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CurrencyLira
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -44,6 +45,7 @@ fun OrderItemCard(
     onAddClick: () -> Unit,
     onReduceClick: () -> Unit,
     onCountChange: (UInt) -> Unit = {},
+    onDelete: (() -> Unit)? = null,
     isDesktop: Boolean = false
 ) {
     var isEditing by remember { mutableStateOf(false) }
@@ -196,6 +198,20 @@ fun OrderItemCard(
                     onAddClick()
                 }
             )
+
+            if (onDelete != null) {
+                IconButton(
+                    onClick = onDelete,
+                    modifier = Modifier.size(28.dp)
+                ) {
+                    Icon(
+                        Icons.Default.Delete,
+                        contentDescription = "Remove item",
+                        tint = MaterialTheme.colorScheme.error.copy(alpha = 0.75f),
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
         }
     }
 
@@ -206,7 +222,7 @@ fun OrderItemCard(
 }
 
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun OrderItemCardPreview() {
     OrderItemCard(

@@ -27,6 +27,7 @@ import kotlinx.serialization.modules.polymorphic
 import org.siamdev.zappos.Platform
 import org.siamdev.zappos.PlatformType
 import org.siamdev.zappos.ui.screens.checkout.CheckoutScreen
+import org.siamdev.zappos.ui.screens.confirm.ConfirmOrderScreen
 import org.siamdev.zappos.ui.screens.count.CounterScreen
 import org.siamdev.zappos.ui.screens.demo.TopBarScreen
 import org.siamdev.zappos.ui.screens.glow.GlowStyleScreen
@@ -59,6 +60,7 @@ fun NavigationRoot(
                     subclass(Route.NostrLogin::class, Route.NostrLogin.serializer())
                     subclass(Route.Home::class, Route.Home.serializer())
                     subclass(Route.Menu::class, Route.Menu.serializer())
+                    subclass(Route.ConfirmOrder::class, Route.ConfirmOrder.serializer())
                     subclass(Route.Checkout::class, Route.Checkout.serializer())
                     subclass(Route.Counter::class, Route.Counter.serializer())
                     subclass(Route.GlowEffects::class, Route.GlowEffects.serializer())
@@ -183,6 +185,16 @@ fun NavigationRoot(
                         ) { navActions, openDrawer ->
                             MainMenuScreen(
                                 onOpenDrawer = openDrawer,
+                                onCheckout = { navActions.to(Route.ConfirmOrder) }
+                            )
+                        }
+
+                        // Confirm Order
+                        is Route.ConfirmOrder -> NavConfig(
+                            backStack = backStack
+                        ) { navActions, _ ->
+                            ConfirmOrderScreen(
+                                onBack = { navActions.back() },
                                 onCheckout = { navActions.to(Route.Checkout) }
                             )
                         }

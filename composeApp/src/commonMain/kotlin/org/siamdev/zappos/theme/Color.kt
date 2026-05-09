@@ -6,13 +6,13 @@ package org.siamdev.zappos.theme
 
 import androidx.compose.ui.graphics.Color
 
-// ─── Brand ───────────────────────────────────────────────────────────────────
+// Brand
 val YellowPrimary = Color(0xFFFCBE00)
 val YellowLight   = Color(0xFFFFE082)
 val YellowSoft    = Color(0xFFFFD54F)
 val YellowDeep    = Color(0xFFFFA000)
 
-// ─── Dark Theme ──────────────────────────────────────────────────────────────
+// Dark Theme
 val DarkBackground        = Color(0xFF1A1A1A)   // main screen background
 val DarkSurface           = Color(0xFF222222)   // elevated cards, top bars
 val DarkSurfaceVariant    = Color(0xFF2A2A2A)   // inputs, dropdowns, list rows

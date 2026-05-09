@@ -93,7 +93,7 @@ private fun MenuItemCardList(
             .padding(vertical = 4.dp)
             .then(if (showChevron) Modifier.clickable { onClick() } else Modifier),
         shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         elevation = CardDefaults.cardElevation(0.dp),
         border = CardDefaults.outlinedCardBorder()
     ) {
@@ -220,7 +220,7 @@ private fun MenuItemCardGrid(
                 .fillMaxWidth()
                 .padding(4.dp),
             shape = RoundedCornerShape(10.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
             elevation = CardDefaults.cardElevation(0.dp),
             border = CardDefaults.outlinedCardBorder()
         ) {

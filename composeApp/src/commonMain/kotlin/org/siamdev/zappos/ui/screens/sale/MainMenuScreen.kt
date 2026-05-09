@@ -4,28 +4,13 @@
  */
 package org.siamdev.zappos.ui.screens.sale
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ViewList
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.CurrencyLira
-import androidx.compose.material.icons.filled.GridView
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.SearchOff
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -34,17 +19,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
-import androidx.compose.ui.input.pointer.pointerHoverIcon
-import androidx.compose.ui.input.pointer.PointerIcon
-import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.LocalMenuVM
-import org.siamdev.zappos.theme.YellowPrimary
+import org.siamdev.zappos.LocalProductBrowserVM
 import org.siamdev.zappos.ui.components.*
-import org.siamdev.zappos.ui.components.WorkspaceHeader
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.sat_unit
 
@@ -61,7 +44,11 @@ fun MainMenuScreen(
         viewModel.loadProductsData()
     }
 
-    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+    BoxWithConstraints(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         val isDesktop = maxWidth >= 750.dp && maxHeight >= 500.dp
 
         if (isDesktop) {
@@ -84,242 +71,15 @@ fun MainMenuScreen(
 
 
 @Composable
-private fun MenuSearchFilter(
-    searchQuery: String,
-    onSearchChange: (String) -> Unit,
-    categories: List<String>,
-    selectedCategory: String?,
-    onCategorySelect: (String?) -> Unit,
-    viewMode: MenuViewMode,
-    onViewModeChange: (MenuViewMode) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(modifier = modifier) {
-        OutlinedTextField(
-            value = searchQuery,
-            onValueChange = onSearchChange,
-            placeholder = { Text("Search menus...") },
-            leadingIcon = {
-                Icon(Icons.Default.Search, contentDescription = null, modifier = Modifier.size(18.dp))
-            },
-            trailingIcon = if (searchQuery.isNotEmpty()) {
-                {
-                    IconButton(onClick = { onSearchChange("") }) {
-                        Icon(Icons.Default.Clear, contentDescription = null, modifier = Modifier.size(16.dp))
-                    }
-                }
-            } else null,
-            singleLine = true,
-            shape = RoundedCornerShape(12.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = YellowPrimary,
-                cursorColor = YellowPrimary
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp)
-        )
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            // Category chips — scrollable, takes remaining width
-            Row(
-                modifier = Modifier
-                    .weight(1f)
-                    .horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                val allSelected = selectedCategory == null
-                FilterChip(
-                    selected = allSelected,
-                    onClick = { onCategorySelect(null) },
-                    label = { Text("All") },
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = YellowPrimary.copy(alpha = 0.18f),
-                        selectedLabelColor = MaterialTheme.colorScheme.onSurface
-                    ),
-                    border = if (allSelected) BorderStroke(1.5.dp, YellowPrimary)
-                             else BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
-                )
-                categories.forEach { cat ->
-                    val isSelected = selectedCategory == cat
-                    FilterChip(
-                        selected = isSelected,
-                        onClick = { onCategorySelect(if (isSelected) null else cat) },
-                        label = { Text(cat.replaceFirstChar { it.uppercase() }) },
-                        colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = YellowPrimary.copy(alpha = 0.18f),
-                            selectedLabelColor = MaterialTheme.colorScheme.onSurface
-                        ),
-                        border = if (isSelected) BorderStroke(1.5.dp, YellowPrimary)
-                                 else BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
-                    )
-                }
-            }
-
-            // View mode toggle
-            Row(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f))
-                    .padding(4.dp),
-                horizontalArrangement = Arrangement.spacedBy(2.dp)
-            ) {
-                MenuViewMode.entries.forEach { mode ->
-                    val isSelected = viewMode == mode
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(if (isSelected) YellowPrimary else Color.Transparent)
-                            .clickable { onViewModeChange(mode) }
-                            .padding(6.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = if (mode == MenuViewMode.LIST)
-                                Icons.AutoMirrored.Filled.ViewList
-                            else
-                                Icons.Default.GridView,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp),
-                            tint = if (isSelected) MaterialTheme.colorScheme.onSurface
-                                   else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun MenuItemsContent(
-    items: List<MenuItem>,
-    viewMode: MenuViewMode,
-    viewModel: MainMenuViewModel,
-    isLoading: Boolean = false,
-    onRefresh: () -> Unit = {},
-    modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(bottom = 24.dp)
-) {
-    PullToRefreshBox(
-        isRefreshing = isLoading,
-        onRefresh = onRefresh,
-        modifier = modifier
-    ) {
-        when {
-            isLoading -> when (viewMode) {
-                MenuViewMode.LIST -> MenuListSkeleton()
-                MenuViewMode.GRID -> MenuGridSkeleton()
-            }
-
-            items.isEmpty() -> Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(
-                        Icons.Default.SearchOff,
-                        contentDescription = null,
-                        modifier = Modifier.size(40.dp),
-                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        "No menus found",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
-
-            viewMode == MenuViewMode.LIST -> LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = contentPadding
-            ) {
-                items(items.size) { index ->
-                    val item = items[index]
-                    MenuItemCard(
-                        imageUrl = item.imageUrl,
-                        name = item.name,
-                        priceBaht = item.priceBaht,
-                        priceSat = item.priceSat,
-                        category = item.category.replaceFirstChar { it.uppercase() },
-                        isRecommended = item.isRecommended,
-                        isAvailable = item.isAvailable,
-                        count = item.count,
-                        viewMode = MenuViewMode.LIST,
-                        onAddClick = { viewModel.addItem(item.id) },
-                        onReduceClick = { viewModel.reduceItem(item.id) }
-                    )
-                }
-            }
-
-            else -> LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 250.dp),
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                contentPadding = contentPadding
-            ) {
-                items(items) { item ->
-                    MenuItemCard(
-                        imageUrl = item.imageUrl,
-                        name = item.name,
-                        priceBaht = item.priceBaht,
-                        priceSat = item.priceSat,
-                        category = item.category.replaceFirstChar { it.uppercase() },
-                        isRecommended = item.isRecommended,
-                        isAvailable = item.isAvailable,
-                        count = item.count,
-                        viewMode = MenuViewMode.GRID,
-                        onAddClick = { viewModel.addItem(item.id) },
-                        onReduceClick = { viewModel.reduceItem(item.id) }
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
 private fun DesktopMenuLayout(
     viewModel: MainMenuViewModel,
     items: List<MenuItem>,
     onOpenDrawer: () -> Unit,
     onCheckout: () -> Unit
 ) {
-    var viewMode by remember { mutableStateOf(MenuViewMode.LIST) }
-    var searchQuery by remember { mutableStateOf("") }
-    var categoryFilter by remember { mutableStateOf<String?>(null) }
     var splitRatio by remember { mutableStateOf(0.25f) }
     val minRatio = 0.15f
     val maxRatio = 0.45f
-    val panelColor = MaterialTheme.colorScheme.surfaceContainerHigh
-
-    val categories by remember {
-        derivedStateOf {
-            items.map { it.category }.filter { it.isNotBlank() }.distinct().sorted()
-        }
-    }
-    val filteredItems by remember {
-        derivedStateOf {
-            items.filter { item ->
-                (categoryFilter == null || item.category == categoryFilter) &&
-                (searchQuery.isBlank() || item.name.contains(searchQuery, ignoreCase = true))
-            }
-        }
-    }
 
     Column(
         modifier = Modifier
@@ -340,55 +100,12 @@ private fun DesktopMenuLayout(
                 modifier = Modifier.fillMaxSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Left: Menu pane
-                Surface(
+                // Left: Product Panel
+                ProductPanel(
                     modifier = Modifier
                         .weight(1f)
-                        .fillMaxHeight(),
-                    shape = RoundedCornerShape(16.dp),
-                    color = panelColor,
-                    shadowElevation = 0.dp,
-                    tonalElevation = 0.dp
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(start = 16.dp, end = 16.dp, top = 16.dp)
-                    ) {
-                        MenuSearchFilter(
-                            searchQuery = searchQuery,
-                            onSearchChange = { searchQuery = it },
-                            categories = categories,
-                            selectedCategory = categoryFilter,
-                            onCategorySelect = { categoryFilter = it },
-                            viewMode = viewMode,
-                            onViewModeChange = { viewMode = it }
-                        )
-
-                        Box(modifier = Modifier.fillMaxSize()) {
-                            MenuItemsContent(
-                                items = filteredItems,
-                                viewMode = viewMode,
-                                viewModel = viewModel,
-                                isLoading = viewModel.isLoading,
-                                onRefresh = { viewModel.reloadProductsData() },
-                                modifier = Modifier.fillMaxSize()
-                            )
-
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(32.dp)
-                                    .align(Alignment.BottomCenter)
-                                    .background(
-                                        Brush.verticalGradient(
-                                            colors = listOf(Color.Transparent, panelColor)
-                                        )
-                                    )
-                            )
-                        }
-                    }
-                }
+                        .fillMaxHeight()
+                )
 
                 // Draggable divider handle
                 Box(
@@ -422,141 +139,20 @@ private fun DesktopMenuLayout(
                 }
 
                 // Right: Order Panel
-                Surface(
+                OrderPanel(
+                    selectedKeys = viewModel.selectedKeys,
+                    items = items,
+                    totalFiat = viewModel.totalFiat,
+                    totalSat = viewModel.totalSat,
+                    onAddItem = { viewModel.addItem(it) },
+                    onReduceItem = { viewModel.reduceItem(it) },
+                    onCountChange = { id, count -> viewModel.setItemCount(id, count) },
+                    onCheckout = onCheckout,
+                    onClearCart = { viewModel.clearAllItems() },
                     modifier = Modifier
                         .width(totalWidth * splitRatio)
-                        .fillMaxHeight(),
-                    shape = RoundedCornerShape(16.dp),
-                    color = panelColor,
-                    shadowElevation = 0.dp,
-                    tonalElevation = 0.dp
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 20.dp, vertical = 16.dp)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(bottom = 16.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.ShoppingCart,
-                                contentDescription = null,
-                                tint = YellowPrimary,
-                                modifier = Modifier.size(20.dp)
-                            )
-                            Spacer(Modifier.width(8.dp))
-                            Text(
-                                text = "Order",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        }
-
-                        HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f))
-                        Spacer(Modifier.height(8.dp))
-
-                        LazyColumn(
-                            modifier = Modifier.weight(1f),
-                            verticalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            if (viewModel.selectedKeys.isEmpty()) {
-                                item {
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(vertical = 32.dp),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text(
-                                            text = "No items yet",
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
-                                        )
-                                    }
-                                }
-                            } else {
-                                items(viewModel.selectedKeys.size) { index ->
-                                    val key = viewModel.selectedKeys[index]
-                                    val item = items.first { it.id == key }
-                                    OrderItemCard(
-                                        item = item,
-                                        onAddClick = { viewModel.addItem(item.id) },
-                                        onReduceClick = { viewModel.reduceItem(item.id) },
-                                        onCountChange = { viewModel.setItemCount(item.id, it) },
-                                        isDesktop = true
-                                    )
-                                }
-                            }
-                        }
-
-                        Spacer(Modifier.height(12.dp))
-                        HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f))
-                        Spacer(Modifier.height(12.dp))
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "Total",
-                                style = MaterialTheme.typography.titleSmall,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                            )
-                            Column(horizontalAlignment = Alignment.End) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(
-                                        imageVector = Icons.Default.CurrencyLira,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onSurface,
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                    Spacer(Modifier.width(4.dp))
-                                    Text(
-                                        viewModel.totalFiat,
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.onSurface
-                                    )
-                                }
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Image(
-                                        painterResource(Res.drawable.sat_unit),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(14.dp)
-                                    )
-                                    Spacer(Modifier.width(4.dp))
-                                    Text(
-                                        viewModel.totalSat,
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                                    )
-                                }
-                            }
-                        }
-
-                        Spacer(Modifier.height(16.dp))
-
-                        MaterialButton(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = "Checkout",
-                            iconStart = Icons.Default.ShoppingCart,
-                            enabled = viewModel.selectedKeys.isNotEmpty(),
-                            onClick = { onCheckout() }
-                        )
-                        Spacer(Modifier.height(8.dp))
-                        MaterialButton(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = "Clear Cart",
-                            buttonColor = Color.Transparent,
-                            showBorder = true,
-                            onClick = { viewModel.clearAllItems() }
-                        )
-                    }
-                }
+                        .fillMaxHeight()
+                )
             }
         }
     }
@@ -688,15 +284,16 @@ private fun MobileMenuLayout(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background.copy(alpha = 0.9f))
+                        .background(MaterialTheme.colorScheme.background)
                         .padding(top = 5.dp, bottom = 80.dp)
                 ) {
                     MenuItemsContent(
                         items = filteredItems,
                         viewMode = viewMode,
-                        viewModel = viewModel,
                         isLoading = viewModel.isLoading,
                         onRefresh = { viewModel.reloadProductsData() },
+                        onAddItem = { viewModel.addItem(it) },
+                        onReduceItem = { viewModel.reduceItem(it) },
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp)
                     )
@@ -722,11 +319,29 @@ private fun MobileMenuLayout(
     }
 }
 
+
+
+private val previewItems = listOf(
+    MenuItem(1, "", "Mocha", "70.00", "17,500", "coffee", isRecommended = true, count = 2u),
+    MenuItem(2, "", "Latte", "70.00", "17,500", "coffee"),
+    MenuItem(3, "", "Matcha Latte", "100.00", "26,000", "matcha", isRecommended = true, count = 1u),
+    MenuItem(4, "", "Thai Tea", "60.00", "15,000", "tea"),
+    MenuItem(5, "", "Espresso", "50.00", "12,500", "coffee"),
+    MenuItem(6, "", "Americano", "60.00", "15,000", "coffee"),
+    MenuItem(7, "", "Cappuccino", "75.00", "18,750", "coffee", isRecommended = true),
+    MenuItem(8, "", "Flat White", "80.00", "20,000", "coffee"),
+)
+
+private fun previewVM() = MainMenuViewModel().also { it.loadItemsForPreview(previewItems) }
+
 @Preview(showBackground = true, widthDp = 411, heightDp = 891)
 @Composable
 fun MainMenuScreenPreview() {
-    val vm = remember { MainMenuViewModel() }
-    CompositionLocalProvider(LocalMenuVM provides vm) {
+    val vm = remember { previewVM() }
+    CompositionLocalProvider(
+        LocalMenuVM provides vm,
+        LocalProductBrowserVM provides vm
+    ) {
         MainMenuScreen()
     }
 }
@@ -734,8 +349,11 @@ fun MainMenuScreenPreview() {
 @Preview(showBackground = true, widthDp = 1280, heightDp = 800)
 @Composable
 fun MainMenuScreenDesktopPreview() {
-    val vm = remember { MainMenuViewModel() }
-    CompositionLocalProvider(LocalMenuVM provides vm) {
+    val vm = remember { previewVM() }
+    CompositionLocalProvider(
+        LocalMenuVM provides vm,
+        LocalProductBrowserVM provides vm
+    ) {
         MainMenuScreen()
     }
 }

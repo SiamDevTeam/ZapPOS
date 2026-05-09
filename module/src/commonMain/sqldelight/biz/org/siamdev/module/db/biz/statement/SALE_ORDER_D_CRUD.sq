@@ -1,0 +1,33 @@
+insert:
+INSERT INTO T_SALE_ORDER_D (
+    I_SO_ID, I_INTERNAL_NO, I_PRD_ID, I_TAX_ID,
+    I_UNIT_PRICE, I_QTY, I_DISCOUNT_AMT, I_AMOUNT,
+    I_CREATED_AT, I_UPDATED_AT, I_MODIFY_COUNT, I_CREATED_BY, I_UPDATED_BY
+) VALUES (
+    :soId, :internalNo, :prdId, :taxId,
+    :unitPrice, :qty, :discountAmt, :amount,
+    :createdAt, NULL, 0, :createdBy, NULL
+);
+
+update:
+UPDATE T_SALE_ORDER_D
+SET I_PRD_ID       = :prdId,
+    I_TAX_ID       = :taxId,
+    I_UNIT_PRICE   = :unitPrice,
+    I_QTY          = :qty,
+    I_DISCOUNT_AMT = :discountAmt,
+    I_AMOUNT       = :amount,
+    I_UPDATED_AT   = :updatedAt,
+    I_MODIFY_COUNT = I_MODIFY_COUNT + 1,
+    I_UPDATED_BY   = :updatedBy
+WHERE I_SO_ID = :soId AND I_INTERNAL_NO = :internalNo;
+
+delete:
+DELETE FROM T_SALE_ORDER_D
+WHERE I_SO_ID = :soId AND I_INTERNAL_NO = :internalNo;
+
+deleteByHeader:
+DELETE FROM T_SALE_ORDER_D WHERE I_SO_ID = :soId;
+
+selectByHeader:
+SELECT * FROM T_SALE_ORDER_D WHERE I_SO_ID = :soId ORDER BY I_INTERNAL_NO;

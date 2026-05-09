@@ -41,3 +41,16 @@ SET I_SECONDARY_CURRENCY_ID = :currencyId,
     I_MODIFY_COUNT          = I_MODIFY_COUNT + 1,
     I_UPDATED_BY            = :updatedBy
 WHERE I_SS_ID = 'SYSTEM';
+
+-- Single-shot update: pass NULL for fields you don't want to change;
+-- COALESCE keeps the existing column value in that case.
+updateAll:
+UPDATE T_SYS_SETTINGS
+SET I_THEME_ID              = COALESCE(:themeId,             I_THEME_ID),
+    I_FONT_ID               = COALESCE(:fontId,              I_FONT_ID),
+    I_PRIMARY_CURRENCY_ID   = COALESCE(:primaryCurrencyId,   I_PRIMARY_CURRENCY_ID),
+    I_SECONDARY_CURRENCY_ID = COALESCE(:secondaryCurrencyId, I_SECONDARY_CURRENCY_ID),
+    I_UPDATED_AT            = :updatedAt,
+    I_MODIFY_COUNT          = I_MODIFY_COUNT + 1,
+    I_UPDATED_BY            = :updatedBy
+WHERE I_SS_ID = 'SYSTEM';

@@ -5,11 +5,9 @@
 package org.siamdev.zappos.ui.screens.checkout
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Payment
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -22,14 +20,14 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.LocalCheckoutVM
 import org.siamdev.zappos.LocalMenuVM
-import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.components.FiatAmount
 import org.siamdev.zappos.ui.components.MaterialButton
-import org.siamdev.zappos.ui.components.PaymentMethodDialogCard
-import org.siamdev.zappos.ui.components.PaymentMethodList
 import org.siamdev.zappos.ui.components.OrderItemList
 import org.siamdev.zappos.ui.components.OrderSummaryCard
+import org.siamdev.zappos.ui.components.PaymentMethodDialogCard
+import org.siamdev.zappos.ui.components.PaymentMethodList
 import org.siamdev.zappos.ui.components.SatAmount
+import org.siamdev.zappos.ui.components.WorkspaceHeader
 
 
 @Composable
@@ -123,7 +121,7 @@ private fun MobileCheckoutLayout(
     onBack: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
-        CheckoutHeader(onBack = onBack)
+        WorkspaceHeader(title = "Checkout", onNavigateBack = onBack)
 
         SectionLabel(text = "ORDER SUMMARY", modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp))
 
@@ -167,7 +165,7 @@ private fun DesktopCheckoutLayout(
     onBack: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
-        CheckoutHeader(onBack = onBack)
+        WorkspaceHeader(title = "Checkout", onNavigateBack = onBack)
 
         // Column labels
         Row(
@@ -240,46 +238,6 @@ internal fun SectionLabel(text: String, modifier: Modifier = Modifier) {
         letterSpacing = 2.sp,
         modifier = modifier
     )
-}
-
-@Composable
-internal fun CheckoutHeader(onBack: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(
-            modifier = Modifier
-                .size(36.dp)
-                .clip(RoundedCornerShape(10.dp))
-                .background(YellowPrimary.copy(alpha = 0.15f))
-                .clickable { onBack() },
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = null,
-                tint = YellowPrimary,
-                modifier = Modifier.size(18.dp)
-            )
-        }
-        Spacer(Modifier.width(14.dp))
-        Column {
-            Text(
-                text = "Checkout",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                text = "Review your order",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f)
-            )
-        }
-    }
 }
 
 @Composable

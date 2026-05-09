@@ -13,10 +13,15 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlin.reflect.KClass
 import androidx.compose.runtime.remember
+import org.siamdev.zappos.ui.components.ProductBrowser
 import org.siamdev.zappos.ui.screens.checkout.CheckoutViewModel
 import org.siamdev.zappos.ui.screens.count.CounterViewModel
 import org.siamdev.zappos.ui.screens.sale.MainMenuViewModel
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
+
+val LocalProductBrowserVM = staticCompositionLocalOf<ProductBrowser> {
+    error("Missing ProductBrowser in composition tree")
+}
 
 val LocalMenuVM = staticCompositionLocalOf<MainMenuViewModel> {
     error("Missing VMContainer in composition tree")
@@ -57,6 +62,7 @@ fun VMContainer(settingVM: SettingViewModel, content: @Composable () -> Unit) {
 
     CompositionLocalProvider(
         LocalMenuVM provides menuVM,
+        LocalProductBrowserVM provides menuVM,
         LocalCheckoutVM provides checkoutVM,
         LocalCounterVM provides counterVM,
         LocalSettingVM provides settingVM,

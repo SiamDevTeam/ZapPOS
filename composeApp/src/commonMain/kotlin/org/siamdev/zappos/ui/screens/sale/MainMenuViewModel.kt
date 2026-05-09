@@ -10,6 +10,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import org.siamdev.zappos.ui.components.ProductBrowser
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -52,15 +53,15 @@ private const val MOCK_MENU_JSON = """
 """
 
 
-class MainMenuViewModel : ViewModel() {
+class MainMenuViewModel : ViewModel(), ProductBrowser {
 
-    var isLoading by mutableStateOf(false)
+    override var isLoading by mutableStateOf(false)
         private set
 
-    private var hasLoaded = false // guard ไม่ให้ load ซ้ำ
+    private var hasLoaded = false
 
     private val _items = mutableStateListOf<MenuItem>()
-    val items: List<MenuItem> get() = _items
+    override val items: List<MenuItem> get() = _items
 
     private val _selectedKeys = mutableStateListOf<Int>()
     val selectedKeys: List<Int> get() = _selectedKeys
@@ -97,7 +98,9 @@ class MainMenuViewModel : ViewModel() {
         }
     }
 
-    fun addItem(id: Int) {
+    override fun reload() = reloadProductsData()
+
+    override fun addItem(id: Int) {
         val index = _items.indexOfFirst { it.id == id }
         if (index != -1) {
             val item = _items[index]
@@ -106,7 +109,7 @@ class MainMenuViewModel : ViewModel() {
         }
     }
 
-    fun reduceItem(id: Int) {
+    override fun reduceItem(id: Int) {
         val index = _items.indexOfFirst { it.id == id }
         if (index != -1) {
             val item = _items[index]
@@ -123,6 +126,14 @@ class MainMenuViewModel : ViewModel() {
             _items[index] = _items[index].copy(count = count)
             updateSelectedKeys(id)
         }
+    }
+
+    internal fun loadItemsForPreview(items: List<MenuItem>) {
+        _items.clear()
+        _items.addAll(items)
+        hasLoaded = true
+        _selectedKeys.clear()
+        items.filter { it.count > 0u }.forEach { _selectedKeys.add(it.id) }
     }
 
     fun clearAllItems() {

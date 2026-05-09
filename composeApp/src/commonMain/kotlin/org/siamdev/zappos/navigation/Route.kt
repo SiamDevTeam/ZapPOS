@@ -29,6 +29,9 @@ sealed class Route : NavKey {
     object Menu : Route()
 
     @Serializable
+    object ConfirmOrder : Route()
+
+    @Serializable
     object Checkout : Route()
 
     @Serializable

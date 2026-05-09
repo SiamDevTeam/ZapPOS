@@ -27,6 +27,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import org.siamdev.zappos.LocalSettingVM
+import androidx.compose.runtime.CompositionLocalProvider
 import org.siamdev.zappos.theme.YellowPrimary
 
 enum class SettingGroup(val title: String) {
@@ -54,39 +56,36 @@ fun SettingScreen(
     onNavigateTo: (SettingInfo) -> Unit = {},
     onLogout: () -> Unit = {}
 ) {
+    val vm = LocalSettingVM.current
+    val writeError by vm.writeError.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(writeError) {
+        val err = writeError ?: return@LaunchedEffect
+        snackbarHostState.showSnackbar(err.message ?: "Operation failed")
+        vm.clearError()
+    }
+
     var search by remember { mutableStateOf("") }
     val allItems = remember { getSettingItems() }
-
     val filteredItems = remember(search) {
         if (search.isBlank()) allItems
         else allItems.filter { it.destination.title.contains(search, true) }
     }
 
-    BoxWithConstraints(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        if (maxWidth >= 600.dp) {
-            DesktopLayout(
-                search,
-                { search = it },
-                allItems,
-                filteredItems,
-                onNavigateBack,
-                onNavigateTo,
-                onLogout
-            )
-        } else {
-            MobileLayout(
-                search,
-                { search = it },
-                allItems,
-                filteredItems,
-                onNavigateBack,
-                onNavigateTo,
-                onLogout
-            )
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { _ ->
+        BoxWithConstraints(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            if (maxWidth >= 600.dp) {
+                DesktopLayout(search, { search = it }, allItems, filteredItems, onNavigateBack, onNavigateTo, onLogout)
+            } else {
+                MobileLayout(search, { search = it }, allItems, filteredItems, onNavigateBack, onNavigateTo, onLogout)
+            }
         }
     }
 }
@@ -222,7 +221,7 @@ private fun StatusItem(label: String, value: String) {
 }
 
 @Composable
-private fun SettingHeader(onBack: () -> Unit, isCompact: Boolean = true) {
+private fun SettingHeader(onBack: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -342,7 +341,9 @@ private fun getSettingItems() = listOf(
 @Composable
 private fun SettingScreenMobilePreview() {
     MaterialTheme {
-        SettingScreen()
+        CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+            SettingScreen()
+        }
     }
 }
 
@@ -350,6 +351,8 @@ private fun SettingScreenMobilePreview() {
 @Composable
 private fun SettingScreenDesktopPreview() {
     MaterialTheme {
-        SettingScreen()
+        CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+            SettingScreen()
+        }
     }
 }
