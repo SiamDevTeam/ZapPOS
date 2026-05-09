@@ -5,15 +5,14 @@
 package org.siamdev.zappos.ui.screens.setting
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -29,7 +28,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.LocalSettingVM
 import androidx.compose.runtime.CompositionLocalProvider
+import io.ktor.client.request.invoke
 import org.siamdev.zappos.theme.YellowPrimary
+import org.siamdev.zappos.ui.components.SearchFilter
+import org.siamdev.zappos.ui.components.WorkspaceHeader
 
 enum class SettingGroup(val title: String) {
     GENERAL("General"),
@@ -76,15 +78,20 @@ fun SettingScreen(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { _ ->
-        BoxWithConstraints(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
+                .windowInsetsPadding(WindowInsets.systemBars)
         ) {
-            if (maxWidth >= 600.dp) {
-                DesktopLayout(search, { search = it }, allItems, filteredItems, onNavigateBack, onNavigateTo, onLogout)
-            } else {
-                MobileLayout(search, { search = it }, allItems, filteredItems, onNavigateBack, onNavigateTo, onLogout)
+            WorkspaceHeader(title = "Settings", onNavigateBack = onNavigateBack)
+
+            BoxWithConstraints(modifier = Modifier.weight(1f)) {
+                if (maxWidth >= 600.dp) {
+                    DesktopLayout(search, { search = it }, allItems, filteredItems, onNavigateTo, onLogout)
+                } else {
+                    MobileLayout(search, { search = it }, allItems, filteredItems, onNavigateTo, onLogout)
+                }
             }
         }
     }
@@ -95,26 +102,21 @@ fun SettingScreen(
 private fun MobileLayout(
     search: String, onSearchChange: (String) -> Unit,
     allItems: List<SettingItemData>, filteredItems: List<SettingItemData>,
-    onBack: () -> Unit,
     onNavigate: (SettingInfo) -> Unit,
     onLogout: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .windowInsetsPadding(WindowInsets.systemBars)
-    ) {
-        SettingHeader(onBack)
-        SettingSearchBox(search, onSearchChange, Modifier.padding(horizontal = 20.dp))
-
+    Column(modifier = Modifier.fillMaxSize()) {
+        SearchFilter(
+            searchQuery = search,
+            onSearchChange = onSearchChange,
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
+        )
         SettingList(
-            search,
-            allItems,
-            filteredItems,
-            onNavigate = {
-                if (it == SettingInfo.SIGN_OUT) onLogout() else onNavigate(it)
-            },
-            contentPadding = PaddingValues(20.dp),
+            search = search,
+            allItems = allItems,
+            filteredItems = filteredItems,
+            onNavigate = { if (it == SettingInfo.SIGN_OUT) onLogout() else onNavigate(it) },
+            contentPadding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 20.dp),
             showLogout = true
         )
     }
@@ -124,7 +126,6 @@ private fun MobileLayout(
 private fun DesktopLayout(
     search: String, onSearchChange: (String) -> Unit,
     allItems: List<SettingItemData>, filteredItems: List<SettingItemData>,
-    onBack: () -> Unit,
     onNavigate: (SettingInfo) -> Unit,
     onLogout: () -> Unit
 ) {
@@ -135,76 +136,99 @@ private fun DesktopLayout(
         allItems.filter { it.destination != SettingInfo.SIGN_OUT }
     }
 
-    Row(modifier = Modifier.fillMaxSize()) {
-        Column(
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        // Left sidebar panel
+        Box(
             modifier = Modifier
-                .width(320.dp)
+                .width(280.dp)
                 .fillMaxHeight()
+                .clip(RoundedCornerShape(16.dp))
                 .background(MaterialTheme.colorScheme.surface)
-                .padding(24.dp)
+                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp))
         ) {
-            SettingHeader(onBack)
-
-            Spacer(Modifier.height(32.dp))
-
-            Text("CURRENT ACCOUNT", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Spacer(Modifier.height(12.dp))
-
-            Row(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(YellowPrimary.copy(alpha = 0.05f))
-                    .padding(12.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .fillMaxSize()
+                    .padding(20.dp)
             ) {
-                Box(
+                Text(
+                    "CURRENT ACCOUNT",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(Modifier.height(12.dp))
+
+                Row(
                     modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .background(YellowPrimary)
-                )
-                Spacer(Modifier.width(12.dp))
-                Column {
-                    Text("User Name", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-                    Text("nostr:npub1...", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(YellowPrimary.copy(alpha = 0.05f))
+                        .padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(YellowPrimary)
+                    )
+                    Spacer(Modifier.width(12.dp))
+                    Column {
+                        Text("User Name", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                        Text("nostr:npub1...", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                    }
                 }
-            }
 
-            Spacer(Modifier.height(32.dp))
+                Spacer(Modifier.height(28.dp))
 
-            Text("SYSTEM STATUS", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Spacer(Modifier.height(16.dp))
-            StatusItem("Version", "1.0")
-            StatusItem("Database", "12.5 MB")
-            StatusItem("Relays", "3 Connected")
-
-            Spacer(Modifier.weight(1f))
-
-            SettingItemRow(
-                item = SettingItemData(
-                    SettingInfo.SIGN_OUT,
-                    SettingGroup.ACCOUNT,
-                    Icons.AutoMirrored.Filled.Logout
+                Text(
+                    "SYSTEM STATUS",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-            ) {
-                onLogout()
+                Spacer(Modifier.height(12.dp))
+                StatusItem("Version", "1.0")
+                StatusItem("Database", "12.5 MB")
+                StatusItem("Relays", "3 Connected")
+
+                Spacer(Modifier.weight(1f))
+
+                SettingItemRow(
+                    item = SettingItemData(SettingInfo.SIGN_OUT, SettingGroup.ACCOUNT, Icons.AutoMirrored.Filled.Logout),
+                    onClick = onLogout
+                )
             }
         }
 
-        Column(modifier = Modifier.weight(1f).padding(top = 20.dp)) {
-            SettingSearchBox(search, onSearchChange, Modifier.padding(horizontal = 24.dp))
-
-            SettingList(
-                search,
-                desktopAllItems,
-                desktopFilteredItems,
-                onNavigate = {
-                    if (it == SettingInfo.SIGN_OUT) onLogout() else onNavigate(it)
-                },
-                contentPadding = PaddingValues(24.dp),
-                showLogout = false
-            )
+        // Right content panel
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .clip(RoundedCornerShape(16.dp))
+                .background(MaterialTheme.colorScheme.surface)
+                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp))
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                SearchFilter(
+                    searchQuery = search,
+                    onSearchChange = onSearchChange,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
+                )
+                SettingList(
+                    search = search,
+                    allItems = desktopAllItems,
+                    filteredItems = desktopFilteredItems,
+                    onNavigate = { if (it == SettingInfo.SIGN_OUT) onLogout() else onNavigate(it) },
+                    contentPadding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 20.dp),
+                    showLogout = false
+                )
+            }
         }
     }
 }
@@ -221,20 +245,6 @@ private fun StatusItem(label: String, value: String) {
 }
 
 @Composable
-private fun SettingHeader(onBack: () -> Unit) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        IconButton(onClick = onBack, modifier = Modifier.clip(RoundedCornerShape(10.dp)).background(YellowPrimary.copy(alpha = 0.15f))) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = YellowPrimary, modifier = Modifier.size(18.dp))
-        }
-        Spacer(Modifier.width(12.dp))
-        Text("Settings", color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    }
-}
-
-@Composable
 private fun SettingList(
     search: String,
     allItems: List<SettingItemData>,
@@ -243,25 +253,33 @@ private fun SettingList(
     contentPadding: PaddingValues,
     showLogout: Boolean
 ) {
-    LazyColumn(modifier = Modifier.fillMaxSize().padding(top = 10.dp), contentPadding = contentPadding, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = contentPadding,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         if (search.isBlank()) {
             SettingGroup.entries.forEach { group ->
                 val groupItems = allItems.filter {
                     it.group == group && (showLogout || it.destination != SettingInfo.SIGN_OUT)
                 }
-
                 if (groupItems.isNotEmpty()) {
                     item {
-                        Text(group.title.uppercase(), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(vertical = 8.dp))
+                        Text(
+                            group.title.uppercase(),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
+                        )
                     }
                     items(groupItems) { item ->
-                        SettingItemRow(item) { onNavigate(item.destination) }
+                        SettingItemRow(item, onClick = { onNavigate(item.destination) })
                     }
                 }
             }
         } else {
             items(filteredItems) { item ->
-                SettingItemRow(item) { onNavigate(item.destination) }
+                SettingItemRow(item, onClick = { onNavigate(item.destination) })
             }
         }
     }
@@ -274,11 +292,14 @@ private fun SettingItemRow(item: SettingItemData, onClick: () -> Unit) {
     val bgColor = if (isLogout) Color(0xFFFFEBEE) else YellowPrimary.copy(alpha = 0.15f)
 
     Row(
-        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surface).clickable(onClick = onClick).padding(12.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .clickable(onClick = onClick)
+            .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Icon Box - ตามรูปแบบ NavigationList ที่คุณต้องการ
         Box(
             modifier = Modifier.size(40.dp).clip(RoundedCornerShape(10.dp)).background(bgColor),
             contentAlignment = Alignment.Center
@@ -289,7 +310,11 @@ private fun SettingItemRow(item: SettingItemData, onClick: () -> Unit) {
         Spacer(Modifier.width(16.dp))
 
         Column(modifier = Modifier.weight(1f)) {
-            Text(item.destination.title, style = MaterialTheme.typography.bodyLarge, color = if (isLogout) tintColor else MaterialTheme.colorScheme.onSurface)
+            Text(
+                item.destination.title,
+                style = MaterialTheme.typography.bodyLarge,
+                color = if (isLogout) tintColor else MaterialTheme.colorScheme.onSurface
+            )
             item.destination.subtitle?.let {
                 Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
@@ -298,27 +323,6 @@ private fun SettingItemRow(item: SettingItemData, onClick: () -> Unit) {
         if (!isLogout) {
             Icon(Icons.Default.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.outline)
         }
-    }
-}
-
-@Composable
-private fun SettingSearchBox(query: String, onQueryChange: (String) -> Unit, modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surface).padding(12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(20.dp))
-        Spacer(Modifier.width(8.dp))
-        BasicTextField(
-            value = query,
-            onValueChange = onQueryChange,
-            modifier = Modifier.weight(1f),
-            decorationBox = { inner ->
-                if (query.isEmpty()) Text("Search settings...", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                inner()
-            }
-        )
     }
 }
 

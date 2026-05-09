@@ -10,16 +10,12 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -30,8 +26,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -43,6 +41,9 @@ import coil3.request.crossfade
 import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.components.DefaultProductCategories
+import org.siamdev.zappos.ui.components.MenuItemCard
+import org.siamdev.zappos.ui.components.MenuViewMode
+import org.siamdev.zappos.ui.components.SearchFilter
 import org.siamdev.zappos.ui.components.WorkspaceHeader
 import org.siamdev.zappos.utils.formatPrice
 
@@ -154,19 +155,17 @@ private fun ExpandedLayout(
                 modifier = Modifier.fillMaxSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // List pane — rounded card floating above the layout
-                Surface(
+                // List pane
+                Box(
                     modifier = Modifier
                         .width(totalWidth * splitRatio)
-                        .fillMaxHeight(),
-                    shape = RoundedCornerShape(16.dp),
-                    color = MaterialTheme.colorScheme.surfaceContainer,
-                    shadowElevation = 0.dp,
-                    tonalElevation = 0.dp
+                        .fillMaxHeight()
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(MaterialTheme.colorScheme.surface)
+                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp))
                 ) {
                     ProductListPane(
                         products = products,
-                        selectedId = selectedId,
                         onSelect = onSelect,
                         modifier = Modifier.fillMaxSize()
                     )
@@ -177,6 +176,7 @@ private fun ExpandedLayout(
                     modifier = Modifier
                         .width(18.dp)
                         .fillMaxHeight()
+                        .pointerHoverIcon(PointerIcon.Hand)
                         .pointerInput(totalWidth) {
                             val totalPx = totalWidth.toPx()
                             detectHorizontalDragGestures { change, dragAmount ->
@@ -202,15 +202,14 @@ private fun ExpandedLayout(
                     }
                 }
 
-                // Detail pane — rounded card
-                Surface(
+                // Detail pane
+                Box(
                     modifier = Modifier
                         .weight(1f)
-                        .fillMaxHeight(),
-                    shape = RoundedCornerShape(16.dp),
-                    color = MaterialTheme.colorScheme.surfaceContainer,
-                    shadowElevation = 0.dp,
-                    tonalElevation = 0.dp
+                        .fillMaxHeight()
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(MaterialTheme.colorScheme.surface)
+                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp))
                 ) {
                     if (selected != null) {
                         ProductDetailPane(
@@ -263,7 +262,6 @@ private fun CompactLayout(
                 WorkspaceHeader(title = "Products List", onSegmentClick = onOpenDrawer)
                 ProductListPane(
                     products = products,
-                    selectedId = selectedId,
                     onSelect = onSelect,
                     modifier = Modifier.fillMaxSize()
                 )
@@ -272,16 +270,20 @@ private fun CompactLayout(
     }
 }
 
-// List pane
+
 @Composable
 private fun ProductListPane(
     products: List<Product>,
-    selectedId: String?,
     onSelect: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var searchQuery by remember { mutableStateOf("") }
     var categoryFilter by remember { mutableStateOf<String?>(null) }
+
+    val categoryIds = remember(products) {
+        DefaultProductCategories.map { it.id }
+            .filter { id -> products.any { p -> p.category == id } }
+    }
 
     val filtered = remember(products, searchQuery, categoryFilter) {
         products.filter { p ->
@@ -291,70 +293,14 @@ private fun ProductListPane(
     }
 
     Column(modifier = modifier) {
-        OutlinedTextField(
-            value = searchQuery,
-            onValueChange = { searchQuery = it },
-            placeholder = { Text("Search products...") },
-            leadingIcon = {
-                Icon(Icons.Default.Search, contentDescription = null, modifier = Modifier.size(18.dp))
-            },
-            trailingIcon = if (searchQuery.isNotEmpty()) {
-                { IconButton(onClick = { searchQuery = "" }) {
-                    Icon(Icons.Default.Clear, contentDescription = null, modifier = Modifier.size(16.dp))
-                } }
-            } else null,
-            singleLine = true,
-            shape = RoundedCornerShape(12.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = YellowPrimary,
-                cursorColor = YellowPrimary
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp)
+        SearchFilter(
+            searchQuery = searchQuery,
+            onSearchChange = { searchQuery = it },
+            categories = categoryIds,
+            selectedCategory = categoryFilter,
+            onCategorySelect = { categoryFilter = it },
+            modifier = Modifier.padding(horizontal = 16.dp).padding(top = 12.dp)
         )
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            val allSelected = categoryFilter == null
-            FilterChip(
-                selected = allSelected,
-                onClick = { categoryFilter = null },
-                label = { Text("All") },
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = YellowPrimary.copy(alpha = 0.18f),
-                    selectedLabelColor = MaterialTheme.colorScheme.onSurface
-                ),
-                border = if (allSelected) BorderStroke(1.5.dp, YellowPrimary)
-                         else BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
-            )
-            DefaultProductCategories.forEach { cat ->
-                val isSelected = categoryFilter == cat.id
-                FilterChip(
-                    selected = isSelected,
-                    onClick = { categoryFilter = if (isSelected) null else cat.id },
-                    label = { Text(cat.name) },
-                    leadingIcon = {
-                        Icon(cat.icon, contentDescription = null, modifier = Modifier.size(14.dp))
-                    },
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = YellowPrimary.copy(alpha = 0.18f),
-                        selectedLeadingIconColor = YellowPrimary,
-                        selectedLabelColor = MaterialTheme.colorScheme.onSurface
-                    ),
-                    border = if (isSelected) BorderStroke(1.5.dp, YellowPrimary)
-                             else BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
-                )
-            }
-        }
-
-        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
         if (filtered.isEmpty()) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -375,121 +321,27 @@ private fun ProductListPane(
             }
         } else {
             LazyColumn(
-                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(6.dp)
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
             ) {
                 items(filtered, key = { it.id }) { product ->
-                    ProductListCard(
-                        product = product,
-                        isSelected = product.id == selectedId,
+                    val categoryName = DefaultProductCategories
+                        .find { it.id == product.category }?.name ?: product.category
+                    val subName = DefaultProductCategories
+                        .find { it.id == product.category }
+                        ?.subCategories?.find { it.id == product.subCategory }?.name
+                    MenuItemCard(
+                        imageUrl = product.imageUrl,
+                        name = product.name,
+                        priceBaht = "฿${product.price.formatPrice()} / ${product.unit}",
+                        category = if (subName != null) "$categoryName · $subName" else categoryName,
+                        isRecommended = product.isRecommended,
+                        isAvailable = product.isAvailable,
+                        viewMode = MenuViewMode.LIST,
+                        showChevron = true,
                         onClick = { onSelect(product.id) }
                     )
                 }
             }
-        }
-    }
-}
-
-
-@Composable
-private fun ProductListCard(
-    product: Product,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    val categoryName = DefaultProductCategories.find { it.id == product.category }?.name ?: product.category
-    val subName = DefaultProductCategories
-        .find { it.id == product.category }
-        ?.subCategories?.find { it.id == product.subCategory }?.name
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .background(
-                if (isSelected) YellowPrimary.copy(alpha = 0.08f)
-                else MaterialTheme.colorScheme.surface
-            )
-            .then(
-                if (isSelected) Modifier.border(1.5.dp, YellowPrimary, RoundedCornerShape(12.dp))
-                else Modifier
-            )
-            .clickable { onClick() }
-            .padding(10.dp)
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalPlatformContext.current)
-                    .data(product.imageUrl.ifBlank { "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg" })
-                    .crossfade(true)
-                    .memoryCachePolicy(CachePolicy.ENABLED)
-                    .build(),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(72.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant),
-                contentScale = ContentScale.Crop
-            )
-
-            Spacer(Modifier.width(12.dp))
-
-            Column(Modifier.weight(1f)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = product.name,
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.weight(1f, fill = false)
-                    )
-                    if (product.isRecommended) {
-                        Spacer(Modifier.width(6.dp))
-                        Icon(Icons.Default.Star, contentDescription = null,
-                            tint = YellowPrimary, modifier = Modifier.size(14.dp))
-                    }
-                }
-                Spacer(Modifier.height(3.dp))
-                Text(
-                    text = if (subName != null) "$categoryName · $subName" else categoryName,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(Modifier.height(6.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "฿${product.price.formatPrice()} / ${product.unit}",
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Medium,
-                        color = if (isSelected) YellowPrimary else MaterialTheme.colorScheme.onSurface
-                    )
-                    if (!product.isAvailable) {
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(4.dp))
-                                .background(MaterialTheme.colorScheme.errorContainer)
-                                .padding(horizontal = 6.dp, vertical = 2.dp)
-                        ) {
-                            Text("Unavailable",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onErrorContainer)
-                        }
-                    }
-                }
-            }
-
-            Spacer(Modifier.width(4.dp))
-            Icon(
-                Icons.Default.ChevronRight,
-                contentDescription = null,
-                tint = if (isSelected) YellowPrimary
-                       else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
-                modifier = Modifier.size(18.dp)
-            )
         }
     }
 }
@@ -543,7 +395,6 @@ private fun ProductDetailPane(
         }
 
         LazyColumn(contentPadding = PaddingValues(bottom = 32.dp)) {
-            // Hero image
             item {
                 Box(
                     modifier = Modifier
@@ -572,7 +423,6 @@ private fun ProductDetailPane(
 
             item {
                 Column(modifier = Modifier.padding(20.dp)) {
-                    // Category breadcrumb
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -588,7 +438,6 @@ private fun ProductDetailPane(
 
                     Spacer(Modifier.height(12.dp))
 
-                    // Name + recommended badge
                     Row(verticalAlignment = Alignment.Top) {
                         Text(
                             text = product.name,
@@ -618,7 +467,6 @@ private fun ProductDetailPane(
 
                     Spacer(Modifier.height(8.dp))
 
-                    // Price
                     Row(verticalAlignment = Alignment.Bottom) {
                         Text(
                             text = "฿${product.price.formatPrice()}",
@@ -675,7 +523,6 @@ private fun ProductDetailPane(
                         }
                     }
 
-                    // Edit button shown in desktop detail pane (no back button)
                     if (!showBackButton) {
                         Spacer(Modifier.height(28.dp))
                         Button(

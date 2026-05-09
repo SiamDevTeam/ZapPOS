@@ -32,6 +32,7 @@ import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.sat_unit
 import org.jetbrains.compose.resources.painterResource
@@ -85,7 +86,7 @@ private fun MenuItemCardList(
     onClick: () -> Unit
 ) {
     val fontScale = LocalDensity.current.fontScale
-    val imageSize = (72f * fontScale.coerceIn(1f, 1.5f)).dp
+    val imageSize = (90f * fontScale.coerceIn(1f, 1.5f)).dp
 
     Card(
         modifier = Modifier
@@ -101,7 +102,8 @@ private fun MenuItemCardList(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(10.dp),
-            verticalAlignment = Alignment.Top
+            //verticalAlignment = Alignment.Top
+            verticalAlignment = Alignment.CenterVertically
         ) {
             MenuImage(imageUrl = imageUrl, size = imageSize, cornerRadius = 10.dp)
 
@@ -124,7 +126,7 @@ private fun MenuItemCardList(
                             Icons.Default.Star,
                             contentDescription = null,
                             tint = YellowPrimary,
-                            modifier = Modifier.size(14.dp)
+                            modifier = Modifier.size(17.dp)
                         )
                     }
                 }
@@ -321,8 +323,8 @@ private fun MenuItemCardGrid(
 private fun MenuImage(
     imageUrl: String,
     modifier: Modifier = Modifier,
-    size: androidx.compose.ui.unit.Dp? = null,
-    cornerRadius: androidx.compose.ui.unit.Dp = 10.dp,
+    size: Dp? = null,
+    cornerRadius: Dp = 10.dp,
     contentScale: ContentScale = ContentScale.Crop
 ) {
     val baseModifier = if (size != null) modifier.size(size) else modifier
@@ -365,23 +367,30 @@ private fun PriceRow(priceBaht: String, priceSat: String?) {
             )
         }
         if (priceSat != null) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(5.dp))
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .padding(horizontal = 5.dp, vertical = 2.dp)
+            ) {
                 Icon(
                     painter = painterResource(Res.drawable.sat_unit),
                     contentDescription = null,
-                    tint = YellowPrimary,
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier.size(12.dp)
                 )
                 Spacer(Modifier.width(3.dp))
                 Text(
                     text = priceSat,
                     style = MaterialTheme.typography.bodySmall,
-                    color = YellowPrimary,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
             }
         }
+
     }
 }
 

@@ -45,6 +45,6 @@ fun App(platform: Platform, splashViewModel: SplashViewModel) {
                 splashViewModel = splashViewModel
             )
         }
-        DebugScreenSize()
+        //DebugScreenSize()
     }
 }

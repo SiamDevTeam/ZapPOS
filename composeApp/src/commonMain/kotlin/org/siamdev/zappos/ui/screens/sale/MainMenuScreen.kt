@@ -17,7 +17,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
@@ -266,26 +265,25 @@ private fun MobileMenuLayout(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .padding(top = 10.dp)
                     .windowInsetsPadding(WindowInsets.statusBars)
             ) {
                 WorkspaceHeader(title = "Main Menu", onSegmentClick = onOpenDrawer)
 
-                MenuSearchFilter(
+                SearchFilter(
                     searchQuery = searchQuery,
                     onSearchChange = { searchQuery = it },
                     categories = categories,
                     selectedCategory = categoryFilter,
                     onCategorySelect = { categoryFilter = it },
-                    viewMode = viewMode,
-                    onViewModeChange = { viewMode = it },
+                    trailingContent = { MenuViewToggle(viewMode = viewMode, onViewModeChange = { viewMode = it }) },
                     modifier = Modifier.padding(horizontal = 20.dp).padding(top = 10.dp)
                 )
 
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background)
-                        .padding(top = 5.dp, bottom = 80.dp)
+                        .padding(top = 17.dp, bottom = 80.dp)
                 ) {
                     MenuItemsContent(
                         items = filteredItems,
@@ -298,21 +296,6 @@ private fun MobileMenuLayout(
                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp)
                     )
 
-                    // Fade ด้านบน
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(10.dp)
-                            .align(Alignment.TopCenter)
-                            .background(
-                                Brush.verticalGradient(
-                                    colors = listOf(
-                                        MaterialTheme.colorScheme.background,
-                                        Color.Transparent
-                                    )
-                                )
-                            )
-                    )
                 }
             }
         }

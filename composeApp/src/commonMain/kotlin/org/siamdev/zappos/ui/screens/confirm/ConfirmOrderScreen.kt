@@ -49,7 +49,8 @@ fun ConfirmOrderScreen(
             .windowInsetsPadding(WindowInsets.statusBars)
             .windowInsetsPadding(WindowInsets.navigationBars)
     ) {
-        if (maxWidth >= 750.dp) {
+        val isDesktop = maxWidth >= 750.dp && maxHeight >= 500.dp
+        if (isDesktop) {
             DesktopConfirmLayout(
                 items = selectedItems,
                 menuVM = menuVM,

@@ -58,14 +58,13 @@ fun ProductPanel(modifier: Modifier = Modifier) {
                 .fillMaxSize()
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp)
         ) {
-            MenuSearchFilter(
+            SearchFilter(
                 searchQuery = searchQuery,
                 onSearchChange = { searchQuery = it },
                 categories = categories,
                 selectedCategory = categoryFilter,
                 onCategorySelect = { categoryFilter = it },
-                viewMode = viewMode,
-                onViewModeChange = { viewMode = it }
+                trailingContent = { MenuViewToggle(viewMode = viewMode, onViewModeChange = { viewMode = it }) }
             )
 
             Box(modifier = Modifier.fillMaxSize()) {

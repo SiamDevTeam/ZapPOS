@@ -253,104 +253,116 @@ private fun DesktopEntryLayout(
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 28.dp, vertical = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(24.dp)
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         // Left panel — Image + Basic Info
-        LazyColumn(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(bottom = 32.dp)
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .clip(RoundedCornerShape(16.dp))
+                .background(MaterialTheme.colorScheme.surface)
+                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp))
         ) {
-            item { ImagePickerSection() }
-            item { SectionLabel("Basic Information") }
-            item {
-                EntryTextField(
-                    value = name, onValueChange = onNameChange,
-                    label = "Product Name", placeholder = "e.g. Green Tea Latte",
-                    leadingIcon = Icons.AutoMirrored.Filled.Label, required = true
-                )
-            }
-            item {
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    EntryTextField(
-                        value = price, onValueChange = onPriceChange,
-                        label = "Price", placeholder = "0.00",
-                        leadingIcon = Icons.Default.AttachMoney,
-                        keyboardType = KeyboardType.Decimal, required = true,
-                        modifier = Modifier.weight(1.4f)
-                    )
-                    UnitDropdown(selected = unit, units = units, onSelect = onUnitChange, modifier = Modifier.weight(1f))
-                }
-            }
-        }
-
-        // Divider
-        VerticalDivider(
-            modifier = Modifier.fillMaxHeight().padding(vertical = 8.dp),
-            color = MaterialTheme.colorScheme.outlineVariant
-        )
-
-        // Right panel — Category + Details + Toggles + Save
-        Column(modifier = Modifier.weight(1f)) {
-        LazyColumn(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(bottom = 16.dp)
-        ) {
-            item { SectionLabel("Category") }
-            item {
-                CategoryPicker(
-                    selectedParent = selectedCategory,
-                    selectedSub = selectedSub,
-                    onSelect = onCategoryChange
-                )
-            }
-
-            item { SectionLabel("Description") }
-            item {
-                EntryTextField(
-                    value = description, onValueChange = onDescriptionChange,
-                    label = "Description (optional)", placeholder = "e.g. Made with fresh jasmine tea and oat milk...",
-                    leadingIcon = Icons.AutoMirrored.Filled.Notes,
-                    singleLine = false, minLines = 3
-                )
-            }
-
-            item { SectionLabel("Inventory") }
-            item {
-                ToggleRow(
-                    label = "Track Stock", subtitle = "Monitor available quantity",
-                    icon = Icons.Default.Inventory, checked = trackStock, onCheckedChange = onTrackStockChange
-                )
-            }
-            if (trackStock) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 20.dp)
+            ) {
+                item { ImagePickerSection() }
+                item { SectionLabel("Basic Information") }
                 item {
                     EntryTextField(
-                        value = stockQty, onValueChange = onStockQtyChange,
-                        label = "Stock Quantity", placeholder = "0",
-                        leadingIcon = Icons.Default.Numbers, keyboardType = KeyboardType.Number
+                        value = name, onValueChange = onNameChange,
+                        label = "Product Name", placeholder = "e.g. Green Tea Latte",
+                        leadingIcon = Icons.AutoMirrored.Filled.Label, required = true
                     )
                 }
-            }
-
-            item { SectionLabel("Display Options") }
-            item {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    ToggleRow(
-                        label = "Available",
-                        subtitle = if (isAvailable) "Visible on menu" else "Hidden from menu",
-                        icon = Icons.Default.Visibility, checked = isAvailable, onCheckedChange = onAvailableChange
-                    )
-                    ToggleRow(
-                        label = "Recommended", subtitle = "Highlight as a featured item",
-                        icon = Icons.Default.Star, checked = isRecommended, onCheckedChange = onRecommendedChange
-                    )
+                item {
+                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        EntryTextField(
+                            value = price, onValueChange = onPriceChange,
+                            label = "Price", placeholder = "0.00",
+                            leadingIcon = Icons.Default.AttachMoney,
+                            keyboardType = KeyboardType.Decimal, required = true,
+                            modifier = Modifier.weight(1.4f)
+                        )
+                        UnitDropdown(selected = unit, units = units, onSelect = onUnitChange, modifier = Modifier.weight(1f))
+                    }
                 }
             }
         }
-        SaveButton(canSave = canSave, onClick = doSave, modifier = Modifier.fillMaxWidth())
-        } // Column right panel
+
+        // Right panel — Category + Details + Toggles + Save
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .clip(RoundedCornerShape(16.dp))
+                .background(MaterialTheme.colorScheme.surface)
+                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp))
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                LazyColumn(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(horizontal = 20.dp, vertical = 20.dp)
+                ) {
+                    item { SectionLabel("Category") }
+                    item {
+                        CategoryPicker(
+                            selectedParent = selectedCategory,
+                            selectedSub = selectedSub,
+                            onSelect = onCategoryChange
+                        )
+                    }
+
+                    item { SectionLabel("Description") }
+                    item {
+                        EntryTextField(
+                            value = description, onValueChange = onDescriptionChange,
+                            label = "Description (optional)", placeholder = "e.g. Made with fresh jasmine tea and oat milk...",
+                            leadingIcon = Icons.AutoMirrored.Filled.Notes,
+                            singleLine = false, minLines = 3
+                        )
+                    }
+
+                    item { SectionLabel("Inventory") }
+                    item {
+                        ToggleRow(
+                            label = "Track Stock", subtitle = "Monitor available quantity",
+                            icon = Icons.Default.Inventory, checked = trackStock, onCheckedChange = onTrackStockChange
+                        )
+                    }
+                    if (trackStock) {
+                        item {
+                            EntryTextField(
+                                value = stockQty, onValueChange = onStockQtyChange,
+                                label = "Stock Quantity", placeholder = "0",
+                                leadingIcon = Icons.Default.Numbers, keyboardType = KeyboardType.Number
+                            )
+                        }
+                    }
+
+                    item { SectionLabel("Display Options") }
+                    item {
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            ToggleRow(
+                                label = "Available",
+                                subtitle = if (isAvailable) "Visible on menu" else "Hidden from menu",
+                                icon = Icons.Default.Visibility, checked = isAvailable, onCheckedChange = onAvailableChange
+                            )
+                            ToggleRow(
+                                label = "Recommended", subtitle = "Highlight as a featured item",
+                                icon = Icons.Default.Star, checked = isRecommended, onCheckedChange = onRecommendedChange
+                            )
+                        }
+                    }
+                }
+                SaveButton(canSave = canSave, onClick = doSave, modifier = Modifier.fillMaxWidth())
+            }
+        }
     }
 }
 
@@ -523,7 +535,7 @@ private fun ToggleRow(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surface)
+            .background(MaterialTheme.colorScheme.surfaceVariant)
             .clickable { onCheckedChange(!checked) }
             .padding(horizontal = 16.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically

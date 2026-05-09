@@ -25,6 +25,11 @@ import androidx.compose.material.icons.filled.SearchOff
 import androidx.compose.material3.*
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,21 +39,20 @@ import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.screens.sale.MenuItem
 
 @Composable
-internal fun MenuSearchFilter(
+internal fun SearchFilter(
     searchQuery: String,
     onSearchChange: (String) -> Unit,
-    categories: List<String>,
-    selectedCategory: String?,
-    onCategorySelect: (String?) -> Unit,
-    viewMode: MenuViewMode,
-    onViewModeChange: (MenuViewMode) -> Unit,
-    modifier: Modifier = Modifier
+    categories: List<String> = emptyList(),
+    selectedCategory: String? = null,
+    onCategorySelect: (String?) -> Unit = {},
+    modifier: Modifier = Modifier,
+    trailingContent: (@Composable () -> Unit)? = null
 ) {
     Column(modifier = modifier) {
         OutlinedTextField(
             value = searchQuery,
             onValueChange = onSearchChange,
-            placeholder = { Text("Search menus...") },
+            placeholder = { Text("Search...") },
             leadingIcon = {
                 Icon(Icons.Default.Search, contentDescription = null, modifier = Modifier.size(18.dp))
             },
@@ -70,76 +74,87 @@ internal fun MenuSearchFilter(
                 .padding(bottom = 8.dp)
         )
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
+        if (categories.isNotEmpty() || trailingContent != null) {
             Row(
                 modifier = Modifier
-                    .weight(1f)
-                    .horizontalScroll(rememberScrollState()),
+                    .fillMaxWidth()
+                    .padding(bottom = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                val allSelected = selectedCategory == null
-                FilterChip(
-                    selected = allSelected,
-                    onClick = { onCategorySelect(null) },
-                    label = { Text("All") },
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = YellowPrimary.copy(alpha = 0.18f),
-                        selectedLabelColor = MaterialTheme.colorScheme.onSurface
-                    ),
-                    border = if (allSelected) BorderStroke(1.5.dp, YellowPrimary)
-                             else BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
-                )
-                categories.forEach { cat ->
-                    val isSelected = selectedCategory == cat
+                Row(
+                    modifier = Modifier
+                        .weight(1f)
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    val allSelected = selectedCategory == null
                     FilterChip(
-                        selected = isSelected,
-                        onClick = { onCategorySelect(if (isSelected) null else cat) },
-                        label = { Text(cat.replaceFirstChar { it.uppercase() }) },
+                        selected = allSelected,
+                        onClick = { onCategorySelect(null) },
+                        label = { Text("All") },
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = YellowPrimary.copy(alpha = 0.18f),
                             selectedLabelColor = MaterialTheme.colorScheme.onSurface
                         ),
-                        border = if (isSelected) BorderStroke(1.5.dp, YellowPrimary)
+                        border = if (allSelected) BorderStroke(1.5.dp, YellowPrimary)
                                  else BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
                     )
-                }
-            }
-
-            Row(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f))
-                    .padding(4.dp),
-                horizontalArrangement = Arrangement.spacedBy(2.dp)
-            ) {
-                MenuViewMode.entries.forEach { mode ->
-                    val isSelected = viewMode == mode
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(if (isSelected) YellowPrimary else Color.Transparent)
-                            .clickable { onViewModeChange(mode) }
-                            .padding(6.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = if (mode == MenuViewMode.LIST)
-                                Icons.AutoMirrored.Filled.ViewList
-                            else
-                                Icons.Default.GridView,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp),
-                            tint = if (isSelected) MaterialTheme.colorScheme.onSurface
-                                   else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                    categories.forEach { cat ->
+                        val isSelected = selectedCategory == cat
+                        FilterChip(
+                            selected = isSelected,
+                            onClick = { onCategorySelect(if (isSelected) null else cat) },
+                            label = { Text(cat.replaceFirstChar { it.uppercase() }) },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = YellowPrimary.copy(alpha = 0.18f),
+                                selectedLabelColor = MaterialTheme.colorScheme.onSurface
+                            ),
+                            border = if (isSelected) BorderStroke(1.5.dp, YellowPrimary)
+                                     else BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
                         )
                     }
                 }
+
+                trailingContent?.invoke()
+            }
+        }
+    }
+}
+
+@Composable
+internal fun MenuViewToggle(
+    viewMode: MenuViewMode,
+    onViewModeChange: (MenuViewMode) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .clip(RoundedCornerShape(10.dp))
+            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f))
+            .padding(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(2.dp)
+    ) {
+        MenuViewMode.entries.forEach { mode ->
+            val isSelected = viewMode == mode
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(if (isSelected) YellowPrimary else Color.Transparent)
+                    .clickable { onViewModeChange(mode) }
+                    .padding(6.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = if (mode == MenuViewMode.LIST)
+                        Icons.AutoMirrored.Filled.ViewList
+                    else
+                        Icons.Default.GridView,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp),
+                    tint = if (isSelected) MaterialTheme.colorScheme.onSurface
+                           else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                )
             }
         }
     }
@@ -238,4 +253,60 @@ internal fun MenuItemsContent(
             }
         }
     }
+}
+
+
+@Preview(showBackground = true, widthDp = 411)
+@Composable
+private fun SearchFilterPreview() {
+    var query by remember { mutableStateOf("") }
+    var selected by remember { mutableStateOf<String?>(null) }
+    var mode by remember { mutableStateOf(MenuViewMode.LIST) }
+    val categories = listOf("coffee", "matcha", "tea", "other")
+
+    SearchFilter(
+        searchQuery = query,
+        onSearchChange = { query = it },
+        categories = categories,
+        selectedCategory = selected,
+        onCategorySelect = { selected = it },
+        trailingContent = { MenuViewToggle(viewMode = mode, onViewModeChange = { mode = it }) },
+        modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
+    )
+}
+
+
+@Preview(showBackground = true, widthDp = 411)
+@Composable
+private fun SearchFilterWithQueryPreview() {
+    var mode by remember { mutableStateOf(MenuViewMode.GRID) }
+    val categories = listOf("coffee", "matcha", "tea")
+
+    SearchFilter(
+        searchQuery = "latte",
+        onSearchChange = {},
+        categories = categories,
+        selectedCategory = "coffee",
+        onCategorySelect = {},
+        trailingContent = { MenuViewToggle(viewMode = mode, onViewModeChange = { mode = it }) },
+        modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
+    )
+}
+
+
+@Preview(showBackground = true, widthDp = 411)
+@Composable
+private fun SearchFilterNoTrailingPreview() {
+    var query by remember { mutableStateOf("") }
+    var selected by remember { mutableStateOf<String?>(null) }
+    val categories = listOf("food", "drinks", "dessert")
+
+    SearchFilter(
+        searchQuery = query,
+        onSearchChange = { query = it },
+        categories = categories,
+        selectedCategory = selected,
+        onCategorySelect = { selected = it },
+        modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
+    )
 }

@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -23,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
@@ -31,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.components.MaterialButton
 import org.siamdev.zappos.ui.components.OrderItemList
+import org.siamdev.zappos.ui.components.WorkspaceHeader
 import org.siamdev.zappos.utils.DateTimeUtils
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.sat_unit
@@ -56,12 +55,9 @@ fun PaymentProcessingScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .windowInsetsPadding(WindowInsets.statusBars)
-            .windowInsetsPadding(WindowInsets.navigationBars)
+            .windowInsetsPadding(WindowInsets.systemBars)
     ) {
-        val isDesktop = maxWidth >= 750.dp
-
-        if (isDesktop) {
+        if (maxWidth >= 750.dp) {
             DesktopProcessingLayout(
                 viewModel = viewModel,
                 txId = txId,
@@ -95,49 +91,16 @@ private fun MobileProcessingLayout(
     var orderExpanded by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.fillMaxSize()) {
+        WorkspaceHeader(title = title, onNavigateBack = onBack)
 
-        // Header
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(36.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(YellowPrimary.copy(alpha = 0.15f))
-                    .clickable { onBack() }
-                    .align(Alignment.CenterStart),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = YellowPrimary, modifier = Modifier.size(18.dp))
-            }
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.align(Alignment.Center)
-            )
-        }
+        Text(
+            text = txId,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+            letterSpacing = 1.sp,
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp)
+        )
 
-        // TX ID bar
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(horizontal = 20.dp, vertical = 10.dp)
-        ) {
-            Text(
-                text = txId,
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f)
-            )
-        }
-
-        // Scrollable content
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
@@ -145,51 +108,12 @@ private fun MobileProcessingLayout(
             contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // QR
             if (showQr) {
-                item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp))
-                            .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f), RoundedCornerShape(12.dp))
-                            .background(MaterialTheme.colorScheme.surface)
-                            .padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .size(200.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(MaterialTheme.colorScheme.background),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                Icons.Default.QrCode2, null,
-                                modifier = Modifier.size(170.dp),
-                                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
-                            )
-                        }
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(MaterialTheme.colorScheme.background)
-                                .padding(horizontal = 12.dp, vertical = 8.dp)
-                        ) {
-                            Text(
-                                text = "lnbc50n1p588zyfpp.....52mczpfq7fatgrfh",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                                maxLines = 1
-                            )
-                        }
-                    }
-                }
+                item { ProcessingQrSection(modifier = Modifier.fillMaxWidth()) }
             }
 
-            // Order Summary toggle
+            item { SectionLabel("ORDER SUMMARY") }
+
             item {
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Row(
@@ -205,7 +129,7 @@ private fun MobileProcessingLayout(
                             .background(MaterialTheme.colorScheme.surface)
                             .border(
                                 1.dp,
-                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
+                                MaterialTheme.colorScheme.outlineVariant,
                                 RoundedCornerShape(
                                     topStart = 12.dp, topEnd = 12.dp,
                                     bottomStart = if (orderExpanded) 0.dp else 12.dp,
@@ -223,7 +147,7 @@ private fun MobileProcessingLayout(
                         ) {
                             Icon(Icons.Default.Receipt, null, modifier = Modifier.size(16.dp), tint = YellowPrimary)
                             Text(
-                                text = "Order Summary",
+                                text = "Items",
                                 style = MaterialTheme.typography.labelMedium,
                                 fontWeight = FontWeight.SemiBold,
                                 color = MaterialTheme.colorScheme.onSurface
@@ -235,7 +159,7 @@ private fun MobileProcessingLayout(
                                     .padding(horizontal = 8.dp, vertical = 2.dp)
                             ) {
                                 Text(
-                                    text = "${viewModel.orderItems.size} items",
+                                    text = "${viewModel.orderItems.size}",
                                     style = MaterialTheme.typography.labelSmall,
                                     color = YellowPrimary,
                                     fontWeight = FontWeight.Bold
@@ -262,7 +186,7 @@ private fun MobileProcessingLayout(
                                 .clip(RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp))
                                 .border(
                                     1.dp,
-                                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
+                                    MaterialTheme.colorScheme.outlineVariant,
                                     RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp)
                                 )
                                 .background(MaterialTheme.colorScheme.surface)
@@ -276,13 +200,13 @@ private fun MobileProcessingLayout(
                 }
             }
 
-            // Detail card
+            item { SectionLabel("PAYMENT DETAIL") }
+
             item {
                 ProcessingDetailCard(viewModel = viewModel, txId = txId)
             }
         }
 
-        // Done button
         MaterialButton(
             modifier = Modifier
                 .fillMaxWidth()
@@ -304,29 +228,7 @@ private fun DesktopProcessingLayout(
     onBack: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(36.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(YellowPrimary.copy(alpha = 0.15f))
-                    .clickable { onBack() },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = YellowPrimary, modifier = Modifier.size(18.dp))
-            }
-            Spacer(Modifier.width(14.dp))
-            Column {
-                Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-                Text(txId, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f))
-            }
-        }
+        WorkspaceHeader(title = title, onNavigateBack = onBack)
 
         Row(
             modifier = Modifier
@@ -334,20 +236,8 @@ private fun DesktopProcessingLayout(
                 .padding(horizontal = 32.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(
-                text = "ORDER SUMMARY",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                letterSpacing = 2.sp,
-                modifier = Modifier.weight(1f)
-            )
-            Text(
-                text = "PAYMENT DETAIL",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                letterSpacing = 2.sp,
-                modifier = Modifier.width(380.dp)
-            )
+            SectionLabel(text = "ORDER SUMMARY", modifier = Modifier.weight(1f))
+            SectionLabel(text = "PAYMENT DETAIL", modifier = Modifier.width(380.dp))
         }
 
         Row(
@@ -358,7 +248,7 @@ private fun DesktopProcessingLayout(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.Top
         ) {
-            // Left: QR ขนาดคงที่บน + list ล่างใช้พื้นที่ที่เหลือ
+            // Left: QR + order list
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -366,15 +256,12 @@ private fun DesktopProcessingLayout(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 if (showQr) {
-                    // QR — กว้างเต็ม สูงคงที่ ไม่ใช้ aspectRatio
                     ProcessingQrSection(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(200.dp)
                     )
                 }
-
-                // List — ขยายพื้นที่ที่เหลือ
                 OrderItemList(
                     items = viewModel.orderItems,
                     modifier = Modifier
@@ -383,7 +270,7 @@ private fun DesktopProcessingLayout(
                 )
             }
 
-            // Right: Detail card + Done button
+            // Right: detail card + Done button
             Column(
                 modifier = Modifier
                     .width(380.dp)
@@ -391,7 +278,6 @@ private fun DesktopProcessingLayout(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 ProcessingDetailCard(viewModel = viewModel, txId = txId)
-
                 MaterialButton(
                     modifier = Modifier.fillMaxWidth(),
                     text = "Done",
@@ -402,23 +288,21 @@ private fun DesktopProcessingLayout(
     }
 }
 
-// แก้ QrSection — ไม่ใช้ aspectRatio แล้ว ใช้ fillMaxHeight แทน
+
 @Composable
 private fun ProcessingQrSection(modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
-            .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f), RoundedCornerShape(12.dp))
+            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surface)
             .padding(12.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // QR code section
         Box(
             modifier = Modifier
-                .fillMaxHeight()
-                .aspectRatio(1f)
+                .size(140.dp)
                 .clip(RoundedCornerShape(8.dp))
                 .background(MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
@@ -431,17 +315,14 @@ private fun ProcessingQrSection(modifier: Modifier = Modifier) {
         }
 
         Column(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight(),
-            verticalArrangement = Arrangement.Center
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = "Invoice",
+                text = "INVOICE",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                letterSpacing = 1.sp,
-                modifier = Modifier.padding(bottom = 6.dp)
+                letterSpacing = 2.sp
             )
             Box(
                 modifier = Modifier
@@ -475,10 +356,9 @@ private fun ProcessingDetailCard(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f), RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surface)
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(0.dp)
+            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(12.dp))
+            .padding(16.dp)
     ) {
         listOf(
             "Order ID" to txId,
@@ -515,7 +395,7 @@ private fun ProcessingDetailCard(
 
         HorizontalDivider(
             modifier = Modifier.padding(vertical = 10.dp),
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f)
+            color = MaterialTheme.colorScheme.outlineVariant
         )
 
         Row(
@@ -523,11 +403,21 @@ private fun ProcessingDetailCard(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Total Payment", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onSurface)
+            Text(
+                "Total Payment",
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
             Column(horizontalAlignment = Alignment.End) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     Icon(Icons.Default.CurrencyLira, null, modifier = Modifier.size(15.dp))
-                    Text(viewModel.grandTotalFiat, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                    Text(
+                        viewModel.grandTotalFiat,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                 }
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     Icon(painter = painterResource(Res.drawable.sat_unit), contentDescription = null, tint = Color(0xFFFFB700), modifier = Modifier.size(13.dp))
