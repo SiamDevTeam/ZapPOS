@@ -2,7 +2,7 @@
  * MIT License
  * Copyright (c) 2025 SiamDevTeam
  */
-package org.siamdev.zappos.ui.components
+package org.siamdev.zappos.ui.components.common
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween

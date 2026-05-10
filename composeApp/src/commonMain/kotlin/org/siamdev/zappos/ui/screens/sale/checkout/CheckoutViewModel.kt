@@ -2,15 +2,12 @@
  * MIT License
  * Copyright (c) 2025 SiamDevTeam
  */
-package org.siamdev.zappos.ui.screens.checkout
+package org.siamdev.zappos.ui.screens.sale.checkout
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
-import org.siamdev.zappos.LocalMenuVM
 
 enum class PaymentMethod(val label: String) {
     NFC_LIGHTNING("NFC Lightning Card"),
@@ -130,6 +127,12 @@ class CheckoutViewModel : ViewModel() {
     fun confirmCash() { if (isChangeValid) step = CheckoutStep.PROCESSING }
 
     fun confirmProcessing() { step = CheckoutStep.SUCCESS }
+
+    fun reset() {
+        step = CheckoutStep.ORDER
+        selectedMethod = null
+        receivedAmount = ""
+    }
 
     fun formatChange(): String = formatDouble(changeAmount)
 }

@@ -2,7 +2,7 @@
  * MIT License
  * Copyright (c) 2025 SiamDevTeam
  */
-package org.siamdev.zappos.ui.screens.checkout
+package org.siamdev.zappos.ui.screens.sale.checkout
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -26,10 +26,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import org.siamdev.zappos.LocalProgressVM
 import org.siamdev.zappos.theme.YellowPrimary
-import org.siamdev.zappos.ui.components.MaterialButton
-import org.siamdev.zappos.ui.components.OrderItemList
-import org.siamdev.zappos.ui.components.WorkspaceHeader
+import org.siamdev.zappos.ui.components.common.MaterialButton
+import org.siamdev.zappos.ui.components.order.OrderItemList
+import org.siamdev.zappos.ui.components.progress.ProgressBar
+import org.siamdev.zappos.ui.components.common.WorkspaceHeader
+import org.siamdev.zappos.ui.screens.sale.SaleOrderSteps
 import org.siamdev.zappos.utils.DateTimeUtils
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.sat_unit
@@ -90,8 +93,12 @@ private fun MobileProcessingLayout(
 ) {
     var orderExpanded by remember { mutableStateOf(false) }
 
+    val progressVM = LocalProgressVM.current
+    SideEffect { progressVM.setup(SaleOrderSteps, 2) }
+
     Column(modifier = Modifier.fillMaxSize()) {
         WorkspaceHeader(title = title, onNavigateBack = onBack)
+        ProgressBar()
 
         Text(
             text = txId,
@@ -227,8 +234,12 @@ private fun DesktopProcessingLayout(
     onConfirm: () -> Unit,
     onBack: () -> Unit
 ) {
+    val progressVM = LocalProgressVM.current
+    SideEffect { progressVM.setup(SaleOrderSteps, 2) }
+
     Column(modifier = Modifier.fillMaxSize()) {
         WorkspaceHeader(title = title, onNavigateBack = onBack)
+        ProgressBar()
 
         Row(
             modifier = Modifier

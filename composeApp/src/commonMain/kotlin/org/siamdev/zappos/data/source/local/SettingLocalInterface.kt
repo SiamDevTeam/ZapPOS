@@ -45,6 +45,8 @@ interface SettingLocalInterface {
     suspend fun getSecondaryCurrency(): CurrencyItem?
     suspend fun setPrimaryCurrency(currencyId: String): Long
     suspend fun setSecondaryCurrency(currencyId: String): Long
+    suspend fun getShowSecondaryCurrency(): Boolean
+    suspend fun setShowSecondaryCurrency(show: Boolean): Long
     suspend fun seedCurrency(id: String, code: String, name: String, symbol: String): Long
 
     // Settings row bootstrap

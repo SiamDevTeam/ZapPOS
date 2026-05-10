@@ -13,8 +13,9 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlin.reflect.KClass
 import androidx.compose.runtime.remember
-import org.siamdev.zappos.ui.components.ProductBrowser
-import org.siamdev.zappos.ui.screens.checkout.CheckoutViewModel
+import org.siamdev.zappos.ui.components.product.ProductBrowser
+import org.siamdev.zappos.ui.components.progress.ProgressViewModel
+import org.siamdev.zappos.ui.screens.sale.checkout.CheckoutViewModel
 import org.siamdev.zappos.ui.screens.count.CounterViewModel
 import org.siamdev.zappos.ui.screens.sale.MainMenuViewModel
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
@@ -39,6 +40,10 @@ val LocalSettingVM = staticCompositionLocalOf<SettingViewModel> {
     error("Missing VMContainer in composition tree")
 }
 
+val LocalProgressVM = staticCompositionLocalOf<ProgressViewModel> {
+    error("Missing VMContainer in composition tree")
+}
+
 @Composable
 inline fun <reified VM : ViewModel> viewModelOf(
     noinline provider: () -> VM
@@ -59,6 +64,7 @@ fun VMContainer(settingVM: SettingViewModel, content: @Composable () -> Unit) {
     val menuVM = viewModelOf { MainMenuViewModel() }
     val checkoutVM = viewModelOf { CheckoutViewModel() }
     val counterVM = viewModelOf { CounterViewModel() }
+    val progressVM = viewModelOf { ProgressViewModel() }
 
     CompositionLocalProvider(
         LocalMenuVM provides menuVM,
@@ -66,6 +72,7 @@ fun VMContainer(settingVM: SettingViewModel, content: @Composable () -> Unit) {
         LocalCheckoutVM provides checkoutVM,
         LocalCounterVM provides counterVM,
         LocalSettingVM provides settingVM,
+        LocalProgressVM provides progressVM,
         content = content
     )
 }

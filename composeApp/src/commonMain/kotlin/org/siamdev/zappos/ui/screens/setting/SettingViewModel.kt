@@ -40,6 +40,9 @@ class SettingViewModel : ViewModel() {
     private val _secondaryCurrency = MutableStateFlow<CurrencyItem?>(null)
     val secondaryCurrency = _secondaryCurrency.asStateFlow()
 
+    private val _showSecondaryCurrency = MutableStateFlow(false)
+    val showSecondaryCurrency = _showSecondaryCurrency.asStateFlow()
+
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
 
@@ -59,9 +62,10 @@ class SettingViewModel : ViewModel() {
         _activeTheme.value     = src.getActiveTheme()
         _fonts.value           = src.getFonts()
         _activeFont.value      = src.getActiveFont()
-        _currencies.value      = src.getCurrencies()
-        _primaryCurrency.value = src.getPrimaryCurrency()
-        _secondaryCurrency.value = src.getSecondaryCurrency()
+        _currencies.value            = src.getCurrencies()
+        _primaryCurrency.value       = src.getPrimaryCurrency()
+        _secondaryCurrency.value     = src.getSecondaryCurrency()
+        _showSecondaryCurrency.value = src.getShowSecondaryCurrency()
         _isLoading.value = false
     }
 
@@ -121,6 +125,14 @@ class SettingViewModel : ViewModel() {
         viewModelScope.launch {
             runCatching { source?.setSecondaryCurrency(currencyId) }
                 .onSuccess { _secondaryCurrency.value = _currencies.value.find { it.id == currencyId } }
+                .onFailure { _writeError.value = it }
+        }
+    }
+
+    fun toggleSecondaryCurrency(show: Boolean) {
+        viewModelScope.launch {
+            runCatching { source?.setShowSecondaryCurrency(show) }
+                .onSuccess { _showSecondaryCurrency.value = show }
                 .onFailure { _writeError.value = it }
         }
     }

@@ -2,7 +2,7 @@
  * MIT License
  * Copyright (c) 2025 SiamDevTeam
  */
-package org.siamdev.zappos.ui.components
+package org.siamdev.zappos.ui.components.payment
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,7 +30,7 @@ import androidx.compose.ui.window.DialogProperties
 import org.jetbrains.compose.resources.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.theme.YellowPrimary
-import org.siamdev.zappos.ui.screens.checkout.PaymentMethod
+import org.siamdev.zappos.ui.screens.sale.checkout.PaymentMethod
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.prompt_pay
 import zappos.composeapp.generated.resources.sat_unit

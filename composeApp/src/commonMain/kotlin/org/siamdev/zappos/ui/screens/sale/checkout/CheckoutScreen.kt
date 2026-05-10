@@ -2,7 +2,7 @@
  * MIT License
  * Copyright (c) 2025 SiamDevTeam
  */
-package org.siamdev.zappos.ui.screens.checkout
+package org.siamdev.zappos.ui.screens.sale.checkout
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -14,20 +14,24 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.LocalCheckoutVM
 import org.siamdev.zappos.LocalMenuVM
-import org.siamdev.zappos.ui.components.FiatAmount
-import org.siamdev.zappos.ui.components.MaterialButton
-import org.siamdev.zappos.ui.components.OrderItemList
-import org.siamdev.zappos.ui.components.OrderSummaryCard
-import org.siamdev.zappos.ui.components.PaymentMethodDialogCard
-import org.siamdev.zappos.ui.components.PaymentMethodList
-import org.siamdev.zappos.ui.components.SatAmount
-import org.siamdev.zappos.ui.components.WorkspaceHeader
+import org.siamdev.zappos.LocalProgressVM
+import org.siamdev.zappos.ui.components.order.FiatAmount
+import org.siamdev.zappos.ui.components.common.MaterialButton
+import org.siamdev.zappos.ui.components.order.OrderItemList
+import org.siamdev.zappos.ui.components.order.OrderSummaryCard
+import org.siamdev.zappos.ui.components.payment.PaymentMethodDialogCard
+import org.siamdev.zappos.ui.components.payment.PaymentMethodList
+import org.siamdev.zappos.ui.components.progress.ProgressBar
+import org.siamdev.zappos.ui.components.order.SatAmount
+import org.siamdev.zappos.ui.components.common.WorkspaceHeader
+import org.siamdev.zappos.ui.screens.sale.SaleOrderSteps
 
 
 @Composable
@@ -35,8 +39,9 @@ fun CheckoutScreen(
     onBack: () -> Unit = {},
     onSuccess: () -> Unit = {}
 ) {
-    val menuVM = LocalMenuVM.current
+    val menuVM     = LocalMenuVM.current
     val checkoutVM = LocalCheckoutVM.current
+    val progressVM = LocalProgressVM.current
 
     LaunchedEffect(menuVM.selectedKeys.toList()) {
         checkoutVM.syncFromMenu(
@@ -59,6 +64,8 @@ fun CheckoutScreen(
         onBack = onBack,
         onSuccess = {
             menuVM.clearAllItems()
+            checkoutVM.reset()
+            progressVM.setup(SaleOrderSteps, 0)
             onSuccess()
         }
     )
@@ -81,9 +88,13 @@ fun CheckoutContent(
         CheckoutStep.PROCESSING -> {
             PaymentProcessingScreen(
                 viewModel = viewModel,
-                onConfirm = { viewModel.confirmProcessing(); onSuccess() },
+                onConfirm = { viewModel.confirmProcessing() },
                 onBack = { viewModel.backToSelectPayment() }
             )
+            return
+        }
+        CheckoutStep.SUCCESS -> {
+            SuccessScreen(onOpen = onSuccess)
             return
         }
         else -> {}
@@ -120,8 +131,12 @@ private fun MobileCheckoutLayout(
     viewModel: CheckoutViewModel,
     onBack: () -> Unit
 ) {
+    val progressVM = LocalProgressVM.current
+    SideEffect { progressVM.setup(SaleOrderSteps, 1) }
+
     Column(modifier = Modifier.fillMaxSize()) {
         WorkspaceHeader(title = "Checkout", onNavigateBack = onBack)
+        ProgressBar()
 
         SectionLabel(text = "ORDER SUMMARY", modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp))
 
@@ -164,8 +179,12 @@ private fun DesktopCheckoutLayout(
     viewModel: CheckoutViewModel,
     onBack: () -> Unit
 ) {
+    val progressVM = LocalProgressVM.current
+    SideEffect { progressVM.setup(SaleOrderSteps, 1) }
+
     Column(modifier = Modifier.fillMaxSize()) {
         WorkspaceHeader(title = "Checkout", onNavigateBack = onBack)
+        ProgressBar()
 
         // Column labels
         Row(
@@ -248,7 +267,7 @@ internal fun CheckoutItemRow(item: CheckoutItem, isEven: Boolean = false) {
             .clip(RoundedCornerShape(10.dp))
             .background(
                 if (isEven) MaterialTheme.colorScheme.onSurface.copy(alpha = 0.04f)
-                else androidx.compose.ui.graphics.Color.Transparent
+                else Color.Transparent
             )
             .padding(horizontal = 12.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically

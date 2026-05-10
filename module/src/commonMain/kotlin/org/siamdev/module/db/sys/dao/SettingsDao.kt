@@ -26,4 +26,7 @@ class SettingsDao(private val db: AppDatabase) {
 
     suspend fun updateSecondaryCurrency(currencyId: String, updatedAt: Long, updatedBy: String) =
         db.sys { sETTINGS_CRUDQueries.updateSecondaryCurrency(currencyId, updatedAt, updatedBy) }
+
+    suspend fun updateShowSecondaryCurrency(show: Long, updatedAt: Long, updatedBy: String) =
+        db.sys { sETTINGS_CRUDQueries.updateShowSecondaryCurrency(show, updatedAt, updatedBy) }
 }

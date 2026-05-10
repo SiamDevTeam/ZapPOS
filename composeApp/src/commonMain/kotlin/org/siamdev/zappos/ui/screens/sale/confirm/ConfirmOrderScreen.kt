@@ -2,7 +2,7 @@
  * MIT License
  * Copyright (c) 2025 SiamDevTeam
  */
-package org.siamdev.zappos.ui.screens.confirm
+package org.siamdev.zappos.ui.screens.sale.confirm
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,13 +24,16 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.LocalMenuVM
+import org.siamdev.zappos.LocalProgressVM
 import org.siamdev.zappos.theme.YellowPrimary
-import org.siamdev.zappos.ui.components.FiatAmount
-import org.siamdev.zappos.ui.components.OrderItemCard
-import org.siamdev.zappos.ui.components.SatAmount
-import org.siamdev.zappos.ui.components.WorkspaceHeader
+import org.siamdev.zappos.ui.components.order.FiatAmount
+import org.siamdev.zappos.ui.components.order.OrderItemCard
+import org.siamdev.zappos.ui.components.progress.ProgressBar
+import org.siamdev.zappos.ui.components.order.SatAmount
+import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 import org.siamdev.zappos.ui.screens.sale.MainMenuViewModel
 import org.siamdev.zappos.ui.screens.sale.MenuItem
+import org.siamdev.zappos.ui.screens.sale.SaleOrderSteps
 
 @Composable
 fun ConfirmOrderScreen(
@@ -75,8 +78,12 @@ private fun MobileConfirmLayout(
     onBack: () -> Unit,
     onCheckout: () -> Unit
 ) {
+    val progressVM = LocalProgressVM.current
+    SideEffect { progressVM.setup(SaleOrderSteps, 0) }
+
     Column(modifier = Modifier.fillMaxSize()) {
         WorkspaceHeader(title = "Confirm Order", onNavigateBack = onBack)
+        ProgressBar()
 
         ConfirmSectionLabel(
             text = "ORDER ITEMS",
@@ -115,8 +122,12 @@ private fun DesktopConfirmLayout(
     onBack: () -> Unit,
     onCheckout: () -> Unit
 ) {
+    val progressVM = LocalProgressVM.current
+    SideEffect { progressVM.setup(SaleOrderSteps, 0) }
+
     Column(modifier = Modifier.fillMaxSize()) {
         WorkspaceHeader(title = "Confirm Order", onNavigateBack = onBack)
+        ProgressBar()
 
         Row(
             modifier = Modifier

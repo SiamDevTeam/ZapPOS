@@ -26,8 +26,8 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import org.siamdev.zappos.Platform
 import org.siamdev.zappos.PlatformType
-import org.siamdev.zappos.ui.screens.checkout.CheckoutScreen
-import org.siamdev.zappos.ui.screens.confirm.ConfirmOrderScreen
+import org.siamdev.zappos.ui.screens.sale.checkout.CheckoutScreen
+import org.siamdev.zappos.ui.screens.sale.confirm.ConfirmOrderScreen
 import org.siamdev.zappos.ui.screens.count.CounterScreen
 import org.siamdev.zappos.ui.screens.demo.TopBarScreen
 import org.siamdev.zappos.ui.screens.glow.GlowStyleScreen
@@ -230,7 +230,8 @@ fun NavigationRoot(
                             CheckoutScreen(
                                 onBack = { navActions.back() },
                                 onSuccess = {
-                                    navActions.back()
+                                    navActions.back()  // pop Checkout
+                                    navActions.back()  // pop ConfirmOrder → lands on Menu
                                 }
                             )
                         }

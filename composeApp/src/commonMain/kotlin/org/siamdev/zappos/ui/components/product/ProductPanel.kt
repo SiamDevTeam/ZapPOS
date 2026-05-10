@@ -2,7 +2,12 @@
  * MIT License
  * Copyright (c) 2025 SiamDevTeam
  */
-package org.siamdev.zappos.ui.components
+package org.siamdev.zappos.ui.components.product
+
+import org.siamdev.zappos.ui.components.menu.MenuItemsContent
+import org.siamdev.zappos.ui.components.menu.MenuViewMode
+import org.siamdev.zappos.ui.components.menu.MenuViewToggle
+import org.siamdev.zappos.ui.components.menu.SearchFilter
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

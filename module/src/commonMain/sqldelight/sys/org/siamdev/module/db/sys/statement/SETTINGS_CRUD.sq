@@ -42,6 +42,14 @@ SET I_SECONDARY_CURRENCY_ID = :currencyId,
     I_UPDATED_BY            = :updatedBy
 WHERE I_SS_ID = 'SYSTEM';
 
+updateShowSecondaryCurrency:
+UPDATE T_SYS_SETTINGS
+SET I_SHOW_SECONDARY_CURRENCY = :show,
+    I_UPDATED_AT              = :updatedAt,
+    I_MODIFY_COUNT            = I_MODIFY_COUNT + 1,
+    I_UPDATED_BY              = :updatedBy
+WHERE I_SS_ID = 'SYSTEM';
+
 -- Single-shot update: pass NULL for fields you don't want to change;
 -- COALESCE keeps the existing column value in that case.
 updateAll:

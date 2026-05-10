@@ -15,12 +15,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
-import org.siamdev.zappos.ui.components.MaterialButton
+import org.siamdev.zappos.ui.components.common.MaterialButton
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.sp
 import org.siamdev.zappos.LocalCounterVM
-import org.siamdev.zappos.ui.components.WorkspaceHeader
+import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 
 @Composable
 fun CounterScreen(

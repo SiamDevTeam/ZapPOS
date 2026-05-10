@@ -89,6 +89,14 @@ class SettingLocalInterfaceImpl(private val db: AppDatabase) : SettingLocalInter
         return 1L
     }
 
+    override suspend fun getShowSecondaryCurrency(): Boolean =
+        settingsDao.selectSystem()?.I_SHOW_SECONDARY_CURRENCY == 1L
+
+    override suspend fun setShowSecondaryCurrency(show: Boolean): Long {
+        settingsDao.updateShowSecondaryCurrency(if (show) 1L else 0L, now(), "USER")
+        return 1L
+    }
+
     override suspend fun seedCurrency(id: String, code: String, name: String, symbol: String) =
         currencyDao.insert(code, name, symbol, now(), "SYSTEM")
 

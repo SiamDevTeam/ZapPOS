@@ -2,7 +2,7 @@
  * MIT License
  * Copyright (c) 2025 SiamDevTeam
  */
-package org.siamdev.zappos.ui.components
+package org.siamdev.zappos.ui.components.fx
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.size

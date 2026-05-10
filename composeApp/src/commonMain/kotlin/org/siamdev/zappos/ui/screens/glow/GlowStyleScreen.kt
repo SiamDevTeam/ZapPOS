@@ -22,9 +22,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
-import org.siamdev.zappos.ui.components.GlowEffects
-import org.siamdev.zappos.ui.components.GlowShape
-import org.siamdev.zappos.ui.components.WorkspaceHeader
+import org.siamdev.zappos.ui.components.fx.GlowEffects
+import org.siamdev.zappos.ui.components.fx.GlowShape
+import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 
 @Composable
 fun BalancedRow(

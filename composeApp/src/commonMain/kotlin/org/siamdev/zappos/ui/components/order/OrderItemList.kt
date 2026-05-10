@@ -2,7 +2,7 @@
  * MIT License
  * Copyright (c) 2025 SiamDevTeam
  */
-package org.siamdev.zappos.ui.components
+package org.siamdev.zappos.ui.components.order
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,8 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
-import org.siamdev.zappos.ui.screens.checkout.CheckoutItem
-import org.siamdev.zappos.ui.screens.checkout.CheckoutItemRow
+import org.siamdev.zappos.ui.screens.sale.checkout.CheckoutItem
+import org.siamdev.zappos.ui.screens.sale.checkout.CheckoutItemRow
 
 
 @Composable

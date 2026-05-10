@@ -2,7 +2,7 @@
  * MIT License
  * Copyright (c) 2025 SiamDevTeam
  */
-package org.siamdev.zappos.ui.components
+package org.siamdev.zappos.ui.components.menu
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background

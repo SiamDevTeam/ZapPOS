@@ -30,8 +30,8 @@ import org.siamdev.zappos.LocalSettingVM
 import androidx.compose.runtime.CompositionLocalProvider
 import io.ktor.client.request.invoke
 import org.siamdev.zappos.theme.YellowPrimary
-import org.siamdev.zappos.ui.components.SearchFilter
-import org.siamdev.zappos.ui.components.WorkspaceHeader
+import org.siamdev.zappos.ui.components.menu.SearchFilter
+import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 
 enum class SettingGroup(val title: String) {
     GENERAL("General"),

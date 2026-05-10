@@ -26,7 +26,16 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
 import org.siamdev.zappos.LocalMenuVM
 import org.siamdev.zappos.LocalProductBrowserVM
-import org.siamdev.zappos.ui.components.*
+import org.siamdev.zappos.ui.components.common.MaterialButton
+import org.siamdev.zappos.ui.components.common.WorkspaceHeader
+import org.siamdev.zappos.ui.components.menu.MenuItemsContent
+import org.siamdev.zappos.ui.components.menu.MenuViewMode
+import org.siamdev.zappos.ui.components.menu.MenuViewToggle
+import org.siamdev.zappos.ui.components.menu.SearchFilter
+import org.siamdev.zappos.ui.components.order.OrderItemCard
+import org.siamdev.zappos.ui.components.order.OrderPanel
+import org.siamdev.zappos.ui.components.product.ProductPanel
+import org.siamdev.zappos.ui.components.sheet.SlideBottomSheet
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.sat_unit
 

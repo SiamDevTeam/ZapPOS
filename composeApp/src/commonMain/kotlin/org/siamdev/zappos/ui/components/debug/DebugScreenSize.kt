@@ -1,4 +1,4 @@
-package org.siamdev.zappos.ui.components
+package org.siamdev.zappos.ui.components.debug
 
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize

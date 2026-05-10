@@ -27,8 +27,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.theme.YellowPrimary
-import org.siamdev.zappos.ui.components.CategoryPicker
-import org.siamdev.zappos.ui.components.WorkspaceHeader
+import org.siamdev.zappos.ui.components.menu.CategoryPicker
+import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 
 
 data class ProductEntry(

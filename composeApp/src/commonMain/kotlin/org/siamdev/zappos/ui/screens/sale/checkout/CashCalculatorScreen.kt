@@ -2,7 +2,7 @@
  * MIT License
  * Copyright (c) 2025 SiamDevTeam
  */
-package org.siamdev.zappos.ui.screens.checkout
+package org.siamdev.zappos.ui.screens.sale.checkout
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
@@ -12,7 +12,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Backspace
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
@@ -27,11 +26,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import org.siamdev.zappos.LocalProgressVM
 import org.siamdev.zappos.theme.YellowPrimary
-import org.siamdev.zappos.ui.components.MaterialButton
-import org.siamdev.zappos.ui.components.OrderItemList
+import org.siamdev.zappos.ui.components.common.MaterialButton
+import org.siamdev.zappos.ui.components.order.OrderItemList
+import org.siamdev.zappos.ui.components.progress.ProgressBar
+import org.siamdev.zappos.ui.components.common.WorkspaceHeader
+import org.siamdev.zappos.ui.screens.sale.SaleOrderSteps
 
 private val GreenSuccess = Color(0xFF4CAF50)
 private val QuickAmounts = listOf("20", "50", "100", "500", "1000")
@@ -51,10 +53,9 @@ fun CashCalculatorScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .windowInsetsPadding(WindowInsets.statusBars)
-            .windowInsetsPadding(WindowInsets.navigationBars)
+            .windowInsetsPadding(WindowInsets.systemBars)
     ) {
-        if (maxWidth >= 900.dp) {
+        if (maxWidth >= 750.dp) {
             DesktopCashLayout(viewModel = viewModel, onBack = onBack)
         } else {
             MobileCashLayout(viewModel = viewModel, onBack = onBack)
@@ -62,21 +63,21 @@ fun CashCalculatorScreen(
     }
 }
 
-// ── Mobile ───────────────────────────────────────────────────────────────────
 
 @Composable
 private fun MobileCashLayout(
     viewModel: CheckoutViewModel,
     onBack: () -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        CashHeader(onBack = onBack)
+    val progressVM = LocalProgressVM.current
+    SideEffect { progressVM.setup(SaleOrderSteps, 2) }
 
-        Text(
+    Column(modifier = Modifier.fillMaxSize()) {
+        WorkspaceHeader(title = "Cash Payment", onNavigateBack = onBack)
+        ProgressBar()
+
+        SectionLabel(
             text = "ENTER AMOUNT",
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-            letterSpacing = 2.sp,
             modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)
         )
 
@@ -112,40 +113,29 @@ private fun MobileCashLayout(
     }
 }
 
-// ── Desktop ──────────────────────────────────────────────────────────────────
 
 @Composable
 private fun DesktopCashLayout(
     viewModel: CheckoutViewModel,
     onBack: () -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        CashHeader(onBack = onBack)
+    val progressVM = LocalProgressVM.current
+    SideEffect { progressVM.setup(SaleOrderSteps, 2) }
 
-        // Labels
+    Column(modifier = Modifier.fillMaxSize()) {
+        WorkspaceHeader(title = "Cash Payment", onNavigateBack = onBack)
+        ProgressBar()
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(
-                text = "ORDER SUMMARY",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                letterSpacing = 2.sp,
-                modifier = Modifier.weight(1f)
-            )
-            Text(
-                text = "ENTER AMOUNT",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                letterSpacing = 2.sp,
-                modifier = Modifier.width(380.dp)
-            )
+            SectionLabel(text = "ORDER SUMMARY", modifier = Modifier.weight(1f))
+            SectionLabel(text = "ENTER AMOUNT", modifier = Modifier.width(380.dp))
         }
 
-        // Content row
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -154,7 +144,6 @@ private fun DesktopCashLayout(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.Top
         ) {
-            // Left: Order list
             OrderItemList(
                 items = viewModel.orderItems,
                 modifier = Modifier
@@ -162,19 +151,18 @@ private fun DesktopCashLayout(
                     .fillMaxHeight()
             )
 
-            // Right: Numpad + totals
             Column(
                 modifier = Modifier
                     .width(380.dp)
                     .fillMaxHeight()
                     .clip(RoundedCornerShape(12.dp))
-                    .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f), RoundedCornerShape(12.dp))
+                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(12.dp))
                     .background(MaterialTheme.colorScheme.surface)
                     .padding(horizontal = 28.dp, vertical = 28.dp)
             ) {
                 TotalDueRow(totalFiat = viewModel.totalFiat)
                 Spacer(Modifier.height(8.dp))
-                HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.07f))
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                 Spacer(Modifier.height(12.dp))
 
                 ReceivedDisplay(
@@ -249,12 +237,7 @@ private fun ReceivedDisplay(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                "RECEIVED",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.35f),
-                letterSpacing = 2.sp
-            )
+            SectionLabel(text = "RECEIVED")
             AnimatedVisibility(
                 visible = receivedAmount.isNotEmpty(),
                 enter = fadeIn(tween(150)) + scaleIn(tween(150)),
@@ -302,7 +285,7 @@ private fun ChangeRow(viewModel: CheckoutViewModel) {
     ) {
         Column {
             Spacer(Modifier.height(14.dp))
-            HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.07f))
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             Spacer(Modifier.height(12.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -350,48 +333,6 @@ private fun ChangeRow(viewModel: CheckoutViewModel) {
                     )
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun CashHeader(
-    onBack: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(
-            modifier = Modifier
-                .size(36.dp)
-                .clip(RoundedCornerShape(10.dp))
-                .background(YellowPrimary.copy(alpha = 0.15f))
-                .clickable { onBack() },
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                Icons.AutoMirrored.Filled.ArrowBack, null,
-                tint = YellowPrimary,
-                modifier = Modifier.size(18.dp)
-            )
-        }
-        Spacer(Modifier.width(14.dp))
-        Column {
-            Text(
-                "Cash Payment",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                "Enter amount received",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f)
-            )
         }
     }
 }
@@ -480,7 +421,6 @@ private fun CashNumpad(
     }
 }
 
-// ── Previews ──────────────────────────────────────────────────────────────────
 
 private val cashPreviewViewModel = CheckoutViewModel().apply {
     syncFromMenu(

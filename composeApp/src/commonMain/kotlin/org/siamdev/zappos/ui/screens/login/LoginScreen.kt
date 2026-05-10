@@ -33,8 +33,8 @@ import org.siamdev.zappos.theme.YellowDeep
 import org.siamdev.zappos.theme.YellowLight
 import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.theme.YellowSoft
-import org.siamdev.zappos.ui.components.GlassCard
-import org.siamdev.zappos.ui.components.MaterialButton
+import org.siamdev.zappos.ui.components.common.GlassCard
+import org.siamdev.zappos.ui.components.common.MaterialButton
 import org.siamdev.zappos.utils.LockOrientation
 import org.siamdev.zappos.utils.Orientation
 import zappos.composeapp.generated.resources.Res

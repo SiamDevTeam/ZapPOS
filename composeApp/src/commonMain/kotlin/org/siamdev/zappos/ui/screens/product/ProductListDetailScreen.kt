@@ -40,11 +40,11 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.theme.YellowPrimary
-import org.siamdev.zappos.ui.components.DefaultProductCategories
-import org.siamdev.zappos.ui.components.MenuItemCard
-import org.siamdev.zappos.ui.components.MenuViewMode
-import org.siamdev.zappos.ui.components.SearchFilter
-import org.siamdev.zappos.ui.components.WorkspaceHeader
+import org.siamdev.zappos.ui.components.menu.DefaultProductCategories
+import org.siamdev.zappos.ui.components.menu.MenuItemCard
+import org.siamdev.zappos.ui.components.menu.MenuViewMode
+import org.siamdev.zappos.ui.components.menu.SearchFilter
+import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 import org.siamdev.zappos.utils.formatPrice
 
 data class Product(

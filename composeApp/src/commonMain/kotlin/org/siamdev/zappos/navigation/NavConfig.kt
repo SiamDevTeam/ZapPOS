@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.siamdev.zappos.ui.components.NavigationList
+import org.siamdev.zappos.ui.components.common.NavigationList
 import androidx.compose.material3.MaterialTheme
 import androidx.navigation3.runtime.NavBackStack
 

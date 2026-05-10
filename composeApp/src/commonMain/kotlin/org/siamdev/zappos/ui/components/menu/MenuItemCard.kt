@@ -2,7 +2,9 @@
  * MIT License
  * Copyright (c) 2025 SiamDevTeam
  */
-package org.siamdev.zappos.ui.components
+package org.siamdev.zappos.ui.components.menu
+
+import org.siamdev.zappos.ui.components.common.MaterialButton
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -86,7 +88,7 @@ private fun MenuItemCardList(
     onClick: () -> Unit
 ) {
     val fontScale = LocalDensity.current.fontScale
-    val imageSize = (90f * fontScale.coerceIn(1f, 1.5f)).dp
+    val imageSize = (80f * fontScale.coerceIn(1f, 1.5f)).dp
 
     Card(
         modifier = Modifier
@@ -182,7 +184,7 @@ private fun MenuItemCardList(
                 ) {
                     if (count > 0u) {
                         CountBadge(count = count)
-                        Spacer(Modifier.height(6.dp))
+                        Spacer(Modifier.height(15.dp))
                     }
                     AddButton(onClick = onAddClick, size = 36.dp)
                 }
