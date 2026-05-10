@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -99,6 +100,7 @@ kotlin {
             dependencies {
                 implementation(compose.desktop.currentOs)
                 implementation(libs.kotlinx.coroutinesSwing)
+                implementation(libs.kotlinx.datetime)
                 implementation(libs.ktor.client.java)
                 implementation(libs.coil.network.okhttp)
             }
@@ -139,6 +141,15 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
+    // project.setProperty("archivesBaseName", "ZapPOS-v1.0")
+    applicationVariants.all {
+        val variant = this
+        variant.outputs
+            .map { it as BaseVariantOutputImpl }
+            .forEach { output ->
+                output.outputFileName = "ZapPOS-${variant.buildType.name}-v${variant.versionName}.apk"
+            }
+    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -147,6 +158,7 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
+
         }
     }
     compileOptions {
@@ -181,7 +193,7 @@ compose.desktop {
                 , TargetFormat.Rpm
                 , TargetFormat.AppImage
             )
-            packageName = "org.siamdev.zappos"
+            packageName = "ZapPOS"
             packageVersion = "1.0.0"
 
             linux {
@@ -193,6 +205,7 @@ compose.desktop {
             windows {
                 iconFile.set(project.file("src/jvmMain/resources/ico_sizes/windows/ic_zappos_256.ico"))
             }
+
         }
     }
 }

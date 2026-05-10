@@ -32,27 +32,15 @@
 
 
 # ===== OkHttp / Ktor =====
+-keep class okhttp3.** { *; }
+-keep class io.ktor.** { *; }
+-dontwarn okhttp3.**
+-dontwarn io.ktor.**
 -dontwarn org.conscrypt.**
 -dontwarn org.bouncycastle.**
 -dontwarn org.openjsse.**
 -dontwarn okhttp3.internal.platform.**
 -dontwarn okhttp3.internal.platform.android.**
-
-
-# ===== kotlinx-io =====
--dontwarn kotlinx.io.**
--dontwarn kotlinx.io.bytestring.**
-
-
-# ===== JNA =====
--keep class com.sun.jna.** { *; }
--dontwarn com.sun.jna.**
-
-
-# ===== UniFFI / LMDB =====
-#-keep class rust.nostr.sdk.** { *; }
-#-keep class lmdb.** { *; }
-
 
 # ===== SQLDelight / SQLite JDBC =====
 -keep class app.cash.sqldelight.** { *; }
@@ -61,5 +49,9 @@
 -dontwarn java.sql.**
 
 
-# ===== Logging =====
--dontwarn org.slf4j.**
+# ===== kotlinx-io / coroutines / datetime =====
+-dontwarn kotlinx.io.**
+-dontwarn kotlinx.io.bytestring.**
+-dontwarn kotlinx.coroutines.**
+-keep class kotlinx.datetime.** { *; }
+-dontwarn kotlinx.datetime.**
