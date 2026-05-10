@@ -28,7 +28,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.LocalProgressVM
-import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.components.common.MaterialButton
 import org.siamdev.zappos.ui.components.order.OrderItemList
 import org.siamdev.zappos.ui.components.progress.ProgressBar
@@ -103,7 +102,7 @@ private fun MobileCashLayout(
             MaterialButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = "Confirm Cash",
-                buttonColor = if (viewModel.isChangeValid) YellowPrimary
+                buttonColor = if (viewModel.isChangeValid) MaterialTheme.colorScheme.primary
                 else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
                 onClick = { viewModel.confirmCash() }
             )
@@ -183,7 +182,7 @@ private fun DesktopCashLayout(
                 MaterialButton(
                     modifier = Modifier.fillMaxWidth(),
                     text = "Confirm Cash",
-                    buttonColor = if (viewModel.isChangeValid) YellowPrimary
+                    buttonColor = if (viewModel.isChangeValid) MaterialTheme.colorScheme.primary
                     else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
                     onClick = { viewModel.confirmCash() }
                 )
@@ -247,15 +246,15 @@ private fun ReceivedDisplay(
                     modifier = Modifier
                         .size(26.dp)
                         .clip(RoundedCornerShape(8.dp))
-                        .background(YellowPrimary.copy(alpha = 0.1f))
-                        .border(1.dp, YellowPrimary.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
+                        .border(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
                         .clickable { onClear() },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         Icons.Default.Clear,
                         contentDescription = "Clear",
-                        tint = YellowPrimary,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(14.dp)
                     )
                 }
@@ -267,7 +266,7 @@ private fun ReceivedDisplay(
             style = if (isLarge) MaterialTheme.typography.displaySmall
                     else MaterialTheme.typography.displayMedium,
             fontWeight = FontWeight.Bold,
-            color = if (isValid) YellowPrimary else MaterialTheme.colorScheme.onSurface,
+            color = if (isValid) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.End,
             maxLines = 1,
@@ -351,8 +350,8 @@ private fun QuickAmountRow(
                 modifier = Modifier
                     .weight(1f)
                     .clip(RoundedCornerShape(10.dp))
-                    .background(YellowPrimary.copy(alpha = 0.1f))
-                    .border(1.dp, YellowPrimary.copy(alpha = 0.25f), RoundedCornerShape(10.dp))
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
+                    .border(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.25f), RoundedCornerShape(10.dp))
                     .clickable { onAdd(amount) }
                     .padding(vertical = 8.dp),
                 contentAlignment = Alignment.Center
@@ -361,7 +360,7 @@ private fun QuickAmountRow(
                     text = "+$amount",
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.SemiBold,
-                    color = YellowPrimary
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
         }

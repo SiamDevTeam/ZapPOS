@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.theme.YellowDeep
 import org.siamdev.zappos.theme.YellowLight
-import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.theme.YellowSoft
 import org.siamdev.zappos.ui.components.common.GlassCard
 import org.siamdev.zappos.ui.components.common.MaterialButton
@@ -73,7 +72,7 @@ fun NostrLoginScreen(
                     brush = Brush.radialGradient(
                         colors = listOf(
                             YellowLight.copy(alpha = 0.25f),
-                            YellowPrimary.copy(alpha = 0.15f),
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
                             Color.Transparent
                         )
                     )
@@ -88,7 +87,7 @@ fun NostrLoginScreen(
                 .background(
                     brush = Brush.radialGradient(
                         colors = listOf(
-                            YellowPrimary.copy(alpha = 0.25f),
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
                             YellowDeep.copy(alpha = 0.15f),
                             Color.Transparent
                         )
@@ -106,7 +105,7 @@ fun NostrLoginScreen(
                     brush = Brush.radialGradient(
                         colors = listOf(
                             YellowSoft.copy(alpha = 0.18f),
-                            YellowPrimary.copy(alpha = 0.10f),
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.10f),
                             Color.Transparent
                         )
                     )
@@ -171,7 +170,7 @@ fun NostrLoginScreen(
                                 .weight(1f)
                                 .clip(RoundedCornerShape(10.dp))
                                 .background(
-                                    if (isSelected) YellowPrimary
+                                    if (isSelected) MaterialTheme.colorScheme.primary
                                     else Color.Transparent
                                 )
                                 .then(
@@ -347,7 +346,7 @@ fun NostrLoginScreen(
                     Icon(
                         imageVector = Icons.Default.Shield,
                         contentDescription = null,
-                        tint = YellowPrimary,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(18.dp)
                     )
                     Text(

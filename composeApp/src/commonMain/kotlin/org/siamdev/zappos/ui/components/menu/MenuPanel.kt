@@ -35,7 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.screens.sale.MenuItem
 
 @Composable
@@ -66,8 +65,8 @@ internal fun SearchFilter(
             singleLine = true,
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = YellowPrimary,
-                cursorColor = YellowPrimary
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                cursorColor = MaterialTheme.colorScheme.primary
             ),
             modifier = Modifier
                 .fillMaxWidth()
@@ -94,10 +93,10 @@ internal fun SearchFilter(
                         onClick = { onCategorySelect(null) },
                         label = { Text("All") },
                         colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = YellowPrimary.copy(alpha = 0.18f),
+                            selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.18f),
                             selectedLabelColor = MaterialTheme.colorScheme.onSurface
                         ),
-                        border = if (allSelected) BorderStroke(1.5.dp, YellowPrimary)
+                        border = if (allSelected) BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary)
                                  else BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
                     )
                     categories.forEach { cat ->
@@ -107,10 +106,10 @@ internal fun SearchFilter(
                             onClick = { onCategorySelect(if (isSelected) null else cat) },
                             label = { Text(cat.replaceFirstChar { it.uppercase() }) },
                             colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = YellowPrimary.copy(alpha = 0.18f),
+                                selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.18f),
                                 selectedLabelColor = MaterialTheme.colorScheme.onSurface
                             ),
-                            border = if (isSelected) BorderStroke(1.5.dp, YellowPrimary)
+                            border = if (isSelected) BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary)
                                      else BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
                         )
                     }
@@ -140,7 +139,7 @@ internal fun MenuViewToggle(
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(8.dp))
-                    .background(if (isSelected) YellowPrimary else Color.Transparent)
+                    .background(if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent)
                     .clickable { onViewModeChange(mode) }
                     .padding(6.dp),
                 contentAlignment = Alignment.Center

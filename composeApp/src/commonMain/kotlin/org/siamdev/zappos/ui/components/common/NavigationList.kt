@@ -20,16 +20,22 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Inventory
+import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Storefront
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,7 +47,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.luminance
 import org.jetbrains.compose.resources.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import org.siamdev.zappos.theme.YellowPrimary
+import org.siamdev.zappos.LocalSettingVM
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.zappos_dark_horizontal_v2
 import zappos.composeapp.generated.resources.zappos_white_horizontal_v2
@@ -58,6 +64,8 @@ fun NavigationList(
     onNavigateToProductEntry: () -> Unit = {},
     onNavigateToSetting: () -> Unit = {}
 ) {
+    val settingVM = LocalSettingVM.current
+    val activeTheme by settingVM.activeTheme.collectAsState()
     AnimatedVisibility(
         visible = isOpen,
         enter = fadeIn(tween(300)),
@@ -95,7 +103,7 @@ fun NavigationList(
                         .fillMaxWidth()
                         .padding(top = 20.dp, bottom = 20.dp)
                         .clip(RoundedCornerShape(16.dp))
-                        .background(YellowPrimary.copy(alpha = 0.08f))
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.08f))
                         .padding(horizontal = 16.dp, vertical = 20.dp)
                 ) {
                     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
@@ -111,7 +119,7 @@ fun NavigationList(
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                         HorizontalDivider(
-                            color = YellowPrimary.copy(alpha = 0.2f),
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
                             thickness = 1.dp
                         )
                         Spacer(modifier = Modifier.height(10.dp))
@@ -201,6 +209,13 @@ fun NavigationList(
                     thickness = 1.dp
                 )
                 Spacer(modifier = Modifier.height(8.dp))
+                DrawerThemeSwitch(
+                    isDark = activeTheme?.mode == "DARK",
+                    onToggle = { isDark ->
+                        if (isDark) settingVM.selectTheme("theme-dark")
+                        else settingVM.selectTheme("theme-light")
+                    }
+                )
                 DrawerNavigationItem(
                     icon = Icons.Default.Settings,
                     title = "Settings",
@@ -210,6 +225,47 @@ fun NavigationList(
 
             }
         }
+    }
+}
+
+@Composable
+private fun DrawerThemeSwitch(isDark: Boolean, onToggle: (Boolean) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .padding(horizontal = 12.dp, vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(36.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = if (isDark) Icons.Default.DarkMode else Icons.Default.LightMode,
+                contentDescription = "Theme",
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(18.dp)
+            )
+        }
+        Spacer(modifier = Modifier.width(14.dp))
+        Text(
+            text = "Dark Mode",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.weight(1f)
+        )
+        Switch(
+            checked = isDark,
+            onCheckedChange = onToggle,
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = Color.White,
+                checkedTrackColor = MaterialTheme.colorScheme.primary
+            )
+        )
     }
 }
 
@@ -231,13 +287,13 @@ private fun DrawerNavigationItem(
             modifier = Modifier
                 .size(36.dp)
                 .clip(RoundedCornerShape(10.dp))
-                .background(YellowPrimary.copy(alpha = 0.15f)),
+                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = icon,
                 contentDescription = title,
-                tint = YellowPrimary,
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(18.dp)
             )
         }
@@ -259,9 +315,13 @@ private fun DrawerNavigationItem(
 @Composable
 private fun NavigationDrawerPreview() {
     MaterialTheme {
-        NavigationList(
-            isOpen = true,
-            onDismiss = {}
-        )
+        androidx.compose.runtime.CompositionLocalProvider(
+            LocalSettingVM provides org.siamdev.zappos.ui.screens.setting.SettingViewModel()
+        ) {
+            NavigationList(
+                isOpen = true,
+                onDismiss = {}
+            )
+        }
     }
 }

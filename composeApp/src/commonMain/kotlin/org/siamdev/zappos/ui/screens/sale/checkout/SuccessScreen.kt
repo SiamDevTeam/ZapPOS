@@ -20,7 +20,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.siamdev.zappos.LocalProgressVM
-import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.components.common.MaterialButton
 import org.siamdev.zappos.ui.components.progress.ProgressBar
 import org.siamdev.zappos.ui.screens.sale.SaleOrderSteps
@@ -97,7 +96,7 @@ fun SuccessScreen(onOpen: () -> Unit = {}) {
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp),
             text        = "Open",
-            buttonColor = YellowPrimary,
+            buttonColor = MaterialTheme.colorScheme.primary,
             onClick     = onOpen
         )
         Spacer(Modifier.height(16.dp))

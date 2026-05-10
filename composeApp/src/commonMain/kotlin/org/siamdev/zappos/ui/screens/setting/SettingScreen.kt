@@ -29,7 +29,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.LocalSettingVM
 import androidx.compose.runtime.CompositionLocalProvider
 import io.ktor.client.request.invoke
-import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.components.menu.SearchFilter
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 
@@ -167,7 +166,7 @@ private fun DesktopLayout(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp))
-                        .background(YellowPrimary.copy(alpha = 0.05f))
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.05f))
                         .padding(12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -175,7 +174,7 @@ private fun DesktopLayout(
                         modifier = Modifier
                             .size(40.dp)
                             .clip(CircleShape)
-                            .background(YellowPrimary)
+                            .background(MaterialTheme.colorScheme.primary)
                     )
                     Spacer(Modifier.width(12.dp))
                     Column {
@@ -288,8 +287,8 @@ private fun SettingList(
 @Composable
 private fun SettingItemRow(item: SettingItemData, onClick: () -> Unit) {
     val isLogout = item.destination == SettingInfo.SIGN_OUT
-    val tintColor = if (isLogout) Color(0xFFE53935) else YellowPrimary
-    val bgColor = if (isLogout) Color(0xFFFFEBEE) else YellowPrimary.copy(alpha = 0.15f)
+    val tintColor = if (isLogout) Color(0xFFE53935) else MaterialTheme.colorScheme.primary
+    val bgColor = if (isLogout) Color(0xFFFFEBEE) else MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
 
     Row(
         modifier = Modifier

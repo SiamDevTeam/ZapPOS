@@ -39,7 +39,6 @@ import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import androidx.compose.ui.tooling.preview.Preview
-import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.components.menu.DefaultProductCategories
 import org.siamdev.zappos.ui.components.menu.MenuItemCard
 import org.siamdev.zappos.ui.components.menu.MenuViewMode
@@ -371,10 +370,10 @@ private fun ProductDetailPane(
                     onClick = onBack,
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
-                        .background(YellowPrimary.copy(alpha = 0.15f))
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
                 ) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null,
-                        tint = YellowPrimary, modifier = Modifier.size(18.dp))
+                        tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
                 }
                 Spacer(Modifier.width(12.dp))
                 Text("Product Details",
@@ -386,10 +385,10 @@ private fun ProductDetailPane(
                     onClick = onEdit,
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
-                        .background(YellowPrimary.copy(alpha = 0.15f))
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
                 ) {
                     Icon(Icons.Default.Edit, contentDescription = "Edit",
-                        tint = YellowPrimary, modifier = Modifier.size(18.dp))
+                        tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
                 }
             }
         }
@@ -451,16 +450,16 @@ private fun ProductDetailPane(
                             Row(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(6.dp))
-                                    .background(YellowPrimary.copy(alpha = 0.15f))
+                                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
                                     .padding(horizontal = 8.dp, vertical = 4.dp),
                                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Icon(Icons.Default.Star, contentDescription = null,
-                                    tint = YellowPrimary, modifier = Modifier.size(12.dp))
+                                    tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(12.dp))
                                 Text("Featured",
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = YellowPrimary)
+                                    color = MaterialTheme.colorScheme.primary)
                             }
                         }
                     }
@@ -530,7 +529,7 @@ private fun ProductDetailPane(
                             modifier = Modifier.fillMaxWidth().height(48.dp),
                             shape = RoundedCornerShape(12.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = YellowPrimary,
+                                containerColor = MaterialTheme.colorScheme.primary,
                                 contentColor = Color.Black
                             )
                         ) {

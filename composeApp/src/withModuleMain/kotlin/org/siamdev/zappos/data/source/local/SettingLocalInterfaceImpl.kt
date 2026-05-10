@@ -100,6 +100,14 @@ class SettingLocalInterfaceImpl(private val db: AppDatabase) : SettingLocalInter
     override suspend fun seedCurrency(id: String, code: String, name: String, symbol: String) =
         currencyDao.insert(code, name, symbol, now(), "SYSTEM")
 
+    override suspend fun getAccentColor(): String? =
+        settingsDao.selectSystem()?.I_ACCENT_COLOR
+
+    override suspend fun setAccentColor(hex: String): Long {
+        settingsDao.updateAccentColor(hex, now(), "USER")
+        return 1L
+    }
+
     override suspend fun initSettings() {
         if (settingsDao.selectSystem() == null) {
             settingsDao.initSystem(null, null, null, now())

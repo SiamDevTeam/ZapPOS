@@ -31,7 +31,6 @@ import org.jetbrains.compose.resources.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.theme.YellowDeep
 import org.siamdev.zappos.theme.YellowLight
-import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.theme.YellowSoft
 import org.siamdev.zappos.ui.components.common.GlassCard
 import org.siamdev.zappos.ui.components.common.MaterialButton
@@ -63,7 +62,7 @@ fun LoginScreen(
                 .background(
                     brush = Brush.radialGradient(
                         colors = listOf(
-                            YellowPrimary.copy(alpha = 0.15f),
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
                             Color.Transparent
                         )
                     ),
@@ -81,7 +80,7 @@ fun LoginScreen(
                 .background(
                     brush = Brush.radialGradient(
                         colors = listOf(
-                            YellowPrimary.copy(alpha = 0.22f),
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.22f),
                             Color.Transparent
                         )
                     )

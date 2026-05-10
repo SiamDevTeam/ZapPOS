@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.screens.sale.checkout.formatDouble
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.sat_unit
@@ -154,7 +153,7 @@ private fun VatChip(rate: Float, isSelected: Boolean, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
-            .background(if (isSelected) YellowPrimary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f))
+            .background(if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f))
             .clickable { onClick() }
             .padding(horizontal = 10.dp, vertical = 5.dp),
         contentAlignment = Alignment.Center

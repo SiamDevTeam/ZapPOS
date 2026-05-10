@@ -29,7 +29,6 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import org.jetbrains.compose.resources.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.screens.sale.checkout.PaymentMethod
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.prompt_pay
@@ -66,7 +65,7 @@ fun PaymentMethodList(
                     .clip(RoundedCornerShape(12.dp))
                     .background(
                         when {
-                            isSelected && showBorder -> YellowPrimary.copy(alpha = 0.1f)
+                            isSelected && showBorder -> MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
                             isSelected -> MaterialTheme.colorScheme.surfaceVariant
                             else -> Color.Transparent
                         }
@@ -74,7 +73,7 @@ fun PaymentMethodList(
                     .then(
                         if (showBorder) Modifier.border(
                             width = if (isSelected) 1.5.dp else 1.dp,
-                            color = if (isSelected) YellowPrimary
+                            color = if (isSelected) MaterialTheme.colorScheme.primary
                             else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.07f),
                             shape = RoundedCornerShape(12.dp)
                         ) else Modifier
@@ -93,7 +92,7 @@ fun PaymentMethodList(
                             imageVector = icon.icon,
                             contentDescription = null,
                             tint = when {
-                                isSelected && showBorder -> YellowPrimary
+                                isSelected && showBorder -> MaterialTheme.colorScheme.primary
                                 isSelected -> MaterialTheme.colorScheme.onSurface
                                 else -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                             },
@@ -123,7 +122,7 @@ fun PaymentMethodList(
                 if (isSelected && showBorder) {
                     Icon(
                         Icons.Default.CheckCircle, null,
-                        tint = YellowPrimary,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(20.dp)
                     )
                 }

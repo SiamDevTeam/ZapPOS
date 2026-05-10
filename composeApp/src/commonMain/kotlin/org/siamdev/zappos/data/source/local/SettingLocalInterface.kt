@@ -49,6 +49,10 @@ interface SettingLocalInterface {
     suspend fun setShowSecondaryCurrency(show: Boolean): Long
     suspend fun seedCurrency(id: String, code: String, name: String, symbol: String): Long
 
+    // Accent / brand color (stored as 8-char ARGB hex string; null = default)
+    suspend fun getAccentColor(): String?
+    suspend fun setAccentColor(hex: String): Long
+
     // Settings row bootstrap
     suspend fun initSettings()
 }

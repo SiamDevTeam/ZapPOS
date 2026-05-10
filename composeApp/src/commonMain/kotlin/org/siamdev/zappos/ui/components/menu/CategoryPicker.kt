@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import org.siamdev.zappos.theme.YellowPrimary
 
 data class SubCategory(val id: String, val name: String)
 
@@ -110,11 +109,11 @@ fun CategoryPicker(
                         Icon(cat.icon, contentDescription = null, modifier = Modifier.size(16.dp))
                     },
                     colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = YellowPrimary.copy(alpha = 0.18f),
-                        selectedLeadingIconColor = YellowPrimary,
+                        selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.18f),
+                        selectedLeadingIconColor = MaterialTheme.colorScheme.primary,
                         selectedLabelColor = MaterialTheme.colorScheme.onSurface
                     ),
-                    border = if (isSelected) BorderStroke(1.5.dp, YellowPrimary)
+                    border = if (isSelected) BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary)
                              else BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
                 )
             }
@@ -142,11 +141,11 @@ fun CategoryPicker(
                                         Text(sub.name, style = MaterialTheme.typography.bodySmall)
                                     },
                                     colors = FilterChipDefaults.filterChipColors(
-                                        selectedContainerColor = YellowPrimary.copy(alpha = 0.12f),
-                                        selectedLeadingIconColor = YellowPrimary,
+                                        selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
+                                        selectedLeadingIconColor = MaterialTheme.colorScheme.primary,
                                         selectedLabelColor = MaterialTheme.colorScheme.onSurface
                                     ),
-                                    border = if (isSubSelected) BorderStroke(1.5.dp, YellowPrimary)
+                                    border = if (isSubSelected) BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary)
                                              else BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                                     modifier = Modifier.weight(1f)
                                 )

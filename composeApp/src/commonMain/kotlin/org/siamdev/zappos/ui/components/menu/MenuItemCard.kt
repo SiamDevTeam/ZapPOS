@@ -38,7 +38,6 @@ import androidx.compose.ui.unit.Dp
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.sat_unit
 import org.jetbrains.compose.resources.painterResource
-import org.siamdev.zappos.theme.YellowPrimary
 import zappos.composeapp.generated.resources.compose_multiplatform
 
 
@@ -127,7 +126,7 @@ private fun MenuItemCardList(
                         Icon(
                             Icons.Default.Star,
                             contentDescription = null,
-                            tint = YellowPrimary,
+                            tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(17.dp)
                         )
                     }
@@ -257,7 +256,7 @@ private fun MenuItemCardGrid(
                             Icon(
                                 Icons.Default.Star,
                                 contentDescription = null,
-                                tint = YellowPrimary,
+                                tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(iconSize)
                             )
                         }

@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
-import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.screens.sale.MenuItem
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.sat_unit
@@ -61,7 +60,7 @@ fun OrderPanel(
                 Icon(
                     imageVector = Icons.Default.ShoppingCart,
                     contentDescription = null,
-                    tint = YellowPrimary,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(20.dp)
                 )
                 Spacer(Modifier.width(8.dp))

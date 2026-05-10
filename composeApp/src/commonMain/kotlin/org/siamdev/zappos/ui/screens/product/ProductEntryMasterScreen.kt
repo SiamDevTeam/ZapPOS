@@ -26,7 +26,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
-import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.components.menu.CategoryPicker
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 
@@ -381,9 +380,9 @@ private fun SaveButton(
             .height(52.dp),
         shape = RoundedCornerShape(12.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = YellowPrimary,
+            containerColor = MaterialTheme.colorScheme.primary,
             contentColor = Color.Black,
-            disabledContainerColor = YellowPrimary.copy(alpha = 0.3f),
+            disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
             disabledContentColor = Color.Black.copy(alpha = 0.4f)
         )
     ) {
@@ -470,7 +469,7 @@ private fun EntryTextField(
         leadingIcon = {
             Icon(
                 leadingIcon, contentDescription = null,
-                tint = if (value.isNotEmpty()) YellowPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
+                tint = if (value.isNotEmpty()) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(20.dp)
             )
         },
@@ -479,9 +478,9 @@ private fun EntryTextField(
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         shape = RoundedCornerShape(12.dp),
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = YellowPrimary,
-            focusedLabelColor = YellowPrimary,
-            cursorColor = YellowPrimary
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            focusedLabelColor = MaterialTheme.colorScheme.primary,
+            cursorColor = MaterialTheme.colorScheme.primary
         ),
         modifier = modifier.fillMaxWidth()
     )
@@ -504,8 +503,8 @@ private fun UnitDropdown(
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = YellowPrimary,
-                focusedLabelColor = YellowPrimary
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                focusedLabelColor = MaterialTheme.colorScheme.primary
             ),
             modifier = Modifier.fillMaxWidth().menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
         )
@@ -515,7 +514,7 @@ private fun UnitDropdown(
                     text = { Text(u) },
                     onClick = { onSelect(u); expanded = false },
                     leadingIcon = if (u == selected) {
-                        { Icon(Icons.Default.Check, contentDescription = null, tint = YellowPrimary, modifier = Modifier.size(16.dp)) }
+                        { Icon(Icons.Default.Check, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(16.dp)) }
                     } else null
                 )
             }
@@ -545,14 +544,14 @@ private fun ToggleRow(
                 .size(38.dp)
                 .clip(RoundedCornerShape(10.dp))
                 .background(
-                    if (checked) YellowPrimary.copy(alpha = 0.15f)
+                    if (checked) MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
                     else MaterialTheme.colorScheme.surfaceVariant
                 ),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 icon, contentDescription = null,
-                tint = if (checked) YellowPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
+                tint = if (checked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(20.dp)
             )
         }
@@ -563,7 +562,7 @@ private fun ToggleRow(
         }
         Switch(
             checked = checked, onCheckedChange = onCheckedChange,
-            colors = SwitchDefaults.colors(checkedTrackColor = YellowPrimary, checkedThumbColor = Color.White)
+            colors = SwitchDefaults.colors(checkedTrackColor = MaterialTheme.colorScheme.primary, checkedThumbColor = Color.White)
         )
     }
 }

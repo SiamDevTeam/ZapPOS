@@ -26,7 +26,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
-import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 
 @Composable
@@ -78,7 +77,7 @@ private fun MobileHomeContent(onNavigateToMenu: () -> Unit) {
                 icon = Icons.Default.CurrencyLira,
                 label = "Today Sales",
                 value = "0.00",
-                iconTint = YellowPrimary
+                iconTint = MaterialTheme.colorScheme.primary
             )
             StatCard(
                 modifier = Modifier.weight(1f),
@@ -127,7 +126,7 @@ private fun DesktopHomeContent(onNavigateToMenu: () -> Unit) {
                 icon = Icons.Default.CurrencyLira,
                 label = "Today Sales",
                 value = "0.00",
-                iconTint = YellowPrimary,
+                iconTint = MaterialTheme.colorScheme.primary,
                 large = true
             )
             StatCard(
@@ -218,7 +217,7 @@ private fun QuickActionCard(onNavigateToMenu: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(YellowPrimary)
+            .background(MaterialTheme.colorScheme.primary)
             .clickable { onNavigateToMenu() }
             .padding(20.dp),
         verticalAlignment = Alignment.CenterVertically,

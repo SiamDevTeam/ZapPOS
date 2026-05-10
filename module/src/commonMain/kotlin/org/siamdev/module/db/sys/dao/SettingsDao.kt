@@ -29,4 +29,7 @@ class SettingsDao(private val db: AppDatabase) {
 
     suspend fun updateShowSecondaryCurrency(show: Long, updatedAt: Long, updatedBy: String) =
         db.sys { sETTINGS_CRUDQueries.updateShowSecondaryCurrency(show, updatedAt, updatedBy) }
+
+    suspend fun updateAccentColor(accentColor: String, updatedAt: Long, updatedBy: String) =
+        db.sys { sETTINGS_CRUDQueries.updateAccentColor(accentColor, updatedAt, updatedBy) }
 }

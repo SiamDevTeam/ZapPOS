@@ -17,6 +17,9 @@ CREATE TABLE T_SYS_SETTINGS (
     I_SECONDARY_CURRENCY_ID     TEXT,
     I_SHOW_SECONDARY_CURRENCY   INTEGER NOT NULL DEFAULT 0,    -- 0 = off, 1 = on
 
+    -- accent / brand color (ARGB hex string, e.g. "FFFCBE00"; NULL = default yellow)
+    I_ACCENT_COLOR               TEXT,
+
     -- misc flags
     I_NOTIFICATION_ENABLED      INTEGER NOT NULL DEFAULT 1,    -- 0 = off, 1 = on
 

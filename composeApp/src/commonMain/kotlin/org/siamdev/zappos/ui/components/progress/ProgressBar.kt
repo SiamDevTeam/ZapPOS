@@ -42,7 +42,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.siamdev.zappos.LocalProgressVM
-import org.siamdev.zappos.theme.YellowPrimary
 
 private val DotContainerSize = 22.dp
 private val DotActiveSize = 20.dp
@@ -156,7 +155,7 @@ private fun ProgressLine(
             modifier = Modifier
                 .fillMaxHeight()
                 .fillMaxWidth(fillProgress)
-                .background(YellowPrimary)
+                .background(MaterialTheme.colorScheme.primary)
         )
     }
 }
@@ -180,7 +179,7 @@ private fun ProgressDot(
 
     val dotBackgroundColor by animateColorAsState(
         targetValue = if (isDone || isActive) {
-            YellowPrimary
+            MaterialTheme.colorScheme.primary
         } else {
             MaterialTheme.colorScheme.onSurface.copy(alpha = 0.10f)
         },

@@ -36,7 +36,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.screens.sale.MenuItem
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.sat_unit
@@ -138,7 +137,7 @@ fun OrderItemCard(
                         textAlign = TextAlign.Center
                     ),
                     singleLine = true,
-                    cursorBrush = SolidColor(YellowPrimary),
+                    cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Done
@@ -146,7 +145,7 @@ fun OrderItemCard(
                     keyboardActions = KeyboardActions(onDone = { confirmEdit() }),
                     modifier = Modifier
                         .widthIn(min = 32.dp, max = 60.dp)
-                        .border(1.dp, YellowPrimary, RoundedCornerShape(4.dp))
+                        .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(4.dp))
                         .padding(horizontal = 6.dp, vertical = 2.dp)
                         .focusRequester(focusRequester)
                         .onKeyEvent { event ->

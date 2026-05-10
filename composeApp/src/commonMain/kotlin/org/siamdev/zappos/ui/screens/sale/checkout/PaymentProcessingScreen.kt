@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.LocalProgressVM
-import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.components.common.MaterialButton
 import org.siamdev.zappos.ui.components.order.OrderItemList
 import org.siamdev.zappos.ui.components.progress.ProgressBar
@@ -152,7 +151,7 @@ private fun MobileProcessingLayout(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            Icon(Icons.Default.Receipt, null, modifier = Modifier.size(16.dp), tint = YellowPrimary)
+                            Icon(Icons.Default.Receipt, null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.primary)
                             Text(
                                 text = "Items",
                                 style = MaterialTheme.typography.labelMedium,
@@ -162,13 +161,13 @@ private fun MobileProcessingLayout(
                             Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(6.dp))
-                                    .background(YellowPrimary.copy(alpha = 0.15f))
+                                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
                                     .padding(horizontal = 8.dp, vertical = 2.dp)
                             ) {
                                 Text(
                                     text = "${viewModel.orderItems.size}",
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = YellowPrimary,
+                                    color = MaterialTheme.colorScheme.primary,
                                     fontWeight = FontWeight.Bold
                                 )
                             }

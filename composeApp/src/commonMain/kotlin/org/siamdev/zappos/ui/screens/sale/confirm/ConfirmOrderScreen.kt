@@ -25,7 +25,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.LocalMenuVM
 import org.siamdev.zappos.LocalProgressVM
-import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.components.order.FiatAmount
 import org.siamdev.zappos.ui.components.order.OrderItemCard
 import org.siamdev.zappos.ui.components.progress.ProgressBar
@@ -285,9 +284,9 @@ private fun CheckoutButton(enabled: Boolean, onClick: () -> Unit) {
             .height(52.dp),
         shape = RoundedCornerShape(12.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = YellowPrimary,
+            containerColor = MaterialTheme.colorScheme.primary,
             contentColor = Color.Black,
-            disabledContainerColor = YellowPrimary.copy(alpha = 0.3f),
+            disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
             disabledContentColor = Color.Black.copy(alpha = 0.4f)
         )
     ) {

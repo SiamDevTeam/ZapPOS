@@ -5,6 +5,18 @@
 package org.siamdev.zappos.theme
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+
+// Converts a Color to an 8-char ARGB hex string (e.g. "FFFCBE00")
+fun Color.toHex(): String = buildString {
+    val argb = toArgb()
+    for (shift in 24 downTo 0 step 8) {
+        append(((argb ushr shift) and 0xFF).toString(16).padStart(2, '0'))
+    }
+}.uppercase()
+
+// Parses an 8-char ARGB hex string back to a Color; falls back to YellowPrimary on error
+fun colorFromHex(hex: String): Color = runCatching { Color(hex.toLong(16)) }.getOrDefault(YellowPrimary)
 
 // Brand
 val YellowPrimary = Color(0xFFFCBE00)
@@ -41,7 +53,7 @@ val LightOnPrimary         = Color(0xFF1A1A1A)  // text/icon on yellow
 val LightPrimaryContainer  = Color(0xFFFFF3CD)  // tinted yellow container
 val LightOnPrimaryContainer = Color(0xFF3A2D00) // text inside container
 
-// ─── Map / Category colors ────────────────────────────────────────────────────
+// Category colors
 val MapLikeColors = listOf(
     // Reds / Pinks
     Color(0xFFEF5350), Color(0xFFE57373), Color(0xFFEC407A), Color(0xFFD81B60),

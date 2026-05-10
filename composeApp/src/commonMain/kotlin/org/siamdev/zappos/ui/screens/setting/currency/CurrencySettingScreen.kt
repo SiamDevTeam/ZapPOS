@@ -17,7 +17,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
 import org.siamdev.zappos.data.source.local.CurrencyItem
-import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 import org.siamdev.zappos.ui.screens.sale.checkout.SectionLabel
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
@@ -46,7 +45,7 @@ fun CurrencySettingScreen(
 
         if (isLoading) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(color = YellowPrimary)
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
             }
             return@Column
         }
@@ -121,7 +120,7 @@ private fun SecondaryCurrencyHeader(enabled: Boolean, onToggle: (Boolean) -> Uni
             onCheckedChange = onToggle,
             colors = SwitchDefaults.colors(
                 checkedThumbColor = Color.White,
-                checkedTrackColor = YellowPrimary
+                checkedTrackColor = MaterialTheme.colorScheme.primary
             )
         )
     }
@@ -129,7 +128,7 @@ private fun SecondaryCurrencyHeader(enabled: Boolean, onToggle: (Boolean) -> Uni
 
 @Composable
 private fun CurrencyCard(currency: CurrencyItem, isActive: Boolean, onClick: () -> Unit) {
-    val bg = if (isActive) YellowPrimary.copy(alpha = 0.12f) else MaterialTheme.colorScheme.surface
+    val bg = if (isActive) MaterialTheme.colorScheme.primary.copy(alpha = 0.12f) else MaterialTheme.colorScheme.surface
 
     Row(
         modifier = Modifier
@@ -138,7 +137,7 @@ private fun CurrencyCard(currency: CurrencyItem, isActive: Boolean, onClick: () 
             .border(
                 width = 1.dp,
                 color = if (isActive)
-                    YellowPrimary.copy(alpha = 0.4f)
+                    MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
                 else
                     MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f),
                 shape = RoundedCornerShape(12.dp)
@@ -169,7 +168,7 @@ private fun CurrencyCard(currency: CurrencyItem, isActive: Boolean, onClick: () 
         RadioButton(
             selected = isActive,
             onClick = onClick,
-            colors = RadioButtonDefaults.colors(selectedColor = YellowPrimary)
+            colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.primary)
         )
     }
 }
@@ -178,7 +177,7 @@ private fun CurrencyCard(currency: CurrencyItem, isActive: Boolean, onClick: () 
 private fun CurrencyIcon(code: String, symbol: String, isActive: Boolean) {
     val boxBg = when (code) {
         "BTC" -> Color.Transparent
-        else -> if (isActive) YellowPrimary else YellowPrimary.copy(alpha = 0.15f)
+        else -> if (isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
     }
 
     Box(
@@ -203,7 +202,7 @@ private fun CurrencyIcon(code: String, symbol: String, isActive: Boolean) {
             )
             else -> Text(
                 text = symbol,
-                color = if (isActive) Color.White else YellowPrimary,
+                color = if (isActive) Color.White else MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.titleMedium
             )
         }

@@ -43,6 +43,9 @@ class SettingViewModel : ViewModel() {
     private val _showSecondaryCurrency = MutableStateFlow(false)
     val showSecondaryCurrency = _showSecondaryCurrency.asStateFlow()
 
+    private val _accentColor = MutableStateFlow<String?>(null)
+    val accentColor = _accentColor.asStateFlow()
+
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
 
@@ -66,6 +69,7 @@ class SettingViewModel : ViewModel() {
         _primaryCurrency.value       = src.getPrimaryCurrency()
         _secondaryCurrency.value     = src.getSecondaryCurrency()
         _showSecondaryCurrency.value = src.getShowSecondaryCurrency()
+        _accentColor.value           = src.getAccentColor()
         _isLoading.value = false
     }
 
@@ -76,9 +80,9 @@ class SettingViewModel : ViewModel() {
             src.seedTheme("theme-dark",   "Dark",       "DARK",   false)
         }
         if (src.getFonts().isEmpty()) {
-            src.seedFont("font-default", "Default",     14.0)
-            src.seedFont("font-large",   "Large",       18.0)
-            src.seedFont("font-xlarge",  "Extra Large", 22.0)
+            src.seedFont("font-default", "Small",     12.0)
+            src.seedFont("font-large",   "Medium",       16.0)
+            src.seedFont("font-xlarge",  "Large", 20.0)
         }
         if (src.getCurrencies().isEmpty()) {
             src.seedCurrency("ccy-thb",  "THB",  "Thai Baht", "฿")
@@ -133,6 +137,14 @@ class SettingViewModel : ViewModel() {
         viewModelScope.launch {
             runCatching { source?.setShowSecondaryCurrency(show) }
                 .onSuccess { _showSecondaryCurrency.value = show }
+                .onFailure { _writeError.value = it }
+        }
+    }
+
+    fun selectAccentColor(hex: String) {
+        viewModelScope.launch {
+            runCatching { source?.setAccentColor(hex) }
+                .onSuccess { _accentColor.value = hex }
                 .onFailure { _writeError.value = it }
         }
     }

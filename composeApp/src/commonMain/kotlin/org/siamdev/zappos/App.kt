@@ -8,7 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import org.siamdev.zappos.theme.ThemeMode
+import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.theme.ZapposTheme
+import org.siamdev.zappos.theme.colorFromHex
 import org.siamdev.zappos.navigation.NavigationRoot
 import org.siamdev.zappos.navigation.Route
 import org.siamdev.zappos.ui.components.debug.DebugScreenSize
@@ -22,6 +24,7 @@ fun App(platform: Platform, splashViewModel: SplashViewModel) {
     val settingVM = viewModelOf { SettingViewModel() }
     val activeTheme by settingVM.activeTheme.collectAsState()
     val activeFont by settingVM.activeFont.collectAsState()
+    val accentColorHex by settingVM.accentColor.collectAsState()
 
     val themeMode = when (activeTheme?.mode) {
         "DARK" -> ThemeMode.DARK
@@ -30,6 +33,7 @@ fun App(platform: Platform, splashViewModel: SplashViewModel) {
         else -> ThemeMode.SYSTEM
     }
     val fontScale = (activeFont?.size?.toFloat() ?: DEFAULT_FONT_SIZE) / DEFAULT_FONT_SIZE
+    val accentColor = accentColorHex?.let { colorFromHex(it) } ?: YellowPrimary
 
     val start = when (platform.type) {
         PlatformType.DESKTOP -> Route.Login
@@ -37,7 +41,7 @@ fun App(platform: Platform, splashViewModel: SplashViewModel) {
         PlatformType.WEB -> Route.Login
     }
 
-    ZapposTheme(themeMode = themeMode, fontScale = fontScale) {
+    ZapposTheme(themeMode = themeMode, accentColor = accentColor, fontScale = fontScale) {
         VMContainer(settingVM = settingVM) {
             NavigationRoot(
                 platform = platform,
