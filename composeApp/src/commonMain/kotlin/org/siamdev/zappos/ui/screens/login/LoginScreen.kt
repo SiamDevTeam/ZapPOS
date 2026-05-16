@@ -4,10 +4,9 @@
  */
 package org.siamdev.zappos.ui.screens.login
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Key
@@ -18,7 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
@@ -29,9 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import org.siamdev.zappos.theme.YellowDeep
-import org.siamdev.zappos.theme.YellowLight
-import org.siamdev.zappos.theme.YellowSoft
 import org.siamdev.zappos.ui.components.common.GlassCard
 import org.siamdev.zappos.ui.components.common.MaterialButton
 import org.siamdev.zappos.utils.LockOrientation
@@ -46,46 +42,34 @@ fun LoginScreen(
     onLoginAnonymous: () -> Unit = {}
 ) {
     LockOrientation(Orientation.PORTRAIT)
-    BoxWithConstraints(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val isWide = maxWidth >= 600.dp
         val cardWidth = if (isWide) 420.dp else maxWidth
 
-        // background glow บนซ้าย
-        Box(
-            modifier = Modifier
-                .size(300.dp)
-                .offset(x = (-80).dp, y = (-80).dp)
-                .background(
-                    brush = Brush.radialGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
-                            Color.Transparent
-                        )
-                    ),
-                    shape = RoundedCornerShape(50)
-                )
-        )
+        // Capture theme colors before entering Canvas (no composable context inside)
+        val bgColor      = MaterialTheme.colorScheme.background
+        val primaryGlow  = MaterialTheme.colorScheme.primary
+        val secondaryGlow = MaterialTheme.colorScheme.secondary
 
-
-        // glow ขวาล่าง
-        Box(
-            modifier = Modifier
-                .size(400.dp)
-                .align(Alignment.BottomEnd)
-                .offset(x = 100.dp, y = 100.dp)
-                .background(
-                    brush = Brush.radialGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.22f),
-                            Color.Transparent
-                        )
-                    )
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            drawRect(bgColor)
+            // Primary glow — upper left
+            drawRect(
+                brush = Brush.radialGradient(
+                    colors = listOf(primaryGlow.copy(alpha = 0.45f), Color.Transparent),
+                    center = Offset(size.width * 0.15f, size.height * 0.12f),
+                    radius = size.minDimension * 0.72f
                 )
-        )
+            )
+            // Secondary glow — upper right
+            drawRect(
+                brush = Brush.radialGradient(
+                    colors = listOf(secondaryGlow.copy(alpha = 0.4f), Color.Transparent),
+                    center = Offset(size.width * 0.88f, size.height * 0.08f),
+                    radius = size.minDimension * 0.65f
+                )
+            )
+        }
 
         Column(
             modifier = Modifier.fillMaxSize(),

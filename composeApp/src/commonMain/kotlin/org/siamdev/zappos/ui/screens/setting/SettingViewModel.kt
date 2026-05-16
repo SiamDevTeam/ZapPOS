@@ -106,24 +106,17 @@ class SettingViewModel : ViewModel() {
             )
         }
 
-        if (src.getFonts().isEmpty()) {
-            src.seedFont(
-                id = "font-default",
-                name = "Small",
-                size = 12.0
-            )
-
-            src.seedFont(
-                id = "font-large",
-                name = "Medium",
-                size = 16.0
-            )
-
-            src.seedFont(
-                id = "font-xlarge",
-                name = "Large",
-                size = 20.0
-            )
+        // Seed any integer sizes from 12–20 that are not yet in the DB.
+        // INSERT OR IGNORE in the DAO makes this safe to run on every boot.
+        val existingSizes = src.getFonts().map { it.size.toInt() }.toSet()
+        for (size in 12..20) {
+            if (size !in existingSizes) {
+                src.seedFont(
+                    id = "font-size-$size",
+                    name = "$size",
+                    size = size.toDouble()
+                )
+            }
         }
 
         if (src.getCurrencies().isEmpty()) {

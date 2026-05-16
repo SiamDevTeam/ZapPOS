@@ -4,6 +4,8 @@
  */
 package org.siamdev.zappos
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,6 +20,9 @@ class MainActivity : ComponentActivity() {
         installSplashScreen().setKeepOnScreenCondition { false }
 
         enableEdgeToEdge()
+        // Prevent the window's default white background from flashing through
+        // during Compose AnimatedContent transitions in dark theme.
+        window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         /*        var isActive = true
                 lifecycleScope.launch { delay(2000L); isActive = false }
                 splashScreen.apply { setKeepOnScreenCondition { false } }*/

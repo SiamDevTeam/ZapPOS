@@ -36,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import org.siamdev.zappos.LocalSettingVM
 import org.siamdev.zappos.ui.screens.sale.MenuItem
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.sat_unit
@@ -49,6 +50,7 @@ fun OrderItemCard(
     onDelete: (() -> Unit)? = null,
     isDesktop: Boolean = false
 ) {
+    val showSecondary by LocalSettingVM.current.showSecondaryCurrency.collectAsState()
     var isEditing by remember { mutableStateOf(false) }
     var editText by remember { mutableStateOf(TextFieldValue("")) }
     val focusRequester = remember { FocusRequester() }
@@ -89,19 +91,21 @@ fun OrderItemCard(
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     )
                 }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        painter = painterResource(Res.drawable.sat_unit),
-                        contentDescription = null,
-                        tint = Color(0xFFFFB700),
-                        modifier = Modifier.size(11.dp)
-                    )
-                    Spacer(Modifier.width(3.dp))
-                    Text(
-                        text = item.priceSat,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color(0xFFFFB700)
-                    )
+                if (showSecondary) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(Res.drawable.sat_unit),
+                            contentDescription = null,
+                            tint = Color(0xFFFFB700),
+                            modifier = Modifier.size(11.dp)
+                        )
+                        Spacer(Modifier.width(3.dp))
+                        Text(
+                            text = item.priceSat,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color(0xFFFFB700)
+                        )
+                    }
                 }
             }
         }

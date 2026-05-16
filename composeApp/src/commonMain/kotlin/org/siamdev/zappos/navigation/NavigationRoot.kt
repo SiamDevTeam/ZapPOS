@@ -4,16 +4,18 @@
  */
 package org.siamdev.zappos.navigation
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
@@ -43,7 +45,6 @@ import org.siamdev.zappos.ui.screens.setting.SettingScreen
 import org.siamdev.zappos.ui.screens.setting.SettingInfo
 import org.siamdev.zappos.ui.screens.splash.SplashScreen
 import org.siamdev.zappos.ui.screens.splash.SplashViewModel
-import org.siamdev.zappos.LocalSettingVM
 
 @Composable
 fun NavigationRoot(
@@ -104,37 +105,22 @@ fun NavigationRoot(
 
     NavDisplay(
         backStack = backStack,
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
+        transitionSpec = {
+            (slideInHorizontally(tween(300)) { it / 8 } + fadeIn(tween(300))) togetherWith
+            (slideOutHorizontally(tween(300)) { -it / 8 } + fadeOut(tween(300)))
+        },
+        popTransitionSpec = {
+            (slideInHorizontally(tween(300)) { -it / 8 } + fadeIn(tween(300))) togetherWith
+            (slideOutHorizontally(tween(300)) { it / 8 } + fadeOut(tween(300)))
+        },
         entryDecorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator()
         ),
         entryProvider = { key ->
             NavEntry(key) {
-                var visible by remember { mutableStateOf(false) }
-                LaunchedEffect(Unit) { visible = true }
-
-                val (enterAnim, exitAnim) = when (key) {
-                    /*is Route.Splash -> {
-                        fadeIn(animationSpec = tween(500)) + slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(500)) to
-                                fadeOut(animationSpec = tween(500)) + slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(500))
-                    }*/
-                    is Route.Login -> {
-                        /*fadeIn(animationSpec = tween(300)) + slideInHorizontally(initialOffsetX = { it / 2 }, animationSpec = tween(300)) to
-                                fadeOut(animationSpec = tween(300)) + slideOutHorizontally(targetOffsetX = { -it / 2 }, animationSpec = tween(300))*/
-                        fadeIn(animationSpec = tween(400)) to fadeOut(animationSpec = tween(400))
-                    }
-                    is Route.Menu -> {
-                        fadeIn(animationSpec = tween(400)) to fadeOut(animationSpec = tween(400))
-                    }
-                    else -> fadeIn() to fadeOut()
-                }
-
-                AnimatedVisibility(
-                    visible = visible,
-                    enter = enterAnim,
-                    exit = exitAnim
-                ) {
-                    when (key) {
+                when (key) {
 
                         // Splash
                         is Route.Splash -> SplashScreen(
@@ -276,10 +262,8 @@ fun NavigationRoot(
                             backStack = backStack,
                             enableDrawer = false
                         ) { navActions, _ ->
-                            val vm = LocalSettingVM.current
                             AppearanceSettingScreen(
-                                onNavigateBack = { navActions.back() },
-                                viewModel = vm
+                                onNavigateBack = { navActions.back() }
                             )
                         }
 
@@ -288,10 +272,8 @@ fun NavigationRoot(
                             backStack = backStack,
                             enableDrawer = false
                         ) { navActions, _ ->
-                            val vm = LocalSettingVM.current
                             CurrencySettingScreen(
-                                onNavigateBack = { navActions.back() },
-                                viewModel = vm
+                                onNavigateBack = { navActions.back() }
                             )
                         }
 
@@ -302,8 +284,6 @@ fun NavigationRoot(
 
                         else -> error("Unknown NavKey: $key")
                     }
-
-                }
             }
         }
     )

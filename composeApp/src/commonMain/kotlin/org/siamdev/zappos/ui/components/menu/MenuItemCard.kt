@@ -39,6 +39,7 @@ import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.sat_unit
 import org.jetbrains.compose.resources.painterResource
 import zappos.composeapp.generated.resources.compose_multiplatform
+import org.siamdev.zappos.LocalSettingVM
 
 
 enum class MenuViewMode { LIST, GRID }
@@ -348,6 +349,7 @@ private fun MenuImage(
 
 @Composable
 private fun PriceRow(priceBaht: String, priceSat: String?) {
+    val showSecondary by LocalSettingVM.current.showSecondaryCurrency.collectAsState()
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -367,7 +369,7 @@ private fun PriceRow(priceBaht: String, priceSat: String?) {
                 overflow = TextOverflow.Ellipsis
             )
         }
-        if (priceSat != null) {
+        if (priceSat != null && showSecondary) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier

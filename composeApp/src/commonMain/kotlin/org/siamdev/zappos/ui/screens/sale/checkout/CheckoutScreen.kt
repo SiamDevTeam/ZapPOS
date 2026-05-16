@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.LocalCheckoutVM
 import org.siamdev.zappos.LocalMenuVM
 import org.siamdev.zappos.LocalProgressVM
+import org.siamdev.zappos.LocalSettingVM
 import org.siamdev.zappos.ui.components.order.FiatAmount
 import org.siamdev.zappos.ui.components.common.MaterialButton
 import org.siamdev.zappos.ui.components.order.OrderItemList
@@ -261,6 +262,7 @@ internal fun SectionLabel(text: String, modifier: Modifier = Modifier) {
 
 @Composable
 internal fun CheckoutItemRow(item: CheckoutItem, isEven: Boolean = false) {
+    val showSecondary by LocalSettingVM.current.showSecondaryCurrency.collectAsState()
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -292,11 +294,13 @@ internal fun CheckoutItemRow(item: CheckoutItem, isEven: Boolean = false) {
                 textStyle = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Medium
             )
-            SatAmount(
-                value = item.priceSat,
-                iconSize = 12.dp,
-                textStyle = MaterialTheme.typography.bodySmall
-            )
+            if (showSecondary) {
+                SatAmount(
+                    value = item.priceSat,
+                    iconSize = 12.dp,
+                    textStyle = MaterialTheme.typography.bodySmall
+                )
+            }
         }
     }
 }

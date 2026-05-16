@@ -5,6 +5,7 @@
 package org.siamdev.zappos.ui.screens.login
 
 import androidx.compose.animation.*
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -18,6 +19,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -26,9 +28,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
-import org.siamdev.zappos.theme.YellowDeep
-import org.siamdev.zappos.theme.YellowLight
-import org.siamdev.zappos.theme.YellowSoft
 import org.siamdev.zappos.ui.components.common.GlassCard
 import org.siamdev.zappos.ui.components.common.MaterialButton
 import org.siamdev.zappos.utils.LockOrientation
@@ -55,62 +54,33 @@ fun NostrLoginScreen(
     var mnemonicValue by remember { mutableStateOf("") }
     var mnemonicError by remember { mutableStateOf<String?>(null) }
 
-    BoxWithConstraints(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val isWide = maxWidth >= 600.dp
         val cardWidth = if (isWide) 420.dp else maxWidth
 
-        // Glow layer 1 (ใหญ่ ฟุ้ง)
-        Box(
-            modifier = Modifier
-                .size(420.dp)
-                .offset(x = (-120).dp, y = (-120).dp)
-                .background(
-                    brush = Brush.radialGradient(
-                        colors = listOf(
-                            YellowLight.copy(alpha = 0.25f),
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
-                            Color.Transparent
-                        )
-                    )
-                )
-        )
+        val bgColor       = MaterialTheme.colorScheme.background
+        val primaryGlow   = MaterialTheme.colorScheme.primary
+        val secondaryGlow = MaterialTheme.colorScheme.secondary
 
-        // Glow layer 2 (เข้มขึ้น)
-        Box(
-            modifier = Modifier
-                .size(300.dp)
-                .offset(x = (-60).dp, y = (-60).dp)
-                .background(
-                    brush = Brush.radialGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
-                            YellowDeep.copy(alpha = 0.15f),
-                            Color.Transparent
-                        )
-                    )
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            drawRect(bgColor)
+            // Primary glow — upper left
+            drawRect(
+                brush = Brush.radialGradient(
+                    colors = listOf(primaryGlow.copy(alpha = 0.45f), Color.Transparent),
+                    center = Offset(size.width * 0.15f, size.height * 0.12f),
+                    radius = size.minDimension * 0.72f
                 )
-        )
-
-        // Glow ขวาล่าง (balance)
-        Box(
-            modifier = Modifier
-                .size(420.dp)
-                .align(Alignment.BottomEnd)
-                .offset(x = 120.dp, y = 120.dp)
-                .background(
-                    brush = Brush.radialGradient(
-                        colors = listOf(
-                            YellowSoft.copy(alpha = 0.18f),
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.10f),
-                            Color.Transparent
-                        )
-                    )
+            )
+            // Secondary glow — upper right
+            drawRect(
+                brush = Brush.radialGradient(
+                    colors = listOf(secondaryGlow.copy(alpha = 0.4f), Color.Transparent),
+                    center = Offset(size.width * 0.88f, size.height * 0.08f),
+                    radius = size.minDimension * 0.65f
                 )
-        )
+            )
+        }
 
         Column(
             modifier = Modifier.fillMaxSize(),
