@@ -36,7 +36,13 @@ kotlin {
     }
 
     js {
-        browser()
+        browser {
+            testTask {
+                useKarma {
+                    useFirefox()
+                }
+            }
+        }
         binaries.executable()
     }
 
@@ -45,6 +51,7 @@ kotlin {
         browser()
         binaries.executable()
     }
+
 
     sourceSets {
         val withModuleMain by creating {
@@ -130,6 +137,7 @@ kotlin {
     }
 }
 
+val version = "1.0.0"
 android {
     namespace = "org.siamdev.zappos"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
@@ -139,7 +147,7 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
-        versionName = "1.0"
+        versionName = version
     }
     // project.setProperty("archivesBaseName", "ZapPOS-v1.0")
     applicationVariants.all {
@@ -175,7 +183,27 @@ compose.desktop {
     application {
         mainClass = "org.siamdev.zappos.MainKt"
 
-        // https://github.com/JetBrains/compose-multiplatform/issues/4883
+        jvmArgs += listOf(
+            "-Xms64m",
+            "-Xmx256m",
+            "-Xss512k",
+
+            "-XX:+UseZGC",
+            "-XX:SoftMaxHeapSize=128m",
+
+            "-XX:MaxMetaspaceSize=128m",
+            "-XX:ReservedCodeCacheSize=128m",
+            "-XX:CICompilerCount=2",
+
+            "-XX:+IgnoreUnrecognizedVMOptions",
+
+            "-XX:NativeMemoryTracking=summary",
+            "-XX:NativeMemoryTracking=detail",
+            "-Dfile.encoding=UTF-8",
+            "-Dsun.io.useCanonCaches=false",
+            "-Dkotlinx.coroutines.debug=off"
+        )
+
         buildTypes.release.proguard {
             version.set("7.7.0")
             configurationFiles.from("proguard.pro")
@@ -184,28 +212,67 @@ compose.desktop {
         nativeDistributions {
             modules("java.sql", "java.naming")
             includeAllModules = true
+            licenseFile.set(project.file("../LICENSE.txt"))
 
             targetFormats(
-                TargetFormat.Dmg
-                , TargetFormat.Msi
-                , TargetFormat.Exe
-                , TargetFormat.Deb
-                , TargetFormat.Rpm
-                , TargetFormat.AppImage
+                TargetFormat.Dmg,
+                TargetFormat.Msi,
+                TargetFormat.Exe,
+                TargetFormat.Deb,
+                TargetFormat.Rpm,
+                TargetFormat.AppImage
             )
+
             packageName = "ZapPOS"
-            packageVersion = "1.0.0"
+            packageVersion = version
+            description = "Point of Sale application for modern retail businesses"
+            copyright = "© 2025 SiamDev. All rights reserved."
+            vendor = "SiamDev"
 
             linux {
+                shortcut = true
+                packageName = "ZapPOS"
+                appRelease = "1"
+                appCategory = "Applications/Office"
+                menuGroup = "Office;Finance"
+                debMaintainer = "contact@siamdev.org"
+                rpmLicenseType = "MIT"
+                debPackageVersion = version
+                rpmPackageVersion = version
                 iconFile.set(project.file("src/jvmMain/resources/ico_sizes/linux/ic_product_256.png"))
             }
+
             macOS {
+                packageName = "ZapPOS"
+                dockName = "ZapPOS"
+                setDockNameSameAsPackageName = true
+                appStore = false
                 iconFile.set(project.file("src/jvmMain/resources/ico_sizes/macos/ic_zappos512x512.png"))
-            }
-            windows {
-                iconFile.set(project.file("src/jvmMain/resources/ico_sizes/windows/ic_zappos_256.ico"))
+                infoPlist {
+                    extraKeysRawXml = """
+                        <key>NSHumanReadableCopyright</key>
+                        <string>© 2025 SiamDev. All rights reserved.</string>
+                        <key>CFBundleVersion</key>
+                        <string>$version</string>
+                        <key>CFBundleShortVersionString</key>
+                        <string>$version</string>
+                    """.trimIndent()
+                }
             }
 
+            windows {
+                packageName = "ZapPOS"
+                console = false
+                dirChooser = true
+                perUserInstall = false
+                shortcut = true
+                menu = true
+                menuGroup = "Point of Sale"
+                upgradeUuid = "ef4f3dc5-c951-4b1c-8f3d-c5c9514b1c62"
+                msiPackageVersion = version
+                exePackageVersion = version
+                iconFile.set(project.file("src/jvmMain/resources/ico_sizes/windows/ic_zappos_256.ico"))
+            }
         }
     }
 }
