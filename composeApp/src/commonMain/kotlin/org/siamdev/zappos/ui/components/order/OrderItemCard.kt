@@ -15,7 +15,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.CurrencyLira
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.*
@@ -34,12 +33,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import org.jetbrains.compose.resources.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.LocalSettingVM
+import org.siamdev.zappos.ui.components.common.CurrencyCodeIcon
 import org.siamdev.zappos.ui.screens.sale.MenuItem
-import zappos.composeapp.generated.resources.Res
-import zappos.composeapp.generated.resources.sat_unit
 
 @Composable
 fun OrderItemCard(
@@ -50,7 +47,12 @@ fun OrderItemCard(
     onDelete: (() -> Unit)? = null,
     isDesktop: Boolean = false
 ) {
-    val showSecondary by LocalSettingVM.current.showSecondaryCurrency.collectAsState()
+    val settingVM = LocalSettingVM.current
+    val showSecondary by settingVM.showSecondaryCurrency.collectAsState()
+    val primaryCurrency by settingVM.primaryCurrency.collectAsState()
+    val secondaryCurrency by settingVM.secondaryCurrency.collectAsState()
+    val primaryCode = primaryCurrency?.code ?: "THB"
+    val secondaryCode = secondaryCurrency?.code ?: "SATS"
     var isEditing by remember { mutableStateOf(false) }
     var editText by remember { mutableStateOf(TextFieldValue("")) }
     val focusRequester = remember { FocusRequester() }
@@ -78,11 +80,10 @@ fun OrderItemCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Default.CurrencyLira,
-                        contentDescription = null,
-                        modifier = Modifier.size(12.dp),
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                    CurrencyCodeIcon(
+                        code = primaryCode,
+                        modifier = Modifier.size(11.dp),
                         tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     )
                     Text(
@@ -92,14 +93,12 @@ fun OrderItemCard(
                     )
                 }
                 if (showSecondary) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            painter = painterResource(Res.drawable.sat_unit),
-                            contentDescription = null,
-                            tint = Color(0xFFFFB700),
-                            modifier = Modifier.size(11.dp)
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                        CurrencyCodeIcon(
+                            code = secondaryCode,
+                            modifier = Modifier.size(10.dp),
+                            tint = Color(0xFFFFB700)
                         )
-                        Spacer(Modifier.width(3.dp))
                         Text(
                             text = item.priceSat,
                             style = MaterialTheme.typography.bodySmall,

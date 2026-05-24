@@ -12,11 +12,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.CurrencyLira
 import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,6 +27,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import org.siamdev.zappos.LocalSettingVM
+import org.siamdev.zappos.ui.components.common.CurrencyCodeIcon
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 
 @Composable
@@ -58,6 +61,8 @@ fun HomeScreen(
 
 @Composable
 private fun MobileHomeContent(onNavigateToMenu: () -> Unit) {
+    val primaryCurrency by LocalSettingVM.current.primaryCurrency.collectAsState()
+    val primaryCode = primaryCurrency?.code ?: "THB"
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -74,7 +79,7 @@ private fun MobileHomeContent(onNavigateToMenu: () -> Unit) {
         ) {
             StatCard(
                 modifier = Modifier.weight(1f),
-                icon = Icons.Default.CurrencyLira,
+                currencyCode = primaryCode,
                 label = "Today Sales",
                 value = "0.00",
                 iconTint = MaterialTheme.colorScheme.primary
@@ -96,6 +101,8 @@ private fun MobileHomeContent(onNavigateToMenu: () -> Unit) {
 
 @Composable
 private fun DesktopHomeContent(onNavigateToMenu: () -> Unit) {
+    val primaryCurrency by LocalSettingVM.current.primaryCurrency.collectAsState()
+    val primaryCode = primaryCurrency?.code ?: "THB"
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -123,7 +130,7 @@ private fun DesktopHomeContent(onNavigateToMenu: () -> Unit) {
         ) {
             StatCard(
                 modifier = Modifier.fillMaxWidth(),
-                icon = Icons.Default.CurrencyLira,
+                currencyCode = primaryCode,
                 label = "Today Sales",
                 value = "0.00",
                 iconTint = MaterialTheme.colorScheme.primary,
@@ -163,7 +170,8 @@ private fun GreetingSection() {
 @Composable
 private fun StatCard(
     modifier: Modifier = Modifier,
-    icon: ImageVector,
+    icon: ImageVector? = null,
+    currencyCode: String? = null,
     label: String,
     value: String,
     iconTint: Color,
@@ -182,12 +190,20 @@ private fun StatCard(
                 .background(iconTint.copy(alpha = 0.12f)),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = iconTint,
-                modifier = Modifier.size(18.dp)
-            )
+            if (currencyCode != null) {
+                CurrencyCodeIcon(
+                    code = currencyCode,
+                    modifier = Modifier.size(18.dp),
+                    tint = iconTint
+                )
+            } else if (icon != null) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = iconTint,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
         }
 
         Spacer(Modifier.height(12.dp))

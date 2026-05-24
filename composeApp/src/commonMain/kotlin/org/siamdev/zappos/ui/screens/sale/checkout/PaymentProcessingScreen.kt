@@ -18,13 +18,14 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import org.siamdev.zappos.LocalSettingVM
+import org.siamdev.zappos.ui.components.common.CurrencyCodeIcon
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.jetbrains.compose.resources.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.LocalProgressVM
 import org.siamdev.zappos.ui.components.common.MaterialButton
@@ -33,8 +34,6 @@ import org.siamdev.zappos.ui.components.progress.ProgressBar
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 import org.siamdev.zappos.ui.screens.sale.SaleOrderSteps
 import org.siamdev.zappos.utils.DateTimeUtils
-import zappos.composeapp.generated.resources.Res
-import zappos.composeapp.generated.resources.sat_unit
 
 @Composable
 fun PaymentProcessingScreen(
@@ -361,6 +360,12 @@ private fun ProcessingDetailCard(
 ) {
     val taxPercent = viewModel.taxPercent
     val hasVat = taxPercent > 0f
+    val settingVM = LocalSettingVM.current
+    val primaryCurrency by settingVM.primaryCurrency.collectAsState()
+    val secondaryCurrency by settingVM.secondaryCurrency.collectAsState()
+    val showSecondary by settingVM.showSecondaryCurrency.collectAsState()
+    val primaryCode = primaryCurrency?.code ?: "THB"
+    val secondaryCode = secondaryCurrency?.code ?: "SATS"
 
     Column(
         modifier = modifier
@@ -421,7 +426,11 @@ private fun ProcessingDetailCard(
             )
             Column(horizontalAlignment = Alignment.End) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Icon(Icons.Default.CurrencyLira, null, modifier = Modifier.size(15.dp))
+                    CurrencyCodeIcon(
+                        code = primaryCode,
+                        modifier = Modifier.size(15.dp),
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
                     Text(
                         viewModel.grandTotalFiat,
                         style = MaterialTheme.typography.titleMedium,
@@ -429,9 +438,11 @@ private fun ProcessingDetailCard(
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 }
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Icon(painter = painterResource(Res.drawable.sat_unit), contentDescription = null, tint = Color(0xFFFFB700), modifier = Modifier.size(13.dp))
-                    Text(viewModel.grandTotalSat, style = MaterialTheme.typography.bodyMedium, color = Color(0xFFFFB700), fontWeight = FontWeight.SemiBold)
+                if (showSecondary) {
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        CurrencyCodeIcon(code = secondaryCode, modifier = Modifier.size(13.dp), tint = Color(0xFFFFB700))
+                        Text(viewModel.grandTotalSat, style = MaterialTheme.typography.bodyMedium, color = Color(0xFFFFB700), fontWeight = FontWeight.SemiBold)
+                    }
                 }
             }
         }

@@ -9,6 +9,8 @@ import kotlinx.coroutines.runBlocking
 import org.siamdev.module.db.AppContext
 import org.siamdev.module.db.AppDatabase
 import org.siamdev.module.db.appDatabase
+import org.siamdev.zappos.cache.AndroidThumbnailCache
+import org.siamdev.zappos.cache.thumbnailCache
 
 class ZapPOSApplication : Application() {
     lateinit var database: AppDatabase
@@ -19,5 +21,6 @@ class ZapPOSApplication : Application() {
         AppContext.value = this
         database = runBlocking { appDatabase() }
         database.registerDependencies()
+        thumbnailCache = AndroidThumbnailCache()
     }
 }

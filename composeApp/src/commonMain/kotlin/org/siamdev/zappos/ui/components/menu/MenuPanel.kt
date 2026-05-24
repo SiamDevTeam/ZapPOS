@@ -213,6 +213,7 @@ internal fun MenuItemsContent(
                     val item = items[index]
                     MenuItemCard(
                         imageUrl = item.imageUrl,
+                        id = item.id,
                         name = item.name,
                         priceBaht = item.priceBaht,
                         priceSat = item.priceSat,
@@ -237,6 +238,7 @@ internal fun MenuItemsContent(
                 items(items) { item ->
                     MenuItemCard(
                         imageUrl = item.imageUrl,
+                        id = item.id,
                         name = item.name,
                         priceBaht = item.priceBaht,
                         priceSat = item.priceSat,

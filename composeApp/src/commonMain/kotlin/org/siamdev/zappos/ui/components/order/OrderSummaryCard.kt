@@ -9,14 +9,15 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CurrencyLira
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import org.siamdev.zappos.LocalSettingVM
+import org.siamdev.zappos.ui.components.common.CurrencyCodeIcon
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,11 +25,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import org.jetbrains.compose.resources.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.ui.screens.sale.checkout.formatDouble
-import zappos.composeapp.generated.resources.Res
-import zappos.composeapp.generated.resources.sat_unit
 
 
 @Composable
@@ -177,8 +175,10 @@ internal fun FiatAmount(
     tint: Color = MaterialTheme.colorScheme.onSurface,
     color: Color = MaterialTheme.colorScheme.onSurface
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-        Icon(Icons.Default.CurrencyLira, contentDescription = null, modifier = Modifier.size(iconSize), tint = tint)
+    val primaryCurrency by LocalSettingVM.current.primaryCurrency.collectAsState()
+    val code = primaryCurrency?.code ?: "THB"
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+        CurrencyCodeIcon(code = code, modifier = Modifier.size(iconSize), tint = tint)
         Text(value, style = textStyle, fontWeight = fontWeight, color = color)
     }
 }
@@ -189,13 +189,10 @@ internal fun SatAmount(
     iconSize: Dp,
     textStyle: androidx.compose.ui.text.TextStyle
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-        Icon(
-            painter = painterResource(Res.drawable.sat_unit),
-            contentDescription = null,
-            tint = Color(0xFFFFB700),
-            modifier = Modifier.size(iconSize)
-        )
+    val secondaryCurrency by LocalSettingVM.current.secondaryCurrency.collectAsState()
+    val code = secondaryCurrency?.code ?: "SATS"
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+        CurrencyCodeIcon(code = code, modifier = Modifier.size(iconSize), tint = Color(0xFFFFB700))
         Text(value, style = textStyle, color = Color(0xFFFFB700))
     }
 }

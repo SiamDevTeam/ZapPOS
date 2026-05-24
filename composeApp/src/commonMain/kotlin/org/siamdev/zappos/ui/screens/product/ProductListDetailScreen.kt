@@ -39,6 +39,8 @@ import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import androidx.compose.ui.tooling.preview.Preview
+import org.siamdev.zappos.LocalSettingVM
+import org.siamdev.zappos.ui.components.common.CurrencyCodeIcon
 import org.siamdev.zappos.ui.components.menu.DefaultProductCategories
 import org.siamdev.zappos.ui.components.menu.MenuItemCard
 import org.siamdev.zappos.ui.components.menu.MenuViewMode
@@ -331,7 +333,7 @@ private fun ProductListPane(
                     MenuItemCard(
                         imageUrl = product.imageUrl,
                         name = product.name,
-                        priceBaht = "฿${product.price.formatPrice()} / ${product.unit}",
+                        priceBaht = "${product.price.formatPrice()} / ${product.unit}",
                         category = if (subName != null) "$categoryName · $subName" else categoryName,
                         isRecommended = product.isRecommended,
                         isAvailable = product.isAvailable,
@@ -353,6 +355,8 @@ private fun ProductDetailPane(
     onBack: () -> Unit,
     onEdit: () -> Unit
 ) {
+    val primaryCurrency by LocalSettingVM.current.primaryCurrency.collectAsState()
+    val primaryCode = primaryCurrency?.code ?: "THB"
     val categoryName = DefaultProductCategories.find { it.id == product.category }?.name ?: product.category
     val subName = DefaultProductCategories
         .find { it.id == product.category }
@@ -466,9 +470,14 @@ private fun ProductDetailPane(
 
                     Spacer(Modifier.height(8.dp))
 
-                    Row(verticalAlignment = Alignment.Bottom) {
+                    Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        CurrencyCodeIcon(
+                            code = primaryCode,
+                            modifier = Modifier.size(24.dp).padding(bottom = 4.dp),
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
                         Text(
-                            text = "฿${product.price.formatPrice()}",
+                            text = product.price.formatPrice(),
                             style = MaterialTheme.typography.headlineMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface

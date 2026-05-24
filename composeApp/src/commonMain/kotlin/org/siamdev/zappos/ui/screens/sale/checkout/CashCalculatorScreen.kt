@@ -15,10 +15,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Backspace
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.CurrencyLira
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import org.siamdev.zappos.LocalSettingVM
+import org.siamdev.zappos.ui.components.common.CurrencyCodeIcon
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -194,6 +195,8 @@ private fun DesktopCashLayout(
 
 @Composable
 private fun TotalDueRow(totalFiat: String) {
+    val primaryCurrency by LocalSettingVM.current.primaryCurrency.collectAsState()
+    val primaryCode = primaryCurrency?.code ?: "THB"
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -208,8 +211,8 @@ private fun TotalDueRow(totalFiat: String) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(3.dp)
         ) {
-            Icon(
-                Icons.Default.CurrencyLira, null,
+            CurrencyCodeIcon(
+                code = primaryCode,
                 modifier = Modifier.size(13.dp),
                 tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
             )
@@ -277,6 +280,8 @@ private fun ReceivedDisplay(
 
 @Composable
 private fun ChangeRow(viewModel: CheckoutViewModel) {
+    val primaryCurrency by LocalSettingVM.current.primaryCurrency.collectAsState()
+    val primaryCode = primaryCurrency?.code ?: "THB"
     AnimatedVisibility(
         visible = viewModel.isChangeValid,
         enter = fadeIn(tween(200)) + expandVertically(tween(200)),
@@ -319,8 +324,8 @@ private fun ChangeRow(viewModel: CheckoutViewModel) {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(3.dp)
                 ) {
-                    Icon(
-                        Icons.Default.CurrencyLira, null,
+                    CurrencyCodeIcon(
+                        code = primaryCode,
                         modifier = Modifier.size(14.dp),
                         tint = GreenSuccess
                     )

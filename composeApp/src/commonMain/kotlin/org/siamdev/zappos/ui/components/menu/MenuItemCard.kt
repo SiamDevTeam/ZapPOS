@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.CurrencyLira
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -33,13 +32,17 @@ import coil3.compose.LocalPlatformContext
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import okio.Path.Companion.toPath
+import org.siamdev.zappos.cache.ThumbnailSection
+import org.siamdev.zappos.cache.sanitizeCategory
+import org.siamdev.zappos.cache.thumbnailCache
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import zappos.composeapp.generated.resources.Res
-import zappos.composeapp.generated.resources.sat_unit
 import org.jetbrains.compose.resources.painterResource
 import zappos.composeapp.generated.resources.compose_multiplatform
 import org.siamdev.zappos.LocalSettingVM
+import org.siamdev.zappos.ui.components.common.CurrencyCodeIcon
 
 
 enum class MenuViewMode { LIST, GRID }
@@ -54,6 +57,7 @@ fun MenuItemCard(
     isRecommended: Boolean = false,
     isAvailable: Boolean = true,
     count: UInt = 0u,
+    id: Int = 0,
     viewMode: MenuViewMode = MenuViewMode.LIST,
     showChevron: Boolean = false,
     onAddClick: () -> Unit = {},
@@ -62,11 +66,11 @@ fun MenuItemCard(
 ) {
     when (viewMode) {
         MenuViewMode.LIST -> MenuItemCardList(
-            imageUrl, name, priceBaht, priceSat, category, isRecommended, isAvailable,
+            imageUrl, id, name, priceBaht, priceSat, category, isRecommended, isAvailable,
             count, showChevron, onAddClick, onClick
         )
         MenuViewMode.GRID -> MenuItemCardGrid(
-            imageUrl, name, priceBaht, priceSat, category, isRecommended, isAvailable,
+            imageUrl, id, name, priceBaht, priceSat, category, isRecommended, isAvailable,
             count, onAddClick
         )
     }
@@ -76,6 +80,7 @@ fun MenuItemCard(
 @Composable
 private fun MenuItemCardList(
     imageUrl: String,
+    id: Int,
     name: String,
     priceBaht: String,
     priceSat: String?,
@@ -104,10 +109,9 @@ private fun MenuItemCardList(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(10.dp),
-            //verticalAlignment = Alignment.Top
             verticalAlignment = Alignment.CenterVertically
         ) {
-            MenuImage(imageUrl = imageUrl, size = imageSize, cornerRadius = 10.dp)
+            MenuImage(imageUrl = imageUrl, id = id, category = category, size = imageSize, cornerRadius = 10.dp)
 
             Spacer(Modifier.width(12.dp))
 
@@ -198,6 +202,7 @@ private fun MenuItemCardList(
 @Composable
 private fun MenuItemCardGrid(
     imageUrl: String,
+    id: Int,
     name: String,
     priceBaht: String,
     priceSat: String?,
@@ -231,6 +236,8 @@ private fun MenuItemCardGrid(
             Column {
                 MenuImage(
                     imageUrl = imageUrl,
+                    id = id,
+                    category = category,
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(1.2f)
@@ -324,15 +331,28 @@ private fun MenuItemCardGrid(
 @Composable
 private fun MenuImage(
     imageUrl: String,
+    id: Int,
+    category: String,
     modifier: Modifier = Modifier,
     size: Dp? = null,
     cornerRadius: Dp = 10.dp,
     contentScale: ContentScale = ContentScale.Crop
 ) {
+
+    val source: Any = remember(id, category, imageUrl) {
+        if (id != 0) {
+            val cache = thumbnailCache
+            val cat   = sanitizeCategory(category)
+            val hash  = cache?.getHash(ThumbnailSection.PRODUCTS, cat, id.toString())
+            if (cache != null && hash != null && cache.exists(ThumbnailSection.PRODUCTS, cat, hash)) {
+                cache.filePath(ThumbnailSection.PRODUCTS, cat, hash).toPath()
+            } else imageUrl
+        } else imageUrl
+    }
     val baseModifier = if (size != null) modifier.size(size) else modifier
     AsyncImage(
         model = ImageRequest.Builder(LocalPlatformContext.current)
-            .data(imageUrl)
+            .data(source)
             .crossfade(true)
             .memoryCachePolicy(CachePolicy.ENABLED)
             .diskCachePolicy(CachePolicy.ENABLED)
@@ -349,15 +369,19 @@ private fun MenuImage(
 
 @Composable
 private fun PriceRow(priceBaht: String, priceSat: String?) {
-    val showSecondary by LocalSettingVM.current.showSecondaryCurrency.collectAsState()
+    val settingVM = LocalSettingVM.current
+    val showSecondary by settingVM.showSecondaryCurrency.collectAsState()
+    val primaryCurrency by settingVM.primaryCurrency.collectAsState()
+    val secondaryCurrency by settingVM.secondaryCurrency.collectAsState()
+    val primaryCode = primaryCurrency?.code ?: "THB"
+    val secondaryCode = secondaryCurrency?.code ?: "SATS"
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = Icons.Default.CurrencyLira,
-                contentDescription = null,
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+            CurrencyCodeIcon(
+                code = primaryCode,
                 modifier = Modifier.size(13.dp),
                 tint = MaterialTheme.colorScheme.onSurface
             )
@@ -375,15 +399,14 @@ private fun PriceRow(priceBaht: String, priceSat: String?) {
                 modifier = Modifier
                     .clip(RoundedCornerShape(5.dp))
                     .background(MaterialTheme.colorScheme.primaryContainer)
-                    .padding(horizontal = 5.dp, vertical = 2.dp)
+                    .padding(horizontal = 5.dp, vertical = 2.dp),
+                horizontalArrangement = Arrangement.spacedBy(3.dp)
             ) {
-                Icon(
-                    painter = painterResource(Res.drawable.sat_unit),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.size(12.dp)
+                CurrencyCodeIcon(
+                    code = secondaryCode,
+                    modifier = Modifier.size(12.dp),
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
-                Spacer(Modifier.width(3.dp))
                 Text(
                     text = priceSat,
                     style = MaterialTheme.typography.bodySmall,

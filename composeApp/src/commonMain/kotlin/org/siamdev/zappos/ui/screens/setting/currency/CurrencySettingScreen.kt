@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
 import org.siamdev.zappos.LocalSettingVM
 import org.siamdev.zappos.data.source.local.CurrencyItem
+import org.siamdev.zappos.ui.components.common.CurrencyCodeIcon
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.bitcoin_unit
@@ -192,7 +193,7 @@ private fun CurrencyCard(currency: CurrencyItem, isActive: Boolean, onClick: () 
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        CurrencyIcon(code = currency.code, symbol = currency.symbol, isActive = isActive)
+        CurrencyIcon(code = currency.code, isActive = isActive)
         Spacer(Modifier.width(14.dp))
         Column(Modifier.weight(1f)) {
             Text(
@@ -216,7 +217,7 @@ private fun CurrencyCard(currency: CurrencyItem, isActive: Boolean, onClick: () 
 }
 
 @Composable
-private fun CurrencyIcon(code: String, symbol: String, isActive: Boolean) {
+private fun CurrencyIcon(code: String, isActive: Boolean) {
     val bg = when (code) {
         "BTC" -> Color.Transparent
         else  -> if (isActive) MaterialTheme.colorScheme.primary
@@ -235,10 +236,10 @@ private fun CurrencyIcon(code: String, symbol: String, isActive: Boolean) {
             "SATS" -> Icon(painterResource(Res.drawable.sat_unit), null,
                 tint = if (isActive) Color.White else Color(0xFFFFB700),
                 modifier = Modifier.size(22.dp))
-            else   -> Text(
-                symbol,
-                color = if (isActive) Color.White else MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.titleMedium
+            else   -> CurrencyCodeIcon(
+                code = code,
+                modifier = Modifier.size(22.dp),
+                tint = if (isActive) Color.White else MaterialTheme.colorScheme.primary
             )
         }
     }

@@ -22,9 +22,14 @@ import kotlinx.coroutines.runBlocking
 import org.siamdev.zappos.ui.screens.splash.SplashScreen
 import org.siamdev.zappos.ui.screens.splash.SplashViewModel
 import org.siamdev.module.db.appDatabase
+import org.siamdev.zappos.cache.DesktopThumbnailCache
+import org.siamdev.zappos.cache.thumbnailCache
 import javax.swing.SwingUtilities
 
-private val database = runBlocking { appDatabase() }.also { it.registerDependencies() }
+private val database = runBlocking { appDatabase() }.also {
+    it.registerDependencies()
+    thumbnailCache = DesktopThumbnailCache()
+}
 
 fun main() = application {
     database

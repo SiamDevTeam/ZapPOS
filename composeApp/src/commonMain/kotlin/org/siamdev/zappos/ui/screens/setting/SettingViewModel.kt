@@ -59,7 +59,11 @@ class SettingViewModel : ViewModel() {
     }
 
     private suspend fun loadAll() {
-        val src = source ?: return
+        val src = source
+        if (src == null) {
+            _isLoading.value = false
+            return
+        }
 
         _isLoading.value = true
 
@@ -106,8 +110,6 @@ class SettingViewModel : ViewModel() {
             )
         }
 
-        // Seed any integer sizes from 12–20 that are not yet in the DB.
-        // INSERT OR IGNORE in the DAO makes this safe to run on every boot.
         val existingSizes = src.getFonts().map { it.size.toInt() }.toSet()
         for (size in 12..20) {
             if (size !in existingSizes) {

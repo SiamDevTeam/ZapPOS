@@ -4,16 +4,17 @@
  */
 package org.siamdev.zappos.ui.screens.sale
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CurrencyLira
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import org.siamdev.zappos.LocalSettingVM
+import org.siamdev.zappos.ui.screens.setting.SettingViewModel
+import org.siamdev.zappos.ui.components.common.CurrencyCodeIcon
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,7 +24,6 @@ import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import org.jetbrains.compose.resources.painterResource
 import org.siamdev.zappos.LocalMenuVM
 import org.siamdev.zappos.LocalProductBrowserVM
 import org.siamdev.zappos.ui.components.common.MaterialButton
@@ -36,8 +36,6 @@ import org.siamdev.zappos.ui.components.order.OrderItemCard
 import org.siamdev.zappos.ui.components.order.OrderPanel
 import org.siamdev.zappos.ui.components.product.ProductPanel
 import org.siamdev.zappos.ui.components.sheet.SlideBottomSheet
-import zappos.composeapp.generated.resources.Res
-import zappos.composeapp.generated.resources.sat_unit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,7 +47,7 @@ fun MainMenuScreen(
     val items = viewModel.items
 
     LaunchedEffect(Unit) {
-        viewModel.loadProductsData()
+        viewModel.ensureLoaded()
     }
 
     BoxWithConstraints(
@@ -174,6 +172,12 @@ private fun MobileMenuLayout(
     onOpenDrawer: () -> Unit,
     onCheckout: () -> Unit
 ) {
+    val settingVM = LocalSettingVM.current
+    val primaryCurrency by settingVM.primaryCurrency.collectAsState()
+    val secondaryCurrency by settingVM.secondaryCurrency.collectAsState()
+    val showSecondary by settingVM.showSecondaryCurrency.collectAsState()
+    val primaryCode = primaryCurrency?.code ?: "THB"
+    val secondaryCode = secondaryCurrency?.code ?: "SATS"
     var viewMode by remember { mutableStateOf(MenuViewMode.LIST) }
     var searchQuery by remember { mutableStateOf("") }
     var categoryFilter by remember { mutableStateOf<String?>(null) }
@@ -227,25 +231,24 @@ private fun MobileMenuLayout(
                         modifier = Modifier.padding(bottom = 30.dp)
                     )
                     Column(horizontalAlignment = Alignment.End) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = Icons.Default.CurrencyLira,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurface,
-                                modifier = Modifier.size(20.dp)
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                            CurrencyCodeIcon(
+                                code = primaryCode,
+                                modifier = Modifier.size(18.dp),
+                                tint = MaterialTheme.colorScheme.onSurface
                             )
-                            Spacer(Modifier.width(4.dp))
                             Text(viewModel.totalFiat, style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface)
                         }
-                        Spacer(Modifier.height(4.dp))
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Image(
-                                painterResource(Res.drawable.sat_unit),
-                                contentDescription = null,
-                                modifier = Modifier.size(20.dp)
-                            )
-                            Spacer(Modifier.width(4.dp))
-                            Text(viewModel.totalSat, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
+                        if (showSecondary) {
+                            Spacer(Modifier.height(4.dp))
+                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                                CurrencyCodeIcon(
+                                    code = secondaryCode,
+                                    modifier = Modifier.size(16.dp),
+                                    tint = Color(0xFFFFB700)
+                                )
+                                Text(viewModel.totalSat, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
+                            }
                         }
                     }
                 }
@@ -274,8 +277,7 @@ private fun MobileMenuLayout(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = 10.dp)
-                    .windowInsetsPadding(WindowInsets.statusBars)
+                    .statusBarsPadding()
             ) {
                 WorkspaceHeader(title = "Main Menu", onSegmentClick = onOpenDrawer)
 
@@ -324,15 +326,22 @@ private val previewItems = listOf(
     MenuItem(8, "", "Flat White", "80.00", "20,000", "coffee"),
 )
 
-private fun previewVM() = MainMenuViewModel().also { it.loadItemsForPreview(previewItems) }
+private fun previewVM() = MainMenuViewModel(
+    autoLoad = false
+).also {
+    it.loadItemsForPreview(previewItems)
+}
 
 @Preview(showBackground = true, widthDp = 411, heightDp = 891)
 @Composable
 fun MainMenuScreenPreview() {
     val vm = remember { previewVM() }
+    val settingVM = remember { SettingViewModel() }
+
     CompositionLocalProvider(
         LocalMenuVM provides vm,
-        LocalProductBrowserVM provides vm
+        LocalProductBrowserVM provides vm,
+        LocalSettingVM provides settingVM
     ) {
         MainMenuScreen()
     }
@@ -342,9 +351,12 @@ fun MainMenuScreenPreview() {
 @Composable
 fun MainMenuScreenDesktopPreview() {
     val vm = remember { previewVM() }
+    val settingVM = remember { SettingViewModel() }
+
     CompositionLocalProvider(
         LocalMenuVM provides vm,
-        LocalProductBrowserVM provides vm
+        LocalProductBrowserVM provides vm,
+        LocalSettingVM provides settingVM
     ) {
         MainMenuScreen()
     }
