@@ -12,6 +12,8 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,6 +25,7 @@ import org.siamdev.zappos.LocalProgressVM
 import org.siamdev.zappos.ui.components.common.MaterialButton
 import org.siamdev.zappos.ui.components.progress.ProgressBar
 import org.siamdev.zappos.ui.screens.sale.SaleOrderSteps
+import org.siamdev.zappos.ui.components.progress.ProgressViewModel
 
 private val GreenSuccess = Color(0xFF4CAF50)
 
@@ -95,7 +98,7 @@ fun SuccessScreen(onOpen: () -> Unit = {}) {
             modifier    = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp),
-            text        = "Open",
+            text        = "to Menu Screen",
             buttonColor = MaterialTheme.colorScheme.primary,
             onClick     = onOpen
         )
@@ -106,5 +109,8 @@ fun SuccessScreen(onOpen: () -> Unit = {}) {
 @Preview(showBackground = true, widthDp = 411, heightDp = 891)
 @Composable
 fun SuccessScreenPreview() {
-    MaterialTheme { SuccessScreen() }
+    val progressVM = remember { ProgressViewModel() }
+    CompositionLocalProvider(LocalProgressVM provides progressVM) {
+        MaterialTheme { SuccessScreen() }
+    }
 }

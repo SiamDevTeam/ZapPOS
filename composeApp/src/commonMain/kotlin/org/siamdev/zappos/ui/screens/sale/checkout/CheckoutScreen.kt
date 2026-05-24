@@ -33,6 +33,9 @@ import org.siamdev.zappos.ui.components.progress.ProgressBar
 import org.siamdev.zappos.ui.components.order.SatAmount
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 import org.siamdev.zappos.ui.screens.sale.SaleOrderSteps
+import org.siamdev.zappos.ui.screens.setting.SettingViewModel
+import org.siamdev.zappos.ui.components.progress.ProgressViewModel
+import org.siamdev.zappos.ui.screens.sale.MainMenuViewModel
 
 
 @Composable
@@ -333,11 +336,33 @@ private val previewViewModel = CheckoutViewModel().apply {
 @Preview(showBackground = true, widthDp = 411, heightDp = 891)
 @Composable
 fun CheckoutScreenMobilePreview() {
-    MaterialTheme { CheckoutContent(viewModel = previewViewModel) }
+    val progressVM = remember { ProgressViewModel() }
+    val settingVM = remember { SettingViewModel() }
+    val menuVM = remember { MainMenuViewModel(autoLoad = false) }
+
+    CompositionLocalProvider(
+        LocalProgressVM provides progressVM,
+        LocalSettingVM provides settingVM,
+        LocalMenuVM provides menuVM,
+        LocalCheckoutVM provides previewViewModel
+    ) {
+        MaterialTheme { CheckoutContent(viewModel = previewViewModel) }
+    }
 }
 
 @Preview(showBackground = true, widthDp = 1280, heightDp = 800)
 @Composable
 fun CheckoutScreenDesktopPreview() {
-    MaterialTheme { CheckoutContent(viewModel = previewViewModel) }
+    val progressVM = remember { ProgressViewModel() }
+    val settingVM = remember { SettingViewModel() }
+    val menuVM = remember { MainMenuViewModel(autoLoad = false) }
+
+    CompositionLocalProvider(
+        LocalProgressVM provides progressVM,
+        LocalSettingVM provides settingVM,
+        LocalMenuVM provides menuVM,
+        LocalCheckoutVM provides previewViewModel
+    ) {
+        MaterialTheme { CheckoutContent(viewModel = previewViewModel) }
+    }
 }

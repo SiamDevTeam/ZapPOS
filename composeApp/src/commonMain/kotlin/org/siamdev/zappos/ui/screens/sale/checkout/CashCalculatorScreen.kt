@@ -34,6 +34,8 @@ import org.siamdev.zappos.ui.components.order.OrderItemList
 import org.siamdev.zappos.ui.components.progress.ProgressBar
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 import org.siamdev.zappos.ui.screens.sale.SaleOrderSteps
+import org.siamdev.zappos.ui.screens.setting.SettingViewModel
+import org.siamdev.zappos.ui.components.progress.ProgressViewModel
 
 private val GreenSuccess = Color(0xFF4CAF50)
 private val QuickAmounts = listOf("20", "50", "100", "500", "1000")
@@ -437,15 +439,31 @@ private val cashPreviewViewModel = CheckoutViewModel().apply {
 @Preview(showBackground = true, widthDp = 411, heightDp = 891)
 @Composable
 fun CashCalculatorMobilePreview() {
-    MaterialTheme {
-        CashCalculatorScreen(viewModel = cashPreviewViewModel)
+    val progressVM = remember { ProgressViewModel() }
+    val settingVM = remember { SettingViewModel() }
+
+    CompositionLocalProvider(
+        LocalProgressVM provides progressVM,
+        LocalSettingVM provides settingVM
+    ) {
+        MaterialTheme {
+            CashCalculatorScreen(viewModel = cashPreviewViewModel)
+        }
     }
 }
 
 @Preview(showBackground = true, widthDp = 1280, heightDp = 800)
 @Composable
 fun CashCalculatorDesktopPreview() {
-    MaterialTheme {
-        CashCalculatorScreen(viewModel = cashPreviewViewModel)
+    val progressVM = remember { ProgressViewModel() }
+    val settingVM = remember { SettingViewModel() }
+
+    CompositionLocalProvider(
+        LocalProgressVM provides progressVM,
+        LocalSettingVM provides settingVM
+    ) {
+        MaterialTheme {
+            CashCalculatorScreen(viewModel = cashPreviewViewModel)
+        }
     }
 }

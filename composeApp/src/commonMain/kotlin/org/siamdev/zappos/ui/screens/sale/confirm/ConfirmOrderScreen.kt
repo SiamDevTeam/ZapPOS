@@ -25,6 +25,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.LocalMenuVM
 import org.siamdev.zappos.LocalProgressVM
+import org.siamdev.zappos.LocalSettingVM
 import org.siamdev.zappos.ui.components.order.FiatAmount
 import org.siamdev.zappos.ui.components.order.OrderItemCard
 import org.siamdev.zappos.ui.components.progress.ProgressBar
@@ -33,6 +34,8 @@ import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 import org.siamdev.zappos.ui.screens.sale.MainMenuViewModel
 import org.siamdev.zappos.ui.screens.sale.MenuItem
 import org.siamdev.zappos.ui.screens.sale.SaleOrderSteps
+import org.siamdev.zappos.ui.screens.setting.SettingViewModel
+import org.siamdev.zappos.ui.components.progress.ProgressViewModel
 
 @Composable
 fun ConfirmOrderScreen(
@@ -322,13 +325,20 @@ private val previewOrderItems = listOf(
     MenuItem(11, "", "Thai Tea",     "60.00",  "15,000", "tea",    isRecommended = true,  count = 1u),
 )
 
-private fun confirmPreviewVM() = MainMenuViewModel().also { it.loadItemsForPreview(previewOrderItems) }
+private fun confirmPreviewVM() = MainMenuViewModel(autoLoad = false).also { it.loadItemsForPreview(previewOrderItems) }
 
 @Preview(showBackground = true, widthDp = 411, heightDp = 891)
 @Composable
 fun ConfirmOrderScreenMobilePreview() {
     val vm = remember { confirmPreviewVM() }
-    CompositionLocalProvider(LocalMenuVM provides vm) {
+    val progressVM = remember { ProgressViewModel() }
+    val settingVM = remember { SettingViewModel() }
+
+    CompositionLocalProvider(
+        LocalMenuVM provides vm,
+        LocalProgressVM provides progressVM,
+        LocalSettingVM provides settingVM
+    ) {
         ConfirmOrderScreen()
     }
 }
@@ -337,8 +347,14 @@ fun ConfirmOrderScreenMobilePreview() {
 @Composable
 fun ConfirmOrderScreenDesktopPreview() {
     val vm = remember { confirmPreviewVM() }
-    CompositionLocalProvider(LocalMenuVM provides vm) {
+    val progressVM = remember { ProgressViewModel() }
+    val settingVM = remember { SettingViewModel() }
+
+    CompositionLocalProvider(
+        LocalMenuVM provides vm,
+        LocalProgressVM provides progressVM,
+        LocalSettingVM provides settingVM
+    ) {
         ConfirmOrderScreen()
     }
 }
-

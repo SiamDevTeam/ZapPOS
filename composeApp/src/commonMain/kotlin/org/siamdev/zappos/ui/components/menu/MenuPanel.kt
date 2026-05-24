@@ -96,7 +96,7 @@ internal fun SearchFilter(
                             selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.18f),
                             selectedLabelColor = MaterialTheme.colorScheme.onSurface
                         ),
-                        border = if (allSelected) BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary)
+                        border = if (allSelected) BorderStroke(1.7.dp, MaterialTheme.colorScheme.primary)
                                  else BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
                     )
                     categories.forEach { cat ->
