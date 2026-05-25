@@ -26,10 +26,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.LocalMenuVM
 import org.siamdev.zappos.LocalProgressVM
 import org.siamdev.zappos.LocalSettingVM
-import org.siamdev.zappos.ui.components.order.FiatAmount
+import org.siamdev.zappos.ui.components.common.PrimaryAmt
 import org.siamdev.zappos.ui.components.order.OrderItemCard
 import org.siamdev.zappos.ui.components.progress.ProgressBar
-import org.siamdev.zappos.ui.components.order.SatAmount
+import org.siamdev.zappos.ui.components.common.SecondaryAmt
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 import org.siamdev.zappos.ui.screens.sale.MainMenuViewModel
 import org.siamdev.zappos.ui.screens.sale.MenuItem
@@ -242,13 +242,13 @@ private fun ConfirmSummaryCard(menuVM: MainMenuViewModel) {
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
             )
             Column(horizontalAlignment = Alignment.End) {
-                FiatAmount(
+                PrimaryAmt(
                     value = menuVM.totalFiat,
                     iconSize = 13.dp,
                     textStyle = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold
                 )
-                SatAmount(
+                SecondaryAmt(
                     value = menuVM.totalSat,
                     iconSize = 12.dp,
                     textStyle = MaterialTheme.typography.bodySmall

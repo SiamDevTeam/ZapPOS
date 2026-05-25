@@ -35,8 +35,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.LocalSettingVM
-import org.siamdev.zappos.ui.components.common.CurrencyCodeIcon
+import org.siamdev.zappos.ui.components.common.PrimaryAmt
+import org.siamdev.zappos.ui.components.common.SecondaryAmt
 import org.siamdev.zappos.ui.screens.sale.MenuItem
+import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 
 @Composable
 fun OrderItemCard(
@@ -47,12 +49,6 @@ fun OrderItemCard(
     onDelete: (() -> Unit)? = null,
     isDesktop: Boolean = false
 ) {
-    val settingVM = LocalSettingVM.current
-    val showSecondary by settingVM.showSecondaryCurrency.collectAsState()
-    val primaryCurrency by settingVM.primaryCurrency.collectAsState()
-    val secondaryCurrency by settingVM.secondaryCurrency.collectAsState()
-    val primaryCode = primaryCurrency?.code ?: "THB"
-    val secondaryCode = secondaryCurrency?.code ?: "SATS"
     var isEditing by remember { mutableStateOf(false) }
     var editText by remember { mutableStateOf(TextFieldValue("")) }
     val focusRequester = remember { FocusRequester() }
@@ -80,32 +76,18 @@ fun OrderItemCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                    CurrencyCodeIcon(
-                        code = primaryCode,
-                        modifier = Modifier.size(11.dp),
-                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                    )
-                    Text(
-                        text = item.priceBaht,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                    )
-                }
-                if (showSecondary) {
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                        CurrencyCodeIcon(
-                            code = secondaryCode,
-                            modifier = Modifier.size(10.dp),
-                            tint = Color(0xFFFFB700)
-                        )
-                        Text(
-                            text = item.priceSat,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color(0xFFFFB700)
-                        )
-                    }
-                }
+                PrimaryAmt(
+                    value = item.priceBaht,
+                    iconSize = 11.dp,
+                    textStyle = MaterialTheme.typography.bodySmall,
+                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                )
+                SecondaryAmt(
+                    value = item.priceSat,
+                    iconSize = 10.dp,
+                    textStyle = MaterialTheme.typography.bodySmall
+                )
             }
         }
 
@@ -229,16 +211,19 @@ fun OrderItemCard(
 @Preview(showBackground = true)
 @Composable
 fun OrderItemCardPreview() {
-    OrderItemCard(
-        item = MenuItem(
-            id = 1,
-            imageUrl = "",
-            name = "Matcha Latte",
-            priceBaht = "100.00",
-            priceSat = "26,000",
-            count = 2u
-        ),
-        onAddClick = {},
-        onReduceClick = {}
-    )
+    val settingVM = remember { SettingViewModel() }
+    CompositionLocalProvider(LocalSettingVM provides settingVM) {
+        OrderItemCard(
+            item = MenuItem(
+                id = 1,
+                imageUrl = "",
+                name = "Matcha Latte",
+                priceBaht = "100.00",
+                priceSat = "26,000",
+                count = 2u
+            ),
+            onAddClick = {},
+            onReduceClick = {}
+        )
+    }
 }

@@ -15,10 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import org.siamdev.zappos.LocalSettingVM
-import org.siamdev.zappos.ui.components.common.CurrencyCodeIcon
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,6 +22,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import org.siamdev.zappos.ui.components.common.PrimaryAmt
+import org.siamdev.zappos.ui.components.common.SecondaryAmt
 import org.siamdev.zappos.ui.screens.sale.MenuItem
 
 @Composable
@@ -41,12 +39,6 @@ fun OrderPanel(
     onClearCart: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val settingVM = LocalSettingVM.current
-    val primaryCurrency by settingVM.primaryCurrency.collectAsState()
-    val secondaryCurrency by settingVM.secondaryCurrency.collectAsState()
-    val showSecondary by settingVM.showSecondaryCurrency.collectAsState()
-    val primaryCode = primaryCurrency?.code ?: "THB"
-    val secondaryCode = secondaryCurrency?.code ?: "SATS"
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
@@ -129,33 +121,18 @@ fun OrderPanel(
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                 )
                 Column(horizontalAlignment = Alignment.End) {
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp)) {
-                        CurrencyCodeIcon(
-                            code = primaryCode,
-                            modifier = Modifier.size(15.dp),
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            totalFiat,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                    if (showSecondary) {
-                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp)) {
-                            CurrencyCodeIcon(
-                                code = secondaryCode,
-                                modifier = Modifier.size(12.dp),
-                                tint = Color(0xFFFFB700)
-                            )
-                            Text(
-                                totalSat,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                            )
-                        }
-                    }
+                    PrimaryAmt(
+                        value = totalFiat,
+                        iconSize = 15.dp,
+                        textStyle = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    SecondaryAmt(
+                        value = totalSat,
+                        iconSize = 12.dp,
+                        textStyle = MaterialTheme.typography.bodySmall
+                    )
                 }
             }
 

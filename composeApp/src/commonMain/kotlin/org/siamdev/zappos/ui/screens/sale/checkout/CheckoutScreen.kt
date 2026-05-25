@@ -23,14 +23,14 @@ import org.siamdev.zappos.LocalCheckoutVM
 import org.siamdev.zappos.LocalMenuVM
 import org.siamdev.zappos.LocalProgressVM
 import org.siamdev.zappos.LocalSettingVM
-import org.siamdev.zappos.ui.components.order.FiatAmount
+import org.siamdev.zappos.ui.components.common.PrimaryAmt
 import org.siamdev.zappos.ui.components.common.MaterialButton
 import org.siamdev.zappos.ui.components.order.OrderItemList
 import org.siamdev.zappos.ui.components.order.OrderSummaryCard
 import org.siamdev.zappos.ui.components.payment.PaymentMethodDialogCard
 import org.siamdev.zappos.ui.components.payment.PaymentMethodList
 import org.siamdev.zappos.ui.components.progress.ProgressBar
-import org.siamdev.zappos.ui.components.order.SatAmount
+import org.siamdev.zappos.ui.components.common.SecondaryAmt
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 import org.siamdev.zappos.ui.screens.sale.SaleOrderSteps
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
@@ -291,14 +291,14 @@ internal fun CheckoutItemRow(item: CheckoutItem, isEven: Boolean = false) {
             )
         }
         Column(horizontalAlignment = Alignment.End) {
-            FiatAmount(
+            PrimaryAmt(
                 value = item.priceBaht,
                 iconSize = 13.dp,
                 textStyle = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Medium
             )
             if (showSecondary) {
-                SatAmount(
+                SecondaryAmt(
                     value = item.priceSat,
                     iconSize = 12.dp,
                     textStyle = MaterialTheme.typography.bodySmall

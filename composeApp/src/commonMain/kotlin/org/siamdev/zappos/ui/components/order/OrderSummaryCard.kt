@@ -11,22 +11,22 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import org.siamdev.zappos.LocalSettingVM
-import org.siamdev.zappos.ui.components.common.CurrencyCodeIcon
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import org.siamdev.zappos.ui.components.common.PrimaryAmt
+import org.siamdev.zappos.ui.components.common.SecondaryAmt
 import org.siamdev.zappos.ui.screens.sale.checkout.formatDouble
+import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 
 
 @Composable
@@ -60,13 +60,13 @@ fun OrderSummaryCard(
         // Subtotal row
         SummaryRow(label = "Subtotal") {
             Column(horizontalAlignment = Alignment.End) {
-                FiatAmount(
+                PrimaryAmt(
                     value = subtotalFiat,
                     iconSize = 13.dp,
                     textStyle = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold
                 )
-                SatAmount(value = subtotalSat, iconSize = 12.dp, textStyle = MaterialTheme.typography.bodySmall)
+                SecondaryAmt(value = subtotalSat, iconSize = 12.dp, textStyle = MaterialTheme.typography.bodySmall)
             }
         }
 
@@ -91,7 +91,7 @@ fun OrderSummaryCard(
                 label = "VAT ${taxPercent.toInt()}%",
                 labelAlpha = 0.45f
             ) {
-                FiatAmount(
+                PrimaryAmt(
                     value = formatDouble(taxAmount),
                     iconSize = 12.dp,
                     textStyle = MaterialTheme.typography.bodySmall,
@@ -110,13 +110,13 @@ fun OrderSummaryCard(
             labelWeight = FontWeight.Bold
         ) {
             Column(horizontalAlignment = Alignment.End) {
-                FiatAmount(
+                PrimaryAmt(
                     value = formatDouble(grandTotal),
                     iconSize = 16.dp,
                     textStyle = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
-                SatAmount(value = formatDouble(grandTotalSat), iconSize = 13.dp, textStyle = MaterialTheme.typography.bodySmall)
+                SecondaryAmt(value = formatDouble(grandTotalSat), iconSize = 13.dp, textStyle = MaterialTheme.typography.bodySmall)
             }
         }
     }
@@ -166,90 +166,89 @@ private fun VatChip(rate: Float, isSelected: Boolean, onClick: () -> Unit) {
     }
 }
 
-@Composable
-internal fun FiatAmount(
-    value: String,
-    iconSize: Dp,
-    textStyle: androidx.compose.ui.text.TextStyle,
-    fontWeight: FontWeight = FontWeight.Normal,
-    tint: Color = MaterialTheme.colorScheme.onSurface,
-    color: Color = MaterialTheme.colorScheme.onSurface
-) {
-    val primaryCurrency by LocalSettingVM.current.primaryCurrency.collectAsState()
-    val code = primaryCurrency?.code ?: "THB"
-    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp)) {
-        CurrencyCodeIcon(code = code, modifier = Modifier.size(iconSize), tint = tint)
-        Text(value, style = textStyle, fontWeight = fontWeight, color = color)
-    }
-}
-
-@Composable
-internal fun SatAmount(
-    value: String,
-    iconSize: Dp,
-    textStyle: androidx.compose.ui.text.TextStyle
-) {
-    val secondaryCurrency by LocalSettingVM.current.secondaryCurrency.collectAsState()
-    val code = secondaryCurrency?.code ?: "SATS"
-    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp)) {
-        CurrencyCodeIcon(code = code, modifier = Modifier.size(iconSize), tint = Color(0xFFFFB700))
-        Text(value, style = textStyle, color = Color(0xFFFFB700))
-    }
-}
-
 @Preview(showBackground = true, widthDp = 390, heightDp = 300)
 @Composable
 fun OrderSummaryCardNoVatPreview() {
-    MaterialTheme {
-        OrderSummaryCard(
-            subtotalFiat = "845.00",
-            subtotalSat = "214,250",
-            taxPercent = 0f,
-            onTaxChange = {},
-            modifier = Modifier.padding(16.dp)
-        )
+    val settingVM = remember { SettingViewModel() }
+    CompositionLocalProvider(LocalSettingVM provides settingVM) {
+        MaterialTheme {
+            OrderSummaryCard(
+                subtotalFiat = "845.00",
+                subtotalSat = "214,250",
+                taxPercent = 0f,
+                onTaxChange = {},
+                modifier = Modifier.padding(16.dp)
+            )
+        }
     }
 }
 
 @Preview(showBackground = true, widthDp = 390, heightDp = 300)
 @Composable
 fun OrderSummaryCard7PercentPreview() {
-    MaterialTheme {
-        OrderSummaryCard(
-            subtotalFiat = "845.00",
-            subtotalSat = "214,250",
-            taxPercent = 7f,
-            onTaxChange = {},
-            modifier = Modifier.padding(16.dp)
-        )
+    val settingVM = remember { SettingViewModel() }
+    CompositionLocalProvider(LocalSettingVM provides settingVM) {
+        MaterialTheme {
+            OrderSummaryCard(
+                subtotalFiat = "845.00",
+                subtotalSat = "214,250",
+                taxPercent = 7f,
+                onTaxChange = {},
+                modifier = Modifier.padding(16.dp)
+            )
+        }
     }
 }
 
 @Preview(showBackground = true, widthDp = 390, heightDp = 300)
 @Composable
 fun OrderSummaryCard10PercentPreview() {
-    MaterialTheme {
-        OrderSummaryCard(
-            subtotalFiat = "845.00",
-            subtotalSat = "214,250",
-            taxPercent = 10f,
-            onTaxChange = {},
-            modifier = Modifier.padding(16.dp)
-        )
+    val settingVM = remember { SettingViewModel() }
+    CompositionLocalProvider(LocalSettingVM provides settingVM) {
+        MaterialTheme {
+            OrderSummaryCard(
+                subtotalFiat = "845.00",
+                subtotalSat = "214,250",
+                taxPercent = 10f,
+                onTaxChange = {},
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SecondaryAmtCryptoPreview() {
+    val settingVM = remember { SettingViewModel() }
+    CompositionLocalProvider(LocalSettingVM provides settingVM) {
+        MaterialTheme {
+            Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Text("Secondary Amount (SATS/BTC Style)", style = MaterialTheme.typography.labelSmall)
+                SecondaryAmt(
+                    value = "214,250",
+                    iconSize = 18.dp,
+                    textStyle = MaterialTheme.typography.titleMedium
+                )
+            }
+        }
     }
 }
 
 @Preview(showBackground = true, widthDp = 390, heightDp = 300)
 @Composable
 fun OrderSummaryCardInteractivePreview() {
-    MaterialTheme {
-        var tax by remember { mutableFloatStateOf(7f) }
-        OrderSummaryCard(
-            subtotalFiat = "845.00",
-            subtotalSat = "214,250",
-            taxPercent = tax,
-            onTaxChange = { tax = it },
-            modifier = Modifier.padding(16.dp)
-        )
+    val settingVM = remember { SettingViewModel() }
+    CompositionLocalProvider(LocalSettingVM provides settingVM) {
+        MaterialTheme {
+            var tax by remember { mutableFloatStateOf(7f) }
+            OrderSummaryCard(
+                subtotalFiat = "845.00",
+                subtotalSat = "214,250",
+                taxPercent = tax,
+                onTaxChange = { tax = it },
+                modifier = Modifier.padding(16.dp)
+            )
+        }
     }
 }
