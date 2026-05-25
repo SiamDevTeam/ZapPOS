@@ -17,7 +17,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.LocalMenuVM
 import org.siamdev.zappos.LocalProgressVM
 import org.siamdev.zappos.LocalSettingVM
+import org.siamdev.zappos.ui.components.common.MaterialButton
 import org.siamdev.zappos.ui.components.common.PrimaryAmt
 import org.siamdev.zappos.ui.components.order.OrderItemCard
 import org.siamdev.zappos.ui.components.progress.ProgressBar
@@ -279,32 +279,15 @@ private fun ConfirmSummaryCard(menuVM: MainMenuViewModel) {
 
 @Composable
 private fun CheckoutButton(enabled: Boolean, onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        enabled = enabled,
+    MaterialButton(
         modifier = Modifier
             .fillMaxWidth()
             .height(52.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = Color.Black,
-            disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
-            disabledContentColor = Color.Black.copy(alpha = 0.4f)
-        )
-    ) {
-        Icon(
-            Icons.Default.ShoppingCartCheckout,
-            contentDescription = null,
-            modifier = Modifier.size(20.dp)
-        )
-        Spacer(Modifier.width(8.dp))
-        Text(
-            "Proceed to Checkout",
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.bodyLarge
-        )
-    }
+        text = "Proceed to Checkout",
+        iconStart = Icons.Default.ShoppingCartCheckout,
+        enabled = enabled,
+        onClick = onClick
+    )
 }
 
 @Composable
