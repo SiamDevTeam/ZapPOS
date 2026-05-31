@@ -23,6 +23,7 @@ jobs:
         with:
           distribution: jetbrains
           java-version: 21
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: gradle/actions/setup-gradle@v4
 
@@ -44,6 +45,7 @@ jobs:
         with:
           distribution: jetbrains
           java-version: 21
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: gradle/actions/setup-gradle@v4
 
@@ -68,6 +70,7 @@ jobs:
         with:
           distribution: jetbrains
           java-version: 21
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: gradle/actions/setup-gradle@v4
 
@@ -104,11 +107,12 @@ jobs:
         with:
           distribution: jetbrains
           java-version: 21
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: gradle/actions/setup-gradle@v4
 
-      - name: Install RPM build tools
-        run: sudo apt-get install -y rpm fakeroot
+      - name: Install Linux packaging dependencies
+        run: sudo apt-get install -y binutils fakeroot rpm
 
       - name: Package Deb / RPM / AppImage
         run: |
@@ -139,6 +143,7 @@ jobs:
         with:
           distribution: jetbrains
           java-version: 21
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: gradle/actions/setup-gradle@v4
 
@@ -163,6 +168,7 @@ jobs:
         with:
           distribution: jetbrains
           java-version: 21
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: gradle/actions/setup-gradle@v4
 
