@@ -110,7 +110,10 @@ fun OrderItemCard(
                 BasicTextField(
                     value = editText,
                     onValueChange = { new ->
-                        val filtered = new.text.filter { c -> c.isDigit() }.take(4)
+                        var filtered = new.text.filter { c -> c.isDigit() }.take(4)
+                        if (filtered.length > 1 && filtered.startsWith("0")) {
+                            filtered = filtered.dropWhile { it == '0' }.ifEmpty { "0" }
+                        }
                         editText = new.copy(
                             text = filtered,
                             selection = TextRange(minOf(new.selection.start, filtered.length))
