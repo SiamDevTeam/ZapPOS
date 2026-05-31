@@ -50,6 +50,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.LocalSettingVM
 import org.siamdev.zappos.ui.components.menu.DefaultProductCategories
 import org.siamdev.zappos.ui.components.menu.SearchFilter
+import org.siamdev.zappos.ui.components.common.InfoToggleCard
 import org.siamdev.zappos.ui.components.common.MaterialButton
 import org.siamdev.zappos.ui.components.common.SegmentedTabBar
 import org.siamdev.zappos.ui.components.common.TabItem
@@ -805,7 +806,6 @@ private fun StockCard(stockQty: Int, stockMax: Int, unit: String) {
     }
 }
 
-// ── Item info card ────────────────────────────────────────────────────────────
 
 /** Key-value card listing price, unit, SKU, stock count, and 7-day revenue. */
 @Composable
@@ -851,59 +851,6 @@ private fun ItemInfoCard(product: Product) {
                         color = MaterialTheme.colorScheme.onSurface)
                 }
             }
-        }
-    }
-}
-
-/** Read-only toggle card displaying a boolean product flag (e.g. Available, Recommended). */
-@Composable
-private fun InfoToggleCard(icon: ImageVector, label: String, subtitle: String, checked: Boolean) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-        elevation = CardDefaults.cardElevation(0.dp),
-        border = CardDefaults.outlinedCardBorder()
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 14.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(36.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(
-                        if (checked) MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
-                        else MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(icon, contentDescription = null,
-                    modifier = Modifier.size(18.dp),
-                    tint = if (checked) MaterialTheme.colorScheme.primary
-                           else MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-            Spacer(Modifier.width(12.dp))
-            Column(Modifier.weight(1f)) {
-                Text(label,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface)
-                Text(subtitle,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-            Switch(
-                checked = checked,
-                onCheckedChange = null,
-                colors = SwitchDefaults.colors(
-                    checkedTrackColor = MaterialTheme.colorScheme.primary,
-                    checkedThumbColor = Color.White
-                )
-            )
         }
     }
 }
@@ -1038,7 +985,6 @@ private fun MonitorStockTabContent(product: Product) {
             }
         }
 
-        // ── Quick stock-in button ────────────────────────────────────────
         item {
             MaterialButton(
                 modifier = Modifier.fillMaxWidth().height(48.dp),
@@ -1131,7 +1077,7 @@ private fun EmptyDetailState() {
 
 
 
-@Preview(widthDp = 411, heightDp = 891, name = "Mobile · List")
+@Preview(showBackground = true, widthDp = 411, heightDp = 891, name = "Mobile · List")
 @Composable
 private fun MobileListPreview() {
     CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
@@ -1148,8 +1094,7 @@ private fun MobileListPreview() {
     }
 }
 
-// Mobile — detail, Product Detail tab (product with stock)
-@Preview(widthDp = 411, heightDp = 891, name = "Mobile · Detail – Product Detail")
+@Preview(showBackground = true, widthDp = 411, heightDp = 891, name = "Mobile · Detail – Product Detail")
 @Composable
 private fun MobileDetailProductPreview() {
     CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
@@ -1167,8 +1112,7 @@ private fun MobileDetailProductPreview() {
     }
 }
 
-// Mobile — detail, Monitor & Stock-In tab (in-stock product)
-@Preview(widthDp = 411, heightDp = 891, name = "Mobile · Detail – Monitor & Stock")
+@Preview(showBackground = true, widthDp = 411, heightDp = 891, name = "Mobile · Detail – Monitor & Stock")
 @Composable
 private fun MobileDetailMonitorPreview() {
     CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
@@ -1185,8 +1129,7 @@ private fun MobileDetailMonitorPreview() {
     }
 }
 
-// Mobile — detail, Monitor & Stock-In tab (out-of-stock product)
-@Preview(widthDp = 411, heightDp = 891, name = "Mobile · Detail – Out of Stock")
+@Preview(showBackground = true, widthDp = 411, heightDp = 891, name = "Mobile · Detail – Out of Stock")
 @Composable
 private fun MobileDetailOutOfStockPreview() {
     CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
@@ -1203,8 +1146,7 @@ private fun MobileDetailOutOfStockPreview() {
     }
 }
 
-// Desktop — no selection
-@Preview(widthDp = 1280, heightDp = 800, name = "Desktop · No Selection")
+@Preview(showBackground = true, widthDp = 1280, heightDp = 800, name = "Desktop · No Selection")
 @Composable
 private fun DesktopNoSelectionPreview() {
     CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
@@ -1212,8 +1154,7 @@ private fun DesktopNoSelectionPreview() {
     }
 }
 
-// Desktop — with selection
-@Preview(widthDp = 1280, heightDp = 800, name = "Desktop · With Selection")
+@Preview(showBackground = true, widthDp = 1280, heightDp = 800, name = "Desktop · With Selection")
 @Composable
 private fun DesktopWithSelectionPreview() {
     CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
