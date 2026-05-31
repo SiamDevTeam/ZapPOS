@@ -38,7 +38,7 @@ import org.siamdev.zappos.ui.screens.home.HomeScreen
 import org.siamdev.zappos.ui.screens.login.NostrLoginScreen
 import org.siamdev.zappos.ui.screens.sale.MainMenuScreen
 import org.siamdev.zappos.ui.screens.product.ProductEntryMasterScreen
-import org.siamdev.zappos.ui.screens.product.ProductListDetailScreen
+import org.siamdev.zappos.ui.screens.product.ProductListScreen
 import org.siamdev.zappos.ui.screens.setting.appearance.AppearanceSettingScreen
 import org.siamdev.zappos.ui.screens.setting.currency.CurrencySettingScreen
 import org.siamdev.zappos.ui.screens.setting.SettingScreen
@@ -190,7 +190,7 @@ fun NavigationRoot(
                             backStack = backStack,
                             enableDrawer = true
                         ) { navActions, openDrawer ->
-                            ProductListDetailScreen(
+                            ProductListScreen(
                                 onOpenDrawer = openDrawer,
                                 onEditProduct = { navActions.to(Route.ProductEntryMaster) }
                             )

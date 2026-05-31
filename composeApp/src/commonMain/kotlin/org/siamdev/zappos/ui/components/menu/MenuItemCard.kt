@@ -36,6 +36,7 @@ import okio.Path.Companion.toPath
 import org.siamdev.zappos.cache.ThumbnailSection
 import org.siamdev.zappos.cache.sanitizeCategory
 import org.siamdev.zappos.cache.thumbnailCache
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import zappos.composeapp.generated.resources.Res
@@ -43,6 +44,7 @@ import org.jetbrains.compose.resources.painterResource
 import zappos.composeapp.generated.resources.compose_multiplatform
 import org.siamdev.zappos.LocalSettingVM
 import org.siamdev.zappos.ui.components.common.CurrencyCodeIcon
+import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 
 
 enum class MenuViewMode { LIST, GRID }
@@ -456,77 +458,85 @@ private fun AddButton(
 @Preview
 @Composable
 fun MenuItemCardListPreview() {
-    MenuItemCard(
-        imageUrl = "https://images.pexels.com/photos/350478/pexels-photo-350478.jpeg",
-        name = "Mocha",
-        priceBaht = "70.00",
-        priceSat = "17,500",
-        category = "Beverages · Coffee",
-        isRecommended = true,
-        count = 2u,
-        viewMode = MenuViewMode.LIST
-    )
+    CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+        MenuItemCard(
+            imageUrl = "https://images.pexels.com/photos/350478/pexels-photo-350478.jpeg",
+            name = "Mocha",
+            priceBaht = "70.00",
+            priceSat = "17,500",
+            category = "Beverages · Coffee",
+            isRecommended = true,
+            count = 2u,
+            viewMode = MenuViewMode.LIST
+        )
+    }
 }
 
 // LIST — no count, unavailable
 @Preview
 @Composable
 fun MenuItemCardListUnavailablePreview() {
-    MenuItemCard(
-        imageUrl = "https://images.pexels.com/photos/17486832/pexels-photo-17486832.jpeg",
-        name = "Latte",
-        priceBaht = "70.00",
-        priceSat = "17,500",
-        category = "Beverages · Coffee",
-        isAvailable = false,
-        viewMode = MenuViewMode.LIST
-    )
+    CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+        MenuItemCard(
+            imageUrl = "https://images.pexels.com/photos/17486832/pexels-photo-17486832.jpeg",
+            name = "Latte",
+            priceBaht = "70.00",
+            priceSat = "17,500",
+            category = "Beverages · Coffee",
+            isAvailable = false,
+            viewMode = MenuViewMode.LIST
+        )
+    }
 }
 
 // LIST — chevron mode (ProductListDetailScreen usage)
 @Preview
 @Composable
 fun MenuItemCardChevronPreview() {
-    MenuItemCard(
-        imageUrl = "https://images.pexels.com/photos/2611811/pexels-photo-2611811.jpeg",
-        name = "Matcha Latte",
-        priceBaht = "100.00",
-        category = "Beverages · Tea",
-        isRecommended = true,
-        showChevron = true,
-        viewMode = MenuViewMode.LIST
-    )
+    CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+        MenuItemCard(
+            imageUrl = "https://images.pexels.com/photos/2611811/pexels-photo-2611811.jpeg",
+            name = "Matcha Latte",
+            priceBaht = "100.00",
+            category = "Beverages · Tea",
+            isRecommended = true,
+            showChevron = true,
+            viewMode = MenuViewMode.LIST
+        )
+    }
 }
 
 // GRID — recommended, with count
 @Preview
 @Composable
 fun MenuItemCardGridPreview() {
-    MenuItemCard(
-        imageUrl = "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg",
-        name = "Matcha Coffee",
-        priceBaht = "100.00",
-        priceSat = "26,000",
-        category = "Matcha",
-        isRecommended = true,
-        count = 1u,
-        viewMode = MenuViewMode.GRID
-    )
+    CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+        MenuItemCard(
+            imageUrl = "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg",
+            name = "Matcha Coffee",
+            priceBaht = "100.00",
+            priceSat = "26,000",
+            category = "Matcha",
+            isRecommended = true,
+            count = 1u,
+            viewMode = MenuViewMode.GRID
+        )
+    }
 }
-
-
 
 // GRID — unavailable, no count
 @Preview
 @Composable
 fun MenuItemCardGridUnavailablePreview() {
-    MenuItemCard(
-        imageUrl = "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg",
-        name = "Milk",
-        priceBaht = "50.00",
-        priceSat = "12,500",
-        category = "Other",
-        isAvailable = false,
-        viewMode = MenuViewMode.GRID
-    )
+    CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+        MenuItemCard(
+            imageUrl = "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg",
+            name = "Milk",
+            priceBaht = "50.00",
+            priceSat = "12,500",
+            category = "Other",
+            isAvailable = false,
+            viewMode = MenuViewMode.GRID
+        )
+    }
 }

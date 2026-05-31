@@ -7,8 +7,8 @@ package org.siamdev.zappos.cache
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
-import org.siamdev.zappos.data.loadMenuItems
 import org.siamdev.zappos.ui.screens.sale.MenuItem
+import org.siamdev.zappos.ui.screens.sale.loadMenuItems
 
 private const val TAG = "ImagePreloader"
 

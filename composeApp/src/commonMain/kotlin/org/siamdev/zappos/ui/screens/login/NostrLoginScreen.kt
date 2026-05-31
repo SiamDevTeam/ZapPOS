@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.ui.components.common.GlassCard
 import org.siamdev.zappos.ui.components.common.MaterialButton
+import org.siamdev.zappos.ui.components.common.SegmentedTabBar
+import org.siamdev.zappos.ui.components.common.TabItem
 import org.siamdev.zappos.utils.LockOrientation
 import org.siamdev.zappos.utils.Orientation
 
@@ -125,51 +127,16 @@ fun NostrLoginScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 // Tab Selector
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f))
-                        .padding(4.dp),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    NostrLoginTab.entries.forEach { tab ->
-                        val isSelected = selectedTab == tab
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .clip(RoundedCornerShape(10.dp))
-                                .background(
-                                    if (isSelected) MaterialTheme.colorScheme.primary
-                                    else Color.Transparent
-                                )
-                                .then(
-                                    Modifier.padding(vertical = 10.dp)
-                                ),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            TextButton(
-                                onClick = {
-                                    selectedTab = tab
-                                    nsecError = null
-                                    mnemonicError = null
-                                },
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Text(
-                                    text = when (tab) {
-                                        NostrLoginTab.NSEC -> "Private Key"
-                                        NostrLoginTab.MNEMONIC -> "Seed Phrase"
-                                    },
-                                    style = MaterialTheme.typography.labelMedium,
-                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                                    color = if (isSelected) MaterialTheme.colorScheme.onSurface
-                                    else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-                                )
-                            }
-                        }
-                    }
-                }
+                SegmentedTabBar(
+                    tabs = listOf(TabItem("Private Key"), TabItem("Seed Phrase")),
+                    selectedIndex = selectedTab.ordinal,
+                    onTabSelect = { index ->
+                        selectedTab = NostrLoginTab.entries[index]
+                        nsecError = null
+                        mnemonicError = null
+                    },
+                    containerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f)
+                )
 
                 Spacer(modifier = Modifier.height(24.dp))
 

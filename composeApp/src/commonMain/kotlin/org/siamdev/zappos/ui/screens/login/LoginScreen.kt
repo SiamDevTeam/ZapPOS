@@ -47,8 +47,8 @@ fun LoginScreen(
         val cardWidth = if (isWide) 420.dp else maxWidth
 
         // Capture theme colors before entering Canvas (no composable context inside)
-        val bgColor      = MaterialTheme.colorScheme.background
-        val primaryGlow  = MaterialTheme.colorScheme.primary
+        val bgColor = MaterialTheme.colorScheme.background
+        val primaryGlow = MaterialTheme.colorScheme.primary
         val secondaryGlow = MaterialTheme.colorScheme.secondary
 
         Canvas(modifier = Modifier.fillMaxSize()) {
