@@ -1,0 +1,183 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main, master, master-inventory]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: jetbrains
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Run JVM tests
+        run: ./gradlew :composeApp:jvmTest -Dorg.gradle.java.home="$JAVA_HOME"
+
+      - name: Run Android unit tests
+        run: ./gradlew :composeApp:testDebugUnitTest -Dorg.gradle.java.home="$JAVA_HOME"
+
+  # Android
+  build-android:
+    name: Android APK
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: jetbrains
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build debug APK
+        run: ./gradlew :composeApp:assembleDebug -Dorg.gradle.java.home="$JAVA_HOME"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: composeApp/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+
+  # iOS
+  build-ios:
+    name: iOS App
+    runs-on: macos-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: jetbrains
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build KMP iOS framework
+        run: ./gradlew :composeApp:linkDebugFrameworkIosSimulatorArm64 -Dorg.gradle.java.home="$JAVA_HOME"
+
+      - name: Build iOS app (simulator)
+        run: |
+          xcodebuild \
+            -project iosApp/iosApp.xcodeproj \
+            -scheme iosApp \
+            -sdk iphonesimulator \
+            -destination "generic/platform=iOS Simulator" \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            CONFIGURATION_BUILD_DIR="${{ github.workspace }}/build/ios-output" \
+            build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ios-app
+          path: build/ios-output/*.app
+          if-no-files-found: error
+
+  # Desktop: Linux
+  build-linux:
+    name: Desktop (Linux)
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: jetbrains
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Install RPM build tools
+        run: sudo apt-get install -y rpm fakeroot
+
+      - name: Package Deb / RPM / AppImage
+        run: |
+          ./gradlew \
+            :composeApp:packageDeb \
+            :composeApp:packageRpm \
+            :composeApp:packageAppImage \
+            -Dorg.gradle.java.home="$JAVA_HOME"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-packages
+          path: |
+            composeApp/build/compose/binaries/main/deb/*.deb
+            composeApp/build/compose/binaries/main/rpm/*.rpm
+            composeApp/build/compose/binaries/main/app-image/
+          if-no-files-found: error
+
+  # Desktop: macOS
+  build-macos:
+    name: Desktop (macOS)
+    runs-on: macos-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: jetbrains
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Package DMG
+        run: ./gradlew :composeApp:packageDmg -Dorg.gradle.java.home="$JAVA_HOME"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos-dmg
+          path: composeApp/build/compose/binaries/main/dmg/*.dmg
+          if-no-files-found: error
+
+  # Desktop: Windows
+  build-windows:
+    name: Desktop (Windows)
+    runs-on: windows-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: jetbrains
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Package MSI / EXE
+        shell: bash
+        run: |
+          ./gradlew \
+            :composeApp:packageMsi \
+            :composeApp:packageExe \
+            -Dorg.gradle.java.home="$JAVA_HOME"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-installers
+          path: |
+            composeApp/build/compose/binaries/main/msi/*.msi
+            composeApp/build/compose/binaries/main/exe/*.exe
+          if-no-files-found: error

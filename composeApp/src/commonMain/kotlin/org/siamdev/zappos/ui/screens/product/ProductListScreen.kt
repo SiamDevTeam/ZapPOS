@@ -145,7 +145,9 @@ private fun fakeStockHistory(productId: String): List<StockInRecord> {
 
 private enum class DetailTab { PRODUCT_DETAIL, MONITOR_STOCK }
 private enum class SalesPeriod(val label: String, val days: Int) {
-    D7("7d", 7), D30("30d", 30), D90("90d", 90)
+    D7("7d", 7),
+    D30("30d", 30),
+    D90("90d", 90)
 }
 
 
