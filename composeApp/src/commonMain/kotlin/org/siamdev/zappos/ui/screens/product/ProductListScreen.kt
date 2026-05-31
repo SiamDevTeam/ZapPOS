@@ -914,16 +914,21 @@ private fun MonitorStockTabContent(product: Product) {
         val isWide = maxWidth >= 580.dp
         if (isWide) {
             Row(Modifier.fillMaxSize()) {
-                LazyColumn(
-                    modifier = Modifier.weight(1f).fillMaxHeight(),
-                    contentPadding = PaddingValues(16.dp),
+                // Left: main content — scrolls as a regular column
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .verticalScroll(rememberScrollState())
+                        .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    item { MonitorProductHeader(product) }
-                    item { StockOverviewCard(product, history) }
-                    item { AdjustStockSection(product) }
+                    MonitorProductHeader(product)
+                    StockOverviewCard(product, history)
+                    AdjustStockSection(product)
                 }
                 VerticalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                // Right: stock history panel — only this scrolls within its own box
                 Column(Modifier.weight(1f).fillMaxHeight()) {
                     StockHistoryHeader(
                         filter = historyFilter,
@@ -934,13 +939,13 @@ private fun MonitorStockTabContent(product: Product) {
                     )
                     LazyColumn(
                         modifier = Modifier
-                            .fillMaxSize()
+                            .weight(1f)
                             .padding(horizontal = 12.dp, vertical = 8.dp)
                             .clip(RoundedCornerShape(12.dp))
                             .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(12.dp))
                             .background(MaterialTheme.colorScheme.surface),
                         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
-                        verticalArrangement = Arrangement.spacedBy(0.0.dp)
+                        verticalArrangement = Arrangement.spacedBy(0.dp)
                     ) {
                         itemsIndexed(filteredHistory, key = { _, it -> "${it.id}-${it.date}-${it.time}" }) { index, record ->
                             StockRecordRow(record = record, unit = product.unit, isEven = index % 2 == 1)
@@ -949,20 +954,13 @@ private fun MonitorStockTabContent(product: Product) {
                 }
             }
         } else {
-            Column(
-                modifier = Modifier.fillMaxSize().padding(16.dp),
+            // Narrow: single main-screen scroll; history records bounded in their own box
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // Top part: Product Header, Overview, and Adjustment
-                // We wrap these in a scrollable Column that takes at most half the screen
-                // if history is long, ensuring the history list is always accessible.
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f, fill = false)
-                        .verticalScroll(rememberScrollState()),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
+                item {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp),
@@ -970,34 +968,32 @@ private fun MonitorStockTabContent(product: Product) {
                         elevation = CardDefaults.cardElevation(0.dp),
                         border = CardDefaults.outlinedCardBorder()
                     ) {
-                        Box(Modifier.padding(16.dp)) {
-                            MonitorProductHeader(product)
-                        }
+                        Box(Modifier.padding(16.dp)) { MonitorProductHeader(product) }
                     }
-                    StockOverviewCard(product, history)
-                    AdjustStockSection(product)
                 }
-
-                StockHistoryHeader(
-                    filter = historyFilter,
-                    onFilter = { historyFilter = it },
-                    filteredCount = filteredHistory.size,
-                    totalCount = history.size,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
-
-                // History List: Takes remaining space and scrolls independently
-                LazyColumn(
-                    modifier = Modifier
-                        .weight(1.5f)
-                        .clip(RoundedCornerShape(12.dp))
-                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(12.dp))
-                        .background(MaterialTheme.colorScheme.surface),
-                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
-                    verticalArrangement = Arrangement.spacedBy(0.dp)
-                ) {
-                    itemsIndexed(filteredHistory, key = { _, it -> "${it.id}-${it.date}-${it.time}" }) { index, record ->
-                        StockRecordRow(record = record, unit = product.unit, isEven = index % 2 == 1)
+                item { StockOverviewCard(product, history) }
+                item { AdjustStockSection(product) }
+                item {
+                    Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        StockHistoryHeader(
+                            filter = historyFilter,
+                            onFilter = { historyFilter = it },
+                            filteredCount = filteredHistory.size,
+                            totalCount = history.size
+                        )
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(max = 320.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(12.dp))
+                                .background(MaterialTheme.colorScheme.surface)
+                                .verticalScroll(rememberScrollState()),
+                        ) {
+                            filteredHistory.forEachIndexed { index, record ->
+                                StockRecordRow(record = record, unit = product.unit, isEven = index % 2 == 1)
+                            }
+                        }
                     }
                 }
             }
