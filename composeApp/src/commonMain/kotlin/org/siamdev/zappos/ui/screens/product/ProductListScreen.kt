@@ -37,6 +37,7 @@ import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 fun ProductListScreen(
     onOpenDrawer: () -> Unit = {},
     onEditProduct: (String) -> Unit = {},
+    onDeleteProduct: (String) -> Unit = {},
     initialTab: DetailTab = DetailTab.PRODUCT_DETAIL
 ) {
     val products = remember { sampleProducts() }
@@ -58,6 +59,7 @@ fun ProductListScreen(
                 onSelect = { selectedId = it },
                 onOpenDrawer = onOpenDrawer,
                 onEdit = onEditProduct,
+                onDelete = onDeleteProduct,
                 initialTab = initialTab
             )
         } else {
@@ -69,6 +71,7 @@ fun ProductListScreen(
                 onBack = { selectedId = null },
                 onOpenDrawer = onOpenDrawer,
                 onEdit = onEditProduct,
+                onDelete = onDeleteProduct,
                 initialTab = initialTab
             )
         }
@@ -83,12 +86,13 @@ private fun DesktopLayout(
     onSelect: (String) -> Unit,
     onOpenDrawer: () -> Unit,
     onEdit: (String) -> Unit,
+    onDelete: (String) -> Unit = {},
     initialTab: DetailTab = DetailTab.PRODUCT_DETAIL
 ) {
     var splitRatio by remember { mutableStateOf(0.30f) }
 
     Column(Modifier.fillMaxSize()) {
-        WorkspaceHeader(title = "Products List", onSegmentClick = onOpenDrawer)
+        WorkspaceHeader(title = "Products List", subtitle = "Inventory · catalog", onSegmentClick = onOpenDrawer)
 
         BoxWithConstraints(
             modifier = Modifier
@@ -156,6 +160,7 @@ private fun DesktopLayout(
                         ProductDetailPanel(
                             product = selected,
                             onEdit = { onEdit(selected.id) },
+                            onDelete = onDelete,
                             initialTab = initialTab
                         )
                     } else {
@@ -177,6 +182,7 @@ private fun MobileLayout(
     onBack: () -> Unit,
     onOpenDrawer: () -> Unit,
     onEdit: (String) -> Unit,
+    onDelete: (String) -> Unit = {},
     initialTab: DetailTab = DetailTab.PRODUCT_DETAIL
 ) {
     AnimatedContent(
@@ -195,12 +201,14 @@ private fun MobileLayout(
             if (current != null) {
                 WorkspaceHeader(
                     title = "Information",
+                    subtitle = "Product · detail",
                     onSegmentClick = onOpenDrawer,
                     onNavigateBack = onBack
                 )
                 ProductDetailPanel(
                     product = current,
                     onEdit = { onEdit(current.id) },
+                    onDelete = onDelete,
                     initialTab = initialTab
                 )
             } else {

@@ -97,7 +97,7 @@ private fun MobileProcessingLayout(
     SideEffect { progressVM.setup(SaleOrderSteps, 2) }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        WorkspaceHeader(title = title, onNavigateBack = onBack)
+        WorkspaceHeader(title = title, subtitle = "Sales · processing", onNavigateBack = onBack)
         ProgressBar()
 
         Text(
@@ -238,7 +238,7 @@ private fun DesktopProcessingLayout(
     SideEffect { progressVM.setup(SaleOrderSteps, 2) }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        WorkspaceHeader(title = title, onNavigateBack = onBack)
+        WorkspaceHeader(title = title, subtitle = "Sales · processing", onNavigateBack = onBack)
         ProgressBar()
 
         Row(

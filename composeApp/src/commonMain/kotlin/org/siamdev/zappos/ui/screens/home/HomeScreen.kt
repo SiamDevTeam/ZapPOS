@@ -48,7 +48,7 @@ fun HomeScreen(
                 .fillMaxSize()
                 .windowInsetsPadding(WindowInsets.statusBars)
         ) {
-            WorkspaceHeader(title = "ZapPOS", onSegmentClick = onOpenDrawer)
+            WorkspaceHeader(title = "ZapPOS", subtitle = "Dashboard · home", onSegmentClick = onOpenDrawer)
 
             if (isDesktop) {
                 DesktopHomeContent(onNavigateToMenu = onNavigateToMenu)

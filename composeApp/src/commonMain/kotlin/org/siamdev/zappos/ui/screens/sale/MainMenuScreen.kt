@@ -93,7 +93,7 @@ private fun DesktopMenuLayout(
             .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(WindowInsets.statusBars)
     ) {
-        WorkspaceHeader(title = "Main Menu", onSegmentClick = onOpenDrawer)
+        WorkspaceHeader(title = "Main Menu", subtitle = "Sales · point of sale", onSegmentClick = onOpenDrawer)
 
         BoxWithConstraints(
             modifier = Modifier
@@ -279,7 +279,7 @@ private fun MobileMenuLayout(
                     .fillMaxSize()
                     .statusBarsPadding()
             ) {
-                WorkspaceHeader(title = "Main Menu", onSegmentClick = onOpenDrawer)
+                WorkspaceHeader(title = "Main Menu", subtitle = "Sales · point of sale", onSegmentClick = onOpenDrawer)
 
                 SearchFilter(
                     searchQuery = searchQuery,

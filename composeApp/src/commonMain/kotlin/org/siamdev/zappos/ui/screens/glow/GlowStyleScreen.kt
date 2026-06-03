@@ -54,7 +54,7 @@ fun GlowStyleScreen(
                 .background(MaterialTheme.colorScheme.background)
                 .windowInsetsPadding(WindowInsets.statusBars)
         ) {
-            WorkspaceHeader(title = "Glow Effects", onSegmentClick = onOpenDrawer)
+            WorkspaceHeader(title = "Glow Effects", subtitle = "Demo · visual effects", onSegmentClick = onOpenDrawer)
             Column(
                 modifier = Modifier
                     .fillMaxSize()

@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.LocalSettingVM
+import org.siamdev.zappos.ui.components.common.AppDialog
 import org.siamdev.zappos.ui.components.common.InfoToggleCard
 import org.siamdev.zappos.ui.components.common.MaterialButton
 import org.siamdev.zappos.ui.components.common.SegmentedTabBar
@@ -61,6 +62,7 @@ private val detailTabs = listOf(
 internal fun ProductDetailPanel(
     product: Product,
     onEdit: () -> Unit,
+    onDelete: (String) -> Unit = {},
     initialTab: DetailTab = DetailTab.PRODUCT_DETAIL
 ) {
     var selectedTab by remember(product.id) { mutableStateOf(initialTab) }
@@ -76,7 +78,11 @@ internal fun ProductDetailPanel(
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
         when (selectedTab) {
-            DetailTab.PRODUCT_DETAIL -> ProductDetailTabContent(product = product, onEdit = onEdit)
+            DetailTab.PRODUCT_DETAIL -> ProductDetailTabContent(
+                product = product,
+                onEdit = onEdit,
+                onDelete = { onDelete(product.id) }
+            )
             DetailTab.MONITOR_STOCK  -> MonitorStockTabContent(product = product)
         }
     }
@@ -84,11 +90,29 @@ internal fun ProductDetailPanel(
 
 /** Scrollable detail view: header, sales chart, stock bar, item info, and status toggles. */
 @Composable
-private fun ProductDetailTabContent(product: Product, onEdit: () -> Unit) {
+private fun ProductDetailTabContent(product: Product, onEdit: () -> Unit, onDelete: () -> Unit) {
     val catEntry = DefaultProductCategories.find { it.id == product.category }
     val categoryName = catEntry?.name ?: product.category
     val subName = catEntry?.subCategories?.find { it.id == product.subCategory }?.name
     val catIcon = catEntry?.icon
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
+    if (showDeleteDialog) {
+        AppDialog(
+            icon = Icons.Default.Delete,
+            iconTint = MaterialTheme.colorScheme.error,
+            title = "Delete Product",
+            message = "Are you sure you want to delete \"${product.name}\"? This action cannot be undone.",
+            confirmText = "Delete",
+            dismissText = "Cancel",
+            confirmButtonColor = MaterialTheme.colorScheme.error,
+            onConfirm = {
+                showDeleteDialog = false
+                onDelete()
+            },
+            onDismiss = { showDeleteDialog = false }
+        )
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
@@ -148,7 +172,7 @@ private fun ProductDetailTabContent(product: Product, onEdit: () -> Unit) {
                 onClick = onEdit
             )
             IconButton(
-                onClick = {},
+                onClick = { showDeleteDialog = true },
                 modifier = Modifier
                     .size(48.dp)
                     .clip(RoundedCornerShape(12.dp))

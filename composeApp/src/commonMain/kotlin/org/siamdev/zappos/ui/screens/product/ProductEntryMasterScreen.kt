@@ -90,6 +90,7 @@ fun ProductEntryMasterScreen(
     ) {
         WorkspaceHeader(
             title = "Product Entry",
+            subtitle = "New product · master data",
             onSegmentClick = onOpenDrawer,
             onNavigateBack = if (showBackButton) onNavigateBack else null
         )

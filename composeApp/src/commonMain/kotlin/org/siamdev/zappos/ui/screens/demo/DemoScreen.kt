@@ -29,6 +29,7 @@ fun DemoScreen(onOpenDrawer: () -> Unit = {}) {
 
             WorkspaceHeader(
                 title = "Home",
+                subtitle = "Dashboard · overview",
                 onSegmentClick = onOpenDrawer
             )
 

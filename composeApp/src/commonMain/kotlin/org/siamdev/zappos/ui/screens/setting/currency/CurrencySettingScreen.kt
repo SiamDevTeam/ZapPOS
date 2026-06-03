@@ -44,7 +44,7 @@ fun CurrencySettingScreen(onNavigateBack: () -> Unit = {}) {
             .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(WindowInsets.systemBars)
     ) {
-        WorkspaceHeader(title = "Currency", onNavigateBack = onNavigateBack)
+        WorkspaceHeader(title = "Currency", subtitle = "Settings · currency", onNavigateBack = onNavigateBack)
 
         if (isLoading) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

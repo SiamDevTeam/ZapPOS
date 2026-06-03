@@ -75,7 +75,7 @@ private fun MobileCashLayout(
     SideEffect { progressVM.setup(SaleOrderSteps, 2) }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        WorkspaceHeader(title = "Cash Payment", onNavigateBack = onBack)
+        WorkspaceHeader(title = "Cash Payment", subtitle = "Checkout · cash", onNavigateBack = onBack)
         ProgressBar()
 
         SectionLabel(
@@ -125,7 +125,7 @@ private fun DesktopCashLayout(
     SideEffect { progressVM.setup(SaleOrderSteps, 2) }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        WorkspaceHeader(title = "Cash Payment", onNavigateBack = onBack)
+        WorkspaceHeader(title = "Cash Payment", subtitle = "Checkout · cash", onNavigateBack = onBack)
         ProgressBar()
 
         Row(

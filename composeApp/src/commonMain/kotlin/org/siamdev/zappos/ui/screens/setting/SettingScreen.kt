@@ -83,7 +83,7 @@ fun SettingScreen(
                 .background(MaterialTheme.colorScheme.background)
                 .windowInsetsPadding(WindowInsets.systemBars)
         ) {
-            WorkspaceHeader(title = "Settings", onNavigateBack = onNavigateBack)
+            WorkspaceHeader(title = "Settings", subtitle = "App · preferences", onNavigateBack = onNavigateBack)
 
             BoxWithConstraints(modifier = Modifier.weight(1f)) {
                 if (maxWidth >= 600.dp) {

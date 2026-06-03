@@ -54,7 +54,7 @@ fun CounterContent(
                 .background(MaterialTheme.colorScheme.background)
                 .windowInsetsPadding(WindowInsets.statusBars)
         ) {
-            WorkspaceHeader(title = "Counter", onSegmentClick = onOpenDrawer)
+            WorkspaceHeader(title = "Counter", subtitle = "Inventory · stock count", onSegmentClick = onOpenDrawer)
             Column(
                 modifier = Modifier
                     .fillMaxSize()

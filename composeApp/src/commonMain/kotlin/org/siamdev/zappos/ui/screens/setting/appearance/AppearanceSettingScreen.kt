@@ -67,7 +67,7 @@ fun AppearanceSettingScreen(onNavigateBack: () -> Unit = {}) {
                 .background(MaterialTheme.colorScheme.background)
                 .windowInsetsPadding(WindowInsets.systemBars)
     ) {
-        WorkspaceHeader(title = "Appearance", onNavigateBack = onNavigateBack)
+        WorkspaceHeader(title = "Appearance", subtitle = "Settings · appearance", onNavigateBack = onNavigateBack)
 
         if (isLoading) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

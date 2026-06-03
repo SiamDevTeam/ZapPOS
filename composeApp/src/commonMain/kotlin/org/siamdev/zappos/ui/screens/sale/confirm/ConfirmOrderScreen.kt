@@ -84,7 +84,7 @@ private fun MobileConfirmLayout(
     SideEffect { progressVM.setup(SaleOrderSteps, 0) }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        WorkspaceHeader(title = "Confirm Order", onNavigateBack = onBack)
+        WorkspaceHeader(title = "Confirm Order", subtitle = "Sales · review order", onNavigateBack = onBack)
         ProgressBar()
 
         ConfirmSectionLabel(
@@ -128,7 +128,7 @@ private fun DesktopConfirmLayout(
     SideEffect { progressVM.setup(SaleOrderSteps, 0) }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        WorkspaceHeader(title = "Confirm Order", onNavigateBack = onBack)
+        WorkspaceHeader(title = "Confirm Order", subtitle = "Sales · review order", onNavigateBack = onBack)
         ProgressBar()
 
         Row(

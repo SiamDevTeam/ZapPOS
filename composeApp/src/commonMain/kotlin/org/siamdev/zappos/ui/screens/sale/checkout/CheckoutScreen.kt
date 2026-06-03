@@ -139,7 +139,7 @@ private fun MobileCheckoutLayout(
     SideEffect { progressVM.setup(SaleOrderSteps, 1) }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        WorkspaceHeader(title = "Checkout", onNavigateBack = onBack)
+        WorkspaceHeader(title = "Checkout", subtitle = "Sales · payment", onNavigateBack = onBack)
         ProgressBar()
 
         SectionLabel(text = "ORDER SUMMARY", modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp))
@@ -187,7 +187,7 @@ private fun DesktopCheckoutLayout(
     SideEffect { progressVM.setup(SaleOrderSteps, 1) }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        WorkspaceHeader(title = "Checkout", onNavigateBack = onBack)
+        WorkspaceHeader(title = "Checkout", subtitle = "Sales · payment", onNavigateBack = onBack)
         ProgressBar()
 
         // Column labels

@@ -35,6 +35,7 @@ import kotlin.math.abs
 fun WorkspaceHeader(
     modifier: Modifier = Modifier,
     title: String = "Untitled",
+    subtitle: String? = null,
     onClick: (expanded: Boolean) -> Unit = {},
     onSegmentClick: () -> Unit = {},
     onNavigateBack: (() -> Unit)? = null
@@ -54,7 +55,7 @@ fun WorkspaceHeader(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp))
-                .padding(horizontal = 12.dp, vertical = 6.dp),
+                .padding(horizontal = 12.dp, vertical = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -65,7 +66,7 @@ fun WorkspaceHeader(
             ) {
                 GlowEffects(
                     modifier = Modifier
-                        .size(32.dp)
+                        .size(36.dp)
                         .align(Alignment.CenterStart),
                     shape = GlowShape.Square,
                     drawCore = false,
@@ -89,8 +90,7 @@ fun WorkspaceHeader(
                     val textStyle = MaterialTheme.typography.titleMedium
                     Box(
                         modifier = Modifier
-                            .height(textStyle.fontSize.value.dp * 2)
-                            .aspectRatio(1f)
+                            .size(36.dp)
                             .background(
                                 color = brandColor,
                                 shape = RoundedCornerShape(6.dp)
@@ -106,21 +106,37 @@ fun WorkspaceHeader(
 
                     Spacer(Modifier.width(10.dp))
 
-                    Text(
-                        text = title,
-                        fontSize = 15.sp,
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
+                    Column(verticalArrangement = Arrangement.spacedBy(1.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = title,
+                                fontSize = 15.sp,
+                                lineHeight = 18.sp,
+                                style = MaterialTheme.typography.headlineSmall,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
 
-                    Spacer(Modifier.width(4.dp))
+                            Spacer(Modifier.width(4.dp))
 
-                    Icon(
-                        imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                        contentDescription = "Toggle menu",
-                        tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-                        modifier = Modifier.size(20.dp)
-                    )
+                            Icon(
+                                imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                                contentDescription = "Toggle menu",
+                                tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+
+                        if (subtitle != null) {
+                            Text(
+                                text = subtitle,
+                                fontSize = 10.sp,
+                                lineHeight = 12.sp,
+                                letterSpacing = 0.2.sp,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                            )
+                        }
+                    }
                 }
             }
 
@@ -208,6 +224,7 @@ private fun WorkspaceHeaderPreview() {
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         WorkspaceHeader()
+        WorkspaceHeader(title = "ZapPOS", subtitle = "Dashboard · home")
         WorkspaceHeader(title = "ZapPOS")
         WorkspaceHeader(title = "Demo")
         WorkspaceHeader(title = "Zap POS")
