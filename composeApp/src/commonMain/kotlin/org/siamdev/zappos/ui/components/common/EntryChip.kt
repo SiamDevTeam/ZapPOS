@@ -4,7 +4,9 @@
  */
 package org.siamdev.zappos.ui.components.common
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -38,15 +40,13 @@ fun ChipRow(
     selected: String,
     onSelect: (String) -> Unit,
     modifier: Modifier = Modifier,
-    rowSize: Int = 5
 ) {
-    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        items.chunked(rowSize).forEach { row ->
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                row.forEach { item ->
-                    EntryChip(selected = item == selected, onClick = { onSelect(item) }, label = item)
-                }
-            }
+    Row(
+        modifier = modifier.horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        items.forEach { item ->
+            EntryChip(selected = item == selected, onClick = { onSelect(item) }, label = item)
         }
     }
 }

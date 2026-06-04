@@ -4,7 +4,9 @@
  */
 package org.siamdev.zappos.ui.screens.product.entry
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Event
@@ -69,7 +71,10 @@ internal fun ScheduleCapacitySection(state: EntryFormState) {
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface,
             )
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row(
+                modifier = Modifier.horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
                 dayLabels.forEachIndexed { index, label ->
                     EntryChip(
                         selected = index in state.activeDays,
