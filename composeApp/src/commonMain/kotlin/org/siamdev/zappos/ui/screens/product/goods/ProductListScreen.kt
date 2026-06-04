@@ -2,7 +2,7 @@
  * MIT License
  * Copyright (c) 2025 SiamDevTeam
  */
-package org.siamdev.zappos.ui.screens.product
+package org.siamdev.zappos.ui.screens.product.goods
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
@@ -19,15 +19,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.TouchApp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import org.siamdev.zappos.LocalSettingVM
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
@@ -38,17 +38,18 @@ fun ProductListScreen(
     onOpenDrawer: () -> Unit = {},
     onEditProduct: (String) -> Unit = {},
     onDeleteProduct: (String) -> Unit = {},
-    initialTab: DetailTab = DetailTab.PRODUCT_DETAIL
+    initialTab: DetailTab = DetailTab.PRODUCT_DETAIL,
 ) {
     val products = remember { sampleProducts() }
     var selectedId by remember { mutableStateOf<String?>(null) }
     val selected = products.find { it.id == selectedId }
 
     BoxWithConstraints(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .windowInsetsPadding(WindowInsets.systemBars)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .windowInsetsPadding(WindowInsets.systemBars),
     ) {
         val isDesktop = maxWidth >= 750.dp && maxHeight >= 500.dp
         if (isDesktop) {
@@ -60,7 +61,7 @@ fun ProductListScreen(
                 onOpenDrawer = onOpenDrawer,
                 onEdit = onEditProduct,
                 onDelete = onDeleteProduct,
-                initialTab = initialTab
+                initialTab = initialTab,
             )
         } else {
             MobileLayout(
@@ -72,7 +73,7 @@ fun ProductListScreen(
                 onOpenDrawer = onOpenDrawer,
                 onEdit = onEditProduct,
                 onDelete = onDeleteProduct,
-                initialTab = initialTab
+                initialTab = initialTab,
             )
         }
     }
@@ -87,7 +88,7 @@ private fun DesktopLayout(
     onOpenDrawer: () -> Unit,
     onEdit: (String) -> Unit,
     onDelete: (String) -> Unit = {},
-    initialTab: DetailTab = DetailTab.PRODUCT_DETAIL
+    initialTab: DetailTab = DetailTab.PRODUCT_DETAIL,
 ) {
     var splitRatio by remember { mutableStateOf(0.30f) }
 
@@ -95,73 +96,77 @@ private fun DesktopLayout(
         WorkspaceHeader(title = "Products List", subtitle = "Inventory · catalog", onSegmentClick = onOpenDrawer)
 
         BoxWithConstraints(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 12.dp, vertical = 8.dp)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
         ) {
             val totalWidth = maxWidth
 
             Row(modifier = Modifier.fillMaxSize()) {
                 Box(
-                    modifier = Modifier
-                        .width(totalWidth * splitRatio)
-                        .fillMaxHeight()
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(MaterialTheme.colorScheme.surface)
-                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp))
+                    modifier =
+                        Modifier
+                            .width(totalWidth * splitRatio)
+                            .fillMaxHeight()
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(MaterialTheme.colorScheme.surface)
+                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp)),
                 ) {
                     ProductListPane(
                         products = products,
                         selectedId = selectedId,
                         onSelect = onSelect,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(),
                     )
                 }
 
                 // Draggable divider
                 Box(
-                    modifier = Modifier
-                        .width(16.dp)
-                        .fillMaxHeight()
-                        .pointerHoverIcon(PointerIcon.Hand)
-                        .pointerInput(totalWidth) {
-                            val totalPx = totalWidth.toPx()
-                            detectHorizontalDragGestures { change, dragAmount ->
-                                change.consume()
-                                splitRatio = (splitRatio + dragAmount / totalPx).coerceIn(0.20f, 0.55f)
-                            }
-                        },
-                    contentAlignment = Alignment.Center
+                    modifier =
+                        Modifier
+                            .width(16.dp)
+                            .fillMaxHeight()
+                            .pointerHoverIcon(PointerIcon.Hand)
+                            .pointerInput(totalWidth) {
+                                val totalPx = totalWidth.toPx()
+                                detectHorizontalDragGestures { change, dragAmount ->
+                                    change.consume()
+                                    splitRatio = (splitRatio + dragAmount / totalPx).coerceIn(0.20f, 0.55f)
+                                }
+                            },
+                    contentAlignment = Alignment.Center,
                 ) {
                     Column(
                         verticalArrangement = Arrangement.spacedBy(5.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         repeat(5) {
                             Box(
                                 Modifier
                                     .size(3.dp)
                                     .clip(RoundedCornerShape(50))
-                                    .background(MaterialTheme.colorScheme.outlineVariant)
+                                    .background(MaterialTheme.colorScheme.outlineVariant),
                             )
                         }
                     }
                 }
 
                 Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(MaterialTheme.colorScheme.surface)
-                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp))
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(MaterialTheme.colorScheme.surface)
+                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp)),
                 ) {
                     if (selected != null) {
                         ProductDetailPanel(
                             product = selected,
                             onEdit = { onEdit(selected.id) },
                             onDelete = onDelete,
-                            initialTab = initialTab
+                            initialTab = initialTab,
                         )
                     } else {
                         EmptyDetailState()
@@ -183,7 +188,7 @@ private fun MobileLayout(
     onOpenDrawer: () -> Unit,
     onEdit: (String) -> Unit,
     onDelete: (String) -> Unit = {},
-    initialTab: DetailTab = DetailTab.PRODUCT_DETAIL
+    initialTab: DetailTab = DetailTab.PRODUCT_DETAIL,
 ) {
     AnimatedContent(
         targetState = selected,
@@ -195,7 +200,7 @@ private fun MobileLayout(
                 slideInHorizontally { -it / 3 } + fadeIn() togetherWith
                     slideOutHorizontally { it } + fadeOut()
             }
-        }
+        },
     ) { current ->
         Column(Modifier.fillMaxSize()) {
             if (current != null) {
@@ -203,24 +208,24 @@ private fun MobileLayout(
                     title = "Information",
                     subtitle = "Product · detail",
                     onSegmentClick = onOpenDrawer,
-                    onNavigateBack = onBack
+                    onNavigateBack = onBack,
                 )
                 ProductDetailPanel(
                     product = current,
                     onEdit = { onEdit(current.id) },
                     onDelete = onDelete,
-                    initialTab = initialTab
+                    initialTab = initialTab,
                 )
             } else {
                 WorkspaceHeader(
                     title = "Products List",
-                    onSegmentClick = onOpenDrawer
+                    onSegmentClick = onOpenDrawer,
                 )
                 ProductListPane(
                     products = products,
                     selectedId = selectedId,
                     onSelect = onSelect,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
                 )
             }
         }
@@ -231,17 +236,21 @@ private fun MobileLayout(
 private fun EmptyDetailState() {
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Icon(Icons.Default.TouchApp, contentDescription = null,
+            Icon(
+                Icons.Default.TouchApp,
+                contentDescription = null,
                 modifier = Modifier.size(64.dp),
-                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f))
+                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f),
+            )
             Spacer(Modifier.height(16.dp))
-            Text("Select a product to view details",
+            Text(
+                "Select a product to view details",
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.35f))
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.35f),
+            )
         }
     }
 }
-
 
 @Preview(showBackground = true, widthDp = 411, heightDp = 891, name = "Mobile · List")
 @Composable
@@ -255,7 +264,7 @@ private fun MobileListPreview() {
             onSelect = {},
             onBack = {},
             onOpenDrawer = {},
-            onEdit = {}
+            onEdit = {},
         )
     }
 }
@@ -273,7 +282,7 @@ private fun MobileDetailProductPreview() {
             onSelect = {},
             onBack = {},
             onOpenDrawer = {},
-            onEdit = {}
+            onEdit = {},
         )
     }
 }
@@ -287,7 +296,7 @@ private fun MobileDetailMonitorPreview() {
         Column(
             Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
+                .background(MaterialTheme.colorScheme.background),
         ) {
             WorkspaceHeader(title = "Information", onNavigateBack = {})
             MonitorStockTabContent(product = selected)
@@ -304,7 +313,7 @@ private fun MobileDetailOutOfStockPreview() {
         Column(
             Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
+                .background(MaterialTheme.colorScheme.background),
         ) {
             WorkspaceHeader(title = "Information", onNavigateBack = {})
             MonitorStockTabContent(product = selected)
@@ -332,7 +341,7 @@ private fun DesktopWithProductDetailSelectionPreview() {
             selected = selected,
             onSelect = {},
             onOpenDrawer = {},
-            onEdit = {}
+            onEdit = {},
         )
     }
 }
@@ -350,7 +359,7 @@ private fun DesktopWithMonitorAndStockSelectionPreview() {
             onSelect = {},
             onOpenDrawer = {},
             onEdit = {},
-            initialTab = DetailTab.MONITOR_STOCK
+            initialTab = DetailTab.MONITOR_STOCK,
         )
     }
 }

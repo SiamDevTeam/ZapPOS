@@ -37,8 +37,8 @@ import org.siamdev.zappos.ui.screens.login.LoginScreen
 import org.siamdev.zappos.ui.screens.home.HomeScreen
 import org.siamdev.zappos.ui.screens.login.NostrLoginScreen
 import org.siamdev.zappos.ui.screens.sale.MainMenuScreen
-import org.siamdev.zappos.ui.screens.product.MasterEntryScreen
-import org.siamdev.zappos.ui.screens.product.ProductListScreen
+import org.siamdev.zappos.ui.screens.product.entry.MasterEntryScreen
+import org.siamdev.zappos.ui.screens.product.goods.ProductListScreen
 import org.siamdev.zappos.ui.screens.setting.appearance.AppearanceSettingScreen
 import org.siamdev.zappos.ui.screens.setting.currency.CurrencySettingScreen
 import org.siamdev.zappos.ui.screens.setting.SettingScreen

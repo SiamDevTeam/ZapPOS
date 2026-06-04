@@ -33,12 +33,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 
 data class TabItem(
     val label: String,
-    val icon: ImageVector? = null
+    val icon: ImageVector? = null,
 )
 
 @Composable
@@ -47,38 +47,44 @@ fun SegmentedTabBar(
     selectedIndex: Int,
     onTabSelect: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    containerColor: Color = MaterialTheme.colorScheme.surfaceVariant
+    containerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .heightIn(max = 50.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .background(containerColor)
-            .padding(4.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .heightIn(max = 50.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(containerColor)
+                .padding(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         tabs.forEachIndexed { index, tab ->
             val isSelected = index == selectedIndex
-            val contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimary
-                               else MaterialTheme.colorScheme.onSurfaceVariant
+            val contentColor =
+                if (isSelected) {
+                    MaterialTheme.colorScheme.onPrimary
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                }
             Row(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent)
-                    .clickable { onTabSelect(index) }
-                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent)
+                        .clickable { onTabSelect(index) }
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 if (tab.icon != null) {
                     Icon(
                         imageVector = tab.icon,
                         contentDescription = null,
                         modifier = Modifier.size(14.dp),
-                        tint = contentColor
+                        tint = contentColor,
                     )
                     Spacer(Modifier.width(6.dp))
                 }
@@ -87,7 +93,7 @@ fun SegmentedTabBar(
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
                     color = contentColor,
-                    maxLines = 1
+                    maxLines = 1,
                 )
             }
         }
@@ -100,13 +106,14 @@ private fun SegmentedTabBarWithIconsPreview() {
     MaterialTheme {
         var selected by remember { mutableIntStateOf(0) }
         SegmentedTabBar(
-            tabs = listOf(
-                TabItem("Product Detail", Icons.Default.Info),
-                TabItem("Monitor & Stock-In", Icons.Default.Inventory)
-            ),
+            tabs =
+                listOf(
+                    TabItem("Product Detail", Icons.Default.Info),
+                    TabItem("Monitor & Stock", Icons.Default.Inventory),
+                ),
             selectedIndex = selected,
             onTabSelect = { selected = it },
-            modifier = Modifier.padding(12.dp)
+            modifier = Modifier.padding(12.dp),
         )
     }
 }
@@ -121,7 +128,7 @@ private fun SegmentedTabBarTextOnlyPreview() {
             selectedIndex = selected,
             onTabSelect = { selected = it },
             modifier = Modifier.padding(12.dp),
-            containerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f)
+            containerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f),
         )
     }
 }
