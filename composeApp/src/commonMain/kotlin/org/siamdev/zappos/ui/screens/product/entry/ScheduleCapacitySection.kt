@@ -20,7 +20,7 @@ import org.siamdev.zappos.ui.components.common.EntryChip
 import org.siamdev.zappos.ui.components.common.EntryField
 import org.siamdev.zappos.ui.components.common.NumberUnitField
 import org.siamdev.zappos.ui.components.common.SectionCard
-import org.siamdev.zappos.ui.components.common.TimeField
+import org.siamdev.zappos.ui.components.common.StructuredTimeField
 import org.siamdev.zappos.ui.components.common.ToggleItem
 
 private val dayLabels = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
@@ -50,13 +50,13 @@ internal fun ScheduleCapacitySection(state: EntryFormState) {
         }
 
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            TimeField(
+            StructuredTimeField(
                 value = state.serviceOpens,
                 onValueChange = { state.serviceOpens = it },
                 label = "Opens",
                 modifier = Modifier.weight(1f),
             )
-            TimeField(
+            StructuredTimeField(
                 value = state.serviceCloses,
                 onValueChange = { state.serviceCloses = it },
                 label = "Closes",

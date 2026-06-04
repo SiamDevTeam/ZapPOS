@@ -6,7 +6,7 @@ package org.siamdev.zappos.utils
 
 import java.util.Calendar
 
-actual object DateTimeUtils {
+actual object DateTimePlatform {
     actual fun currentDateString(): String {
         val c = Calendar.getInstance()
         val d = c.get(Calendar.DAY_OF_MONTH).toString().padStart(2, '0')

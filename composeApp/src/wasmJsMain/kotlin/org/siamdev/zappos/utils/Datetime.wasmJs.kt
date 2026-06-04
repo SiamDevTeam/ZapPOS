@@ -4,7 +4,7 @@
  */
 package org.siamdev.zappos.utils
 
-actual object DateTimeUtils {
+actual object DateTimePlatform {
     actual fun currentDateString(): String {
         TODO("Not yet implemented")
     }

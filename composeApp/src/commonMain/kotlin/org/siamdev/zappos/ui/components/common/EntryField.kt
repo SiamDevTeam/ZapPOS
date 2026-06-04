@@ -5,11 +5,8 @@
 package org.siamdev.zappos.ui.components.common
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -89,31 +86,6 @@ fun NumberUnitField(
                 text  = unitLabel,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        },
-        modifier = modifier
-    )
-}
-
-@Composable
-fun TimeField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    label: String,
-    modifier: Modifier = Modifier
-) {
-    EntryField(
-        value           = value,
-        onValueChange   = onValueChange,
-        label           = label,
-        placeholder     = "00:00",
-        keyboardType    = KeyboardType.Number,
-        trailingContent = {
-            Icon(
-                imageVector        = Icons.Default.Schedule,
-                contentDescription = null,
-                modifier           = Modifier.size(18.dp),
-                tint               = MaterialTheme.colorScheme.onSurfaceVariant
             )
         },
         modifier = modifier

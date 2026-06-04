@@ -4,7 +4,7 @@
  */
 package org.siamdev.zappos.utils
 
-actual object DateTimeUtils {
+actual object DateTimePlatform {
     actual fun currentDateString(): String {
         val date = js("new Date()")
         val d = js("String(date.getDate()).padStart(2,'0')")

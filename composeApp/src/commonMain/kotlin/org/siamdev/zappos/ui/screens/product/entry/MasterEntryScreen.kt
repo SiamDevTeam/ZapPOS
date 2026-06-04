@@ -6,7 +6,6 @@ package org.siamdev.zappos.ui.screens.product.entry
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -66,12 +65,13 @@ fun MasterEntryScreen(
     }
 }
 
+// Mobile: single scrolling column — padding and spacing match MonitorStockPanel.
 @Composable
 private fun EntryMobileLayout(state: EntryFormState) {
-    LazyColumn(
+    androidx.compose.foundation.lazy.LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 14.dp, vertical = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item { ProductDetailsSection(state) }
         item { PricingSection(state) }
@@ -81,58 +81,50 @@ private fun EntryMobileLayout(state: EntryFormState) {
                 item { InventorySection(state) }
                 item { OptionsSection(state) }
             }
-
             EntryType.SERVICE -> {
                 item { ScheduleCapacitySection(state) }
                 item { OptionsSection(state) }
             }
-
             EntryType.RENTAL -> {
                 item { ResourcesBookingSection(state) }
             }
         }
 
         item { AdvancedSection(state) }
-        item { Spacer(Modifier.height(8.dp)) }
     }
 }
 
+// Desktop: two equal columns separated by a VerticalDivider — mirrors MonitorStockPanel's wide layout.
 @Composable
 private fun EntryDesktopLayout(state: EntryFormState) {
-    Row(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(horizontal = 14.dp, vertical = 12.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
+    Row(modifier = Modifier.fillMaxSize()) {
         // Left column — product details + pricing
-        LazyColumn(
-            modifier = Modifier.weight(0.46f).fillMaxHeight(),
-            contentPadding = PaddingValues(bottom = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+        androidx.compose.foundation.lazy.LazyColumn(
+            modifier = Modifier.weight(1f).fillMaxHeight(),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             item { ProductDetailsSection(state) }
             item { PricingSection(state) }
         }
 
-        // Right column — tab-specific sections + advanced
-        LazyColumn(
-            modifier = Modifier.weight(0.54f).fillMaxHeight(),
-            contentPadding = PaddingValues(bottom = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+        VerticalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+
+        // Right column — type-specific operational sections + advanced
+        androidx.compose.foundation.lazy.LazyColumn(
+            modifier = Modifier.weight(1f).fillMaxHeight(),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             when (state.entryType) {
                 EntryType.GOODS -> {
                     item { InventorySection(state) }
                     item { OptionsSection(state) }
                 }
-
                 EntryType.SERVICE -> {
                     item { ScheduleCapacitySection(state) }
                     item { OptionsSection(state) }
                 }
-
                 EntryType.RENTAL -> {
                     item { ResourcesBookingSection(state) }
                 }

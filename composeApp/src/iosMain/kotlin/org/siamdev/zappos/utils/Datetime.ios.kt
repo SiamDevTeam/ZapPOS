@@ -13,7 +13,7 @@ import platform.Foundation.NSCalendarUnitMinute
 import platform.Foundation.NSCalendarUnitSecond
 import platform.Foundation.NSDate
 
-actual object DateTimeUtils {
+actual object DateTimePlatform {
     actual fun currentDateString(): String {
         val cal = NSCalendar.currentCalendar
         val components = cal.components(

@@ -5,6 +5,7 @@
 package org.siamdev.zappos.ui.screens.product.entry
 
 import androidx.compose.runtime.*
+import org.siamdev.zappos.ui.components.common.TimeValue
 import org.siamdev.zappos.utils.DateTimeUtils
 
 internal enum class EntryType { GOODS, SERVICE, RENTAL }
@@ -30,9 +31,12 @@ internal class EntryFormState {
     // type
     var entryType by mutableStateOf(EntryType.GOODS)
 
+    // identity — null in create mode; set after save or when editing an existing item
+    var productId by mutableStateOf<String?>(null)
+
     // product details
     var name by mutableStateOf("")
-    var category by mutableStateOf("beverages")
+    var category by mutableStateOf("")
     var subCategory by mutableStateOf<String?>(null)
     var description by mutableStateOf("")
     var isAvailable by mutableStateOf(true)
@@ -59,19 +63,15 @@ internal class EntryFormState {
     var trackStock by mutableStateOf(true)
     var openingStock by mutableStateOf("0")
     var maxCapacity by mutableStateOf("0")
-    var lowStockAlert by mutableStateOf("10")
-    var reorderPoint by mutableStateOf("5")
-    var reorderQty by mutableStateOf("20")
-    var purchaseUnit by mutableStateOf("")
-    var unitsPerPurchase by mutableStateOf("1")
+    var lowStockAlert by mutableStateOf("0")
     var supplier by mutableStateOf("")
     var trackExpiry by mutableStateOf(false)
 
     // schedule & capacity (service)
     var serviceCapacity by mutableStateOf("12")
     var serviceDuration by mutableStateOf("60")
-    var serviceOpens by mutableStateOf("09:00")
-    var serviceCloses by mutableStateOf("18:00")
+    var serviceOpens by mutableStateOf(TimeValue(9, 0))
+    var serviceCloses by mutableStateOf(TimeValue(18, 0))
     var activeDays by mutableStateOf(setOf(0, 1, 2, 3, 4))
     var instructor by mutableStateOf("")
     var serviceRequiresBooking by mutableStateOf(false)
@@ -79,8 +79,8 @@ internal class EntryFormState {
     // resources & booking (rental)
     var rentalUnitsCount by mutableStateOf("2")
     var rentalBuffer by mutableStateOf("0")
-    var rentalOpens by mutableStateOf("08:00")
-    var rentalCloses by mutableStateOf("22:00")
+    var rentalOpens by mutableStateOf(TimeValue(8, 0))
+    var rentalCloses by mutableStateOf(TimeValue(22, 0))
     var depositAmount by mutableStateOf("0.00")
     var rentalRequiresBooking by mutableStateOf(true)
 

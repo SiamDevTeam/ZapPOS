@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import org.siamdev.zappos.ui.components.common.EntryField
 import org.siamdev.zappos.ui.components.common.NumberUnitField
 import org.siamdev.zappos.ui.components.common.SectionCard
-import org.siamdev.zappos.ui.components.common.TimeField
+import org.siamdev.zappos.ui.components.common.StructuredTimeField
 import org.siamdev.zappos.ui.components.common.ToggleItem
 
 @Composable
@@ -45,13 +45,13 @@ internal fun ResourcesBookingSection(state: EntryFormState) {
         }
 
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            TimeField(
+            StructuredTimeField(
                 value = state.rentalOpens,
                 onValueChange = { state.rentalOpens = it },
                 label = "Opens",
                 modifier = Modifier.weight(1f),
             )
-            TimeField(
+            StructuredTimeField(
                 value = state.rentalCloses,
                 onValueChange = { state.rentalCloses = it },
                 label = "Closes",
