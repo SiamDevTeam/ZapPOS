@@ -53,13 +53,13 @@ internal fun ScheduleCapacitySection(state: EntryFormState) {
             StructuredTimeField(
                 value = state.serviceOpens,
                 onValueChange = { state.serviceOpens = it },
-                label = "Opens",
+                label = "from",
                 modifier = Modifier.weight(1f),
             )
             StructuredTimeField(
                 value = state.serviceCloses,
                 onValueChange = { state.serviceCloses = it },
-                label = "Closes",
+                label = "to",
                 modifier = Modifier.weight(1f),
             )
         }

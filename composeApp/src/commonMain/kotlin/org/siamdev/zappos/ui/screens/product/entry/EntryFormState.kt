@@ -5,7 +5,7 @@
 package org.siamdev.zappos.ui.screens.product.entry
 
 import androidx.compose.runtime.*
-import org.siamdev.zappos.ui.components.common.TimeValue
+import org.siamdev.zappos.utils.TimeValue
 import org.siamdev.zappos.utils.DateTimeUtils
 
 internal enum class EntryType { GOODS, SERVICE, RENTAL }

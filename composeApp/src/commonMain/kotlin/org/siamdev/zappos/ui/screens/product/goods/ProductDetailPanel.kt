@@ -207,58 +207,82 @@ private fun ProductDetailTabContent(
     }
 }
 
-/** Category icon + breadcrumb + product name displayed at the top of the detail tab. */
+/** Category icon + breadcrumb + product name. Pass [showMeta] to also display SKU and unit on the trailing edge. */
 @Composable
-private fun ProductHeader(
+internal fun ProductHeader(
     product: Product,
     categoryName: String,
     subName: String?,
     catIcon: ImageVector,
+    showMeta: Boolean = false,
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Box(
-            modifier =
-                Modifier
-                    .size(44.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
-            contentAlignment = Alignment.Center,
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Row(
+            modifier = Modifier.weight(1f),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Icon(
-                catIcon,
-                contentDescription = null,
-                modifier = Modifier.size(22.dp),
-                tint = MaterialTheme.colorScheme.primary,
-            )
-        }
-        Spacer(Modifier.width(12.dp))
-        Column {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    categoryName,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+            Box(
+                modifier =
+                    Modifier
+                        .size(44.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    catIcon,
+                    contentDescription = null,
+                    modifier = Modifier.size(22.dp),
+                    tint = MaterialTheme.colorScheme.primary,
                 )
-                if (subName != null) {
-                    Icon(
-                        Icons.Default.ChevronRight,
-                        contentDescription = null,
-                        modifier = Modifier.size(14.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+            }
+            Spacer(Modifier.width(12.dp))
+            Column {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        subName,
+                        categoryName,
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
+                    if (subName != null) {
+                        Icon(
+                            Icons.Default.ChevronRight,
+                            contentDescription = null,
+                            modifier = Modifier.size(14.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Text(
+                            subName,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                 }
+                Text(
+                    product.name,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
             }
-            Text(
-                product.name,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
+        }
+        if (showMeta && product.sku.isNotBlank()) {
+            Column(horizontalAlignment = Alignment.End) {
+                Text(
+                    "SKU ${product.sku}",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    "sold per ${product.unit}",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
     }
 }

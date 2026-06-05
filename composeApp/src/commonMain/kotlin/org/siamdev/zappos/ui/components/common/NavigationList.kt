@@ -18,15 +18,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Inventory
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Storefront
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.ViewInAr
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -175,7 +173,7 @@ fun NavigationList(
                     }
                     item {
                         DrawerNavigationItem(
-                            icon = Icons.Default.Inventory,
+                            icon = Icons.Filled.ViewInAr,
                             title = "Product Entry",
                             onClick = { onNavigateToProductEntry(); onDismiss() }
                         )

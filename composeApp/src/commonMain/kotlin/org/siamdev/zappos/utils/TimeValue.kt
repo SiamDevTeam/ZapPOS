@@ -1,10 +1,4 @@
-/*
- * MIT License
- * Copyright (c) 2025 SiamDevTeam
- */
-package org.siamdev.zappos.ui.components.common
-
-import org.siamdev.zappos.utils.DateTimeUtils
+package org.siamdev.zappos.utils
 
 data class TimeValue(val hour: Int, val minute: Int) {
 

@@ -91,6 +91,11 @@ private val adjustStockTabs =
 
 @Composable
 internal fun MonitorStockTabContent(product: Product) {
+    val catEntry = remember(product.category) { DefaultProductCategories.find { it.id == product.category } }
+    val categoryName = catEntry?.name ?: product.category
+    val subName = catEntry?.subCategories?.find { it.id == product.subCategory }?.name
+    val catIcon = catEntry?.icon ?: Icons.Default.ShoppingBag
+
     val history = remember(product.id) { fakeStockHistory(product.id) }
     var historyFilter by remember { mutableStateOf(HistoryFilter.ALL) }
     val filteredHistory =
@@ -115,7 +120,7 @@ internal fun MonitorStockTabContent(product: Product) {
                             .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    MonitorProductHeader(product)
+                    ProductHeader(product = product, categoryName = categoryName, subName = subName, catIcon = catIcon, showMeta = true)
                     StockOverviewCard(product, history)
                     AdjustStockSection(product)
                 }
@@ -159,7 +164,9 @@ internal fun MonitorStockTabContent(product: Product) {
                         elevation = CardDefaults.cardElevation(0.dp),
                         border = CardDefaults.outlinedCardBorder(),
                     ) {
-                        Box(Modifier.padding(16.dp)) { MonitorProductHeader(product) }
+                        Box(Modifier.padding(16.dp)) {
+                            ProductHeader(product = product, categoryName = categoryName, subName = subName, catIcon = catIcon, showMeta = true)
+                        }
                     }
                 }
                 item { StockOverviewCard(product, history) }
@@ -193,69 +200,6 @@ internal fun MonitorStockTabContent(product: Product) {
     }
 }
 
-@Composable
-private fun MonitorProductHeader(product: Product) {
-    val catEntry = DefaultProductCategories.find { it.id == product.category }
-    val categoryName = catEntry?.name ?: product.category
-    val subName = catEntry?.subCategories?.find { it.id == product.subCategory }?.name
-    val catIcon = catEntry?.icon ?: Icons.Default.ShoppingBag
-    val breadcrumb = if (subName != null) "$categoryName · $subName" else categoryName
-
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Row(
-            modifier = Modifier.weight(1f),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Box(
-                modifier =
-                    Modifier
-                        .size(40.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(
-                    catIcon,
-                    contentDescription = null,
-                    modifier = Modifier.size(20.dp),
-                    tint = MaterialTheme.colorScheme.primary,
-                )
-            }
-            Spacer(Modifier.width(12.dp))
-            Column {
-                Text(
-                    breadcrumb,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Text(
-                    product.name,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-            }
-        }
-        if (product.sku.isNotBlank()) {
-            Column(horizontalAlignment = Alignment.End) {
-                Text(
-                    "SKU ${product.sku}",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Text(
-                    "sold per ${product.unit}",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
-    }
-}
 
 @Composable
 private fun StockOverviewCard(

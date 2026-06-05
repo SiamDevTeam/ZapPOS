@@ -15,6 +15,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.*
+import androidx.compose.material3.OutlinedTextFieldDefaults.FocusedBorderThickness
+import androidx.compose.material3.OutlinedTextFieldDefaults.UnfocusedBorderThickness
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +30,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.siamdev.zappos.utils.TimeValue
 
 /**
  * Structured time input field that enforces 24-hour HH:MM format.
@@ -184,12 +187,14 @@ fun StructuredTimeField(
             },
             colors = fieldColors,
             container = {
-                OutlinedTextFieldDefaults.ContainerBox(
+                OutlinedTextFieldDefaults.Container(
                     enabled = true,
                     isError = false,
                     interactionSource = interactionSource,
                     colors = fieldColors,
                     shape = RoundedCornerShape(12.dp),
+                    focusedBorderThickness = FocusedBorderThickness,
+                    unfocusedBorderThickness = UnfocusedBorderThickness,
                 )
             },
         )

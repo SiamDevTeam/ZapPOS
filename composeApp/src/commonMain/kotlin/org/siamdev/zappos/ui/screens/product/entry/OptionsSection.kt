@@ -147,7 +147,7 @@ private fun OptionGroupCard(
                     placeholder = "0",
                     prefix = { Text("฿") },
                     keyboardType = KeyboardType.Number,
-                    modifier = Modifier.width(110.dp),
+                    modifier = Modifier.width(110.dp)
                 )
                 IconButton(onClick = {
                     val updated = group.items.toMutableList().also { it.removeAt(ii) }
@@ -195,9 +195,9 @@ private fun OptionsSectionWithGroupPreview() {
                         OptionGroup(
                             name = "Size",
                             items = listOf(OptionItem(name = "Small"), OptionItem(name = "Large", priceModifier = 20)),
-                        ),
+                        )
                     )
-            },
+            }
         )
     }
 }
