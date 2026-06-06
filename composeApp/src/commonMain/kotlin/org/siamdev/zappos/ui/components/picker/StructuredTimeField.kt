@@ -2,10 +2,9 @@
  * MIT License
  * Copyright (c) 2025 SiamDevTeam
  */
-package org.siamdev.zappos.ui.components.common
+package org.siamdev.zappos.ui.components.picker
 
 import androidx.compose.foundation.interaction.FocusInteraction
-import org.siamdev.zappos.utils.DateTimeUtils
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,14 +29,19 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.siamdev.zappos.utils.DateTimeUtils
 import org.siamdev.zappos.utils.TimeValue
 
 /**
- * Structured time input field that enforces 24-hour HH:MM format.
+ * Display and manual-input component for a 24-hour HH:MM time value.
  *
- * Hours and minutes are edited in separate segments. Validation is applied
- * per keystroke so invalid values (e.g. 25:00, 09:75) can never be entered.
- * Auto-advances focus from the hour segment to the minute segment after a
+ * The field is stateless with regard to any picker UI. Callers that want
+ * a wheel picker should pass [onPickerRequest] and render [TimePickerDialog]
+ * themselves when that callback fires. Omitting [onPickerRequest] leaves the
+ * field as a pure keyboard-entry control.
+ *
+ * Validation per keystroke: hours are clamped to 00–23, minutes to 00–59.
+ * Focus auto-advances from the hour segment to the minute segment after a
  * valid 2-digit hour is typed.
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,6 +51,7 @@ fun StructuredTimeField(
     onValueChange: (TimeValue) -> Unit,
     label: String,
     modifier: Modifier = Modifier,
+    onPickerRequest: (() -> Unit)? = null,
 ) {
     val minuteFocus = remember { FocusRequester() }
     val hourFocus = remember { FocusRequester() }
@@ -115,6 +120,7 @@ fun StructuredTimeField(
                         },
                         onFocusChange = { focused ->
                             isHourFocused = focused
+                            if (focused) onPickerRequest?.invoke()
                             if (!focused) {
                                 val h = hourRaw.toIntOrNull()?.coerceIn(0, 23) ?: value.hour
                                 hourRaw = DateTimeUtils.pad2(h)
@@ -159,6 +165,7 @@ fun StructuredTimeField(
                         },
                         onFocusChange = { focused ->
                             isMinuteFocused = focused
+                            if (focused) onPickerRequest?.invoke()
                             if (!focused) {
                                 val m = minuteRaw.toIntOrNull()?.coerceIn(0, 59) ?: value.minute
                                 minuteRaw = DateTimeUtils.pad2(m)
@@ -210,10 +217,6 @@ private fun TimeSegmentField(
     imeAction: ImeAction,
     keyboardActions: KeyboardActions,
 ) {
-    val textStyle = MaterialTheme.typography.bodyLarge.copy(
-        textAlign = TextAlign.Center,
-        color = MaterialTheme.colorScheme.onSurface,
-    )
     BasicTextField(
         value = value,
         onValueChange = onValueChange,
@@ -224,7 +227,10 @@ private fun TimeSegmentField(
         ),
         keyboardActions = keyboardActions,
         cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-        textStyle = textStyle,
+        textStyle = MaterialTheme.typography.bodyLarge.copy(
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onSurface,
+        ),
         modifier = Modifier
             .width(28.dp)
             .focusRequester(focusRequester)
@@ -236,6 +242,7 @@ private fun TimeSegmentField(
         },
     )
 }
+
 
 @Preview(showBackground = true, widthDp = 200)
 @Composable

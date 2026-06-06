@@ -36,7 +36,10 @@ import org.siamdev.zappos.ui.screens.product.goods.sections.ProductDetailPanel
 import org.siamdev.zappos.ui.screens.product.goods.sections.ProductListPane
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 
-/** Root screen for the product catalogue. Switches between [DesktopLayout] and [MobileLayout] based on window width. */
+/**
+ * Root screen for the product catalogue.
+ * Switches between [DesktopLayout] and [MobileLayout] based on window width.
+ * */
 @Composable
 fun ProductListScreen(
     onOpenDrawer: () -> Unit = {},
