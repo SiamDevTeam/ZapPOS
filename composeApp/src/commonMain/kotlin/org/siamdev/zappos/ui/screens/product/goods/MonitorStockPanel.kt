@@ -120,7 +120,7 @@ internal fun MonitorStockTabContent(product: Product) {
                             .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    ProductHeader(product = product, categoryName = categoryName, subName = subName, catIcon = catIcon, showMeta = true)
+                    ProductHeader(product = product, categoryName = categoryName, subName = subName, catIcon = catIcon)
                     StockOverviewCard(product, history)
                     AdjustStockSection(product)
                 }
@@ -157,17 +157,7 @@ internal fun MonitorStockTabContent(product: Product) {
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 item {
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-                        elevation = CardDefaults.cardElevation(0.dp),
-                        border = CardDefaults.outlinedCardBorder(),
-                    ) {
-                        Box(Modifier.padding(16.dp)) {
-                            ProductHeader(product = product, categoryName = categoryName, subName = subName, catIcon = catIcon, showMeta = true)
-                        }
-                    }
+                    ProductHeader(product = product, categoryName = categoryName, subName = subName, catIcon = catIcon)
                 }
                 item { StockOverviewCard(product, history) }
                 item { AdjustStockSection(product) }

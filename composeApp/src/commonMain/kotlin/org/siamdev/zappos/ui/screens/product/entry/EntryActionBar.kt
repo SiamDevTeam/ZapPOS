@@ -23,6 +23,7 @@ import org.siamdev.zappos.ui.components.common.MaterialButton
 @Composable
 internal fun EntryActionBar(
     isFormValid: Boolean,
+    isEditMode: Boolean = false,
     onSave: () -> Unit,
     onDiscard: () -> Unit,
 ) {
@@ -37,7 +38,7 @@ internal fun EntryActionBar(
     ) {
         MaterialButton(
             modifier = Modifier.weight(1f).height(48.dp),
-            text = "Save product",
+            text = if (isEditMode) "Update product" else "Save product",
             iconStart = Icons.Default.Check,
             enabled = isFormValid,
             onClick = onSave,

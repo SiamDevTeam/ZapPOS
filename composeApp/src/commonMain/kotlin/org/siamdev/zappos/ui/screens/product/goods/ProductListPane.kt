@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.SearchOff
 import androidx.compose.material.icons.filled.ShoppingBag
@@ -32,6 +33,7 @@ import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import org.siamdev.zappos.LocalSettingVM
+import org.siamdev.zappos.ui.components.common.MaterialButton
 import org.siamdev.zappos.ui.components.menu.DefaultProductCategories
 import org.siamdev.zappos.ui.components.menu.SearchFilter
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
@@ -44,6 +46,7 @@ internal fun ProductListPane(
     selectedId: String?,
     onSelect: (String) -> Unit,
     modifier: Modifier = Modifier,
+    onNewProduct: (() -> Unit)? = null,
 ) {
     var searchQuery by remember { mutableStateOf("") }
     var categoryFilter by remember { mutableStateOf<String?>(null) }
@@ -64,6 +67,18 @@ internal fun ProductListPane(
         }
 
     Column(modifier = modifier) {
+        if (onNewProduct != null) {
+            MaterialButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(55.dp)
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 12.dp),
+                text = "New Product",
+                iconStart = Icons.Default.Add,
+                onClick = onNewProduct,
+            )
+        }
         SearchFilter(
             searchQuery = searchQuery,
             onSearchChange = { searchQuery = it },

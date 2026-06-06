@@ -192,7 +192,8 @@ fun NavigationRoot(
                         ) { navActions, openDrawer ->
                             ProductListScreen(
                                 onOpenDrawer = openDrawer,
-                                onEditProduct = { navActions.to(Route.ProductEntryMaster) }
+                                onEditProduct = { id -> navActions.to(Route.ProductEntryMaster(id)) },
+                                onNewProduct = { navActions.to(Route.ProductEntryMaster()) },
                             )
                         }
 
@@ -202,6 +203,7 @@ fun NavigationRoot(
                         ) { navActions, openDrawer ->
                             val prevRoute = backStack.toList().dropLast(1).lastOrNull()
                             MasterEntryScreen(
+                                productId = key.productId,
                                 onNavigateBack = { navActions.back() },
                                 onOpenDrawer   = openDrawer,
                                 onSave         = { navActions.back() },

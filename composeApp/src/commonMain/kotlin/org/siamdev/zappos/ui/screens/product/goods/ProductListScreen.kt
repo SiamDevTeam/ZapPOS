@@ -16,6 +16,7 @@ import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.TouchApp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -38,6 +39,7 @@ fun ProductListScreen(
     onOpenDrawer: () -> Unit = {},
     onEditProduct: (String) -> Unit = {},
     onDeleteProduct: (String) -> Unit = {},
+    onNewProduct: () -> Unit = {},
     initialTab: DetailTab = DetailTab.PRODUCT_DETAIL,
 ) {
     val products = remember { sampleProducts() }
@@ -52,29 +54,47 @@ fun ProductListScreen(
                 .windowInsetsPadding(WindowInsets.systemBars),
     ) {
         val isDesktop = maxWidth >= 750.dp && maxHeight >= 500.dp
-        if (isDesktop) {
-            DesktopLayout(
-                products = products,
-                selectedId = selectedId,
-                selected = selected,
-                onSelect = { selectedId = it },
-                onOpenDrawer = onOpenDrawer,
-                onEdit = onEditProduct,
-                onDelete = onDeleteProduct,
-                initialTab = initialTab,
-            )
-        } else {
-            MobileLayout(
-                products = products,
-                selectedId = selectedId,
-                selected = selected,
-                onSelect = { selectedId = it },
-                onBack = { selectedId = null },
-                onOpenDrawer = onOpenDrawer,
-                onEdit = onEditProduct,
-                onDelete = onDeleteProduct,
-                initialTab = initialTab,
-            )
+        val showFab = isDesktop || selected == null
+
+        Box(modifier = Modifier.fillMaxSize()) {
+            if (isDesktop) {
+                DesktopLayout(
+                    products = products,
+                    selectedId = selectedId,
+                    selected = selected,
+                    onSelect = { selectedId = it },
+                    onOpenDrawer = onOpenDrawer,
+                    onEdit = onEditProduct,
+                    onDelete = onDeleteProduct,
+                    onNewProduct = onNewProduct,
+                    initialTab = initialTab,
+                )
+            } else {
+                MobileLayout(
+                    products = products,
+                    selectedId = selectedId,
+                    selected = selected,
+                    onSelect = { selectedId = it },
+                    onBack = { selectedId = null },
+                    onOpenDrawer = onOpenDrawer,
+                    onEdit = onEditProduct,
+                    onDelete = onDeleteProduct,
+                    initialTab = initialTab,
+                )
+                if (showFab) {
+                    FloatingActionButton(
+                        onClick = onNewProduct,
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(20.dp),
+                        containerColor = MaterialTheme.colorScheme.primary,
+                    ) {
+                        Icon(Icons.Default.Add, contentDescription = "New product")
+                    }
+                }
+            }
+
+
         }
     }
 }
@@ -88,6 +108,7 @@ private fun DesktopLayout(
     onOpenDrawer: () -> Unit,
     onEdit: (String) -> Unit,
     onDelete: (String) -> Unit = {},
+    onNewProduct: () -> Unit = {},
     initialTab: DetailTab = DetailTab.PRODUCT_DETAIL,
 ) {
     var splitRatio by remember { mutableStateOf(0.30f) }
@@ -118,6 +139,7 @@ private fun DesktopLayout(
                         selectedId = selectedId,
                         onSelect = onSelect,
                         modifier = Modifier.fillMaxSize(),
+                        onNewProduct = onNewProduct,
                     )
                 }
 

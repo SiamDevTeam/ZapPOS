@@ -41,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 
@@ -54,6 +55,7 @@ fun MaterialButton(
     iconSize: Int = 25,
     iconColor: Color = Color.Unspecified,
     buttonColor: Color = MaterialTheme.colorScheme.primary,
+    cornerRadius: Dp = 8.dp,
     showBorder: Boolean = false,
     enabled: Boolean = true,
     onClick: () -> Unit,
@@ -94,12 +96,12 @@ fun MaterialButton(
     Box(
         modifier = modifier
             .scale(scale)
-            .background(backgroundColor, RoundedCornerShape(8.dp))
+            .background(backgroundColor, RoundedCornerShape(cornerRadius))
             .then(
                 if (showBorder) Modifier.border(
                     width = 1.dp,
                     color = MaterialTheme.colorScheme.outlineVariant,
-                    shape = RoundedCornerShape(8.dp)
+                    shape = RoundedCornerShape(cornerRadius)
                 ) else Modifier
             )
             .clickable(

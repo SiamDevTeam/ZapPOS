@@ -5,8 +5,9 @@
 package org.siamdev.zappos.ui.screens.product.entry
 
 import androidx.compose.runtime.*
-import org.siamdev.zappos.utils.TimeValue
+import org.siamdev.zappos.ui.screens.product.goods.Product
 import org.siamdev.zappos.utils.DateTimeUtils
+import org.siamdev.zappos.utils.TimeValue
 
 internal enum class EntryType { GOODS, SERVICE, RENTAL }
 
@@ -102,6 +103,22 @@ internal class EntryFormState {
             EntryType.SERVICE -> listOf("session", "person", "hour", "course", "class", "month")
             EntryType.RENTAL -> listOf("hour", "court", "field", "table", "room", "day")
         }
+}
+
+internal fun EntryFormState.loadFrom(product: Product) {
+    productId = product.id
+    name = product.name
+    category = product.category
+    subCategory = product.subCategory
+    description = product.description
+    isAvailable = product.isAvailable
+    isRecommended = product.isRecommended
+    price = product.price.toLong().toString()
+    unit = product.unit
+    sku = product.sku
+    trackStock = product.stockQty != null
+    if (product.stockQty != null) openingStock = product.stockQty.toString()
+    if (product.stockMax != null) maxCapacity = product.stockMax.toString()
 }
 
 @Composable

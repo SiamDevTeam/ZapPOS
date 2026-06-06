@@ -53,7 +53,7 @@ sealed class Route : NavKey {
     object CurrencySetting : Route()
 
     @Serializable
-    object ProductEntryMaster : Route()
+    data class ProductEntryMaster(val productId: String? = null) : Route()
 
     @Serializable
     object ProductList : Route()
