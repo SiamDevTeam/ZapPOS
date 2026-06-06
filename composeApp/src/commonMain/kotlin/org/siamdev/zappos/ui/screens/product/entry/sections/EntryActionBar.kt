@@ -2,7 +2,7 @@
  * MIT License
  * Copyright (c) 2025 SiamDevTeam
  */
-package org.siamdev.zappos.ui.screens.product.entry
+package org.siamdev.zappos.ui.screens.product.entry.sections
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

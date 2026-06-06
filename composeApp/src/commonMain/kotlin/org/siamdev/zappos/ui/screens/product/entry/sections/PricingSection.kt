@@ -2,7 +2,7 @@
  * MIT License
  * Copyright (c) 2025 SiamDevTeam
  */
-package org.siamdev.zappos.ui.screens.product.entry
+package org.siamdev.zappos.ui.screens.product.entry.sections
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -32,6 +32,9 @@ import org.siamdev.zappos.ui.components.common.EntryField
 import org.siamdev.zappos.ui.components.common.NumberUnitField
 import org.siamdev.zappos.ui.components.common.SectionCard
 import org.siamdev.zappos.ui.components.common.ToggleItem
+import org.siamdev.zappos.ui.screens.product.entry.EntryFormState
+import org.siamdev.zappos.ui.screens.product.entry.EntryType
+import org.siamdev.zappos.ui.screens.product.entry.rememberEntryFormState
 import org.siamdev.zappos.utils.formatAmount
 
 @Composable

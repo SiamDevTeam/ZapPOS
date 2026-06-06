@@ -2,7 +2,7 @@
  * MIT License
  * Copyright (c) 2025 SiamDevTeam
  */
-package org.siamdev.zappos.ui.screens.product.entry
+package org.siamdev.zappos.ui.screens.product.entry.sections
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,6 +24,11 @@ import androidx.compose.ui.unit.dp
 import org.siamdev.zappos.ui.components.common.EntryChip
 import org.siamdev.zappos.ui.components.common.EntryField
 import org.siamdev.zappos.ui.components.common.SectionCard
+import org.siamdev.zappos.ui.screens.product.entry.EntryFormState
+import org.siamdev.zappos.ui.screens.product.entry.OptionGroup
+import org.siamdev.zappos.ui.screens.product.entry.OptionItem
+import org.siamdev.zappos.ui.screens.product.entry.PickMode
+import org.siamdev.zappos.ui.screens.product.entry.rememberEntryFormState
 
 @Composable
 internal fun OptionsSection(state: EntryFormState) {
@@ -194,7 +199,10 @@ private fun OptionsSectionWithGroupPreview() {
                     listOf(
                         OptionGroup(
                             name = "Size",
-                            items = listOf(OptionItem(name = "Small"), OptionItem(name = "Large", priceModifier = 20)),
+                            items = listOf(
+                                OptionItem(name = "Small"),
+                                OptionItem(name = "Large", priceModifier = 20)
+                            ),
                         )
                     )
             }

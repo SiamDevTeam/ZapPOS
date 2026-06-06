@@ -6,6 +6,7 @@ package org.siamdev.zappos.ui.screens.product.entry
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,6 +16,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.siamdev.zappos.ui.components.common.SegmentedTabBar
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
+import org.siamdev.zappos.ui.screens.product.entry.sections.AdvancedSection
+import org.siamdev.zappos.ui.screens.product.entry.sections.EntryActionBar
+import org.siamdev.zappos.ui.screens.product.entry.sections.InventorySection
+import org.siamdev.zappos.ui.screens.product.entry.sections.OptionsSection
+import org.siamdev.zappos.ui.screens.product.entry.sections.PricingSection
+import org.siamdev.zappos.ui.screens.product.entry.sections.ProductDetailsSection
+import org.siamdev.zappos.ui.screens.product.entry.sections.ResourcesBookingSection
+import org.siamdev.zappos.ui.screens.product.entry.sections.ScheduleCapacitySection
 import org.siamdev.zappos.ui.screens.product.goods.sampleProducts
 
 @Composable
@@ -79,7 +88,7 @@ fun MasterEntryScreen(
 // Mobile: single scrolling column — padding and spacing match MonitorStockPanel.
 @Composable
 private fun EntryMobileLayout(state: EntryFormState) {
-    androidx.compose.foundation.lazy.LazyColumn(
+    LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -96,9 +105,7 @@ private fun EntryMobileLayout(state: EntryFormState) {
                 item { ScheduleCapacitySection(state) }
                 item { OptionsSection(state) }
             }
-            EntryType.RENTAL -> {
-                item { ResourcesBookingSection(state) }
-            }
+            EntryType.RENTAL -> item { ResourcesBookingSection(state) }
         }
 
         item { AdvancedSection(state) }
@@ -110,7 +117,7 @@ private fun EntryMobileLayout(state: EntryFormState) {
 private fun EntryDesktopLayout(state: EntryFormState) {
     Row(modifier = Modifier.fillMaxSize()) {
         // Left column — product details + pricing
-        androidx.compose.foundation.lazy.LazyColumn(
+        LazyColumn(
             modifier = Modifier.weight(1f).fillMaxHeight(),
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -122,7 +129,7 @@ private fun EntryDesktopLayout(state: EntryFormState) {
         VerticalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
         // Right column — type-specific operational sections + advanced
-        androidx.compose.foundation.lazy.LazyColumn(
+        LazyColumn(
             modifier = Modifier.weight(1f).fillMaxHeight(),
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),

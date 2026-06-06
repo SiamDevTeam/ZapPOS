@@ -8,6 +8,12 @@ import androidx.compose.runtime.*
 import org.siamdev.zappos.ui.screens.product.goods.Product
 import org.siamdev.zappos.utils.DateTimeUtils
 import org.siamdev.zappos.utils.TimeValue
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Inventory
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Schedule
+import org.siamdev.zappos.ui.components.common.TabItem
+
 
 internal enum class EntryType { GOODS, SERVICE, RENTAL }
 
@@ -26,6 +32,13 @@ internal data class OptionGroup(
     val required: Boolean = false,
     val items: List<OptionItem> = emptyList(),
 )
+
+internal val entryTabs: List<TabItem> =
+    listOf(
+        TabItem("Goods", Icons.Default.Inventory),
+        TabItem("Service", Icons.Default.Person),
+        TabItem("Rental", Icons.Default.Schedule),
+    )
 
 @Stable
 internal class EntryFormState {

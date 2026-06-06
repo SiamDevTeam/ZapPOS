@@ -2,7 +2,7 @@
  * MIT License
  * Copyright (c) 2025 SiamDevTeam
  */
-package org.siamdev.zappos.ui.screens.product.entry
+package org.siamdev.zappos.ui.screens.product.entry.sections
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -19,6 +19,9 @@ import org.siamdev.zappos.ui.components.common.NumberUnitField
 import org.siamdev.zappos.ui.components.common.SectionCard
 import org.siamdev.zappos.ui.components.common.StructuredTimeField
 import org.siamdev.zappos.ui.components.common.ToggleItem
+import org.siamdev.zappos.ui.screens.product.entry.EntryFormState
+import org.siamdev.zappos.ui.screens.product.entry.EntryType
+import org.siamdev.zappos.ui.screens.product.entry.rememberEntryFormState
 
 @Composable
 internal fun ResourcesBookingSection(state: EntryFormState) {
