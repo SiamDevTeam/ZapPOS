@@ -52,6 +52,7 @@ fun StructuredTimeField(
     label: String,
     modifier: Modifier = Modifier,
     onPickerRequest: (() -> Unit)? = null,
+    enableManualInput: Boolean = true,
 ) {
     val minuteFocus = remember { FocusRequester() }
     val hourFocus = remember { FocusRequester() }
@@ -92,6 +93,7 @@ fun StructuredTimeField(
                 ) {
                     TimeSegmentField(
                         value = hourRaw,
+                        readOnly = !enableManualInput,
                         onValueChange = { input ->
                             val digits = input.filter(Char::isDigit).take(2)
                             when (digits.length) {
@@ -140,6 +142,7 @@ fun StructuredTimeField(
 
                     TimeSegmentField(
                         value = minuteRaw,
+                        readOnly = !enableManualInput,
                         onValueChange = { input ->
                             val digits = input.filter(Char::isDigit).take(2)
                             when (digits.length) {
@@ -216,10 +219,12 @@ private fun TimeSegmentField(
     focusRequester: FocusRequester,
     imeAction: ImeAction,
     keyboardActions: KeyboardActions,
+    readOnly: Boolean = false,
 ) {
     BasicTextField(
         value = value,
         onValueChange = onValueChange,
+        readOnly = readOnly,
         singleLine = true,
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number,

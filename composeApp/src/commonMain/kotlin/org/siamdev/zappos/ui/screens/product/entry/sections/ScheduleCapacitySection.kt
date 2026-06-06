@@ -78,6 +78,7 @@ internal fun ScheduleCapacitySection(state: EntryFormState) {
                 label = "From",
                 onPickerRequest = { showOpensPicker = true },
                 modifier = Modifier.weight(1f),
+                enableManualInput = false
             )
             StructuredTimeField(
                 value = state.serviceCloses,
@@ -85,6 +86,7 @@ internal fun ScheduleCapacitySection(state: EntryFormState) {
                 label = "Until",
                 onPickerRequest = { showClosesPicker = true },
                 modifier = Modifier.weight(1f),
+                enableManualInput = false
             )
         }
 
