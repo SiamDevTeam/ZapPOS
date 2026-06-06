@@ -68,41 +68,6 @@ private fun typeConfigFor(type: EntryType): TypeConfig =
             )
     }
 
-// Displays a system-generated ID as read-only metadata.
-// Mirrors the key-value row pattern from MonitorStockPanel (e.g. "New balance" / "SKU" displays).
-@Composable
-private fun ProductIdMetadata(productId: String) {
-    Row(
-        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).background(MaterialTheme.colorScheme.surfaceVariant).padding(horizontal = 12.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(5.dp),
-        ) {
-            Icon(
-                imageVector = Icons.Default.Tag,
-                contentDescription = null,
-                modifier = Modifier.size(13.dp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Text(
-                text = "PRODUCT ID",
-                style = MaterialTheme.typography.labelSmall,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-        Text(
-            text = productId,
-            style = MaterialTheme.typography.labelSmall,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-    }
-}
-
 @Composable
 internal fun ProductDetailsSection(state: EntryFormState) {
     val config = typeConfigFor(state.entryType)
@@ -127,9 +92,6 @@ internal fun ProductDetailsSection(state: EntryFormState) {
 @Composable
 private fun DetailsDesktop(state: EntryFormState, config: TypeConfig) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        if (state.productId != null) {
-            ProductIdMetadata(productId = state.productId!!)
-        }
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -216,9 +178,6 @@ private fun DetailsDesktop(state: EntryFormState, config: TypeConfig) {
 @Composable
 private fun DetailsMobile(state: EntryFormState, config: TypeConfig) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        if (state.productId != null) {
-            ProductIdMetadata(productId = state.productId!!)
-        }
 
         ImagePickerBox(
             modifier = Modifier.fillMaxWidth().height(160.dp),

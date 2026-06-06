@@ -6,8 +6,9 @@ package org.siamdev.zappos.ui.screens.product.entry.sections
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Inventory
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -25,7 +26,7 @@ internal fun InventorySection(state: EntryFormState) {
     val sellUnit = state.unit.ifEmpty { "unit" }
 
     SectionCard(
-        icon = Icons.Default.Inventory,
+        icon = Icons.Default.Notifications,
         title = "Stock notification",
         subtitle = "Tap to enable quantity tracking",
         expanded = state.trackStock,
@@ -63,12 +64,11 @@ internal fun InventorySection(state: EntryFormState) {
         )
 
         ToggleItem(
-            icon = Icons.Default.Notifications,
+            icon = if (state.trackActive) Icons.Filled.CheckCircle else Icons.Outlined.Cancel,
             label = "Expiry alerts",
-            subtitle = if (state.trackExpiry) "Active"
-                       else "Inactive",
-            checked = state.trackExpiry,
-            onCheckedChange = { state.trackExpiry = it },
+            subtitle = if (state.trackActive) "Active" else "Inactive",
+            checked = state.trackActive,
+            onCheckedChange = { state.trackActive = it },
         )
     }
 }

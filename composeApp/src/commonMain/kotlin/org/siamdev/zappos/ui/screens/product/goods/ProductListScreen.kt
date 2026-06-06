@@ -31,6 +31,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.siamdev.zappos.LocalSettingVM
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
+import org.siamdev.zappos.ui.screens.product.goods.sections.MonitorStockTabContent
+import org.siamdev.zappos.ui.screens.product.goods.sections.ProductDetailPanel
+import org.siamdev.zappos.ui.screens.product.goods.sections.ProductListPane
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 
 /** Root screen for the product catalogue. Switches between [DesktopLayout] and [MobileLayout] based on window width. */
@@ -93,8 +96,6 @@ fun ProductListScreen(
                     }
                 }
             }
-
-
         }
     }
 }

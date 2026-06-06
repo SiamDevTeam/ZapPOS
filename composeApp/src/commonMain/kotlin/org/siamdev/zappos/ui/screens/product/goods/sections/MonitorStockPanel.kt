@@ -2,7 +2,7 @@
  * MIT License
  * Copyright (c) 2025 SiamDevTeam
  */
-package org.siamdev.zappos.ui.screens.product.goods
+package org.siamdev.zappos.ui.screens.product.goods.sections
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -47,6 +47,8 @@ import org.siamdev.zappos.ui.components.common.MaterialButton
 import org.siamdev.zappos.ui.components.common.SegmentedTabBar
 import org.siamdev.zappos.ui.components.common.TabItem
 import org.siamdev.zappos.ui.components.menu.DefaultProductCategories
+import org.siamdev.zappos.ui.screens.product.goods.Product
+import org.siamdev.zappos.ui.screens.product.goods.sampleProducts
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 import kotlin.math.abs
 

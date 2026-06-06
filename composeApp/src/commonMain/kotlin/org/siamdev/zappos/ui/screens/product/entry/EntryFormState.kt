@@ -79,7 +79,7 @@ internal class EntryFormState {
     var maxCapacity by mutableStateOf("0")
     var lowStockAlert by mutableStateOf("0")
     var supplier by mutableStateOf("")
-    var trackExpiry by mutableStateOf(false)
+    var trackActive by mutableStateOf(false)
 
     // schedule & capacity (service)
     var serviceCapacity by mutableStateOf("12")
