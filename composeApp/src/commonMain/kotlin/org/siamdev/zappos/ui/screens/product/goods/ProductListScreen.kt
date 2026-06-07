@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.siamdev.zappos.LocalSettingVM
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
+import org.siamdev.zappos.data.source.MasterEvent
 import org.siamdev.zappos.ui.screens.product.goods.sections.MonitorStockTabContent
 import org.siamdev.zappos.ui.screens.product.goods.sections.ProductDetailPanel
 import org.siamdev.zappos.ui.screens.product.goods.sections.ProductListPane
@@ -105,9 +106,9 @@ fun ProductListScreen(
 
 @Composable
 private fun DesktopLayout(
-    products: List<Product>,
+    products: List<MasterEvent>,
     selectedId: String?,
-    selected: Product?,
+    selected: MasterEvent?,
     onSelect: (String) -> Unit,
     onOpenDrawer: () -> Unit,
     onEdit: (String) -> Unit,
@@ -189,7 +190,7 @@ private fun DesktopLayout(
                 ) {
                     if (selected != null) {
                         ProductDetailPanel(
-                            product = selected,
+                            event = selected,
                             onEdit = { onEdit(selected.id) },
                             onDelete = onDelete,
                             initialTab = initialTab,
@@ -206,9 +207,9 @@ private fun DesktopLayout(
 /** Single-column layout that slides between the list and detail panel. Used on screens < 750 dp wide. */
 @Composable
 private fun MobileLayout(
-    products: List<Product>,
+    products: List<MasterEvent>,
     selectedId: String?,
-    selected: Product?,
+    selected: MasterEvent?,
     onSelect: (String) -> Unit,
     onBack: () -> Unit,
     onOpenDrawer: () -> Unit,
@@ -237,7 +238,7 @@ private fun MobileLayout(
                     onNavigateBack = onBack,
                 )
                 ProductDetailPanel(
-                    product = current,
+                    event = current,
                     onEdit = { onEdit(current.id) },
                     onDelete = onDelete,
                     initialTab = initialTab,
@@ -282,9 +283,8 @@ private fun EmptyDetailState() {
 @Composable
 private fun MobileListPreview() {
     CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
-        val products = sampleProducts()
         MobileLayout(
-            products = products,
+            products = sampleProducts(),
             selectedId = null,
             selected = null,
             onSelect = {},
@@ -298,9 +298,9 @@ private fun MobileListPreview() {
 @Preview(showBackground = true, widthDp = 411, heightDp = 891, name = "Mobile · Detail – Product Detail")
 @Composable
 private fun MobileDetailProductPreview() {
+    val products = sampleProducts()
+    val selected = products.first()
     CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
-        val products = sampleProducts()
-        val selected = products.first()
         MobileLayout(
             products = products,
             selectedId = selected.id,
@@ -316,9 +316,8 @@ private fun MobileDetailProductPreview() {
 @Preview(showBackground = true, widthDp = 411, heightDp = 891, name = "Mobile · Detail – Monitor & Stock")
 @Composable
 private fun MobileDetailMonitorPreview() {
+    val selected = sampleProducts().first()
     CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
-        val products = sampleProducts()
-        val selected = products.first()
         Column(
             Modifier
                 .fillMaxSize()
@@ -333,9 +332,8 @@ private fun MobileDetailMonitorPreview() {
 @Preview(showBackground = true, widthDp = 411, heightDp = 891, name = "Mobile · Detail – Out of Stock")
 @Composable
 private fun MobileDetailOutOfStockPreview() {
+    val selected = sampleProducts().first { it.stockQty == 0 }
     CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
-        val products = sampleProducts()
-        val selected = products.first { it.stockQty == 0 }
         Column(
             Modifier
                 .fillMaxSize()
@@ -358,9 +356,9 @@ private fun DesktopNoSelectionPreview() {
 @Preview(showBackground = true, widthDp = 1280, heightDp = 800, name = "Desktop · With Product Detail Selection")
 @Composable
 private fun DesktopWithProductDetailSelectionPreview() {
+    val products = sampleProducts()
+    val selected = products.first()
     CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
-        val products = sampleProducts()
-        val selected = products.first()
         DesktopLayout(
             products = products,
             selectedId = selected.id,
@@ -375,9 +373,9 @@ private fun DesktopWithProductDetailSelectionPreview() {
 @Preview(showBackground = true, widthDp = 1280, heightDp = 800, name = "Desktop · With Monitor & Stock Selection")
 @Composable
 private fun DesktopWithMonitorAndStockSelectionPreview() {
+    val products = sampleProducts()
+    val selected = products.first()
     CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
-        val products = sampleProducts()
-        val selected = products.first()
         DesktopLayout(
             products = products,
             selectedId = selected.id,

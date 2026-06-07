@@ -20,7 +20,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.siamdev.zappos.ui.components.common.SegmentedTabBar
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
-import org.siamdev.zappos.ui.screens.product.entry.sections.AdvancedSection
 import org.siamdev.zappos.ui.screens.product.entry.sections.EntryActionBar
 import org.siamdev.zappos.ui.screens.product.entry.sections.InventorySection
 import org.siamdev.zappos.ui.screens.product.entry.sections.OptionsSection
@@ -42,8 +41,8 @@ fun MasterEntryScreen(
     val isEditMode = productId != null
 
     if (isEditMode) {
-        val product = remember(productId) { sampleProducts().find { it.id == productId } }
-        LaunchedEffect(productId) { product?.let { state.loadFrom(it) } }
+        val event = remember(productId) { sampleProducts().find { it.id == productId } }
+        LaunchedEffect(productId) { event?.let { state.loadFrom(it) } }
     }
 
     Column(
@@ -113,7 +112,7 @@ private fun EntryMobileLayout(state: EntryFormState) {
             EntryType.RENTAL -> item { ResourcesBookingSection(state) }
         }
 
-        item { AdvancedSection(state) }
+        
     }
 }
 
@@ -152,7 +151,7 @@ private fun EntryDesktopLayout(state: EntryFormState) {
                     item { ResourcesBookingSection(state) }
                 }
             }
-            item { AdvancedSection(state) }
+            
         }
     }
 }
@@ -162,7 +161,7 @@ private fun EntryDesktopLayout(state: EntryFormState) {
 @Composable
 private fun ProductSummary(state: EntryFormState) {
     val tab = entryTabs[state.entryType.ordinal]
-    val formattedId = state.productId?.padStart(5, '0')?.let { "PRD-$it" } ?: "—"
+    val formattedId = state.productId?.padStart(5, '0') ?: "—"
 
     Column(
         modifier = Modifier

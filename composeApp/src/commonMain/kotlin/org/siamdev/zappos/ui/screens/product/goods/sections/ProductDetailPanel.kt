@@ -27,14 +27,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.siamdev.zappos.LocalSettingVM
+import org.siamdev.zappos.data.source.MasterEvent
 import org.siamdev.zappos.ui.components.common.AppDialog
 import org.siamdev.zappos.ui.components.common.InfoToggleCard
 import org.siamdev.zappos.ui.components.common.MaterialButton
 import org.siamdev.zappos.ui.components.common.SegmentedTabBar
 import org.siamdev.zappos.ui.components.common.TabItem
 import org.siamdev.zappos.ui.components.menu.DefaultProductCategories
+import org.siamdev.zappos.ui.screens.product.entry.EntryFormState
+import org.siamdev.zappos.ui.screens.product.entry.EntryType
+import org.siamdev.zappos.ui.screens.product.entry.PickMode
+import org.siamdev.zappos.ui.screens.product.entry.loadFrom
 import org.siamdev.zappos.ui.screens.product.goods.DetailTab
-import org.siamdev.zappos.ui.screens.product.goods.Product
 import org.siamdev.zappos.ui.screens.product.goods.sampleProducts
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 import org.siamdev.zappos.utils.formatPrice
@@ -70,12 +74,12 @@ private val detailTabs =
 /** Tabbed detail view for a selected product. Hosts [ProductDetailTabContent] and [MonitorStockTabContent]. */
 @Composable
 internal fun ProductDetailPanel(
-    product: Product,
+    event: MasterEvent,
     onEdit: () -> Unit,
     onDelete: (String) -> Unit = {},
     initialTab: DetailTab = DetailTab.PRODUCT_DETAIL,
 ) {
-    var selectedTab by remember(product.id) { mutableStateOf(initialTab) }
+    var selectedTab by remember(event.id) { mutableStateOf(initialTab) }
 
     Column(modifier = Modifier.fillMaxSize()) {
         SegmentedTabBar(
@@ -90,14 +94,14 @@ internal fun ProductDetailPanel(
         when (selectedTab) {
             DetailTab.PRODUCT_DETAIL -> {
                 ProductDetailTabContent(
-                    product = product,
+                    event = event,
                     onEdit = onEdit,
-                    onDelete = { onDelete(product.id) },
+                    onDelete = { onDelete(event.id) },
                 )
             }
 
             DetailTab.MONITOR_STOCK -> {
-                MonitorStockTabContent(product = product)
+                MonitorStockTabContent(product = event)
             }
         }
     }
@@ -106,14 +110,17 @@ internal fun ProductDetailPanel(
 /** Scrollable detail view: header, sales chart, stock bar, item info, and status toggles. */
 @Composable
 private fun ProductDetailTabContent(
-    product: Product,
+    event: MasterEvent,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
 ) {
-    val catEntry = DefaultProductCategories.find { it.id == product.category }
-    val categoryName = catEntry?.name ?: product.category
-    val subName = catEntry?.subCategories?.find { it.id == product.subCategory }?.name
+    val catEntry = DefaultProductCategories.find { it.id == event.category }
+    val categoryName = catEntry?.name ?: event.category
+    val subName = catEntry?.subCategories?.find { it.id == event.subCategory }?.name
     val catIcon = catEntry?.icon
+    val entryState = remember(event.id) { EntryFormState().also { it.loadFrom(event) } }
+    val stockQty = event.stockQty
+    val stockMax = event.stockMax
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     if (showDeleteDialog) {
@@ -121,7 +128,7 @@ private fun ProductDetailTabContent(
             icon = Icons.Default.Delete,
             iconTint = MaterialTheme.colorScheme.error,
             title = "Delete Product",
-            message = "Are you sure you want to delete \"${product.name}\"? This action cannot be undone.",
+            message = "Are you sure you want to delete \"${event.name}\"? This action cannot be undone.",
             confirmText = "Delete",
             dismissText = "Cancel",
             confirmButtonColor = MaterialTheme.colorScheme.error,
@@ -141,29 +148,32 @@ private fun ProductDetailTabContent(
         ) {
             item {
                 ProductHeader(
-                    product = product,
+                    event = event,
                     categoryName = categoryName,
                     subName = subName,
                     catIcon = catIcon ?: Icons.Default.ShoppingBag,
                 )
             }
-            item { SalesChartCard(product = product) }
-            if (product.stockQty != null && product.stockMax != null) {
+            item { SalesChartCard(event = event) }
+            if (stockQty != null && stockMax != null) {
                 item {
                     StockCard(
-                        stockQty = product.stockQty,
-                        stockMax = product.stockMax,
-                        unit = product.unit,
+                        stockQty = stockQty,
+                        stockMax = stockMax,
+                        unit = event.unit,
                     )
                 }
             }
-            item { ItemInfoCard(product = product) }
+            item { ItemInfoCard(state = entryState) }
+            if (entryState.optionGroups.isNotEmpty()) {
+                item { OptionsInfoCard(state = entryState) }
+            }
             item {
                 InfoToggleCard(
                     icon = Icons.Default.Visibility,
                     label = "Available",
                     subtitle = "Shown on the menu right now",
-                    checked = product.isAvailable,
+                    checked = event.isAvailable,
                 )
             }
             item {
@@ -171,7 +181,7 @@ private fun ProductDetailTabContent(
                     icon = Icons.Default.Star,
                     label = "Recommended",
                     subtitle = "Featured with a ★ on the menu",
-                    checked = product.isRecommended,
+                    checked = event.isRecommended,
                 )
             }
         }
@@ -213,7 +223,7 @@ private fun ProductDetailTabContent(
 /** Category icon + breadcrumb + product name. Pass [showMeta] to also display SKU and unit on the trailing edge. */
 @Composable
 internal fun ProductHeader(
-    product: Product,
+    event: MasterEvent,
     categoryName: String,
     subName: String?,
     catIcon: ImageVector,
@@ -266,22 +276,22 @@ internal fun ProductHeader(
                     }
                 }
                 Text(
-                    product.name,
+                    event.name,
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
             }
         }
-        if (showMeta && product.sku.isNotBlank()) {
+        if (showMeta && event.sku.isNotBlank()) {
             Column(horizontalAlignment = Alignment.End) {
                 Text(
-                    "SKU ${product.sku}",
+                    "SKU ${event.sku}",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
-                    "sold per ${product.unit}",
+                    "sold per ${event.unit}",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -292,9 +302,9 @@ internal fun ProductHeader(
 
 /** Card showing revenue total and a sparkline chart for the selected period (7 d / 30 d / 90 d). */
 @Composable
-private fun SalesChartCard(product: Product) {
+private fun SalesChartCard(event: MasterEvent) {
     var period by remember { mutableStateOf(SalesPeriod.D7) }
-    val points = remember(product.id, period) { fakeSparkline(product.id.hashCode(), period.days) }
+    val points = remember(event.id, period) { fakeSparkline(event.id.hashCode(), period.days) }
     val primaryColor = MaterialTheme.colorScheme.primary
 
     Card(
@@ -319,7 +329,7 @@ private fun SalesChartCard(product: Product) {
                     Spacer(Modifier.height(2.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            "฿${product.revenue7d.formatPrice()}",
+                            "฿${event.revenue7d.formatPrice()}",
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface,
@@ -462,9 +472,18 @@ private fun StockCard(
     }
 }
 
-/** Key-value card listing price, unit, SKU, stock count, and 7-day revenue. */
+/** Read-only master-data summary built from [EntryFormState]. Adapts to Goods / Service / Rental
+ *  and skips any field that is empty, zero, or still at its default value. */
 @Composable
-private fun ItemInfoCard(product: Product) {
+private fun ItemInfoCard(state: EntryFormState) {
+    val catEntry = DefaultProductCategories.find { it.id == state.category }
+    val categoryDisplay = run {
+        val cat = catEntry?.name ?: state.category.ifBlank { null } ?: return@run null
+        val sub = catEntry?.subCategories?.find { it.id == state.subCategory }?.name
+        if (sub != null) "$cat · $sub" else cat
+    }
+    val priceValue = state.price.toDoubleOrNull() ?: 0.0
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
@@ -472,7 +491,7 @@ private fun ItemInfoCard(product: Product) {
         elevation = CardDefaults.cardElevation(0.dp),
         border = CardDefaults.outlinedCardBorder(),
     ) {
-        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
+        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp).padding(10.dp)) {
             Text(
                 "ITEM INFO",
                 style = MaterialTheme.typography.labelSmall,
@@ -481,42 +500,201 @@ private fun ItemInfoCard(product: Product) {
             )
             Spacer(Modifier.height(8.dp))
 
-            val rows =
-                buildList {
-                    add("Price" to "฿ ${product.price.formatPrice()}")
-                    add("Unit" to product.unit)
-                    if (product.sku.isNotBlank()) add("SKU" to product.sku)
-                    if (product.stockQty != null) add("In stock" to "${product.stockQty} ${product.unit}")
-                    if (product.soldThisWeek > 0) add("Sold this week" to "${product.soldThisWeek}")
-                    if (product.revenue7d > 0) add("Revenue (7d)" to "฿ ${product.revenue7d.formatPrice()}")
+            val pairs = buildList<Pair<String, String>> {
+                if (state.productId != null) add("Product ID" to state.productId!!)
+                if (categoryDisplay != null) add("Category" to categoryDisplay)
+                add("Price" to "฿ ${priceValue.formatPrice()} / ${state.unit}")
+                if (state.openPrice && state.entryType == EntryType.GOODS) add("Pricing" to "Open / variable price")
+                if (!state.chargeVat) add("VAT" to "Not charged")
+                if (state.showCostPrice) {
+                    val cost = state.costPrice.toDoubleOrNull() ?: 0.0
+                    if (cost > 0) add("Cost price" to "฿ ${cost.formatPrice()} / ${state.unit}")
                 }
 
-            rows.forEachIndexed { i, (label, value) ->
-                if (i > 0) {
-                    HorizontalDivider(
-                        modifier = Modifier.padding(vertical = 8.dp),
-                        color = MaterialTheme.colorScheme.outlineVariant,
-                    )
+                when (state.entryType) {
+                    EntryType.GOODS -> {
+                        if (state.trackStock) {
+                            val qty = state.openingStock.toIntOrNull() ?: 0
+                            val cap = state.maxCapacity.toIntOrNull() ?: 0
+                            if (qty > 0 || cap > 0) add("Stock" to "$qty / $cap ${state.unit}")
+                            val alert = state.lowStockAlert.toIntOrNull() ?: 0
+                            if (alert > 0) add("Low stock alert" to "$alert ${state.unit}")
+                        }
+                        if (state.supplier.isNotBlank()) add("Supplier" to state.supplier)
+                    }
+
+                    EntryType.SERVICE -> {
+                        val chargedByLabel = listOf("person", "session", "hour")
+                            .getOrElse(state.chargedBy) { "hour" }
+                        add("Charged per" to chargedByLabel)
+                        val cap = state.serviceCapacity.toIntOrNull() ?: 0
+                        if (cap > 0) add("Capacity" to "$cap people")
+                        val dur = state.serviceDuration.toIntOrNull() ?: 0
+                        if (dur > 0) add("Duration" to "$dur min / session")
+                        add("Hours" to "${state.serviceOpens} – ${state.serviceCloses}")
+                        if (state.activeDays.isNotEmpty()) {
+                            val dayLabels = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+                            add("Active days" to state.activeDays.sorted()
+                                .joinToString(", ") { dayLabels.getOrElse(it) { "?" } })
+                        }
+                        if (state.instructor.isNotBlank()) add("Instructor" to state.instructor)
+                        if (state.serviceRequiresBooking) add("Booking" to "Required")
+                    }
+
+                    EntryType.RENTAL -> {
+                        val units = state.rentalUnitsCount.toIntOrNull() ?: 0
+                        if (units > 0) add("Units available" to "$units")
+                        val dur = state.bookingDuration.toIntOrNull() ?: 0
+                        if (dur > 0) add("Slot duration" to "$dur min")
+                        val minBook = state.minBooking.toIntOrNull() ?: 0
+                        if (minBook > 1) add("Min. booking" to "$minBook slot(s)")
+                        add("Hours" to "${state.rentalOpens} – ${state.rentalCloses}")
+                        val buf = state.rentalBuffer.toIntOrNull() ?: 0
+                        if (buf > 0) add("Buffer" to "$buf min")
+                        val dep = state.depositAmount.toDoubleOrNull() ?: 0.0
+                        if (dep > 0) add("Deposit" to "฿ ${dep.formatPrice()}")
+                        if (state.rentalRequiresBooking) add("Booking" to "Required")
+                    }
                 }
+            }
+
+            pairs.forEachIndexed { i, (label, value) ->
+                if (i > 0) HorizontalDivider(
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
+                    Text(label, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
+                    Text(value, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onSurface)
+                }
+            }
+
+            if (state.description.isNotBlank()) {
+                if (pairs.isNotEmpty()) HorizontalDivider(
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                )
+                Text("Description", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    state.description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+
+        }
+    }
+}
+
+/** Dedicated card for Options & Add-ons groups. Each group shows its name, pick mode, and
+ *  a row per item with the price modifier. Shown only when the product has option groups. */
+@Composable
+private fun OptionsInfoCard(state: EntryFormState) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        elevation = CardDefaults.cardElevation(0.dp),
+        border = CardDefaults.outlinedCardBorder(),
+    ) {
+        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp).padding(10.dp)) {
+            Text(
+                "OPTIONS & ADD-ONS",
+                style = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            state.optionGroups.forEach { group ->
+                HorizontalDivider(
+                    modifier = Modifier.padding(vertical = 10.dp),
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                )
+
+                // Group header: name | badges
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     Text(
-                        label,
+                        group.name,
                         style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface,
                     )
-                    Text(
-                        value,
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
+                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        if (group.pickMode == PickMode.MANY) {
+                            GroupBadge("multi-select", MaterialTheme.colorScheme.primary)
+                        }
+                        GroupBadge(
+                            label = if (group.required) "required" else "optional",
+                            color = if (group.required) MaterialTheme.colorScheme.error
+                                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(8.dp))
+
+                // Item rows
+                group.items.forEachIndexed { ii, item ->
+                    if (ii > 0) Spacer(Modifier.height(4.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            HorizontalDivider(
+                                modifier = Modifier.width(12.dp),
+                                color = MaterialTheme.colorScheme.outlineVariant,
+                            )
+                            Text(
+                                item.name,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                        }
+                        val (modLabel, modColor) = when {
+                            item.priceModifier > 0 ->
+                                "+฿${item.priceModifier}" to MaterialTheme.colorScheme.primary
+                            item.priceModifier < 0 ->
+                                "−฿${-item.priceModifier}" to MaterialTheme.colorScheme.error
+                            else ->
+                                "included" to MaterialTheme.colorScheme.onSurfaceVariant
+                        }
+                        Text(
+                            modLabel,
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.Medium,
+                            color = modColor,
+                        )
+                    }
                 }
             }
         }
     }
+}
+
+@Composable
+private fun GroupBadge(label: String, color: Color) {
+    Text(
+        label,
+        style = MaterialTheme.typography.labelSmall,
+        color = color,
+        modifier = Modifier
+            .clip(RoundedCornerShape(4.dp))
+            .background(color.copy(alpha = 0.08f))
+            .padding(horizontal = 6.dp, vertical = 2.dp),
+    )
 }
 
 @Preview(showBackground = true, widthDp = 411, heightDp = 700, name = "ProductDetailPanel · Product Detail tab")
@@ -524,7 +702,7 @@ private fun ItemInfoCard(product: Product) {
 private fun ProductDetailPanelPreview() {
     CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
         ProductDetailPanel(
-            product = sampleProducts().first(),
+            event = sampleProducts().first(),
             onEdit = {},
         )
     }
@@ -535,7 +713,7 @@ private fun ProductDetailPanelPreview() {
 private fun ProductDetailPanelMonitorPreview() {
     CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
         ProductDetailPanel(
-            product = sampleProducts().first(),
+            event = sampleProducts().first(),
             onEdit = {},
             initialTab = DetailTab.MONITOR_STOCK,
         )
@@ -547,8 +725,31 @@ private fun ProductDetailPanelMonitorPreview() {
 private fun ProductDetailPanelNoStockPreview() {
     CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
         ProductDetailPanel(
-            product = sampleProducts().first { it.stockQty == null },
+            event = sampleProducts().first { it.stockQty == null },
             onEdit = {},
         )
     }
+}
+
+@Preview(showBackground = true, widthDp = 411, name = "ItemInfoCard · Goods (fully populated)")
+@Composable
+private fun ItemInfoCardGoodsFullPreview() {
+    val state = EntryFormState().apply {
+            productId = "PRD20260001"
+            entryType = EntryType.GOODS
+            name = "Green Tea Latte"
+            category = "beverages"
+            subCategory = "tea_coffee"
+            price = "85"
+            unit = "cup"
+            showCostPrice = true
+            costPrice = "35"
+            trackStock = true
+            openingStock = "50"
+            maxCapacity = "200"
+            lowStockAlert = "15"
+            supplier = "Thai Matcha Co., Ltd."
+            description = "Smooth and creamy matcha latte made with premium Japanese matcha and oat milk."
+        }
+    MaterialTheme { ItemInfoCard(state = state) }
 }

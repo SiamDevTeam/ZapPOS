@@ -4,15 +4,16 @@
  */
 package org.siamdev.zappos.ui.screens.product.entry
 
-import androidx.compose.runtime.*
-import org.siamdev.zappos.ui.screens.product.goods.Product
-import org.siamdev.zappos.utils.DateTimeUtils
-import org.siamdev.zappos.utils.TimeValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Inventory
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.runtime.*
+import org.siamdev.zappos.data.source.EventKind
+import org.siamdev.zappos.data.source.MasterEvent
 import org.siamdev.zappos.ui.components.common.TabItem
+import org.siamdev.zappos.utils.DateTimeUtils
+import org.siamdev.zappos.utils.TimeValue
 
 
 internal enum class EntryType { GOODS, SERVICE, RENTAL }
@@ -118,20 +119,43 @@ internal class EntryFormState {
         }
 }
 
-internal fun EntryFormState.loadFrom(product: Product) {
-    productId = product.id
-    name = product.name
-    category = product.category
-    subCategory = product.subCategory
-    description = product.description
-    isAvailable = product.isAvailable
-    isRecommended = product.isRecommended
-    price = product.price.toLong().toString()
-    unit = product.unit
-    sku = product.sku
-    trackStock = product.stockQty != null
-    if (product.stockQty != null) openingStock = product.stockQty.toString()
-    if (product.stockMax != null) maxCapacity = product.stockMax.toString()
+internal fun EntryFormState.loadFrom(event: MasterEvent) {
+    productId    = event.id
+    entryType    = when (event.kind) {
+        EventKind.SERVICE -> EntryType.SERVICE
+        EventKind.RENTAL  -> EntryType.RENTAL
+        else              -> EntryType.GOODS
+    }
+    name         = event.name
+    category     = event.category
+    subCategory  = event.subCategory
+    description  = event.description
+    isAvailable  = event.isAvailable
+    isRecommended = event.isRecommended
+    price        = event.price.toLong().toString()
+    unit         = event.unit
+    sku          = event.sku
+    chargeVat    = event.chargeVat
+    openPrice    = event.openPrice
+    supplier     = event.supplier
+    // Local vals required: member properties with custom getters cannot be smart-cast
+    val costPriceVal    = event.costPrice
+    val stockQtyVal     = event.stockQty
+    val stockMaxVal     = event.stockMax
+    val lowStockAlertVal = event.lowStockAlert
+    if (costPriceVal != null) { showCostPrice = true; costPrice = costPriceVal.toLong().toString() }
+    trackStock = stockQtyVal != null
+    if (stockQtyVal != null)     openingStock = stockQtyVal.toString()
+    if (stockMaxVal != null)     maxCapacity  = stockMaxVal.toString()
+    if (lowStockAlertVal != null) lowStockAlert = lowStockAlertVal.toString()
+    optionGroups = event.optionGroups.map { group ->
+        OptionGroup(
+            name      = group.name,
+            pickMode  = if (group.multiSelect) PickMode.MANY else PickMode.ONE,
+            required  = group.required,
+            items     = group.items.map { OptionItem(name = it.name, priceModifier = it.priceModifier) },
+        )
+    }
 }
 
 @Composable

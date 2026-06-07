@@ -47,7 +47,7 @@ import org.siamdev.zappos.ui.components.common.MaterialButton
 import org.siamdev.zappos.ui.components.common.SegmentedTabBar
 import org.siamdev.zappos.ui.components.common.TabItem
 import org.siamdev.zappos.ui.components.menu.DefaultProductCategories
-import org.siamdev.zappos.ui.screens.product.goods.Product
+import org.siamdev.zappos.data.source.MasterEvent
 import org.siamdev.zappos.ui.screens.product.goods.sampleProducts
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 import kotlin.math.abs
@@ -92,7 +92,7 @@ private val adjustStockTabs =
     )
 
 @Composable
-internal fun MonitorStockTabContent(product: Product) {
+internal fun MonitorStockTabContent(product: MasterEvent) {
     val catEntry = remember(product.category) { DefaultProductCategories.find { it.id == product.category } }
     val categoryName = catEntry?.name ?: product.category
     val subName = catEntry?.subCategories?.find { it.id == product.subCategory }?.name
@@ -122,7 +122,7 @@ internal fun MonitorStockTabContent(product: Product) {
                             .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    ProductHeader(product = product, categoryName = categoryName, subName = subName, catIcon = catIcon)
+                    ProductHeader(event = product, categoryName = categoryName, subName = subName, catIcon = catIcon)
                     StockOverviewCard(product, history)
                     AdjustStockSection(product)
                 }
@@ -159,7 +159,7 @@ internal fun MonitorStockTabContent(product: Product) {
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 item {
-                    ProductHeader(product = product, categoryName = categoryName, subName = subName, catIcon = catIcon)
+                    ProductHeader(event = product, categoryName = categoryName, subName = subName, catIcon = catIcon)
                 }
                 item { StockOverviewCard(product, history) }
                 item { AdjustStockSection(product) }
@@ -195,12 +195,14 @@ internal fun MonitorStockTabContent(product: Product) {
 
 @Composable
 private fun StockOverviewCard(
-    product: Product,
+    product: MasterEvent,
     history: List<StockRecord>,
 ) {
-    val hasStock = product.stockQty != null && product.stockMax != null
-    val isLow = hasStock && product.stockQty <= (product.stockMax * 0.20f).toInt()
-    val isOut = hasStock && product.stockQty == 0
+    val stockQty = product.stockQty
+    val stockMax = product.stockMax
+    val hasStock = stockQty != null && stockMax != null
+    val isLow = stockQty != null && stockMax != null && stockQty <= (stockMax * 0.20f).toInt()
+    val isOut = stockQty == 0
     val (todayIn, todayOut) = remember(history) { todayMovements(history) }
 
     Card(
@@ -249,8 +251,8 @@ private fun StockOverviewCard(
 
             Spacer(Modifier.height(12.dp))
 
-            if (hasStock) {
-                val progress = (product.stockQty.toFloat() / product.stockMax.toFloat()).coerceIn(0f, 1f)
+            if (hasStock && stockQty != null && stockMax != null) {
+                val progress = (stockQty.toFloat() / stockMax.toFloat()).coerceIn(0f, 1f)
                 val barColor =
                     when {
                         isOut -> Color(0xFFF44336)
@@ -263,13 +265,13 @@ private fun StockOverviewCard(
                 ) {
                     Column {
                         Text(
-                            product.stockQty.toString(),
+                            stockQty.toString(),
                             style = MaterialTheme.typography.headlineMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface,
                         )
                         Text(
-                            "current / ${product.stockMax} ${product.unit}",
+                            "current / $stockMax ${product.unit}",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -340,7 +342,7 @@ private fun StockOverviewCard(
 }
 
 @Composable
-private fun AdjustStockSection(product: Product) {
+private fun AdjustStockSection(product: MasterEvent) {
     var mode by remember { mutableStateOf(0) }
     var qty by remember { mutableStateOf(0) }
     var reason by remember { mutableStateOf("") }

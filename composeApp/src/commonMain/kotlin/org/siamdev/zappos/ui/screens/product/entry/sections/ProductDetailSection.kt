@@ -4,20 +4,15 @@
  */
 package org.siamdev.zappos.ui.screens.product.entry.sections
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.Tag
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.siamdev.zappos.ui.components.common.ChipRow
@@ -94,15 +89,24 @@ private fun DetailsDesktop(state: EntryFormState, config: TypeConfig) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentWidth(Alignment.CenterHorizontally),
             horizontalArrangement = Arrangement.spacedBy(14.dp),
             verticalAlignment = Alignment.Top,
         ) {
-            ImagePickerBox(modifier = Modifier.size(130.dp))
+
+            ImagePickerBox(
+                modifier = Modifier
+                    .width(220.dp)
+                    .height(300.dp)
+            )
 
             Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier
+                    .widthIn(max = 480.dp)
+                    .weight(1f),
+                verticalArrangement = Arrangement.spacedBy(5.dp),
             ) {
                 EntryField(
                     value = state.name,
@@ -130,8 +134,7 @@ private fun DetailsDesktop(state: EntryFormState, config: TypeConfig) {
                         value = state.subCategory ?: "",
                         onValueChange = { state.subCategory = it.ifEmpty { null } },
                         label = "Sub-category",
-                        placeholder = "optional",
-                        optional = true,
+                        optional = false,
                         modifier = Modifier.weight(1f),
                     )
                 }
@@ -157,22 +160,30 @@ private fun DetailsDesktop(state: EntryFormState, config: TypeConfig) {
 
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
-        ToggleItem(
-            icon = Icons.Default.Visibility,
-            label = "Available",
-            subtitle = "Shown on the menu and orderable right now",
-            checked = state.isAvailable,
-            onCheckedChange = { state.isAvailable = it },
-        )
-        ToggleItem(
-            icon = Icons.Default.Star,
-            label = "Recommended",
-            subtitle = "Featured with a ★ on the menu",
-            checked = state.isRecommended,
-            onCheckedChange = { state.isRecommended = it },
-        )
+        Column(
+            modifier = Modifier
+                .widthIn(max = 720.dp)
+                .align(Alignment.CenterHorizontally)
+                .fillMaxWidth(),
+        ) {
+            ToggleItem(
+                icon = Icons.Default.Visibility,
+                label = "Available",
+                subtitle = "Shown on the menu and orderable right now",
+                checked = state.isAvailable,
+                onCheckedChange = { state.isAvailable = it },
+            )
+            ToggleItem(
+                icon = Icons.Default.Star,
+                label = "Recommended",
+                subtitle = "Featured with a ★ on the menu",
+                checked = state.isRecommended,
+                onCheckedChange = { state.isRecommended = it },
+            )
+        }
     }
 }
+
 
 // Mobile: full-width image at top, then each field stacked individually, then toggles.
 @Composable
@@ -180,7 +191,7 @@ private fun DetailsMobile(state: EntryFormState, config: TypeConfig) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
 
         ImagePickerBox(
-            modifier = Modifier.fillMaxWidth().height(160.dp),
+            modifier = Modifier.fillMaxWidth().height(270.dp),
         )
         EntryField(
             value = state.name,
@@ -259,7 +270,13 @@ private fun PreviewMobileRental() {
     MaterialTheme { ProductDetailsSection(rememberEntryFormState().also { it.entryType = EntryType.RENTAL }) }
 }
 
-@Preview(showBackground = true, widthDp = 600, name = "Desktop · with Product ID")
+@Preview(showBackground = true, widthDp = 600, name = "Tablet · with Product ID")
+@Composable
+private fun PreviewTabletWithId() {
+    MaterialTheme { ProductDetailsSection(rememberEntryFormState().also { it.productId = "PRD-0042" }) }
+}
+
+@Preview(showBackground = true, widthDp = 1280, name = "Desktop · with Product ID")
 @Composable
 private fun PreviewDesktopWithId() {
     MaterialTheme { ProductDetailsSection(rememberEntryFormState().also { it.productId = "PRD-0042" }) }

@@ -36,7 +36,7 @@ import org.siamdev.zappos.LocalSettingVM
 import org.siamdev.zappos.ui.components.common.MaterialButton
 import org.siamdev.zappos.ui.components.menu.DefaultProductCategories
 import org.siamdev.zappos.ui.components.menu.SearchFilter
-import org.siamdev.zappos.ui.screens.product.goods.Product
+import org.siamdev.zappos.data.source.MasterEvent
 import org.siamdev.zappos.ui.screens.product.goods.sampleProducts
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 import org.siamdev.zappos.utils.formatPrice
@@ -44,7 +44,7 @@ import org.siamdev.zappos.utils.formatPrice
 /** Scrollable list of products with search and category filter controls. */
 @Composable
 internal fun ProductListPane(
-    products: List<Product>,
+    products: List<MasterEvent>,
     selectedId: String?,
     onSelect: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -124,7 +124,7 @@ internal fun ProductListPane(
 /** Single row in the product list showing thumbnail, name, category, and price. */
 @Composable
 private fun ProductListItem(
-    product: Product,
+    product: MasterEvent,
     isSelected: Boolean,
     onClick: () -> Unit,
 ) {
