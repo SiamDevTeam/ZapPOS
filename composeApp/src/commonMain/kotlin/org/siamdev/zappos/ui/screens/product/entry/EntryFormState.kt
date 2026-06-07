@@ -15,10 +15,16 @@ import org.siamdev.zappos.ui.components.common.TabItem
 import org.siamdev.zappos.utils.DateTimeUtils
 import org.siamdev.zappos.utils.TimeValue
 
+internal enum class EntryType {
+    GOODS,
+    SERVICE,
+    RENTAL
+}
 
-internal enum class EntryType { GOODS, SERVICE, RENTAL }
-
-internal enum class PickMode { ONE, MANY }
+internal enum class PickMode {
+    ONE,
+    MANY
+}
 
 internal data class OptionItem(
     val id: Long = DateTimeUtils.nowEpochMillis(),
@@ -109,53 +115,64 @@ internal class EntryFormState {
     var sendOrderTo by mutableStateOf("None")
     var displayOrder by mutableStateOf("0")
 
-    val isFormValid: Boolean get() = name.isNotBlank() && price.isNotBlank()
+    val isFormValid: Boolean
+        get() = name.isNotBlank() && price.isNotBlank()
 
-    val unitOptions: List<String> get() =
-        when (entryType) {
-            EntryType.GOODS -> listOf("cup", "plate", "bowl", "piece", "skewer", "bottle", "pack", "kg", "box")
-            EntryType.SERVICE -> listOf("session", "person", "hour", "course", "class", "month")
-            EntryType.RENTAL -> listOf("hour", "court", "field", "table", "room", "day")
-        }
+    val unitOptions: List<String>
+        get() =
+            when (entryType) {
+                EntryType.GOODS ->
+                    listOf("cup", "plate", "bowl", "piece", "skewer", "bottle", "pack", "kg", "box")
+                EntryType.SERVICE -> listOf("session", "person", "hour", "course", "class", "month")
+                EntryType.RENTAL -> listOf("hour", "court", "field", "table", "room", "day")
+            }
 }
 
 internal fun EntryFormState.loadFrom(event: MasterEvent) {
-    productId    = event.id
-    entryType    = when (event.kind) {
-        EventKind.SERVICE -> EntryType.SERVICE
-        EventKind.RENTAL  -> EntryType.RENTAL
-        else              -> EntryType.GOODS
-    }
-    name         = event.name
-    category     = event.category
-    subCategory  = event.subCategory
-    description  = event.description
-    isAvailable  = event.isAvailable
+    productId = event.id
+    entryType =
+        when (event.kind) {
+            EventKind.SERVICE -> EntryType.SERVICE
+            EventKind.RENTAL -> EntryType.RENTAL
+            else -> EntryType.GOODS
+        }
+    name = event.name
+    category = event.category
+    subCategory = event.subCategory
+    description = event.description
+    isAvailable = event.isAvailable
     isRecommended = event.isRecommended
-    price        = event.price.toLong().toString()
-    unit         = event.unit
-    sku          = event.sku
-    chargeVat    = event.chargeVat
-    openPrice    = event.openPrice
-    supplier     = event.supplier
+    price = event.price.toLong().toString()
+    unit = event.unit
+    sku = event.sku
+    chargeVat = event.chargeVat
+    openPrice = event.openPrice
+    supplier = event.supplier
     // Local vals required: member properties with custom getters cannot be smart-cast
-    val costPriceVal    = event.costPrice
-    val stockQtyVal     = event.stockQty
-    val stockMaxVal     = event.stockMax
+    val costPriceVal = event.costPrice
+    val stockQtyVal = event.stockQty
+    val stockMaxVal = event.stockMax
     val lowStockAlertVal = event.lowStockAlert
-    if (costPriceVal != null) { showCostPrice = true; costPrice = costPriceVal.toLong().toString() }
-    trackStock = stockQtyVal != null
-    if (stockQtyVal != null)     openingStock = stockQtyVal.toString()
-    if (stockMaxVal != null)     maxCapacity  = stockMaxVal.toString()
-    if (lowStockAlertVal != null) lowStockAlert = lowStockAlertVal.toString()
-    optionGroups = event.optionGroups.map { group ->
-        OptionGroup(
-            name      = group.name,
-            pickMode  = if (group.multiSelect) PickMode.MANY else PickMode.ONE,
-            required  = group.required,
-            items     = group.items.map { OptionItem(name = it.name, priceModifier = it.priceModifier) },
-        )
+    if (costPriceVal != null) {
+        showCostPrice = true
+        costPrice = costPriceVal.toLong().toString()
     }
+    trackStock = stockQtyVal != null
+    if (stockQtyVal != null) openingStock = stockQtyVal.toString()
+    if (stockMaxVal != null) maxCapacity = stockMaxVal.toString()
+    if (lowStockAlertVal != null) lowStockAlert = lowStockAlertVal.toString()
+    optionGroups =
+        event.optionGroups.map { group ->
+            OptionGroup(
+                name = group.name,
+                pickMode = if (group.multiSelect) PickMode.MANY else PickMode.ONE,
+                required = group.required,
+                items =
+                    group.items.map {
+                        OptionItem(name = it.name, priceModifier = it.priceModifier)
+                    },
+            )
+        }
 }
 
 @Composable
