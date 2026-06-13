@@ -95,9 +95,9 @@ jobs:
           path: build/ios-output/*.app
           if-no-files-found: error
 
-  # Desktop: Linux
-  build-linux:
-    name: Desktop (Linux)
+  # Desktop: Linux - DEB + AppImage (Ubuntu)
+  build-linux-deb:
+    name: Desktop (Linux DEB)
     runs-on: ubuntu-latest
     needs: test
     steps:
@@ -111,24 +111,49 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
-      - name: Install Linux packaging dependencies
-        run: sudo apt-get update -y && sudo apt-get install -y binutils fakeroot rpm-build
+      - name: Install packaging dependencies
+        run: sudo apt-get update -y && sudo apt-get install -y binutils fakeroot
 
-      - name: Package Deb / RPM / AppImage
+      - name: Package Deb / AppImage
         run: |
           ./gradlew \
             :composeApp:packageDeb \
-            :composeApp:packageRpm \
             :composeApp:packageAppImage \
             -Dorg.gradle.java.home="$JAVA_HOME"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: linux-packages
+          name: linux-deb
           path: |
             composeApp/build/compose/binaries/main/deb/*.deb
-            composeApp/build/compose/binaries/main/rpm/*.rpm
             composeApp/build/compose/binaries/main/app-image/
+          if-no-files-found: error
+
+  # Desktop: Linux - RPM (Fedora)
+  build-linux-rpm:
+    name: Desktop (Linux RPM)
+    runs-on: ubuntu-latest
+    container:
+      image: fedora:latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install packaging dependencies
+        run: dnf install -y java-21-openjdk-devel binutils rpm-build findutils git which
+
+      - name: Set JAVA_HOME
+        run: echo "JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))" >> $GITHUB_ENV
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Package RPM
+        run: ./gradlew :composeApp:packageRpm -Dorg.gradle.java.home="$JAVA_HOME"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-rpm
+          path: composeApp/build/compose/binaries/main/rpm/*.rpm
           if-no-files-found: error
 
   # Desktop: macOS
