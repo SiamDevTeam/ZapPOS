@@ -160,7 +160,7 @@ private fun VatChip(rate: Float, isSelected: Boolean, onClick: () -> Unit) {
             text = if (rate == 0f) "No VAT" else "${rate.toInt()}%",
             style = MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.SemiBold,
-            color = if (isSelected) MaterialTheme.colorScheme.onSurface
+            color = if (isSelected) MaterialTheme.colorScheme.onPrimary
             else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
         )
     }

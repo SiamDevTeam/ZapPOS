@@ -57,6 +57,8 @@ const val MOCK_MENU_JSON = """
 ]
 """
 
+val SaleOrderSteps = listOf("Confirm", "Checkout", "Payment", "Successful")
+
 fun loadMenuItems(): List<MenuItem> =
     menuJson.decodeFromString<List<MenuItem>>(MOCK_MENU_JSON)
 

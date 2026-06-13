@@ -48,6 +48,7 @@ import org.siamdev.zappos.ui.components.common.SegmentedTabBar
 import org.siamdev.zappos.ui.components.common.TabItem
 import org.siamdev.zappos.ui.components.menu.DefaultProductCategories
 import org.siamdev.zappos.data.source.MasterEvent
+import org.siamdev.zappos.ui.components.common.SectionCard
 import org.siamdev.zappos.ui.screens.product.goods.sampleProducts
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 import kotlin.math.abs
@@ -69,19 +70,77 @@ private data class StockRecord(
 private fun fakeStockHistory(productId: String): List<StockRecord> {
     val seed = abs(productId.hashCode()) % 100
     return listOf(
-        StockRecord("SK2026053100001", "31-05-2026", "13:37:05", 18 + seed % 5, "Sold / order", "Staff A", StockMoveType.OUT),
-        StockRecord("SK2026053100002", "31-05-2026", "08:09:12", 70 + seed % 10, "Regular restock", "Staff A", StockMoveType.IN),
-        StockRecord("SK2026053000045", "30-05-2026", "20:11:45", 4 + seed % 3, "Waste / spoilage", "Staff B", StockMoveType.OUT),
-        StockRecord("SK2026052800102", "28-05-2026", "08:00:22", 70 + seed % 15, "Regular restock", "Staff A", StockMoveType.IN),
-        StockRecord("SK2026052800156", "28-05-2026", "13:48:10", 33 + seed % 10, "Sold / order", "Staff B", StockMoveType.OUT),
-        StockRecord("SK2026052700088", "27-05-2026", "17:05:33", 40 + seed % 20, "Emergency order", "Staff B", StockMoveType.IN),
-        StockRecord("SK2026051400012", "14-05-2026", "11:40:00", 40 + seed % 25, "Weekly delivery", "Admin", StockMoveType.IN),
+        StockRecord(
+            "SK2026053100001",
+            "31-05-2026",
+            "13:37:05",
+            18 + seed % 5,
+            "Sold / order",
+            "Staff A",
+            StockMoveType.OUT
+        ),
+        StockRecord(
+            "SK2026053100002",
+            "31-05-2026",
+            "08:09:12",
+            70 + seed % 10,
+            "Regular restock",
+            "Staff A",
+            StockMoveType.IN
+        ),
+        StockRecord(
+            "SK2026053000045",
+            "30-05-2026",
+            "20:11:45",
+            4 + seed % 3,
+            "Waste / spoilage",
+            "Staff B",
+            StockMoveType.OUT
+        ),
+        StockRecord(
+            "SK2026052800102",
+            "28-05-2026",
+            "08:00:22",
+            70 + seed % 15,
+            "Regular restock",
+            "Staff A",
+            StockMoveType.IN
+        ),
+        StockRecord(
+            "SK2026052800156",
+            "28-05-2026",
+            "13:48:10",
+            33 + seed % 10,
+            "Sold / order",
+            "Staff B",
+            StockMoveType.OUT
+        ),
+        StockRecord(
+            "SK2026052700088",
+            "27-05-2026",
+            "17:05:33",
+            40 + seed % 20,
+            "Emergency order",
+            "Staff B",
+            StockMoveType.IN
+        ),
+        StockRecord(
+            "SK2026051400012",
+            "14-05-2026",
+            "11:40:00",
+            40 + seed % 25,
+            "Weekly delivery",
+            "Admin",
+            StockMoveType.IN
+        ),
     )
 }
 
 private fun todayMovements(history: List<StockRecord>): Pair<Int, Int> {
-    val ins = history.filter { it.type == StockMoveType.IN && it.date == "31-05-2026" }.sumOf { it.qty }
-    val outs = history.filter { it.type == StockMoveType.OUT && it.date == "31-05-2026" }.sumOf { it.qty }
+    val ins =
+        history.filter { it.type == StockMoveType.IN && it.date == "31-05-2026" }.sumOf { it.qty }
+    val outs =
+        history.filter { it.type == StockMoveType.OUT && it.date == "31-05-2026" }.sumOf { it.qty }
     return ins to outs
 }
 
@@ -93,7 +152,8 @@ private val adjustStockTabs =
 
 @Composable
 internal fun MonitorStockTabContent(product: MasterEvent) {
-    val catEntry = remember(product.category) { DefaultProductCategories.find { it.id == product.category } }
+    val catEntry =
+        remember(product.category) { DefaultProductCategories.find { it.id == product.category } }
     val categoryName = catEntry?.name ?: product.category
     val subName = catEntry?.subCategories?.find { it.id == product.subCategory }?.name
     val catIcon = catEntry?.icon ?: Icons.Default.ShoppingBag
@@ -122,7 +182,12 @@ internal fun MonitorStockTabContent(product: MasterEvent) {
                             .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    ProductHeader(event = product, categoryName = categoryName, subName = subName, catIcon = catIcon)
+                    ProductHeader(
+                        event = product,
+                        categoryName = categoryName,
+                        subName = subName,
+                        catIcon = catIcon
+                    )
                     StockOverviewCard(product, history)
                     AdjustStockSection(product)
                 }
@@ -133,7 +198,8 @@ internal fun MonitorStockTabContent(product: MasterEvent) {
                         onFilter = { historyFilter = it },
                         filteredCount = filteredHistory.size,
                         totalCount = history.size,
-                        modifier = Modifier.padding(horizontal = 16.dp).padding(top = 16.dp, bottom = 8.dp),
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                            .padding(top = 16.dp, bottom = 8.dp),
                     )
                     LazyColumn(
                         modifier =
@@ -141,13 +207,23 @@ internal fun MonitorStockTabContent(product: MasterEvent) {
                                 .weight(1f)
                                 .padding(horizontal = 12.dp, vertical = 8.dp)
                                 .clip(RoundedCornerShape(12.dp))
-                                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(12.dp))
+                                .border(
+                                    1.dp,
+                                    MaterialTheme.colorScheme.outlineVariant,
+                                    RoundedCornerShape(12.dp)
+                                )
                                 .background(MaterialTheme.colorScheme.surface),
                         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
                         verticalArrangement = Arrangement.spacedBy(0.dp),
                     ) {
-                        itemsIndexed(filteredHistory, key = { _, it -> "${it.id}-${it.date}-${it.time}" }) { index, record ->
-                            StockRecordRow(record = record, unit = product.unit, isEven = index % 2 == 1)
+                        itemsIndexed(
+                            filteredHistory,
+                            key = { _, it -> "${it.id}-${it.date}-${it.time}" }) { index, record ->
+                            StockRecordRow(
+                                record = record,
+                                unit = product.unit,
+                                isEven = index % 2 == 1
+                            )
                         }
                     }
                 }
@@ -159,12 +235,20 @@ internal fun MonitorStockTabContent(product: MasterEvent) {
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 item {
-                    ProductHeader(event = product, categoryName = categoryName, subName = subName, catIcon = catIcon)
+                    ProductHeader(
+                        event = product,
+                        categoryName = categoryName,
+                        subName = subName,
+                        catIcon = catIcon
+                    )
                 }
                 item { StockOverviewCard(product, history) }
                 item { AdjustStockSection(product) }
                 item {
-                    Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Column(
+                        Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
                         StockHistoryHeader(
                             filter = historyFilter,
                             onFilter = { historyFilter = it },
@@ -177,12 +261,20 @@ internal fun MonitorStockTabContent(product: MasterEvent) {
                                     .fillMaxWidth()
                                     .heightIn(max = 320.dp)
                                     .clip(RoundedCornerShape(12.dp))
-                                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(12.dp))
+                                    .border(
+                                        1.dp,
+                                        MaterialTheme.colorScheme.outlineVariant,
+                                        RoundedCornerShape(12.dp)
+                                    )
                                     .background(MaterialTheme.colorScheme.surface)
                                     .verticalScroll(rememberScrollState()),
                         ) {
                             filteredHistory.forEachIndexed { index, record ->
-                                StockRecordRow(record = record, unit = product.unit, isEven = index % 2 == 1)
+                                StockRecordRow(
+                                    record = record,
+                                    unit = product.unit,
+                                    isEven = index % 2 == 1
+                                )
                             }
                         }
                     }
@@ -433,7 +525,12 @@ private fun AdjustStockSection(product: MasterEvent) {
                                 editText =
                                     new.copy(
                                         text = filtered,
-                                        selection = TextRange(minOf(new.selection.start, filtered.length)),
+                                        selection = TextRange(
+                                            minOf(
+                                                new.selection.start,
+                                                filtered.length
+                                            )
+                                        ),
                                     )
                             },
                             textStyle =
@@ -453,7 +550,11 @@ private fun AdjustStockSection(product: MasterEvent) {
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
-                                    .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
+                                    .border(
+                                        1.dp,
+                                        MaterialTheme.colorScheme.primary,
+                                        RoundedCornerShape(8.dp)
+                                    )
                                     .padding(vertical = 4.dp)
                                     .focusRequester(focusRequester)
                                     .onKeyEvent { event ->
@@ -484,7 +585,10 @@ private fun AdjustStockSection(product: MasterEvent) {
                             modifier =
                                 Modifier
                                     .clickable {
-                                        editText = TextFieldValue(qty.toString(), selection = TextRange(qty.toString().length))
+                                        editText = TextFieldValue(
+                                            qty.toString(),
+                                            selection = TextRange(qty.toString().length)
+                                        )
                                         isEditing = true
                                     }.padding(vertical = 4.dp),
                         )
@@ -718,7 +822,12 @@ private fun StockRecordRow(
     }
 }
 
-@Preview(showBackground = true, widthDp = 411, heightDp = 891, name = "MonitorStockPanel · In stock")
+@Preview(
+    showBackground = true,
+    widthDp = 411,
+    heightDp = 891,
+    name = "MonitorStockPanel · In stock"
+)
 @Composable
 private fun MonitorStockInStockPreview() {
     CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
@@ -726,7 +835,12 @@ private fun MonitorStockInStockPreview() {
     }
 }
 
-@Preview(showBackground = true, widthDp = 411, heightDp = 891, name = "MonitorStockPanel · Out of stock")
+@Preview(
+    showBackground = true,
+    widthDp = 411,
+    heightDp = 891,
+    name = "MonitorStockPanel · Out of stock"
+)
 @Composable
 private fun MonitorStockOutOfStockPreview() {
     CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
@@ -734,7 +848,12 @@ private fun MonitorStockOutOfStockPreview() {
     }
 }
 
-@Preview(showBackground = true, widthDp = 411, heightDp = 891, name = "MonitorStockPanel · No stock tracking")
+@Preview(
+    showBackground = true,
+    widthDp = 411,
+    heightDp = 891,
+    name = "MonitorStockPanel · No stock tracking"
+)
 @Composable
 private fun MonitorStockNoTrackingPreview() {
     CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
@@ -742,7 +861,12 @@ private fun MonitorStockNoTrackingPreview() {
     }
 }
 
-@Preview(showBackground = true, widthDp = 900, heightDp = 600, name = "MonitorStockPanel · Wide layout")
+@Preview(
+    showBackground = true,
+    widthDp = 900,
+    heightDp = 600,
+    name = "MonitorStockPanel · Wide layout"
+)
 @Composable
 private fun MonitorStockWidePreview() {
     CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {

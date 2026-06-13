@@ -84,7 +84,11 @@ private fun MobileConfirmLayout(
     SideEffect { progressVM.setup(SaleOrderSteps, 0) }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        WorkspaceHeader(title = "Confirm Order", subtitle = "Sales · review order", onNavigateBack = onBack)
+        WorkspaceHeader(
+            title = "Confirm Order",
+            subtitle = "Sales · review order",
+            onNavigateBack = onBack
+        )
         ProgressBar()
 
         ConfirmSectionLabel(
@@ -128,7 +132,11 @@ private fun DesktopConfirmLayout(
     SideEffect { progressVM.setup(SaleOrderSteps, 0) }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        WorkspaceHeader(title = "Confirm Order", subtitle = "Sales · review order", onNavigateBack = onBack)
+        WorkspaceHeader(
+            title = "Confirm Order",
+            subtitle = "Sales · review order",
+            onNavigateBack = onBack
+        )
         ProgressBar()
 
         Row(
@@ -302,13 +310,14 @@ private fun ConfirmSectionLabel(text: String, modifier: Modifier = Modifier) {
 }
 
 private val previewOrderItems = listOf(
-    MenuItem(1,  "", "Mocha",        "70.00",  "17,500", "coffee", isRecommended = true,  count = 2u),
-    MenuItem(3,  "", "Matcha Latte", "100.00", "26,000", "matcha", isRecommended = true,  count = 1u),
-    MenuItem(7,  "", "Cappuccino",   "75.00",  "18,750", "coffee", isRecommended = true,  count = 3u),
-    MenuItem(11, "", "Thai Tea",     "60.00",  "15,000", "tea",    isRecommended = true,  count = 1u),
+    MenuItem(1, "", "Mocha", "70.00", "17,500", "coffee", isRecommended = true, count = 2u),
+    MenuItem(3, "", "Matcha Latte", "100.00", "26,000", "matcha", isRecommended = true, count = 1u),
+    MenuItem(7, "", "Cappuccino", "75.00", "18,750", "coffee", isRecommended = true, count = 3u),
+    MenuItem(11, "", "Thai Tea", "60.00", "15,000", "tea", isRecommended = true, count = 1u),
 )
 
-private fun confirmPreviewVM() = MainMenuViewModel(autoLoad = false).also { it.loadItemsForPreview(previewOrderItems) }
+private fun confirmPreviewVM() =
+    MainMenuViewModel(autoLoad = false).also { it.loadItemsForPreview(previewOrderItems) }
 
 @Preview(showBackground = true, widthDp = 411, heightDp = 891)
 @Composable

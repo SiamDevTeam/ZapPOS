@@ -75,7 +75,11 @@ private fun MobileCashLayout(
     SideEffect { progressVM.setup(SaleOrderSteps, 2) }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        WorkspaceHeader(title = "Cash Payment", subtitle = "Checkout · cash", onNavigateBack = onBack)
+        WorkspaceHeader(
+            title = "Cash Payment",
+            subtitle = "Checkout · cash",
+            onNavigateBack = onBack
+        )
         ProgressBar()
 
         SectionLabel(
@@ -125,7 +129,11 @@ private fun DesktopCashLayout(
     SideEffect { progressVM.setup(SaleOrderSteps, 2) }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        WorkspaceHeader(title = "Cash Payment", subtitle = "Checkout · cash", onNavigateBack = onBack)
+        WorkspaceHeader(
+            title = "Cash Payment",
+            subtitle = "Checkout · cash",
+            onNavigateBack = onBack
+        )
         ProgressBar()
 
         Row(
@@ -158,7 +166,11 @@ private fun DesktopCashLayout(
                     .width(380.dp)
                     .fillMaxHeight()
                     .clip(RoundedCornerShape(12.dp))
-                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(12.dp))
+                    .border(
+                        1.dp,
+                        MaterialTheme.colorScheme.outlineVariant,
+                        RoundedCornerShape(12.dp)
+                    )
                     .background(MaterialTheme.colorScheme.surface)
                     .padding(horizontal = 28.dp, vertical = 28.dp)
             ) {
@@ -252,7 +264,11 @@ private fun ReceivedDisplay(
                         .size(26.dp)
                         .clip(RoundedCornerShape(8.dp))
                         .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
-                        .border(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
+                        .border(
+                            1.dp,
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                            RoundedCornerShape(8.dp)
+                        )
                         .clickable { onClear() },
                     contentAlignment = Alignment.Center
                 ) {
@@ -269,7 +285,7 @@ private fun ReceivedDisplay(
         Text(
             text = receivedAmount.ifEmpty { "0" },
             style = if (isLarge) MaterialTheme.typography.displaySmall
-                    else MaterialTheme.typography.displayMedium,
+            else MaterialTheme.typography.displayMedium,
             fontWeight = FontWeight.Bold,
             color = if (isValid) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.fillMaxWidth(),
@@ -358,7 +374,11 @@ private fun QuickAmountRow(
                     .weight(1f)
                     .clip(RoundedCornerShape(10.dp))
                     .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
-                    .border(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.25f), RoundedCornerShape(10.dp))
+                    .border(
+                        1.dp,
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
+                        RoundedCornerShape(10.dp)
+                    )
                     .clickable { onAdd(amount) }
                     .padding(vertical = 8.dp),
                 contentAlignment = Alignment.Center

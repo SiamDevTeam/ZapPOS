@@ -60,7 +60,9 @@ class CheckoutViewModel : ViewModel() {
         totalSat = sat
     }
 
-    fun setTax(percent: Float) { taxPercent = percent }
+    fun setTax(percent: Float) {
+        taxPercent = percent
+    }
 
     val grandTotalFiat: String
         get() {
@@ -88,10 +90,21 @@ class CheckoutViewModel : ViewModel() {
             return received >= total
         }
 
-    fun openSelectPayment() { step = CheckoutStep.SELECT_PAYMENT }
-    fun backToOrder() { step = CheckoutStep.ORDER }
-    fun backToSelectPayment() { step = CheckoutStep.SELECT_PAYMENT }
-    fun selectMethod(method: PaymentMethod) { selectedMethod = method }
+    fun openSelectPayment() {
+        step = CheckoutStep.SELECT_PAYMENT
+    }
+
+    fun backToOrder() {
+        step = CheckoutStep.ORDER
+    }
+
+    fun backToSelectPayment() {
+        step = CheckoutStep.SELECT_PAYMENT
+    }
+
+    fun selectMethod(method: PaymentMethod) {
+        selectedMethod = method
+    }
 
     fun confirmPayment() {
         val method = selectedMethod ?: return
@@ -107,9 +120,13 @@ class CheckoutViewModel : ViewModel() {
         }
     }
 
-    fun deleteCashDigit() { receivedAmount = receivedAmount.dropLast(1) }
+    fun deleteCashDigit() {
+        receivedAmount = receivedAmount.dropLast(1)
+    }
 
-    fun clearReceivedAmount() { receivedAmount = "" }
+    fun clearReceivedAmount() {
+        receivedAmount = ""
+    }
 
     fun appendQuickAmount(amount: String) {
         val add = amount.toDoubleOrNull() ?: return
@@ -124,9 +141,13 @@ class CheckoutViewModel : ViewModel() {
         }
     }
 
-    fun confirmCash() { if (isChangeValid) step = CheckoutStep.PROCESSING }
+    fun confirmCash() {
+        if (isChangeValid) step = CheckoutStep.PROCESSING
+    }
 
-    fun confirmProcessing() { step = CheckoutStep.SUCCESS }
+    fun confirmProcessing() {
+        step = CheckoutStep.SUCCESS
+    }
 
     fun reset() {
         step = CheckoutStep.ORDER

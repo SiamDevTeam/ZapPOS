@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.CurrencyExchange
 import androidx.compose.material.icons.filled.CurrencyLira
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -45,35 +46,39 @@ fun CurrencyCodeIcon(
     tint: Color = Color.Unspecified
 ) {
     when (code) {
-        "BTC"  -> Icon(
+        "BTC" -> Icon(
             painter = painterResource(Res.drawable.bitcoin_unit),
             contentDescription = null,
             modifier = modifier,
             tint = Color.Unspecified
         )
+
         "SATS" -> Icon(
             painter = painterResource(Res.drawable.sat_unit),
             contentDescription = null,
             modifier = modifier,
             tint = tint
         )
-        "THB"  -> Icon(
+
+        "THB" -> Icon(
             imageVector = Icons.Default.CurrencyLira,
             contentDescription = null,
             modifier = modifier,
-            tint = tint
+            tint = MaterialTheme.colorScheme.onSurface
         )
-        "USD"  -> Icon(
+
+        "USD" -> Icon(
             imageVector = Icons.Default.AttachMoney,
             contentDescription = null,
             modifier = modifier,
-            tint = tint
+            tint = MaterialTheme.colorScheme.onSurface
         )
-        else   -> Icon(
+
+        else -> Icon(
             imageVector = Icons.Default.CurrencyExchange,
             contentDescription = null,
             modifier = modifier,
-            tint = tint
+            tint = MaterialTheme.colorScheme.onSurface
         )
     }
 }
@@ -85,11 +90,14 @@ fun PrimaryAmt(
     textStyle: TextStyle,
     fontWeight: FontWeight = FontWeight.Normal,
     tint: Color = Color.Unspecified,
-    color: Color = Color.Unspecified
+    color: Color = MaterialTheme.colorScheme.onSurface
 ) {
     val primaryCurrency by LocalSettingVM.current.primaryCurrency.collectAsState()
     val code = primaryCurrency?.code ?: "THB"
-    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(3.dp)
+    ) {
         CurrencyCodeIcon(code = code, modifier = Modifier.size(iconSize), tint = tint)
         Text(value, style = textStyle, fontWeight = fontWeight, color = color)
     }
@@ -107,9 +115,12 @@ fun SecondaryAmt(
 
     val secondaryCurrency by settingVM.secondaryCurrency.collectAsState()
     val code = secondaryCurrency?.code ?: "SATS"
-    val orange = Color(0xFFFFB700)
+    val cryptoColor = MaterialTheme.colorScheme.primary
 
-    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(3.dp)
+    ) {
         when (code) {
             "SATS", "BTC" -> {
                 val icon = if (code == "BTC") Res.drawable.bitcoin_unit else Res.drawable.sat_unit
@@ -117,13 +128,18 @@ fun SecondaryAmt(
                     painter = painterResource(icon),
                     contentDescription = null,
                     modifier = Modifier.size(iconSize),
-                    tint = if (code == "BTC") Color.Unspecified else orange
+                    tint = if (code == "BTC") Color.Unspecified else cryptoColor
                 )
-                Text(value, style = textStyle, color = orange)
+                Text(value, style = textStyle, color = cryptoColor)
             }
+
             else -> {
-                CurrencyCodeIcon(code = code, modifier = Modifier.size(iconSize), tint = orange)
-                Text(value, style = textStyle, color = orange)
+                CurrencyCodeIcon(
+                    code = code,
+                    modifier = Modifier.size(iconSize),
+                    tint = cryptoColor
+                )
+                Text(value, style = textStyle, color = cryptoColor)
             }
         }
     }

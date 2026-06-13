@@ -43,7 +43,7 @@ fun CheckoutScreen(
     onBack: () -> Unit = {},
     onSuccess: () -> Unit = {}
 ) {
-    val menuVM     = LocalMenuVM.current
+    val menuVM = LocalMenuVM.current
     val checkoutVM = LocalCheckoutVM.current
     val progressVM = LocalProgressVM.current
 
@@ -86,9 +86,12 @@ fun CheckoutContent(
     // Sub-screens handled by separate composables — exit early
     when (viewModel.step) {
         CheckoutStep.CASH_CALCULATOR -> {
-            CashCalculatorScreen(viewModel = viewModel, onBack = { viewModel.backToSelectPayment() })
+            CashCalculatorScreen(
+                viewModel = viewModel,
+                onBack = { viewModel.backToSelectPayment() })
             return
         }
+
         CheckoutStep.PROCESSING -> {
             PaymentProcessingScreen(
                 viewModel = viewModel,
@@ -97,10 +100,12 @@ fun CheckoutContent(
             )
             return
         }
+
         CheckoutStep.SUCCESS -> {
             SuccessScreen(onOpen = onSuccess)
             return
         }
+
         else -> {}
     }
 
@@ -142,7 +147,10 @@ private fun MobileCheckoutLayout(
         WorkspaceHeader(title = "Checkout", subtitle = "Sales · payment", onNavigateBack = onBack)
         ProgressBar()
 
-        SectionLabel(text = "ORDER SUMMARY", modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp))
+        SectionLabel(
+            text = "ORDER SUMMARY",
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)
+        )
 
         OrderItemList(
             items = viewModel.orderItems,

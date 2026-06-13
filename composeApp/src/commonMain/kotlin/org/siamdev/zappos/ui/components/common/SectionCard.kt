@@ -69,10 +69,10 @@ fun SectionCard(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector        = icon,
+                    imageVector = icon,
                     contentDescription = null,
-                    modifier           = Modifier.size(17.dp),
-                    tint               = MaterialTheme.colorScheme.primary
+                    modifier = Modifier.size(17.dp),
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
 
@@ -80,13 +80,13 @@ fun SectionCard(
 
             Column(Modifier.weight(1f)) {
                 Text(
-                    text       = title,
-                    style      = MaterialTheme.typography.titleSmall,
+                    text = title,
+                    style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold,
-                    color      = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
-                    text  = subtitle,
+                    text = subtitle,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -94,9 +94,9 @@ fun SectionCard(
 
             if (badge != null) {
                 Text(
-                    text     = badge,
-                    style    = MaterialTheme.typography.labelSmall,
-                    color    = MaterialTheme.colorScheme.onSurfaceVariant,
+                    text = badge,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier
                         .clip(RoundedCornerShape(4.dp))
                         .background(MaterialTheme.colorScheme.surfaceVariant)
@@ -107,10 +107,10 @@ fun SectionCard(
             if (expanded != null) {
                 Spacer(Modifier.width(8.dp))
                 Icon(
-                    imageVector        = Icons.Default.KeyboardArrowDown,
+                    imageVector = Icons.Default.KeyboardArrowDown,
                     contentDescription = if (expanded) "Collapse" else "Expand",
-                    tint               = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier           = Modifier.size(20.dp).rotate(chevronAngle)
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(20.dp).rotate(chevronAngle)
                 )
             }
         }
@@ -118,20 +118,20 @@ fun SectionCard(
         if (expanded != null) {
             AnimatedVisibility(
                 visible = expanded,
-                enter   = fadeIn() + expandVertically(),
-                exit    = fadeOut() + shrinkVertically()
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
             ) {
                 Column(
-                    modifier            = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
-                    content             = content
+                    content = content
                 )
             }
         } else {
             Column(
-                modifier            = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
-                content             = content
+                content = content
             )
         }
     }

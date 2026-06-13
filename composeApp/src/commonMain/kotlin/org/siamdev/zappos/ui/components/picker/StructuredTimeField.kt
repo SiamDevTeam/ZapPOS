@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -65,12 +66,17 @@ fun StructuredTimeField(
 
     val interactionSource = remember { MutableInteractionSource() }
     val activeFocusInteraction = remember { mutableStateOf<FocusInteraction.Focus?>(null) }
+    val focusManager = LocalFocusManager.current
 
     LaunchedEffect(isFocused) {
         if (isFocused) {
-            val interaction = FocusInteraction.Focus()
-            activeFocusInteraction.value = interaction
-            interactionSource.emit(interaction)
+            if (onPickerRequest != null) {
+                focusManager.clearFocus()
+            } else {
+                val interaction = FocusInteraction.Focus()
+                activeFocusInteraction.value = interaction
+                interactionSource.emit(interaction)
+            }
         } else {
             activeFocusInteraction.value?.let { interactionSource.emit(FocusInteraction.Unfocus(it)) }
             activeFocusInteraction.value = null

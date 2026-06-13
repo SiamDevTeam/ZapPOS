@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.siamdev.zappos.ui.components.common.ChipRow
+import org.siamdev.zappos.ui.components.imagepicker.ImagePickerBox
 import org.siamdev.zappos.ui.components.common.EntryField
 import org.siamdev.zappos.ui.components.common.SectionCard
 import org.siamdev.zappos.ui.components.common.ToggleItem
@@ -43,6 +44,7 @@ private fun typeConfigFor(type: EntryType): TypeConfig =
                 descPlaceholder = "Ingredients, size, what's included...",
                 chips = listOf("Beverage", "Food", "Snack", "Dessert", "Retail"),
             )
+
         EntryType.SERVICE ->
             TypeConfig(
                 sectionTitle = "Service details",
@@ -52,6 +54,7 @@ private fun typeConfigFor(type: EntryType): TypeConfig =
                 descPlaceholder = "What the service includes, how long, what to prepare...",
                 chips = listOf("Cleaning", "Repair", "Consultation", "Training", "Beauty"),
             )
+
         EntryType.RENTAL ->
             TypeConfig(
                 sectionTitle = "Rental details",
@@ -82,8 +85,6 @@ internal fun ProductDetailsSection(state: EntryFormState) {
     }
 }
 
-// Desktop: image left | right column holds Name, Category+SubCategory, Chips, Description.
-// Toggles span full width below, separated by a divider.
 @Composable
 private fun DetailsDesktop(state: EntryFormState, config: TypeConfig) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -261,23 +262,39 @@ private fun PreviewMobileGoods() {
 @Preview(showBackground = true, widthDp = 411, name = "Mobile · Service")
 @Composable
 private fun PreviewMobileService() {
-    MaterialTheme { ProductDetailsSection(rememberEntryFormState().also { it.entryType = EntryType.SERVICE }) }
+    MaterialTheme {
+        ProductDetailsSection(rememberEntryFormState().also {
+            it.entryType = EntryType.SERVICE
+        })
+    }
 }
 
 @Preview(showBackground = true, widthDp = 411, name = "Mobile · Rental")
 @Composable
 private fun PreviewMobileRental() {
-    MaterialTheme { ProductDetailsSection(rememberEntryFormState().also { it.entryType = EntryType.RENTAL }) }
+    MaterialTheme {
+        ProductDetailsSection(rememberEntryFormState().also {
+            it.entryType = EntryType.RENTAL
+        })
+    }
 }
 
 @Preview(showBackground = true, widthDp = 600, name = "Tablet · with Product ID")
 @Composable
 private fun PreviewTabletWithId() {
-    MaterialTheme { ProductDetailsSection(rememberEntryFormState().also { it.productId = "PRD-0042" }) }
+    MaterialTheme {
+        ProductDetailsSection(rememberEntryFormState().also {
+            it.productId = "PRD-0042"
+        })
+    }
 }
 
 @Preview(showBackground = true, widthDp = 1280, name = "Desktop · with Product ID")
 @Composable
 private fun PreviewDesktopWithId() {
-    MaterialTheme { ProductDetailsSection(rememberEntryFormState().also { it.productId = "PRD-0042" }) }
+    MaterialTheme {
+        ProductDetailsSection(rememberEntryFormState().also {
+            it.productId = "PRD-0042"
+        })
+    }
 }

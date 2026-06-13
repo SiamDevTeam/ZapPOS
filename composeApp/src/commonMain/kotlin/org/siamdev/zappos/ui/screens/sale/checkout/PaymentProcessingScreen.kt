@@ -152,7 +152,12 @@ private fun MobileProcessingLayout(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            Icon(Icons.Default.Receipt, null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.primary)
+                            Icon(
+                                Icons.Default.Receipt,
+                                null,
+                                modifier = Modifier.size(16.dp),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
                             Text(
                                 text = "Items",
                                 style = MaterialTheme.typography.labelMedium,
@@ -387,7 +392,11 @@ private fun ProcessingDetailCard(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(label, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f))
+                Text(
+                    label,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                )
                 Text(
                     value,
                     style = MaterialTheme.typography.bodySmall,
@@ -401,12 +410,18 @@ private fun ProcessingDetailCard(
             modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text("VAT", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f))
+            Text(
+                "VAT",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+            )
             Text(
                 text = if (hasVat) "${taxPercent.toInt()}%" else "No VAT",
                 style = MaterialTheme.typography.bodySmall,
                 fontWeight = FontWeight.SemiBold,
-                color = if (hasVat) Color(0xFFFF9800) else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                color = if (hasVat) Color(0xFFFF9800) else MaterialTheme.colorScheme.onSurface.copy(
+                    alpha = 0.5f
+                )
             )
         }
 
@@ -427,7 +442,10 @@ private fun ProcessingDetailCard(
                 color = MaterialTheme.colorScheme.onSurface
             )
             Column(horizontalAlignment = Alignment.End) {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
                     CurrencyCodeIcon(
                         code = primaryCode,
                         modifier = Modifier.size(15.dp),
@@ -441,9 +459,21 @@ private fun ProcessingDetailCard(
                     )
                 }
                 if (showSecondary) {
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                        CurrencyCodeIcon(code = secondaryCode, modifier = Modifier.size(13.dp), tint = Color(0xFFFFB700))
-                        Text(viewModel.grandTotalSat, style = MaterialTheme.typography.bodyMedium, color = Color(0xFFFFB700), fontWeight = FontWeight.SemiBold)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        CurrencyCodeIcon(
+                            code = secondaryCode,
+                            modifier = Modifier.size(13.dp),
+                            tint = Color(0xFFFFB700)
+                        )
+                        Text(
+                            viewModel.grandTotalSat,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color(0xFFFFB700),
+                            fontWeight = FontWeight.SemiBold
+                        )
                     }
                 }
             }
