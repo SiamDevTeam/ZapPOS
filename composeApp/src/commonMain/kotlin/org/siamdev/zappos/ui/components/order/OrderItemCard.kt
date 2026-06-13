@@ -61,7 +61,8 @@ fun OrderItemCard(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 6.dp),
+            .padding(vertical = 6.dp)
+            .padding(start = 5.dp, end = 5.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
@@ -216,17 +217,19 @@ fun OrderItemCard(
 fun OrderItemCardPreview() {
     val settingVM = remember { SettingViewModel() }
     CompositionLocalProvider(LocalSettingVM provides settingVM) {
-        OrderItemCard(
-            item = MenuItem(
-                id = 1,
-                imageUrl = "",
-                name = "Matcha Latte",
-                priceBaht = "100.00",
-                priceSat = "26,000",
-                count = 2u
-            ),
-            onAddClick = {},
-            onReduceClick = {}
-        )
+        MaterialTheme {
+            OrderItemCard(
+                item = MenuItem(
+                    id = 1,
+                    imageUrl = "",
+                    name = "Matcha Latte",
+                    priceBaht = "100.00",
+                    priceSat = "26,000",
+                    count = 2u
+                ),
+                onAddClick = {},
+                onReduceClick = {}
+            )
+        }
     }
 }

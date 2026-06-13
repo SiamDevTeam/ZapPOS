@@ -16,11 +16,10 @@ enum class DetailTab { PRODUCT_DETAIL, MONITOR_STOCK }
 val MasterEvent.productType: ProductType
     get() = when (kind) {
         EventKind.SERVICE -> ProductType.SERVICE
-        EventKind.RENTAL  -> ProductType.RENTAL
-        else              -> ProductType.GOODS
+        EventKind.RENTAL -> ProductType.RENTAL
+        else -> ProductType.GOODS
     }
 
-// ── Sample data ───────────────────────────────────────────────────────────────
 
 private const val SAMPLE_IMAGE = "https://images.pexels.com/photos/350478/pexels-photo-350478.jpeg"
 
@@ -62,17 +61,26 @@ internal fun sampleEvents(): List<MasterEvent> = listOf(
         content = listOf(
             itemInfo {
                 put("name", "Green Tea Latte")
-                put("description", "Smooth and creamy matcha latte made with premium Japanese matcha and oat milk.")
+                put(
+                    "description",
+                    "Smooth and creamy matcha latte made with premium Japanese matcha and oat milk."
+                )
                 put("price", 85.0); put("unit", "cup")
                 put("stockQty", 50); put("stockMax", 200)
                 put("soldThisWeek", 186); put("revenue7d", 15820.0)
             },
-            optionGroup("Size", true, false,
-                "Small" to -10, "Medium" to 0, "Large" to 15),
-            optionGroup("Milk", false, false,
-                "Whole Milk" to 0, "Oat Milk" to 10, "Almond Milk" to 10, "Coconut Milk" to 5),
-            optionGroup("Add-ons", false, true,
-                "Extra Matcha Shot" to 15, "Whipped Cream" to 10, "Less Sweet" to 0, "No Ice" to 0),
+            optionGroup(
+                "Size", true, false,
+                "Small" to -10, "Medium" to 0, "Large" to 15
+            ),
+            optionGroup(
+                "Milk", false, false,
+                "Whole Milk" to 0, "Oat Milk" to 10, "Almond Milk" to 10, "Coconut Milk" to 5
+            ),
+            optionGroup(
+                "Add-ons", false, true,
+                "Extra Matcha Shot" to 15, "Whipped Cream" to 10, "Less Sweet" to 0, "No Ice" to 0
+            ),
         ),
     ),
 
@@ -287,7 +295,10 @@ internal fun sampleEvents(): List<MasterEvent> = listOf(
         ),
         content = listOf(itemInfo {
             put("name", "Earl Grey Milk Tea")
-            put("description", "Fragrant Earl Grey tea with fresh milk and a hint of bergamot. Best served warm.")
+            put(
+                "description",
+                "Fragrant Earl Grey tea with fresh milk and a hint of bergamot. Best served warm."
+            )
             put("price", 75.0); put("unit", "cup")
             put("stockQty", 40); put("stockMax", 150)
             put("lowStockAlert", 15)

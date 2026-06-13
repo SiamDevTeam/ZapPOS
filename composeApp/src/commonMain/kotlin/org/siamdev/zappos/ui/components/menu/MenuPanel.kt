@@ -228,28 +228,32 @@ internal fun MenuItemsContent(
                 }
             }
 
-            else -> LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 250.dp),
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                contentPadding = contentPadding
-            ) {
-                items(items) { item ->
-                    MenuItemCard(
-                        imageUrl = item.imageUrl,
-                        id = item.id,
-                        name = item.name,
-                        priceBaht = item.priceBaht,
-                        priceSat = item.priceSat,
-                        category = item.category.replaceFirstChar { it.uppercase() },
-                        isRecommended = item.isRecommended,
-                        isAvailable = item.isAvailable,
-                        count = item.count,
-                        viewMode = MenuViewMode.GRID,
-                        onAddClick = { onAddItem(item.id) },
-                        onReduceClick = { onReduceItem(item.id) }
-                    )
+            else -> BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+                val gridColumns = if (maxWidth < 500.dp) GridCells.Fixed(2)
+                                  else GridCells.Adaptive(minSize = 250.dp)
+                LazyVerticalGrid(
+                    columns = gridColumns,
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    contentPadding = contentPadding
+                ) {
+                    items(items) { item ->
+                        MenuItemCard(
+                            imageUrl = item.imageUrl,
+                            id = item.id,
+                            name = item.name,
+                            priceBaht = item.priceBaht,
+                            priceSat = item.priceSat,
+                            category = item.category.replaceFirstChar { it.uppercase() },
+                            isRecommended = item.isRecommended,
+                            isAvailable = item.isAvailable,
+                            count = item.count,
+                            viewMode = MenuViewMode.GRID,
+                            onAddClick = { onAddItem(item.id) },
+                            onReduceClick = { onReduceItem(item.id) }
+                        )
+                    }
                 }
             }
         }

@@ -93,7 +93,11 @@ private fun DesktopMenuLayout(
             .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(WindowInsets.statusBars)
     ) {
-        WorkspaceHeader(title = "Main Menu", subtitle = "Sales · point of sale", onSegmentClick = onOpenDrawer)
+        WorkspaceHeader(
+            title = "Main Menu",
+            subtitle = "Sales · point of sale",
+            onSegmentClick = onOpenDrawer
+        )
 
         BoxWithConstraints(
             modifier = Modifier
@@ -191,7 +195,10 @@ private fun MobileMenuLayout(
         derivedStateOf {
             items.filter { item ->
                 (categoryFilter == null || item.category == categoryFilter) &&
-                (searchQuery.isBlank() || item.name.contains(searchQuery, ignoreCase = true))
+                        (searchQuery.isBlank() || item.name.contains(
+                            searchQuery,
+                            ignoreCase = true
+                        ))
             }
         }
     }
@@ -231,23 +238,37 @@ private fun MobileMenuLayout(
                         modifier = Modifier.padding(bottom = 30.dp)
                     )
                     Column(horizontalAlignment = Alignment.End) {
-                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
                             CurrencyCodeIcon(
                                 code = primaryCode,
                                 modifier = Modifier.size(18.dp),
                                 tint = MaterialTheme.colorScheme.onSurface
                             )
-                            Text(viewModel.totalFiat, style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface)
+                            Text(
+                                viewModel.totalFiat,
+                                style = MaterialTheme.typography.titleLarge,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
                         }
                         if (showSecondary) {
                             Spacer(Modifier.height(4.dp))
-                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
                                 CurrencyCodeIcon(
                                     code = secondaryCode,
                                     modifier = Modifier.size(16.dp),
                                     tint = Color(0xFFFFB700)
                                 )
-                                Text(viewModel.totalSat, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
+                                Text(
+                                    viewModel.totalSat,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
                             }
                         }
                     }
@@ -279,7 +300,11 @@ private fun MobileMenuLayout(
                     .fillMaxSize()
                     .statusBarsPadding()
             ) {
-                WorkspaceHeader(title = "Main Menu", subtitle = "Sales · point of sale", onSegmentClick = onOpenDrawer)
+                WorkspaceHeader(
+                    title = "Main Menu",
+                    subtitle = "Sales · point of sale",
+                    onSegmentClick = onOpenDrawer
+                )
 
                 SearchFilter(
                     searchQuery = searchQuery,
@@ -287,7 +312,11 @@ private fun MobileMenuLayout(
                     categories = categories,
                     selectedCategory = categoryFilter,
                     onCategorySelect = { categoryFilter = it },
-                    trailingContent = { MenuViewToggle(viewMode = viewMode, onViewModeChange = { viewMode = it }) },
+                    trailingContent = {
+                        MenuViewToggle(
+                            viewMode = viewMode,
+                            onViewModeChange = { viewMode = it })
+                    },
                     modifier = Modifier.padding(horizontal = 20.dp).padding(top = 10.dp)
                 )
 
@@ -312,7 +341,6 @@ private fun MobileMenuLayout(
         }
     }
 }
-
 
 
 private val previewItems = listOf(
