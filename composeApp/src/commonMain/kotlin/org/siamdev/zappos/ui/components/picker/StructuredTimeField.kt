@@ -4,6 +4,7 @@
  */
 package org.siamdev.zappos.ui.components.picker
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.FocusInteraction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -20,9 +21,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -62,21 +63,18 @@ fun StructuredTimeField(
     var minuteRaw by remember(value.minute) { mutableStateOf(DateTimeUtils.pad2(value.minute)) }
     var isHourFocused by remember { mutableStateOf(false) }
     var isMinuteFocused by remember { mutableStateOf(false) }
-    val isFocused = isHourFocused || isMinuteFocused
+
+    val isPickerMode = onPickerRequest != null
+    val isFocused = !isPickerMode && (isHourFocused || isMinuteFocused)
 
     val interactionSource = remember { MutableInteractionSource() }
     val activeFocusInteraction = remember { mutableStateOf<FocusInteraction.Focus?>(null) }
-    val focusManager = LocalFocusManager.current
 
     LaunchedEffect(isFocused) {
         if (isFocused) {
-            if (onPickerRequest != null) {
-                focusManager.clearFocus()
-            } else {
-                val interaction = FocusInteraction.Focus()
-                activeFocusInteraction.value = interaction
-                interactionSource.emit(interaction)
-            }
+            val interaction = FocusInteraction.Focus()
+            activeFocusInteraction.value = interaction
+            interactionSource.emit(interaction)
         } else {
             activeFocusInteraction.value?.let { interactionSource.emit(FocusInteraction.Unfocus(it)) }
             activeFocusInteraction.value = null
@@ -99,7 +97,8 @@ fun StructuredTimeField(
                 ) {
                     TimeSegmentField(
                         value = hourRaw,
-                        readOnly = !enableManualInput,
+                        readOnly = !enableManualInput || isPickerMode,
+                        canFocus = !isPickerMode,
                         onValueChange = { input ->
                             val digits = input.filter(Char::isDigit).take(2)
                             when (digits.length) {
@@ -148,7 +147,8 @@ fun StructuredTimeField(
 
                     TimeSegmentField(
                         value = minuteRaw,
-                        readOnly = !enableManualInput,
+                        readOnly = !enableManualInput || isPickerMode,
+                        canFocus = !isPickerMode,
                         onValueChange = { input ->
                             val digits = input.filter(Char::isDigit).take(2)
                             when (digits.length) {
@@ -214,6 +214,18 @@ fun StructuredTimeField(
                 )
             },
         )
+
+        onPickerRequest?.let { request ->
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .clickable(
+                        onClick = request,
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    )
+            )
+        }
     }
 }
 
@@ -226,6 +238,7 @@ private fun TimeSegmentField(
     imeAction: ImeAction,
     keyboardActions: KeyboardActions,
     readOnly: Boolean = false,
+    canFocus: Boolean = true,
 ) {
     BasicTextField(
         value = value,
@@ -245,6 +258,7 @@ private fun TimeSegmentField(
         modifier = Modifier
             .width(28.dp)
             .focusRequester(focusRequester)
+            .focusProperties { this.canFocus = canFocus }
             .onFocusChanged { onFocusChange(it.isFocused) },
         decorationBox = { innerTextField ->
             Box(modifier = Modifier.width(28.dp), contentAlignment = Alignment.Center) {

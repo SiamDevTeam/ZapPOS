@@ -113,7 +113,7 @@ private fun ProductDetailTabContent(
         ) {
             item {
                 ProductHeader(
-                    event = event,
+                    name = event.name,
                     categoryName = categoryName,
                     subName = subName,
                     catIcon = catIcon ?: Icons.Default.ShoppingBag,

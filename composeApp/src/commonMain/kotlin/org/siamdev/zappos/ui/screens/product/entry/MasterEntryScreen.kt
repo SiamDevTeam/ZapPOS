@@ -7,19 +7,20 @@ package org.siamdev.zappos.ui.screens.product.entry
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.siamdev.zappos.ui.components.common.SegmentedTabBar
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
+import org.siamdev.zappos.ui.components.menu.DefaultProductCategories
+import org.siamdev.zappos.ui.components.product.ProductHeader
+import org.siamdev.zappos.ui.screens.product.entry.sections.AdvancedSection
 import org.siamdev.zappos.ui.screens.product.entry.sections.EntryActionBar
 import org.siamdev.zappos.ui.screens.product.entry.sections.InventorySection
 import org.siamdev.zappos.ui.screens.product.entry.sections.OptionsSection
@@ -46,11 +47,10 @@ fun MasterEntryScreen(
     }
 
     Column(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .windowInsetsPadding(WindowInsets.systemBars),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .windowInsetsPadding(WindowInsets.systemBars),
     ) {
         WorkspaceHeader(
             title = "Product Master",
@@ -59,14 +59,14 @@ fun MasterEntryScreen(
             onNavigateBack = if (showBackButton) onNavigateBack else null,
         )
 
-        if (isEditMode) {
-            ProductSummary(state)
-        } else {
+        if (!isEditMode) {
             SegmentedTabBar(
                 tabs = entryTabs,
                 selectedIndex = state.entryType.ordinal,
                 onTabSelect = { state.entryType = EntryType.entries[it] },
-                modifier = Modifier.padding(horizontal = 16.dp).padding(top = 8.dp, bottom = 8.dp),
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 8.dp, bottom = 8.dp),
             )
         }
 
@@ -89,14 +89,32 @@ fun MasterEntryScreen(
     }
 }
 
-// Mobile: single scrolling column — padding and spacing match MonitorStockPanel.
+// Mobile: single scrolling column; ProductHeader is first item under the tab bar
 @Composable
 private fun EntryMobileLayout(state: EntryFormState) {
+    val tab = entryTabs[state.entryType.ordinal]
+    val catEntry = remember(state.category) { DefaultProductCategories.find { it.id == state.category } }
+    val categoryName = catEntry?.name ?: state.category.ifBlank { tab.label }
+    val subName = catEntry?.subCategories?.find { it.id == state.subCategory }?.name
+    val catIcon = catEntry?.icon ?: tab.icon ?: Icons.Default.ShoppingBag
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+
+        if (state.name.isNotBlank()) {
+            item {
+                ProductHeader(
+                    name = state.name,
+                    categoryName = categoryName,
+                    subName = subName,
+                    catIcon = catIcon,
+                )
+            }
+        }
+
         item { ProductDetailsSection(state) }
         item { PricingSection(state) }
 
@@ -112,122 +130,69 @@ private fun EntryMobileLayout(state: EntryFormState) {
             EntryType.RENTAL -> item { ResourcesBookingSection(state) }
         }
 
-        
+        item { AdvancedSection(state) }
     }
 }
 
-// Desktop: two equal columns separated by a VerticalDivider — mirrors MonitorStockPanel's wide layout.
+// Desktop: ProductHeader spans full width above two equal columns
 @Composable
 private fun EntryDesktopLayout(state: EntryFormState) {
-    Row(modifier = Modifier.fillMaxSize()) {
-        // Left column — product details + pricing
-        LazyColumn(
-            modifier = Modifier.weight(1f).fillMaxHeight(),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            item { ProductDetailsSection(state) }
-            item { PricingSection(state) }
-        }
-
-        VerticalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-
-        // Right column — type-specific operational sections + advanced
-        LazyColumn(
-            modifier = Modifier.weight(1f).fillMaxHeight(),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            when (state.entryType) {
-                EntryType.GOODS -> {
-                    item { InventorySection(state) }
-                    item { OptionsSection(state) }
-                }
-                EntryType.SERVICE -> {
-                    item { ScheduleCapacitySection(state) }
-                    item { OptionsSection(state) }
-                }
-                EntryType.RENTAL -> {
-                    item { ResourcesBookingSection(state) }
-                }
-            }
-            
-        }
-    }
-}
-
-/** Compact read-only product identity shown in place of the SegmentedTabBar when editing an existing item.
- *  Mirrors ProductHeader's structure: leading icon box → ID breadcrumb + type chip → product name. */
-@Composable
-private fun ProductSummary(state: EntryFormState) {
     val tab = entryTabs[state.entryType.ordinal]
-    val formattedId = state.productId?.padStart(5, '0') ?: "—"
+    val catEntry = remember(state.category) { DefaultProductCategories.find { it.id == state.category } }
+    val categoryName = catEntry?.name ?: state.category.ifBlank { tab.label }
+    val subName = catEntry?.subCategories?.find { it.id == state.subCategory }?.name
+    val catIcon = catEntry?.icon ?: tab.icon ?: Icons.Default.ShoppingBag
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .padding(top = 12.dp, bottom = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(6.dp),
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            // Leading icon box — same dimensions and colours as ProductHeader
-            Box(
+    Column(modifier = Modifier.fillMaxSize()) {
+        if (state.name.isNotBlank()) {
+            ProductHeader(
+                name = state.name,
+                categoryName = categoryName,
+                subName = subName,
+                catIcon = catIcon,
                 modifier = Modifier
-                    .size(44.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
-                contentAlignment = Alignment.Center,
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+            )
+        }
+
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+
+        Row(modifier = Modifier.weight(1f)) {
+            // Left column — product details + pricing
+            LazyColumn(
+                modifier = Modifier.weight(1f).fillMaxHeight(),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                if (tab.icon != null) {
-                    Icon(
-                        imageVector = tab.icon,
-                        contentDescription = null,
-                        modifier = Modifier.size(22.dp),
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
-                }
+                item { ProductDetailsSection(state) }
+                item { PricingSection(state) }
             }
 
-            Spacer(Modifier.width(12.dp))
+            VerticalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
-            Column {
-                // Breadcrumb row: Product ID · type chip
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                ) {
-                    Text(
-                        formattedId,
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    Row(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(6.dp))
-                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
-                            .padding(horizontal = 7.dp, vertical = 3.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    ) {
-                        Text(
-                            tab.label,
-                            style = MaterialTheme.typography.labelSmall,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.primary,
-                        )
+            // Right column — type-specific sections + advanced
+            LazyColumn(
+                modifier = Modifier.weight(1f).fillMaxHeight(),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                when (state.entryType) {
+                    EntryType.GOODS -> {
+                        item { InventorySection(state) }
+                        item { OptionsSection(state) }
+                    }
+                    EntryType.SERVICE -> {
+                        item { ScheduleCapacitySection(state) }
+                        item { OptionsSection(state) }
+                    }
+                    EntryType.RENTAL -> {
+                        item { ResourcesBookingSection(state) }
                     }
                 }
-                // Product name — same style as ProductHeader
-                Text(
-                    state.name.ifBlank { "—" },
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
+                item { AdvancedSection(state) }
             }
         }
-
     }
 }
 

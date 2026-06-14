@@ -125,10 +125,10 @@ internal fun MonitorStockTabContent(product: MasterEvent) {
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     ProductHeader(
-                        event = product,
+                        name = product.name,
                         categoryName = categoryName,
                         subName = subName,
-                        catIcon = catIcon
+                        catIcon = catIcon,
                     )
                     StockOverviewCard(product, history)
                     AdjustStockCard(product)
@@ -152,10 +152,10 @@ internal fun MonitorStockTabContent(product: MasterEvent) {
             ) {
                 item {
                     ProductHeader(
-                        event = product,
+                        name = product.name,
                         categoryName = categoryName,
                         subName = subName,
-                        catIcon = catIcon
+                        catIcon = catIcon,
                     )
                 }
                 item { StockOverviewCard(product, history) }
