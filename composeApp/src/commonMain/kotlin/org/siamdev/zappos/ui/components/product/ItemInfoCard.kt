@@ -17,8 +17,6 @@ import org.siamdev.zappos.ui.screens.product.entry.EntryFormState
 import org.siamdev.zappos.ui.screens.product.entry.EntryType
 import org.siamdev.zappos.utils.formatPrice
 
-/** Read-only master-data summary built from [EntryFormState]. Adapts to Goods / Service / Rental
- *  and skips any field that is empty, zero, or still at its default value. */
 @Composable
 internal fun ItemInfoCard(state: EntryFormState) {
     val catEntry = DefaultProductCategories.find { it.id == state.category }
@@ -48,7 +46,7 @@ internal fun ItemInfoCard(state: EntryFormState) {
             val pairs = buildList<Pair<String, String>> {
                 if (state.productId != null) add("Product ID" to state.productId!!)
                 if (categoryDisplay != null) add("Category" to categoryDisplay)
-                add("Price" to "฿ ${priceValue.formatPrice()} / ${state.unit}")
+                add("Price" to "${priceValue.formatPrice()} / ${state.unit}")
                 if (state.openPrice && state.entryType == EntryType.GOODS) add("Pricing" to "Open / variable price")
                 if (!state.chargeVat) add("VAT" to "Not charged")
                 if (state.showCostPrice) {

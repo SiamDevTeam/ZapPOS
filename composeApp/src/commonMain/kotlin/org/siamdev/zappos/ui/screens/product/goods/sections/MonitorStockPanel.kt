@@ -95,8 +95,9 @@ private fun fakeStockHistory(productId: String): List<StockRecord> {
 
 @Composable
 internal fun MonitorStockTabContent(product: MasterEvent) {
-    val catEntry =
-        remember(product.category) { DefaultProductCategories.find { it.id == product.category } }
+    val catEntry = remember(product.category) {
+        DefaultProductCategories.find { it.id == product.category }
+    }
     val categoryName = catEntry?.name ?: product.category
     val subName = catEntry?.subCategories?.find { it.id == product.subCategory }?.name
     val catIcon = catEntry?.icon ?: Icons.Default.ShoppingBag

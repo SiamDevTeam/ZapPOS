@@ -68,9 +68,7 @@ internal fun ProductDetailPanel(
                 )
             }
 
-            DetailTab.MONITOR_STOCK -> {
-                MonitorStockTabContent(product = event)
-            }
+            DetailTab.MONITOR_STOCK -> MonitorStockTabContent(product = event)
         }
     }
 }
@@ -133,7 +131,7 @@ private fun ProductDetailTabContent(
             }
             item { ItemInfoCard(state = entryState) }
             if (entryState.optionGroups.isNotEmpty()) {
-                item { OptionsInfoCard(state = entryState) }
+                item { OptionsInfoCard(optionGroups = entryState.optionGroups) }
             }
             item {
                 InfoToggleCard(

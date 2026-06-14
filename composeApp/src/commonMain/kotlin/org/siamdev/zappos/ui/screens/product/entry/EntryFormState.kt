@@ -21,18 +21,18 @@ internal enum class EntryType {
     RENTAL
 }
 
-internal enum class PickMode {
+enum class PickMode {
     ONE,
     MANY
 }
 
-internal data class OptionItem(
+data class OptionItem(
     val id: Long = DateTimeUtils.nowEpochMillis(),
     val name: String = "",
     val priceModifier: Int = 0,
 )
 
-internal data class OptionGroup(
+data class OptionGroup(
     val id: Long = DateTimeUtils.nowEpochMillis(),
     val name: String = "Size",
     val pickMode: PickMode = PickMode.ONE,
