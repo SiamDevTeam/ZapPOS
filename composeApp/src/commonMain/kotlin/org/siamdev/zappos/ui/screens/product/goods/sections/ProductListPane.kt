@@ -64,7 +64,7 @@ internal fun ProductListPane(
         remember(products, searchQuery, categoryFilter) {
             products.filter { p ->
                 (categoryFilter == null || p.category == categoryFilter) &&
-                    (searchQuery.isBlank() || p.name.contains(searchQuery, ignoreCase = true))
+                        (searchQuery.isBlank() || p.name.contains(searchQuery, ignoreCase = true))
             }
         }
 
@@ -248,7 +248,12 @@ private fun ProductListItem(
     }
 }
 
-@Preview(showBackground = true, widthDp = 360, heightDp = 700, name = "ProductListPane · Empty selection")
+@Preview(
+    showBackground = true,
+    widthDp = 360,
+    heightDp = 700,
+    name = "ProductListPane · Empty selection"
+)
 @Composable
 private fun ProductListPanePreview() {
     CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
@@ -260,7 +265,12 @@ private fun ProductListPanePreview() {
     }
 }
 
-@Preview(showBackground = true, widthDp = 360, heightDp = 700, name = "ProductListPane · With selection")
+@Preview(
+    showBackground = true,
+    widthDp = 360,
+    heightDp = 700,
+    name = "ProductListPane · With selection"
+)
 @Composable
 private fun ProductListPaneSelectedPreview() {
     CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {

@@ -4,20 +4,18 @@
  */
 package org.siamdev.zappos.ui.screens.product.entry.sections
 
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import org.siamdev.zappos.ui.components.common.EntryChip
+import org.siamdev.zappos.ui.components.common.ChipRow
 import org.siamdev.zappos.ui.components.common.EntryField
+import org.siamdev.zappos.ui.components.common.LabeledChipRow
 import org.siamdev.zappos.ui.components.common.NumberUnitField
 import org.siamdev.zappos.ui.components.common.SectionCard
 import org.siamdev.zappos.ui.screens.product.entry.EntryFormState
@@ -53,25 +51,12 @@ internal fun AdvancedSection(state: EntryFormState) {
             )
         }
 
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(
-                text = "Send order to",
-                style = MaterialTheme.typography.labelMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface,
+        LabeledChipRow(label = "Send order to") {
+            ChipRow(
+                items = orderDestinations,
+                selected = state.sendOrderTo,
+                onSelect = { state.sendOrderTo = it },
             )
-            Row(
-                modifier = Modifier.horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-            ) {
-                orderDestinations.forEach { dest ->
-                    EntryChip(
-                        selected = state.sendOrderTo == dest,
-                        onClick = { state.sendOrderTo = dest },
-                        label = dest,
-                    )
-                }
-            }
         }
 
         NumberUnitField(

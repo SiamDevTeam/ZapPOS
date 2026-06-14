@@ -11,18 +11,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.siamdev.zappos.ui.components.common.EntryChip
 import org.siamdev.zappos.ui.components.common.EntryField
+import org.siamdev.zappos.ui.components.common.LabeledChipRow
 import org.siamdev.zappos.ui.components.common.NumberUnitField
 import org.siamdev.zappos.ui.components.common.SectionCard
 import org.siamdev.zappos.ui.components.common.ToggleItem
-import org.siamdev.zappos.ui.components.picker.StructuredTimeField
-import org.siamdev.zappos.ui.components.picker.TimePickerDialog
+import org.siamdev.zappos.ui.components.picker.TimeRangeRow
 import org.siamdev.zappos.ui.screens.product.entry.EntryFormState
 import org.siamdev.zappos.ui.screens.product.entry.EntryType
 import org.siamdev.zappos.ui.screens.product.entry.rememberEntryFormState
@@ -31,24 +30,6 @@ private val dayLabels = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
 
 @Composable
 internal fun ScheduleCapacitySection(state: EntryFormState) {
-    var showOpensPicker by remember { mutableStateOf(false) }
-    var showClosesPicker by remember { mutableStateOf(false) }
-
-    if (showOpensPicker) {
-        TimePickerDialog(
-            value = state.serviceOpens,
-            onConfirm = { state.serviceOpens = it; showOpensPicker = false },
-            onDismiss = { showOpensPicker = false },
-        )
-    }
-    if (showClosesPicker) {
-        TimePickerDialog(
-            value = state.serviceCloses,
-            onConfirm = { state.serviceCloses = it; showClosesPicker = false },
-            onDismiss = { showClosesPicker = false },
-        )
-    }
-
     SectionCard(
         icon = Icons.Default.DateRange,
         title = "Schedule & capacity",
@@ -71,37 +52,20 @@ internal fun ScheduleCapacitySection(state: EntryFormState) {
             )
         }
 
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            StructuredTimeField(
-                value = state.serviceOpens,
-                onValueChange = { state.serviceOpens = it },
-                label = "From",
-                onPickerRequest = { showOpensPicker = true },
-                modifier = Modifier.weight(1f),
-                enableManualInput = false
-            )
-            StructuredTimeField(
-                value = state.serviceCloses,
-                onValueChange = { state.serviceCloses = it },
-                label = "Until",
-                onPickerRequest = { showClosesPicker = true },
-                modifier = Modifier.weight(1f),
-                enableManualInput = false
-            )
-        }
+        TimeRangeRow(
+            opensValue = state.serviceOpens,
+            closesValue = state.serviceCloses,
+            onOpensChange = { state.serviceOpens = it },
+            onClosesChange = { state.serviceCloses = it },
+            enableManualInput = false,
+        )
 
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(
-                text = "Active days",
-                style = MaterialTheme.typography.labelMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
+        LabeledChipRow(label = "Active days") {
             Row(
                 modifier = Modifier.horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
-                dayLabels.forEachIndexed { index, label ->
+                dayLabels.forEachIndexed { index, dayLabel ->
                     EntryChip(
                         selected = index in state.activeDays,
                         onClick = {
@@ -112,7 +76,7 @@ internal fun ScheduleCapacitySection(state: EntryFormState) {
                                     state.activeDays + index
                                 }
                         },
-                        label = label,
+                        label = dayLabel,
                     )
                 }
             }

@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import org.siamdev.zappos.ui.components.common.EntryChip
 import org.siamdev.zappos.ui.components.common.EntryField
 import org.siamdev.zappos.ui.components.common.SectionCard
+import org.siamdev.zappos.ui.components.common.TextIconButton
 import org.siamdev.zappos.ui.screens.product.entry.EntryFormState
 import org.siamdev.zappos.ui.screens.product.entry.OptionGroup
 import org.siamdev.zappos.ui.screens.product.entry.OptionItem
@@ -42,7 +43,8 @@ internal fun OptionsSection(state: EntryFormState) {
             OptionGroupCard(
                 group = group,
                 onUpdate = { updated ->
-                    state.optionGroups = state.optionGroups.toMutableList().also { it[gi] = updated }
+                    state.optionGroups =
+                        state.optionGroups.toMutableList().also { it[gi] = updated }
                 },
                 onDelete = {
                     state.optionGroups = state.optionGroups.toMutableList().also { it.removeAt(gi) }
@@ -101,7 +103,10 @@ private fun OptionGroupCard(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            listOf(PickMode.ONE to "Pick one", PickMode.MANY to "Pick many").forEach { (mode, label) ->
+            listOf(
+                PickMode.ONE to "Pick one",
+                PickMode.MANY to "Pick many"
+            ).forEach { (mode, label) ->
                 EntryChip(
                     selected = group.pickMode == mode,
                     onClick = { onUpdate(group.copy(pickMode = mode)) },
@@ -127,13 +132,14 @@ private fun OptionGroupCard(
 
         group.items.forEachIndexed { ii, item ->
             Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(5.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 EntryField(
                     value = item.name,
                     onValueChange = { name ->
-                        val updated = group.items.toMutableList().also { it[ii] = item.copy(name = name) }
+                        val updated =
+                            group.items.toMutableList().also { it[ii] = item.copy(name = name) }
                         onUpdate(group.copy(items = updated))
                     },
                     label = "Option name",
@@ -144,7 +150,9 @@ private fun OptionGroupCard(
                     onValueChange = { v ->
                         val updated =
                             group.items.toMutableList().also {
-                                it[ii] = item.copy(priceModifier = v.filter(Char::isDigit).toIntOrNull() ?: 0)
+                                it[ii] = item.copy(
+                                    priceModifier = v.filter(Char::isDigit).toIntOrNull() ?: 0
+                                )
                             }
                         onUpdate(group.copy(items = updated))
                     },
@@ -168,18 +176,11 @@ private fun OptionGroupCard(
             }
         }
 
-        TextButton(
+        TextIconButton(
+            icon = Icons.Default.Add,
+            text = "Add option",
             onClick = { onUpdate(group.copy(items = group.items + OptionItem())) },
-            contentPadding = PaddingValues(horizontal = 4.dp, vertical = 2.dp),
-        ) {
-            Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp))
-            Spacer(Modifier.width(4.dp))
-            Text(
-                text = "Add option",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.primary,
-            )
-        }
+        )
     }
 }
 

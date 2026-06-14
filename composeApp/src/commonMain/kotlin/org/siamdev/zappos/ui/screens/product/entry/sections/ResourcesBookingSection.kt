@@ -9,7 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Business
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -18,32 +18,13 @@ import org.siamdev.zappos.ui.components.common.EntryField
 import org.siamdev.zappos.ui.components.common.NumberUnitField
 import org.siamdev.zappos.ui.components.common.SectionCard
 import org.siamdev.zappos.ui.components.common.ToggleItem
-import org.siamdev.zappos.ui.components.picker.StructuredTimeField
-import org.siamdev.zappos.ui.components.picker.TimePickerDialog
+import org.siamdev.zappos.ui.components.picker.TimeRangeRow
 import org.siamdev.zappos.ui.screens.product.entry.EntryFormState
 import org.siamdev.zappos.ui.screens.product.entry.EntryType
 import org.siamdev.zappos.ui.screens.product.entry.rememberEntryFormState
 
 @Composable
 internal fun ResourcesBookingSection(state: EntryFormState) {
-    var showOpensPicker by remember { mutableStateOf(false) }
-    var showClosesPicker by remember { mutableStateOf(false) }
-
-    if (showOpensPicker) {
-        TimePickerDialog(
-            value = state.rentalOpens,
-            onConfirm = { state.rentalOpens = it; showOpensPicker = false },
-            onDismiss = { showOpensPicker = false },
-        )
-    }
-    if (showClosesPicker) {
-        TimePickerDialog(
-            value = state.rentalCloses,
-            onConfirm = { state.rentalCloses = it; showClosesPicker = false },
-            onDismiss = { showClosesPicker = false },
-        )
-    }
-
     SectionCard(
         icon = Icons.Default.Business,
         title = "Resources & booking",
@@ -66,22 +47,12 @@ internal fun ResourcesBookingSection(state: EntryFormState) {
             )
         }
 
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            StructuredTimeField(
-                value = state.rentalOpens,
-                onValueChange = { state.rentalOpens = it },
-                label = "From",
-                onPickerRequest = { showOpensPicker = true },
-                modifier = Modifier.weight(1f),
-            )
-            StructuredTimeField(
-                value = state.rentalCloses,
-                onValueChange = { state.rentalCloses = it },
-                label = "Until",
-                onPickerRequest = { showClosesPicker = true },
-                modifier = Modifier.weight(1f),
-            )
-        }
+        TimeRangeRow(
+            opensValue = state.rentalOpens,
+            closesValue = state.rentalCloses,
+            onOpensChange = { state.rentalOpens = it },
+            onClosesChange = { state.rentalCloses = it },
+        )
 
         EntryField(
             value = state.depositAmount,

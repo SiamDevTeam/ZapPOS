@@ -31,6 +31,7 @@ import org.siamdev.zappos.ui.components.common.ChipRow
 import org.siamdev.zappos.ui.components.common.EntryField
 import org.siamdev.zappos.ui.components.common.NumberUnitField
 import org.siamdev.zappos.ui.components.common.SectionCard
+import org.siamdev.zappos.ui.components.common.TextIconButton
 import org.siamdev.zappos.ui.components.common.ToggleItem
 import org.siamdev.zappos.ui.screens.product.entry.EntryFormState
 import org.siamdev.zappos.ui.screens.product.entry.EntryType
@@ -123,23 +124,12 @@ internal fun PricingSection(state: EntryFormState) {
             onCheckedChange = { state.chargeVat = it },
         )
 
-        TextButton(
+        TextIconButton(
+            icon = if (state.showCostPrice) Icons.Default.Remove else Icons.Default.Add,
+            text = if (state.showCostPrice) "Hide cost price" else "Add cost price (track margin)",
             onClick = { state.showCostPrice = !state.showCostPrice },
-            contentPadding = PaddingValues(horizontal = 4.dp, vertical = 2.dp),
-        ) {
-            Icon(
-                imageVector = if (state.showCostPrice) Icons.Default.Remove else Icons.Default.Add,
-                contentDescription = null,
-                modifier = Modifier.size(16.dp),
-            )
-            Spacer(Modifier.width(4.dp))
-            Text(
-                text = if (state.showCostPrice) "Hide cost price" else "Add cost price (track margin)",
-                style = MaterialTheme.typography.bodySmall,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.primary,
-            )
-        }
+            fontWeight = FontWeight.Medium,
+        )
 
         AnimatedVisibility(
             visible = state.showCostPrice,
