@@ -25,23 +25,23 @@ val LocalProductBrowserVM = staticCompositionLocalOf<ProductBrowser> {
 }
 
 val LocalMenuVM = staticCompositionLocalOf<MainMenuViewModel> {
-    error("Missing VMContainer in composition tree")
+    error("Missing ProvideViewModels in composition tree")
 }
 
 val LocalCheckoutVM = staticCompositionLocalOf<CheckoutViewModel> {
-    error("Missing VMContainer in composition tree")
+    error("Missing ProvideViewModels in composition tree")
 }
 
 val LocalCounterVM = staticCompositionLocalOf<CounterViewModel> {
-    error("Missing VMContainer in composition tree")
+    error("Missing ProvideViewModels in composition tree")
 }
 
 val LocalSettingVM = staticCompositionLocalOf<SettingViewModel> {
-    error("Missing VMContainer in composition tree")
+    error("Missing ProvideViewModels in composition tree")
 }
 
 val LocalProgressVM = staticCompositionLocalOf<ProgressViewModel> {
-    error("Missing VMContainer in composition tree")
+    error("Missing ProvideViewModels in composition tree")
 }
 
 @Composable
@@ -60,7 +60,8 @@ inline fun <reified VM : ViewModel> viewModelOf(
 )
 
 @Composable
-fun VMContainer(settingVM: SettingViewModel, content: @Composable () -> Unit) {
+fun ProvideViewModels(content: @Composable () -> Unit) {
+    val settingVM = viewModelOf { SettingViewModel() }
     val menuVM = viewModelOf { MainMenuViewModel() }
     val checkoutVM = viewModelOf { CheckoutViewModel() }
     val counterVM = viewModelOf { CounterViewModel() }

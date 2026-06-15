@@ -13,42 +13,39 @@ import org.siamdev.zappos.theme.ZapposTheme
 import org.siamdev.zappos.theme.colorFromHex
 import org.siamdev.zappos.navigation.NavigationRoot
 import org.siamdev.zappos.navigation.Route
-import org.siamdev.zappos.ui.components.debug.DebugScreenSize
-import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 import org.siamdev.zappos.ui.screens.splash.SplashViewModel
 
 private const val DEFAULT_FONT_SIZE = 14f
 
 @Composable
 fun App(platform: Platform, splashViewModel: SplashViewModel) {
-    val settingVM = viewModelOf { SettingViewModel() }
-    val activeTheme by settingVM.activeTheme.collectAsState()
-    val activeFont by settingVM.activeFont.collectAsState()
-    val accentColorHex by settingVM.accentColor.collectAsState()
-
-    val themeMode = when (activeTheme?.mode) {
-        "DARK" -> ThemeMode.DARK
-        "LIGHT" -> ThemeMode.LIGHT
-        "SYSTEM" -> ThemeMode.SYSTEM
-        else -> ThemeMode.SYSTEM
-    }
-    val fontScale = (activeFont?.size?.toFloat() ?: DEFAULT_FONT_SIZE) / DEFAULT_FONT_SIZE
-    val accentColor = accentColorHex?.let { colorFromHex(it) } ?: YellowPrimary
-
     val start = when (platform.type) {
         PlatformType.DESKTOP -> Route.Login
         PlatformType.MOBILE -> Route.Splash
         PlatformType.WEB -> Route.Login
     }
 
-    ZapposTheme(themeMode = themeMode, accentColor = accentColor, fontScale = fontScale) {
-        VMContainer(settingVM = settingVM) {
+    ProvideViewModels {
+        val settingVM = LocalSettingVM.current
+        val activeTheme by settingVM.activeTheme.collectAsState()
+        val activeFont by settingVM.activeFont.collectAsState()
+        val accentColorHex by settingVM.accentColor.collectAsState()
+
+        val themeMode = when (activeTheme?.mode) {
+            "DARK" -> ThemeMode.DARK
+            "LIGHT" -> ThemeMode.LIGHT
+            "SYSTEM" -> ThemeMode.SYSTEM
+            else -> ThemeMode.SYSTEM
+        }
+        val fontScale = (activeFont?.size?.toFloat() ?: DEFAULT_FONT_SIZE) / DEFAULT_FONT_SIZE
+        val accentColor = accentColorHex?.let { colorFromHex(it) } ?: YellowPrimary
+
+        ZapposTheme(themeMode = themeMode, accentColor = accentColor, fontScale = fontScale) {
             NavigationRoot(
                 platform = platform,
                 startDestination = start,
                 splashViewModel = splashViewModel
             )
         }
-        //DebugScreenSize()
     }
 }
