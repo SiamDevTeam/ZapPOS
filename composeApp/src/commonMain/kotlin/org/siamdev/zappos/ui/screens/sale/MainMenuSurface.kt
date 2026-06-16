@@ -10,14 +10,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import org.siamdev.zappos.ui.components.menu.MenuViewMode
 
 @Stable
-interface MainMenuFacade {
+interface MainMenuSurface {
     val items: List<MenuItem>
     val selectedKeys: List<Int>
     val totalFiat: String
     val totalSat: String
     val isLoading: Boolean
+    val viewMode: MenuViewMode
 
     fun ensureLoaded()
     fun addItem(id: Int)
@@ -25,9 +27,10 @@ interface MainMenuFacade {
     fun setItemCount(id: Int, count: UInt)
     fun clearAllItems()
     fun reloadProductsData()
+    fun setViewMode(mode: MenuViewMode)
 }
 
-class MainMenuFacadeImpl(private val vm: MainMenuViewModel) : MainMenuFacade {
+class MainMenuSurfaceImpl(private val vm: MainMenuViewModel) : MainMenuSurface {
 
     private var _state by mutableStateOf(vm.state.value)
 
@@ -42,6 +45,7 @@ class MainMenuFacadeImpl(private val vm: MainMenuViewModel) : MainMenuFacade {
     override val totalFiat: String get() = _state.order.totalFiat
     override val totalSat: String get() = _state.order.totalSat
     override val isLoading: Boolean get() = _state.isLoading
+    override val viewMode: MenuViewMode get() = _state.viewMode
 
     override fun ensureLoaded() = vm.ensureLoaded()
     override fun addItem(id: Int) = vm.addItem(id)
@@ -49,4 +53,5 @@ class MainMenuFacadeImpl(private val vm: MainMenuViewModel) : MainMenuFacade {
     override fun setItemCount(id: Int, count: UInt) = vm.setItemCount(id, count)
     override fun clearAllItems() = vm.clearAllItems()
     override fun reloadProductsData() = vm.reloadProductsData()
+    override fun setViewMode(mode: MenuViewMode) = vm.setViewMode(mode)
 }

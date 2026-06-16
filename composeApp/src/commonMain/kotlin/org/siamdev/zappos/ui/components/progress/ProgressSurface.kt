@@ -12,13 +12,13 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
 @Stable
-interface ProgressFacade {
+interface ProgressSurface {
     val steps: List<String>
     val currentStep: Int
     fun setup(steps: List<String>, currentStep: Int)
 }
 
-class ProgressFacadeImpl(private val vm: ProgressViewModel) : ProgressFacade {
+class ProgressSurfaceImpl(private val vm: ProgressViewModel) : ProgressSurface {
 
     private var _state by mutableStateOf(vm.state.value)
 

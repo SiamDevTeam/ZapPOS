@@ -5,14 +5,17 @@
 package org.siamdev.zappos.ui.components.product
 
 import org.siamdev.zappos.ui.components.menu.MenuItemsContent
+import org.siamdev.zappos.ui.components.common.ViewModeToggle
 import org.siamdev.zappos.ui.components.menu.MenuViewMode
-import org.siamdev.zappos.ui.components.menu.MenuViewToggle
 import org.siamdev.zappos.ui.components.menu.SearchFilter
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ViewList
+import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -80,9 +83,11 @@ fun ProductPanel(modifier: Modifier = Modifier) {
                 selectedCategory = categoryFilter,
                 onCategorySelect = { categoryFilter = it },
                 trailingContent = {
-                    MenuViewToggle(
-                        viewMode = viewMode,
-                        onViewModeChange = { viewMode = it })
+                    ViewModeToggle(
+                        options = listOf(Icons.AutoMirrored.Filled.ViewList, Icons.Default.GridView),
+                        selectedIndex = viewMode.ordinal,
+                        onSelect = { viewMode = MenuViewMode.entries[it] }
+                    )
                 }
             )
 

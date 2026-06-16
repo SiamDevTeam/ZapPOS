@@ -26,7 +26,7 @@ import org.siamdev.zappos.ui.components.common.MaterialButton
 import org.siamdev.zappos.ui.components.progress.ProgressBar
 import org.siamdev.zappos.ui.screens.sale.SaleOrderSteps
 import org.siamdev.zappos.ui.components.progress.ProgressViewModel
-import org.siamdev.zappos.ui.components.progress.ProgressFacadeImpl
+import org.siamdev.zappos.ui.components.progress.ProgressSurfaceImpl
 
 private val GreenSuccess = Color(0xFF4CAF50)
 
@@ -111,8 +111,8 @@ fun SuccessScreen(onOpen: () -> Unit = {}) {
 @Composable
 fun SuccessScreenPreview() {
     val progressVM = remember { ProgressViewModel() }
-    val progressFacade = remember(progressVM) { ProgressFacadeImpl(progressVM) }
-    CompositionLocalProvider(LocalProgressVM provides progressFacade) {
+    val progressSurface = remember(progressVM) { ProgressSurfaceImpl(progressVM) }
+    CompositionLocalProvider(LocalProgressVM provides progressSurface) {
         MaterialTheme { SuccessScreen() }
     }
 }

@@ -38,7 +38,7 @@ import org.siamdev.zappos.LocalSettingVM
 import org.siamdev.zappos.ui.components.common.PrimaryAmt
 import org.siamdev.zappos.ui.components.common.SecondaryAmt
 import org.siamdev.zappos.ui.screens.sale.MenuItem
-import org.siamdev.zappos.ui.screens.setting.SettingFacadeImpl
+import org.siamdev.zappos.ui.screens.setting.SettingSurfaceImpl
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 
 @Composable
@@ -219,7 +219,7 @@ fun OrderItemCard(
 @Composable
 fun OrderItemCardPreview() {
     val settingVM = remember { SettingViewModel() }
-    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(settingVM)) {
+    CompositionLocalProvider(LocalSettingVM provides SettingSurfaceImpl(settingVM)) {
         MaterialTheme {
             OrderItemCard(
                 item = MenuItem(

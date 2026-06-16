@@ -45,7 +45,7 @@ import androidx.compose.ui.graphics.luminance
 import org.jetbrains.compose.resources.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.LocalSettingVM
-import org.siamdev.zappos.ui.screens.setting.SettingFacadeImpl
+import org.siamdev.zappos.ui.screens.setting.SettingSurfaceImpl
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.zappos_dark_horizontal_v2
@@ -318,7 +318,7 @@ private fun DrawerNavigationItem(
 private fun NavigationDrawerPreview() {
     MaterialTheme {
         androidx.compose.runtime.CompositionLocalProvider(
-            LocalSettingVM provides SettingFacadeImpl(SettingViewModel())
+            LocalSettingVM provides SettingSurfaceImpl(SettingViewModel())
         ) {
             NavigationList(
                 isOpen = true,

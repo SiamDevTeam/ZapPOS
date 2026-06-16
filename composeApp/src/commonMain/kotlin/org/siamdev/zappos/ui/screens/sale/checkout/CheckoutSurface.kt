@@ -12,7 +12,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
 @Stable
-interface CheckoutFacade {
+interface CheckoutSurface {
     val step: CheckoutStep
     val orderItems: List<CheckoutItem>
     val totalFiat: String
@@ -42,7 +42,7 @@ interface CheckoutFacade {
     fun reset()
 }
 
-class CheckoutFacadeImpl(private val vm: CheckoutViewModel) : CheckoutFacade {
+class CheckoutSurfaceImpl(private val vm: CheckoutViewModel) : CheckoutSurface {
 
     private var _state by mutableStateOf(vm.state.value)
 

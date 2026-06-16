@@ -5,8 +5,6 @@
 package org.siamdev.zappos.ui.components.menu
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,9 +30,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import org.siamdev.zappos.ui.components.common.ViewModeToggle
 import org.siamdev.zappos.ui.screens.sale.MenuItem
 
 @Composable
@@ -70,7 +67,7 @@ internal fun SearchFilter(
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp)
+                .padding(bottom = 5.dp)
         )
 
         if (categories.isNotEmpty() || trailingContent != null) {
@@ -116,44 +113,6 @@ internal fun SearchFilter(
                 }
 
                 trailingContent?.invoke()
-            }
-        }
-    }
-}
-
-@Composable
-internal fun MenuViewToggle(
-    viewMode: MenuViewMode,
-    onViewModeChange: (MenuViewMode) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .clip(RoundedCornerShape(10.dp))
-            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f))
-            .padding(4.dp),
-        horizontalArrangement = Arrangement.spacedBy(2.dp)
-    ) {
-        MenuViewMode.entries.forEach { mode ->
-            val isSelected = viewMode == mode
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent)
-                    .clickable { onViewModeChange(mode) }
-                    .padding(6.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = if (mode == MenuViewMode.LIST)
-                        Icons.AutoMirrored.Filled.ViewList
-                    else
-                        Icons.Default.GridView,
-                    contentDescription = null,
-                    modifier = Modifier.size(18.dp),
-                    tint = if (isSelected) MaterialTheme.colorScheme.onSurface
-                           else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
-                )
             }
         }
     }
@@ -275,7 +234,11 @@ private fun SearchFilterPreview() {
         categories = categories,
         selectedCategory = selected,
         onCategorySelect = { selected = it },
-        trailingContent = { MenuViewToggle(viewMode = mode, onViewModeChange = { mode = it }) },
+        trailingContent = { ViewModeToggle(
+            options = listOf(Icons.AutoMirrored.Filled.ViewList, Icons.Default.GridView),
+            selectedIndex = mode.ordinal,
+            onSelect = { mode = MenuViewMode.entries[it] }
+        ) },
         modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
     )
 }
@@ -293,7 +256,11 @@ private fun SearchFilterWithQueryPreview() {
         categories = categories,
         selectedCategory = "coffee",
         onCategorySelect = {},
-        trailingContent = { MenuViewToggle(viewMode = mode, onViewModeChange = { mode = it }) },
+        trailingContent = { ViewModeToggle(
+            options = listOf(Icons.AutoMirrored.Filled.ViewList, Icons.Default.GridView),
+            selectedIndex = mode.ordinal,
+            onSelect = { mode = MenuViewMode.entries[it] }
+        ) },
         modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
     )
 }

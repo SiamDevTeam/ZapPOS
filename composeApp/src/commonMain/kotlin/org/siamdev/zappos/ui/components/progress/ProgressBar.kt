@@ -205,7 +205,7 @@ private fun ProgressBarPreview() {
                 val vm = remember(step) {
                     ProgressViewModel().also { it.setup(steps, step) }
                 }
-                CompositionLocalProvider(LocalProgressVM provides ProgressFacadeImpl(vm)) {
+                CompositionLocalProvider(LocalProgressVM provides ProgressSurfaceImpl(vm)) {
                     ProgressBar()
                 }
             }

@@ -30,13 +30,13 @@ import org.siamdev.zappos.ui.components.order.OrderSummaryCard
 import org.siamdev.zappos.ui.components.payment.PaymentMethodDialogCard
 import org.siamdev.zappos.ui.components.payment.PaymentMethodList
 import org.siamdev.zappos.ui.components.progress.ProgressBar
-import org.siamdev.zappos.ui.components.progress.ProgressFacadeImpl
+import org.siamdev.zappos.ui.components.progress.ProgressSurfaceImpl
 import org.siamdev.zappos.ui.components.common.SecondaryAmt
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 import org.siamdev.zappos.ui.screens.sale.SaleOrderSteps
-import org.siamdev.zappos.ui.screens.sale.MainMenuFacadeImpl
+import org.siamdev.zappos.ui.screens.sale.MainMenuSurfaceImpl
 import org.siamdev.zappos.ui.screens.sale.MainMenuViewModel
-import org.siamdev.zappos.ui.screens.setting.SettingFacadeImpl
+import org.siamdev.zappos.ui.screens.setting.SettingSurfaceImpl
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 import org.siamdev.zappos.ui.components.progress.ProgressViewModel
 
@@ -82,7 +82,7 @@ fun CheckoutScreen(
 
 @Composable
 fun CheckoutContent(
-    checkout: CheckoutFacade,
+    checkout: CheckoutSurface,
     onBack: () -> Unit = {},
     onSuccess: () -> Unit = {}
 ) {
@@ -141,7 +141,7 @@ fun CheckoutContent(
 
 @Composable
 private fun MobileCheckoutLayout(
-    checkout: CheckoutFacade,
+    checkout: CheckoutSurface,
     onBack: () -> Unit
 ) {
     val progress = LocalProgressVM.current
@@ -192,7 +192,7 @@ private fun MobileCheckoutLayout(
 
 @Composable
 private fun DesktopCheckoutLayout(
-    checkout: CheckoutFacade,
+    checkout: CheckoutSurface,
     onBack: () -> Unit
 ) {
     val progress = LocalProgressVM.current
@@ -343,12 +343,12 @@ fun CheckoutScreenMobilePreview() {
     val menuVM = remember { MainMenuViewModel(autoLoad = false) }
 
     CompositionLocalProvider(
-        LocalProgressVM provides ProgressFacadeImpl(progressVM),
-        LocalSettingVM provides SettingFacadeImpl(settingVM),
-        LocalMenuVM provides MainMenuFacadeImpl(menuVM),
-        LocalCheckoutVM provides CheckoutFacadeImpl(previewCheckoutVM)
+        LocalProgressVM provides ProgressSurfaceImpl(progressVM),
+        LocalSettingVM provides SettingSurfaceImpl(settingVM),
+        LocalMenuVM provides MainMenuSurfaceImpl(menuVM),
+        LocalCheckoutVM provides CheckoutSurfaceImpl(previewCheckoutVM)
     ) {
-        MaterialTheme { CheckoutContent(checkout = CheckoutFacadeImpl(previewCheckoutVM)) }
+        MaterialTheme { CheckoutContent(checkout = CheckoutSurfaceImpl(previewCheckoutVM)) }
     }
 }
 
@@ -360,11 +360,11 @@ fun CheckoutScreenDesktopPreview() {
     val menuVM = remember { MainMenuViewModel(autoLoad = false) }
 
     CompositionLocalProvider(
-        LocalProgressVM provides ProgressFacadeImpl(progressVM),
-        LocalSettingVM provides SettingFacadeImpl(settingVM),
-        LocalMenuVM provides MainMenuFacadeImpl(menuVM),
-        LocalCheckoutVM provides CheckoutFacadeImpl(previewCheckoutVM)
+        LocalProgressVM provides ProgressSurfaceImpl(progressVM),
+        LocalSettingVM provides SettingSurfaceImpl(settingVM),
+        LocalMenuVM provides MainMenuSurfaceImpl(menuVM),
+        LocalCheckoutVM provides CheckoutSurfaceImpl(previewCheckoutVM)
     ) {
-        MaterialTheme { CheckoutContent(checkout = CheckoutFacadeImpl(previewCheckoutVM)) }
+        MaterialTheme { CheckoutContent(checkout = CheckoutSurfaceImpl(previewCheckoutVM)) }
     }
 }

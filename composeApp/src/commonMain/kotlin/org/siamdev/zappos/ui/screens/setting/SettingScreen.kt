@@ -29,7 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.LocalSettingVM
 import androidx.compose.runtime.CompositionLocalProvider
 import org.siamdev.zappos.ui.components.menu.SearchFilter
-import org.siamdev.zappos.ui.screens.setting.SettingFacadeImpl
+import org.siamdev.zappos.ui.screens.setting.SettingSurfaceImpl
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 
 enum class SettingGroup(val title: String) {
@@ -400,7 +400,7 @@ private fun getSettingItems() = listOf(
 @Composable
 private fun SettingScreenMobilePreview() {
     MaterialTheme {
-        CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
+        CompositionLocalProvider(LocalSettingVM provides SettingSurfaceImpl(SettingViewModel())) {
             SettingScreen()
         }
     }
@@ -410,7 +410,7 @@ private fun SettingScreenMobilePreview() {
 @Composable
 private fun SettingScreenDesktopPreview() {
     MaterialTheme {
-        CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
+        CompositionLocalProvider(LocalSettingVM provides SettingSurfaceImpl(SettingViewModel())) {
             SettingScreen()
         }
     }

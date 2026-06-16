@@ -12,14 +12,14 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
 @Stable
-interface CounterFacade {
+interface CounterSurface {
     val count: Int
     fun plus()
     fun minus()
     fun reset()
 }
 
-class CounterFacadeImpl(private val vm: CounterViewModel) : CounterFacade {
+class CounterSurfaceImpl(private val vm: CounterViewModel) : CounterSurface {
 
     private var _state by mutableStateOf(vm.state.value)
 

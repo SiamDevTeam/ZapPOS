@@ -44,7 +44,7 @@ import org.jetbrains.compose.resources.painterResource
 import zappos.composeapp.generated.resources.compose_multiplatform
 import org.siamdev.zappos.LocalSettingVM
 import org.siamdev.zappos.ui.components.common.CurrencyCodeIcon
-import org.siamdev.zappos.ui.screens.setting.SettingFacadeImpl
+import org.siamdev.zappos.ui.screens.setting.SettingSurfaceImpl
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 
 
@@ -463,7 +463,7 @@ private fun AddButton(
 @Preview
 @Composable
 fun MenuItemCardListPreview() {
-    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
+    CompositionLocalProvider(LocalSettingVM provides SettingSurfaceImpl(SettingViewModel())) {
         MenuItemCard(
             imageUrl = "https://images.pexels.com/photos/350478/pexels-photo-350478.jpeg",
             name = "Mocha",
@@ -481,7 +481,7 @@ fun MenuItemCardListPreview() {
 @Preview
 @Composable
 fun MenuItemCardListUnavailablePreview() {
-    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
+    CompositionLocalProvider(LocalSettingVM provides SettingSurfaceImpl(SettingViewModel())) {
         MenuItemCard(
             imageUrl = "https://images.pexels.com/photos/17486832/pexels-photo-17486832.jpeg",
             name = "Latte",
@@ -498,7 +498,7 @@ fun MenuItemCardListUnavailablePreview() {
 @Preview
 @Composable
 fun MenuItemCardChevronPreview() {
-    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
+    CompositionLocalProvider(LocalSettingVM provides SettingSurfaceImpl(SettingViewModel())) {
         MenuItemCard(
             imageUrl = "https://images.pexels.com/photos/2611811/pexels-photo-2611811.jpeg",
             name = "Matcha Latte",
@@ -515,7 +515,7 @@ fun MenuItemCardChevronPreview() {
 @Preview
 @Composable
 fun MenuItemCardGridPreview() {
-    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
+    CompositionLocalProvider(LocalSettingVM provides SettingSurfaceImpl(SettingViewModel())) {
         MenuItemCard(
             imageUrl = "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg",
             name = "Matcha Coffee",
@@ -533,7 +533,7 @@ fun MenuItemCardGridPreview() {
 @Preview
 @Composable
 fun MenuItemCardGridUnavailablePreview() {
-    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
+    CompositionLocalProvider(LocalSettingVM provides SettingSurfaceImpl(SettingViewModel())) {
         MenuItemCard(
             imageUrl = "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg",
             name = "Milk",

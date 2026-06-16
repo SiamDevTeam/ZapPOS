@@ -29,16 +29,16 @@ import org.siamdev.zappos.ui.components.common.MaterialButton
 import org.siamdev.zappos.ui.components.common.PrimaryAmt
 import org.siamdev.zappos.ui.components.order.OrderItemCard
 import org.siamdev.zappos.ui.components.progress.ProgressBar
-import org.siamdev.zappos.ui.components.progress.ProgressFacadeImpl
+import org.siamdev.zappos.ui.components.progress.ProgressSurfaceImpl
 import org.siamdev.zappos.ui.components.progress.ProgressViewModel
 import org.siamdev.zappos.ui.components.common.SecondaryAmt
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
-import org.siamdev.zappos.ui.screens.sale.MainMenuFacade
-import org.siamdev.zappos.ui.screens.sale.MainMenuFacadeImpl
+import org.siamdev.zappos.ui.screens.sale.MainMenuSurface
+import org.siamdev.zappos.ui.screens.sale.MainMenuSurfaceImpl
 import org.siamdev.zappos.ui.screens.sale.MainMenuViewModel
 import org.siamdev.zappos.ui.screens.sale.MenuItem
 import org.siamdev.zappos.ui.screens.sale.SaleOrderSteps
-import org.siamdev.zappos.ui.screens.setting.SettingFacadeImpl
+import org.siamdev.zappos.ui.screens.setting.SettingSurfaceImpl
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 
 @Composable
@@ -80,7 +80,7 @@ fun ConfirmOrderScreen(
 @Composable
 private fun MobileConfirmLayout(
     items: List<MenuItem>,
-    menu: MainMenuFacade,
+    menu: MainMenuSurface,
     onBack: () -> Unit,
     onCheckout: () -> Unit
 ) {
@@ -128,7 +128,7 @@ private fun MobileConfirmLayout(
 @Composable
 private fun DesktopConfirmLayout(
     items: List<MenuItem>,
-    menu: MainMenuFacade,
+    menu: MainMenuSurface,
     onBack: () -> Unit,
     onCheckout: () -> Unit
 ) {
@@ -186,7 +186,7 @@ private fun DesktopConfirmLayout(
 @Composable
 private fun ConfirmItemList(
     items: List<MenuItem>,
-    menu: MainMenuFacade,
+    menu: MainMenuSurface,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -229,7 +229,7 @@ private fun ConfirmItemList(
 }
 
 @Composable
-private fun ConfirmSummaryCard(menu: MainMenuFacade) {
+private fun ConfirmSummaryCard(menu: MainMenuSurface) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -331,9 +331,9 @@ fun ConfirmOrderScreenMobilePreview() {
     val settingVM = remember { SettingViewModel() }
 
     CompositionLocalProvider(
-        LocalMenuVM provides MainMenuFacadeImpl(vm),
-        LocalProgressVM provides ProgressFacadeImpl(progressVM),
-        LocalSettingVM provides SettingFacadeImpl(settingVM)
+        LocalMenuVM provides MainMenuSurfaceImpl(vm),
+        LocalProgressVM provides ProgressSurfaceImpl(progressVM),
+        LocalSettingVM provides SettingSurfaceImpl(settingVM)
     ) {
         ConfirmOrderScreen()
     }
@@ -347,9 +347,9 @@ fun ConfirmOrderScreenDesktopPreview() {
     val settingVM = remember { SettingViewModel() }
 
     CompositionLocalProvider(
-        LocalMenuVM provides MainMenuFacadeImpl(vm),
-        LocalProgressVM provides ProgressFacadeImpl(progressVM),
-        LocalSettingVM provides SettingFacadeImpl(settingVM)
+        LocalMenuVM provides MainMenuSurfaceImpl(vm),
+        LocalProgressVM provides ProgressSurfaceImpl(progressVM),
+        LocalSettingVM provides SettingSurfaceImpl(settingVM)
     ) {
         ConfirmOrderScreen()
     }

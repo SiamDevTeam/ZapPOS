@@ -9,6 +9,8 @@ import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ViewList
+import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -28,14 +30,14 @@ import androidx.compose.ui.unit.dp
 import org.siamdev.zappos.ui.components.common.MaterialButton
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 import org.siamdev.zappos.ui.components.menu.MenuItemsContent
+import org.siamdev.zappos.ui.components.common.ViewModeToggle
 import org.siamdev.zappos.ui.components.menu.MenuViewMode
-import org.siamdev.zappos.ui.components.menu.MenuViewToggle
 import org.siamdev.zappos.ui.components.menu.SearchFilter
 import org.siamdev.zappos.ui.components.order.OrderItemCard
 import org.siamdev.zappos.ui.components.order.OrderPanel
 import org.siamdev.zappos.ui.components.product.ProductPanel
 import org.siamdev.zappos.ui.components.sheet.SlideBottomSheet
-import org.siamdev.zappos.ui.screens.setting.SettingFacadeImpl
+import org.siamdev.zappos.ui.screens.setting.SettingSurfaceImpl
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -66,6 +68,8 @@ fun MainMenuScreen(
         } else {
             MobileMenuLayout(
                 menu = menu,
+                viewMode = menu.viewMode,
+                onViewModeChange = { menu.setViewMode(it) },
                 onOpenDrawer = onOpenDrawer,
                 onCheckout = onCheckout
             )
@@ -76,7 +80,7 @@ fun MainMenuScreen(
 
 @Composable
 private fun DesktopMenuLayout(
-    menu: MainMenuFacade,
+    menu: MainMenuSurface,
     onOpenDrawer: () -> Unit,
     onCheckout: () -> Unit
 ) {
@@ -165,7 +169,9 @@ private fun DesktopMenuLayout(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MobileMenuLayout(
-    menu: MainMenuFacade,
+    menu: MainMenuSurface,
+    viewMode: MenuViewMode,
+    onViewModeChange: (MenuViewMode) -> Unit,
     onOpenDrawer: () -> Unit,
     onCheckout: () -> Unit
 ) {
@@ -178,7 +184,6 @@ private fun MobileMenuLayout(
     val isLoading = menu.isLoading
     val items = menu.items
 
-    var viewMode by remember { mutableStateOf(MenuViewMode.LIST) }
     var searchQuery by remember { mutableStateOf("") }
     var categoryFilter by remember { mutableStateOf<String?>(null) }
 
@@ -309,9 +314,11 @@ private fun MobileMenuLayout(
                     selectedCategory = categoryFilter,
                     onCategorySelect = { categoryFilter = it },
                     trailingContent = {
-                        MenuViewToggle(
-                            viewMode = viewMode,
-                            onViewModeChange = { viewMode = it })
+                        ViewModeToggle(
+                            options = listOf(Icons.AutoMirrored.Filled.ViewList, Icons.Default.GridView),
+                            selectedIndex = viewMode.ordinal,
+                            onSelect = { onViewModeChange(MenuViewMode.entries[it]) }
+                        )
                     },
                     modifier = Modifier.padding(horizontal = 20.dp).padding(top = 10.dp)
                 )
@@ -360,9 +367,9 @@ fun MainMenuScreenPreview() {
     val settingVM = remember { SettingViewModel() }
 
     CompositionLocalProvider(
-        LocalMenuVM provides MainMenuFacadeImpl(vm),
+        LocalMenuVM provides MainMenuSurfaceImpl(vm),
         LocalProductBrowserVM provides vm,
-        LocalSettingVM provides SettingFacadeImpl(settingVM)
+        LocalSettingVM provides SettingSurfaceImpl(settingVM)
     ) {
         MainMenuScreen()
     }
@@ -375,9 +382,9 @@ fun MainMenuScreenDesktopPreview() {
     val settingVM = remember { SettingViewModel() }
 
     CompositionLocalProvider(
-        LocalMenuVM provides MainMenuFacadeImpl(vm),
+        LocalMenuVM provides MainMenuSurfaceImpl(vm),
         LocalProductBrowserVM provides vm,
-        LocalSettingVM provides SettingFacadeImpl(settingVM)
+        LocalSettingVM provides SettingSurfaceImpl(settingVM)
     ) {
         MainMenuScreen()
     }

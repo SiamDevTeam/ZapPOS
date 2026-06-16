@@ -35,7 +35,7 @@ import org.siamdev.zappos.data.source.MasterEvent
 import org.siamdev.zappos.ui.screens.product.goods.sections.MonitorStockTabContent
 import org.siamdev.zappos.ui.screens.product.goods.sections.ProductDetailPanel
 import org.siamdev.zappos.ui.screens.product.goods.sections.ProductListPane
-import org.siamdev.zappos.ui.screens.setting.SettingFacadeImpl
+import org.siamdev.zappos.ui.screens.setting.SettingSurfaceImpl
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 
 /**
@@ -296,7 +296,7 @@ private fun EmptyDetailState() {
 @Preview(showBackground = true, widthDp = 411, heightDp = 891, name = "Mobile · List")
 @Composable
 private fun MobileListPreview() {
-    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
+    CompositionLocalProvider(LocalSettingVM provides SettingSurfaceImpl(SettingViewModel())) {
         MobileLayout(
             products = sampleProducts(),
             selectedId = null,
@@ -319,7 +319,7 @@ private fun MobileListPreview() {
 private fun MobileDetailProductPreview() {
     val products = sampleProducts()
     val selected = products.first()
-    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
+    CompositionLocalProvider(LocalSettingVM provides SettingSurfaceImpl(SettingViewModel())) {
         MobileLayout(
             products = products,
             selectedId = selected.id,
@@ -341,7 +341,7 @@ private fun MobileDetailProductPreview() {
 @Composable
 private fun MobileDetailMonitorPreview() {
     val selected = sampleProducts().first()
-    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
+    CompositionLocalProvider(LocalSettingVM provides SettingSurfaceImpl(SettingViewModel())) {
         Column(
             Modifier
                 .fillMaxSize()
@@ -362,7 +362,7 @@ private fun MobileDetailMonitorPreview() {
 @Composable
 private fun MobileDetailOutOfStockPreview() {
     val selected = sampleProducts().first { it.stockQty == 0 }
-    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
+    CompositionLocalProvider(LocalSettingVM provides SettingSurfaceImpl(SettingViewModel())) {
         Column(
             Modifier
                 .fillMaxSize()
@@ -377,22 +377,21 @@ private fun MobileDetailOutOfStockPreview() {
 @Preview(showBackground = true, widthDp = 1280, heightDp = 800, name = "Desktop · No Selection")
 @Composable
 private fun DesktopNoSelectionPreview() {
-    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
+    CompositionLocalProvider(LocalSettingVM provides SettingSurfaceImpl(SettingViewModel())) {
         ProductListScreen()
     }
 }
 
 @Preview(
     showBackground = true,
-    widthDp = 1280,
-    heightDp = 800,
+    widthDp = 1280, heightDp = 800,
     name = "Desktop · With Product Detail Selection"
 )
 @Composable
 private fun DesktopWithProductDetailSelectionPreview() {
     val products = sampleProducts()
     val selected = products.first()
-    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
+    CompositionLocalProvider(LocalSettingVM provides SettingSurfaceImpl(SettingViewModel())) {
         DesktopLayout(
             products = products,
             selectedId = selected.id,
@@ -406,15 +405,14 @@ private fun DesktopWithProductDetailSelectionPreview() {
 
 @Preview(
     showBackground = true,
-    widthDp = 1280,
-    heightDp = 800,
+    widthDp = 1280, heightDp = 800,
     name = "Desktop · With Monitor & Stock Selection"
 )
 @Composable
 private fun DesktopWithMonitorAndStockSelectionPreview() {
     val products = sampleProducts()
     val selected = products.first()
-    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
+    CompositionLocalProvider(LocalSettingVM provides SettingSurfaceImpl(SettingViewModel())) {
         DesktopLayout(
             products = products,
             selectedId = selected.id,

@@ -20,6 +20,7 @@ import kotlinx.serialization.Transient
 import kotlinx.serialization.json.Json
 import org.siamdev.zappos.cache.ImagePreloader
 import org.siamdev.zappos.cache.ThumbnailSection
+import org.siamdev.zappos.ui.components.menu.MenuViewMode
 import org.siamdev.zappos.ui.components.product.ProductBrowser
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -71,6 +72,7 @@ class MainMenuViewModel(
 
     data class State(
         val isLoading: Boolean = false,
+        val viewMode: MenuViewMode = MenuViewMode.LIST,
         val catalog: Catalog = Catalog(),
         val order: Order = Order()
     ) {
@@ -132,6 +134,10 @@ class MainMenuViewModel(
 
     private fun List<MenuItem>.updatedSelectedKeys(): List<Int> =
         filter { it.count > 0u }.map { it.id }
+
+    fun setViewMode(mode: MenuViewMode) {
+        _state.update { it.copy(viewMode = mode) }
+    }
 
     fun ensureLoaded() {
         if (!autoLoad) return

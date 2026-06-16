@@ -26,7 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.ui.components.common.PrimaryAmt
 import org.siamdev.zappos.ui.components.common.SecondaryAmt
 import org.siamdev.zappos.ui.screens.sale.checkout.formatDouble
-import org.siamdev.zappos.ui.screens.setting.SettingFacadeImpl
+import org.siamdev.zappos.ui.screens.setting.SettingSurfaceImpl
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 
 
@@ -183,7 +183,7 @@ private fun VatChip(rate: Float, isSelected: Boolean, onClick: () -> Unit) {
 @Composable
 fun OrderSummaryCardNoVatPreview() {
     val settingVM = remember { SettingViewModel() }
-    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(settingVM)) {
+    CompositionLocalProvider(LocalSettingVM provides SettingSurfaceImpl(settingVM)) {
         MaterialTheme {
             OrderSummaryCard(
                 subtotalFiat = "845.00",
@@ -200,7 +200,7 @@ fun OrderSummaryCardNoVatPreview() {
 @Composable
 fun OrderSummaryCard7PercentPreview() {
     val settingVM = remember { SettingViewModel() }
-    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(settingVM)) {
+    CompositionLocalProvider(LocalSettingVM provides SettingSurfaceImpl(settingVM)) {
         MaterialTheme {
             OrderSummaryCard(
                 subtotalFiat = "845.00",
@@ -217,7 +217,7 @@ fun OrderSummaryCard7PercentPreview() {
 @Composable
 fun OrderSummaryCard10PercentPreview() {
     val settingVM = remember { SettingViewModel() }
-    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(settingVM)) {
+    CompositionLocalProvider(LocalSettingVM provides SettingSurfaceImpl(settingVM)) {
         MaterialTheme {
             OrderSummaryCard(
                 subtotalFiat = "845.00",
@@ -234,7 +234,7 @@ fun OrderSummaryCard10PercentPreview() {
 @Composable
 fun SecondaryAmtCryptoPreview() {
     val settingVM = remember { SettingViewModel() }
-    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(settingVM)) {
+    CompositionLocalProvider(LocalSettingVM provides SettingSurfaceImpl(settingVM)) {
         MaterialTheme {
             Column(
                 modifier = Modifier.padding(16.dp),
@@ -258,7 +258,7 @@ fun SecondaryAmtCryptoPreview() {
 @Composable
 fun OrderSummaryCardInteractivePreview() {
     val settingVM = remember { SettingViewModel() }
-    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(settingVM)) {
+    CompositionLocalProvider(LocalSettingVM provides SettingSurfaceImpl(settingVM)) {
         MaterialTheme {
             var tax by remember { mutableFloatStateOf(7f) }
             OrderSummaryCard(

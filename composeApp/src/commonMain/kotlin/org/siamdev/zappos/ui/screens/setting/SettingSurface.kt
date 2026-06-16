@@ -17,7 +17,7 @@ import org.siamdev.zappos.data.source.local.FontItem
 import org.siamdev.zappos.data.source.local.ThemeItem
 
 @Stable
-interface SettingFacade {
+interface SettingSurface {
     val themes: List<ThemeItem>
     val activeTheme: ThemeItem?
     val fonts: List<FontItem>
@@ -38,7 +38,7 @@ interface SettingFacade {
     fun selectAccentColor(hex: String)
 }
 
-class SettingFacadeImpl(private val vm: SettingViewModel) : SettingFacade {
+class SettingSurfaceImpl(private val vm: SettingViewModel) : SettingSurface {
 
     private var _state by mutableStateOf(vm.state.value)
 

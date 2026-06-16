@@ -32,10 +32,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.ui.components.common.MaterialButton
 import org.siamdev.zappos.ui.components.order.OrderItemList
 import org.siamdev.zappos.ui.components.progress.ProgressBar
-import org.siamdev.zappos.ui.components.progress.ProgressFacadeImpl
+import org.siamdev.zappos.ui.components.progress.ProgressSurfaceImpl
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 import org.siamdev.zappos.ui.screens.sale.SaleOrderSteps
-import org.siamdev.zappos.ui.screens.setting.SettingFacadeImpl
+import org.siamdev.zappos.ui.screens.setting.SettingSurfaceImpl
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 import org.siamdev.zappos.ui.components.progress.ProgressViewModel
 
@@ -50,7 +50,7 @@ private val NumpadKeys = listOf(
 
 @Composable
 fun CashCalculatorScreen(
-    checkout: CheckoutFacade,
+    checkout: CheckoutSurface,
     onBack: () -> Unit = {}
 ) {
     BoxWithConstraints(
@@ -70,7 +70,7 @@ fun CashCalculatorScreen(
 
 @Composable
 private fun MobileCashLayout(
-    checkout: CheckoutFacade,
+    checkout: CheckoutSurface,
     onBack: () -> Unit
 ) {
     val progress = LocalProgressVM.current
@@ -128,7 +128,7 @@ private fun MobileCashLayout(
 
 @Composable
 private fun DesktopCashLayout(
-    checkout: CheckoutFacade,
+    checkout: CheckoutSurface,
     onBack: () -> Unit
 ) {
     val progress = LocalProgressVM.current
@@ -306,7 +306,7 @@ private fun ReceivedDisplay(
 }
 
 @Composable
-private fun ChangeRow(checkout: CheckoutFacade) {
+private fun ChangeRow(checkout: CheckoutSurface) {
     val setting = LocalSettingVM.current
     val primaryCode = setting.primaryCurrency?.code ?: "THB"
     val isChangeValid = checkout.isChangeValid
@@ -406,7 +406,7 @@ private fun QuickAmountRow(
 
 @Composable
 private fun CashNumpad(
-    checkout: CheckoutFacade,
+    checkout: CheckoutSurface,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -473,11 +473,11 @@ fun CashCalculatorMobilePreview() {
     val settingVM = remember { SettingViewModel() }
 
     CompositionLocalProvider(
-        LocalProgressVM provides ProgressFacadeImpl(progressVM),
-        LocalSettingVM provides SettingFacadeImpl(settingVM)
+        LocalProgressVM provides ProgressSurfaceImpl(progressVM),
+        LocalSettingVM provides SettingSurfaceImpl(settingVM)
     ) {
         MaterialTheme {
-            CashCalculatorScreen(checkout = CheckoutFacadeImpl(cashPreviewVM))
+            CashCalculatorScreen(checkout = CheckoutSurfaceImpl(cashPreviewVM))
         }
     }
 }
@@ -489,11 +489,11 @@ fun CashCalculatorDesktopPreview() {
     val settingVM = remember { SettingViewModel() }
 
     CompositionLocalProvider(
-        LocalProgressVM provides ProgressFacadeImpl(progressVM),
-        LocalSettingVM provides SettingFacadeImpl(settingVM)
+        LocalProgressVM provides ProgressSurfaceImpl(progressVM),
+        LocalSettingVM provides SettingSurfaceImpl(settingVM)
     ) {
         MaterialTheme {
-            CashCalculatorScreen(checkout = CheckoutFacadeImpl(cashPreviewVM))
+            CashCalculatorScreen(checkout = CheckoutSurfaceImpl(cashPreviewVM))
         }
     }
 }

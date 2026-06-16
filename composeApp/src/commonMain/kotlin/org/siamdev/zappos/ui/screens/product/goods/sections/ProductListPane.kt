@@ -38,7 +38,7 @@ import org.siamdev.zappos.ui.components.menu.DefaultProductCategories
 import org.siamdev.zappos.ui.components.menu.SearchFilter
 import org.siamdev.zappos.data.source.MasterEvent
 import org.siamdev.zappos.ui.screens.product.goods.sampleProducts
-import org.siamdev.zappos.ui.screens.setting.SettingFacadeImpl
+import org.siamdev.zappos.ui.screens.setting.SettingSurfaceImpl
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 import org.siamdev.zappos.utils.formatPrice
 
@@ -257,7 +257,7 @@ private fun ProductListItem(
 )
 @Composable
 private fun ProductListPanePreview() {
-    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
+    CompositionLocalProvider(LocalSettingVM provides SettingSurfaceImpl(SettingViewModel())) {
         ProductListPane(
             products = sampleProducts(),
             selectedId = null,
@@ -274,7 +274,7 @@ private fun ProductListPanePreview() {
 )
 @Composable
 private fun ProductListPaneSelectedPreview() {
-    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
+    CompositionLocalProvider(LocalSettingVM provides SettingSurfaceImpl(SettingViewModel())) {
         val products = sampleProducts()
         ProductListPane(
             products = products,

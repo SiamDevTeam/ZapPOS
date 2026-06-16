@@ -31,17 +31,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.ui.components.common.MaterialButton
 import org.siamdev.zappos.ui.components.order.OrderItemList
 import org.siamdev.zappos.ui.components.progress.ProgressBar
-import org.siamdev.zappos.ui.components.progress.ProgressFacadeImpl
+import org.siamdev.zappos.ui.components.progress.ProgressSurfaceImpl
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 import org.siamdev.zappos.ui.screens.sale.SaleOrderSteps
 import org.siamdev.zappos.utils.DateTimeUtils
-import org.siamdev.zappos.ui.screens.setting.SettingFacadeImpl
+import org.siamdev.zappos.ui.screens.setting.SettingSurfaceImpl
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 import org.siamdev.zappos.ui.components.progress.ProgressViewModel
 
 @Composable
 fun PaymentProcessingScreen(
-    checkout: CheckoutFacade,
+    checkout: CheckoutSurface,
     onConfirm: () -> Unit = {},
     onBack: () -> Unit = {}
 ) {
@@ -87,7 +87,7 @@ fun PaymentProcessingScreen(
 
 @Composable
 private fun MobileProcessingLayout(
-    checkout: CheckoutFacade,
+    checkout: CheckoutSurface,
     txId: String,
     title: String,
     showQr: Boolean,
@@ -237,7 +237,7 @@ private fun MobileProcessingLayout(
 
 @Composable
 private fun DesktopProcessingLayout(
-    checkout: CheckoutFacade,
+    checkout: CheckoutSurface,
     txId: String,
     title: String,
     showQr: Boolean,
@@ -366,7 +366,7 @@ private fun ProcessingQrSection(modifier: Modifier = Modifier) {
 
 @Composable
 private fun ProcessingDetailCard(
-    checkout: CheckoutFacade,
+    checkout: CheckoutSurface,
     txId: String,
     modifier: Modifier = Modifier
 ) {
@@ -522,10 +522,10 @@ fun PaymentProcessingMobilePreview() {
     val settingVM = remember { SettingViewModel() }
 
     CompositionLocalProvider(
-        LocalProgressVM provides ProgressFacadeImpl(progressVM),
-        LocalSettingVM provides SettingFacadeImpl(settingVM)
+        LocalProgressVM provides ProgressSurfaceImpl(progressVM),
+        LocalSettingVM provides SettingSurfaceImpl(settingVM)
     ) {
-        MaterialTheme { PaymentProcessingScreen(checkout = CheckoutFacadeImpl(processingPreviewVM)) }
+        MaterialTheme { PaymentProcessingScreen(checkout = CheckoutSurfaceImpl(processingPreviewVM)) }
     }
 }
 
@@ -536,9 +536,9 @@ fun PaymentProcessingDesktopPreview() {
     val settingVM = remember { SettingViewModel() }
 
     CompositionLocalProvider(
-        LocalProgressVM provides ProgressFacadeImpl(progressVM),
-        LocalSettingVM provides SettingFacadeImpl(settingVM)
+        LocalProgressVM provides ProgressSurfaceImpl(progressVM),
+        LocalSettingVM provides SettingSurfaceImpl(settingVM)
     ) {
-        MaterialTheme { PaymentProcessingScreen(checkout = CheckoutFacadeImpl(processingPreviewVM)) }
+        MaterialTheme { PaymentProcessingScreen(checkout = CheckoutSurfaceImpl(processingPreviewVM)) }
     }
 }
