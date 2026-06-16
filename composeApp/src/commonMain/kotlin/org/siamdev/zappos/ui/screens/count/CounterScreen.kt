@@ -85,7 +85,7 @@ fun CounterContent(
                 }
                 Spacer(Modifier.height(20.dp))
                 MaterialButton(
-                    modifier = Modifier.width(117.dp),
+                    modifier = Modifier.width(200.dp),
                     text = "reset count",
                     onClick = onReset
                 )

@@ -29,6 +29,9 @@ import org.siamdev.zappos.ui.screens.sale.checkout.CheckoutViewModel
 import org.siamdev.zappos.ui.screens.setting.SettingSurface
 import org.siamdev.zappos.ui.screens.setting.SettingSurfaceImpl
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
+import org.siamdev.zappos.ui.components.nav.NavigationSurface
+import org.siamdev.zappos.ui.components.nav.NavigationSurfaceImpl
+import org.siamdev.zappos.ui.components.nav.NavigationViewModel
 
 val LocalProductBrowserVM = staticCompositionLocalOf<ProductBrowser> {
     error("Missing ProductBrowser in composition tree")
@@ -54,6 +57,10 @@ val LocalProgressVM = staticCompositionLocalOf<ProgressSurface> {
     error("Missing ProvideViewModels in composition tree")
 }
 
+val LocalNavigationVM = staticCompositionLocalOf<NavigationSurface> {
+    error("Missing ProvideViewModels in composition tree")
+}
+
 @Composable
 inline fun <reified VM : ViewModel> viewModelOf(
     noinline provider: () -> VM
@@ -76,12 +83,14 @@ fun ProvideViewModels(content: @Composable () -> Unit) {
     val checkoutVM = viewModelOf { CheckoutViewModel() }
     val counterVM = viewModelOf { CounterViewModel() }
     val progressVM = viewModelOf { ProgressViewModel() }
+    val navigationVM = viewModelOf { NavigationViewModel() }
 
     val settingSurface = remember(settingVM) { SettingSurfaceImpl(settingVM) }
     val mainMenuSurface = remember(menuVM) { MainMenuSurfaceImpl(menuVM) }
     val checkoutSurface = remember(checkoutVM) { CheckoutSurfaceImpl(checkoutVM) }
     val counterSurface = remember(counterVM) { CounterSurfaceImpl(counterVM) }
     val progressSurface = remember(progressVM) { ProgressSurfaceImpl(progressVM) }
+    val navigationSurface = remember(navigationVM) { NavigationSurfaceImpl(navigationVM) }
 
     CompositionLocalProvider(
         LocalMenuVM provides mainMenuSurface,
@@ -90,6 +99,7 @@ fun ProvideViewModels(content: @Composable () -> Unit) {
         LocalCounterVM provides counterSurface,
         LocalSettingVM provides settingSurface,
         LocalProgressVM provides progressSurface,
+        LocalNavigationVM provides navigationSurface,
         content = content
     )
 }
