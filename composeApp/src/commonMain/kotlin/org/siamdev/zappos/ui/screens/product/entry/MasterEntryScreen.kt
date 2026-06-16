@@ -70,8 +70,6 @@ fun MasterEntryScreen(
             )
         }
 
-        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-
         BoxWithConstraints(modifier = Modifier.weight(1f)) {
             if (maxWidth >= 750.dp) {
                 EntryDesktopLayout(state)
@@ -93,7 +91,8 @@ fun MasterEntryScreen(
 @Composable
 private fun EntryMobileLayout(state: EntryFormState) {
     val tab = entryTabs[state.entryType.ordinal]
-    val catEntry = remember(state.category) { DefaultProductCategories.find { it.id == state.category } }
+    val catEntry =
+        remember(state.category) { DefaultProductCategories.find { it.id == state.category } }
     val categoryName = catEntry?.name ?: state.category.ifBlank { tab.label }
     val subName = catEntry?.subCategories?.find { it.id == state.subCategory }?.name
     val catIcon = catEntry?.icon ?: tab.icon ?: Icons.Default.ShoppingBag
@@ -123,10 +122,12 @@ private fun EntryMobileLayout(state: EntryFormState) {
                 item { InventorySection(state) }
                 item { OptionsSection(state) }
             }
+
             EntryType.SERVICE -> {
                 item { ScheduleCapacitySection(state) }
                 item { OptionsSection(state) }
             }
+
             EntryType.RENTAL -> item { ResourcesBookingSection(state) }
         }
 
@@ -138,7 +139,8 @@ private fun EntryMobileLayout(state: EntryFormState) {
 @Composable
 private fun EntryDesktopLayout(state: EntryFormState) {
     val tab = entryTabs[state.entryType.ordinal]
-    val catEntry = remember(state.category) { DefaultProductCategories.find { it.id == state.category } }
+    val catEntry =
+        remember(state.category) { DefaultProductCategories.find { it.id == state.category } }
     val categoryName = catEntry?.name ?: state.category.ifBlank { tab.label }
     val subName = catEntry?.subCategories?.find { it.id == state.subCategory }?.name
     val catIcon = catEntry?.icon ?: tab.icon ?: Icons.Default.ShoppingBag
@@ -182,10 +184,12 @@ private fun EntryDesktopLayout(state: EntryFormState) {
                         item { InventorySection(state) }
                         item { OptionsSection(state) }
                     }
+
                     EntryType.SERVICE -> {
                         item { ScheduleCapacitySection(state) }
                         item { OptionsSection(state) }
                     }
+
                     EntryType.RENTAL -> {
                         item { ResourcesBookingSection(state) }
                     }

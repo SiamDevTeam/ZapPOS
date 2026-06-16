@@ -12,8 +12,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import org.siamdev.zappos.LocalMenuVM
+import org.siamdev.zappos.LocalProductBrowserVM
 import org.siamdev.zappos.LocalSettingVM
-import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 import org.siamdev.zappos.ui.components.common.CurrencyCodeIcon
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,8 +25,6 @@ import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import org.siamdev.zappos.LocalMenuVM
-import org.siamdev.zappos.LocalProductBrowserVM
 import org.siamdev.zappos.ui.components.common.MaterialButton
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 import org.siamdev.zappos.ui.components.menu.MenuItemsContent
@@ -36,6 +35,8 @@ import org.siamdev.zappos.ui.components.order.OrderItemCard
 import org.siamdev.zappos.ui.components.order.OrderPanel
 import org.siamdev.zappos.ui.components.product.ProductPanel
 import org.siamdev.zappos.ui.components.sheet.SlideBottomSheet
+import org.siamdev.zappos.ui.screens.setting.SettingFacadeImpl
+import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,11 +44,10 @@ fun MainMenuScreen(
     onOpenDrawer: () -> Unit = {},
     onCheckout: () -> Unit = {}
 ) {
-    val viewModel = LocalMenuVM.current
-    val items = viewModel.items
+    val menu = LocalMenuVM.current
 
     LaunchedEffect(Unit) {
-        viewModel.ensureLoaded()
+        menu.ensureLoaded()
     }
 
     BoxWithConstraints(
@@ -59,15 +59,13 @@ fun MainMenuScreen(
 
         if (isDesktop) {
             DesktopMenuLayout(
-                viewModel = viewModel,
-                items = items,
+                menu = menu,
                 onOpenDrawer = onOpenDrawer,
                 onCheckout = onCheckout
             )
         } else {
             MobileMenuLayout(
-                viewModel = viewModel,
-                items = items,
+                menu = menu,
                 onOpenDrawer = onOpenDrawer,
                 onCheckout = onCheckout
             )
@@ -78,8 +76,7 @@ fun MainMenuScreen(
 
 @Composable
 private fun DesktopMenuLayout(
-    viewModel: MainMenuViewModel,
-    items: List<MenuItem>,
+    menu: MainMenuFacade,
     onOpenDrawer: () -> Unit,
     onCheckout: () -> Unit
 ) {
@@ -110,14 +107,12 @@ private fun DesktopMenuLayout(
                 modifier = Modifier.fillMaxSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Left: Product Panel
                 ProductPanel(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight()
                 )
 
-                // Draggable divider handle
                 Box(
                     modifier = Modifier
                         .width(18.dp)
@@ -148,17 +143,16 @@ private fun DesktopMenuLayout(
                     }
                 }
 
-                // Right: Order Panel
                 OrderPanel(
-                    selectedKeys = viewModel.selectedKeys,
-                    items = items,
-                    totalFiat = viewModel.totalFiat,
-                    totalSat = viewModel.totalSat,
-                    onAddItem = { viewModel.addItem(it) },
-                    onReduceItem = { viewModel.reduceItem(it) },
-                    onCountChange = { id, count -> viewModel.setItemCount(id, count) },
+                    selectedKeys = menu.selectedKeys,
+                    items = menu.items,
+                    totalFiat = menu.totalFiat,
+                    totalSat = menu.totalSat,
+                    onAddItem = { menu.addItem(it) },
+                    onReduceItem = { menu.reduceItem(it) },
+                    onCountChange = { id, count -> menu.setItemCount(id, count) },
                     onCheckout = onCheckout,
-                    onClearCart = { viewModel.clearAllItems() },
+                    onClearCart = { menu.clearAllItems() },
                     modifier = Modifier
                         .width(totalWidth * splitRatio)
                         .fillMaxHeight()
@@ -171,27 +165,29 @@ private fun DesktopMenuLayout(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MobileMenuLayout(
-    viewModel: MainMenuViewModel,
-    items: List<MenuItem>,
+    menu: MainMenuFacade,
     onOpenDrawer: () -> Unit,
     onCheckout: () -> Unit
 ) {
-    val settingVM = LocalSettingVM.current
-    val primaryCurrency by settingVM.primaryCurrency.collectAsState()
-    val secondaryCurrency by settingVM.secondaryCurrency.collectAsState()
-    val showSecondary by settingVM.showSecondaryCurrency.collectAsState()
-    val primaryCode = primaryCurrency?.code ?: "THB"
-    val secondaryCode = secondaryCurrency?.code ?: "SATS"
+    val setting = LocalSettingVM.current
+    val primaryCode = setting.primaryCurrency?.code ?: "THB"
+    val secondaryCode = setting.secondaryCurrency?.code ?: "SATS"
+    val showSecondary = setting.showSecondaryCurrency
+
+    val selectedKeys = menu.selectedKeys
+    val isLoading = menu.isLoading
+    val items = menu.items
+
     var viewMode by remember { mutableStateOf(MenuViewMode.LIST) }
     var searchQuery by remember { mutableStateOf("") }
     var categoryFilter by remember { mutableStateOf<String?>(null) }
 
-    val categories by remember {
+    val categories by remember(items) {
         derivedStateOf {
             items.map { it.category }.filter { it.isNotBlank() }.distinct().sorted()
         }
     }
-    val filteredItems by remember {
+    val filteredItems by remember(items) {
         derivedStateOf {
             items.filter { item ->
                 (categoryFilter == null || item.category == categoryFilter) &&
@@ -215,13 +211,13 @@ private fun MobileMenuLayout(
             sheetState = sheetState,
             sheetMaxHeight = 420.dp,
             topContent = {
-                viewModel.selectedKeys.forEach { key ->
+                selectedKeys.forEach { key ->
                     val item = items.first { it.id == key }
                     OrderItemCard(
                         item = item,
-                        onAddClick = { viewModel.addItem(item.id) },
-                        onReduceClick = { viewModel.reduceItem(item.id) },
-                        onCountChange = { viewModel.setItemCount(item.id, it) }
+                        onAddClick = { menu.addItem(item.id) },
+                        onReduceClick = { menu.reduceItem(item.id) },
+                        onCountChange = { menu.setItemCount(item.id, it) }
                     )
                 }
             },
@@ -248,7 +244,7 @@ private fun MobileMenuLayout(
                                 tint = MaterialTheme.colorScheme.onSurface
                             )
                             Text(
-                                viewModel.totalFiat,
+                                menu.totalFiat,
                                 style = MaterialTheme.typography.titleLarge,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
@@ -265,7 +261,7 @@ private fun MobileMenuLayout(
                                     tint = Color(0xFFFFB700)
                                 )
                                 Text(
-                                    viewModel.totalSat,
+                                    menu.totalSat,
                                     style = MaterialTheme.typography.titleMedium,
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
@@ -282,14 +278,14 @@ private fun MobileMenuLayout(
                         text = "Clear Cart",
                         buttonColor = Color.Transparent,
                         showBorder = true,
-                        onClick = { viewModel.clearAllItems() }
+                        onClick = { menu.clearAllItems() }
                     )
                     Spacer(Modifier.width(12.dp))
                     MaterialButton(
                         modifier = Modifier.weight(1f),
                         text = "Checkout",
                         iconStart = Icons.Default.ShoppingCart,
-                        enabled = viewModel.selectedKeys.isNotEmpty(),
+                        enabled = selectedKeys.isNotEmpty(),
                         onClick = { onCheckout() }
                     )
                 }
@@ -328,14 +324,13 @@ private fun MobileMenuLayout(
                     MenuItemsContent(
                         items = filteredItems,
                         viewMode = viewMode,
-                        isLoading = viewModel.isLoading,
-                        onRefresh = { viewModel.reloadProductsData() },
-                        onAddItem = { viewModel.addItem(it) },
-                        onReduceItem = { viewModel.reduceItem(it) },
+                        isLoading = isLoading,
+                        onRefresh = { menu.reloadProductsData() },
+                        onAddItem = { menu.addItem(it) },
+                        onReduceItem = { menu.reduceItem(it) },
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp)
                     )
-
                 }
             }
         }
@@ -351,12 +346,10 @@ private val previewItems = listOf(
     MenuItem(5, "", "Espresso", "50.00", "12,500", "coffee"),
     MenuItem(6, "", "Americano", "60.00", "15,000", "coffee"),
     MenuItem(7, "", "Cappuccino", "75.00", "18,750", "coffee", isRecommended = true),
-    MenuItem(8, "", "Flat White", "80.00", "20,000", "coffee"),
+    MenuItem(8, "", "Flat White", "80.00", "20,000", "coffee")
 )
 
-private fun previewVM() = MainMenuViewModel(
-    autoLoad = false
-).also {
+private fun previewVM() = MainMenuViewModel(autoLoad = false).also {
     it.loadItemsForPreview(previewItems)
 }
 
@@ -367,9 +360,9 @@ fun MainMenuScreenPreview() {
     val settingVM = remember { SettingViewModel() }
 
     CompositionLocalProvider(
-        LocalMenuVM provides vm,
+        LocalMenuVM provides MainMenuFacadeImpl(vm),
         LocalProductBrowserVM provides vm,
-        LocalSettingVM provides settingVM
+        LocalSettingVM provides SettingFacadeImpl(settingVM)
     ) {
         MainMenuScreen()
     }
@@ -382,9 +375,9 @@ fun MainMenuScreenDesktopPreview() {
     val settingVM = remember { SettingViewModel() }
 
     CompositionLocalProvider(
-        LocalMenuVM provides vm,
+        LocalMenuVM provides MainMenuFacadeImpl(vm),
         LocalProductBrowserVM provides vm,
-        LocalSettingVM provides settingVM
+        LocalSettingVM provides SettingFacadeImpl(settingVM)
     ) {
         MainMenuScreen()
     }

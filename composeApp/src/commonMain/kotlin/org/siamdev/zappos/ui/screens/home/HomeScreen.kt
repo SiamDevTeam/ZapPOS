@@ -16,8 +16,6 @@ import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,7 +46,11 @@ fun HomeScreen(
                 .fillMaxSize()
                 .windowInsetsPadding(WindowInsets.statusBars)
         ) {
-            WorkspaceHeader(title = "ZapPOS", subtitle = "Dashboard · home", onSegmentClick = onOpenDrawer)
+            WorkspaceHeader(
+                title = "ZapPOS",
+                subtitle = "Dashboard · home",
+                onSegmentClick = onOpenDrawer
+            )
 
             if (isDesktop) {
                 DesktopHomeContent(onNavigateToMenu = onNavigateToMenu)
@@ -61,8 +63,7 @@ fun HomeScreen(
 
 @Composable
 private fun MobileHomeContent(onNavigateToMenu: () -> Unit) {
-    val primaryCurrency by LocalSettingVM.current.primaryCurrency.collectAsState()
-    val primaryCode = primaryCurrency?.code ?: "THB"
+    val primaryCode = LocalSettingVM.current.primaryCurrency?.code ?: "THB"
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -101,8 +102,7 @@ private fun MobileHomeContent(onNavigateToMenu: () -> Unit) {
 
 @Composable
 private fun DesktopHomeContent(onNavigateToMenu: () -> Unit) {
-    val primaryCurrency by LocalSettingVM.current.primaryCurrency.collectAsState()
-    val primaryCode = primaryCurrency?.code ?: "THB"
+    val primaryCode = LocalSettingVM.current.primaryCurrency?.code ?: "THB"
     Row(
         modifier = Modifier
             .fillMaxSize()

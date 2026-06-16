@@ -15,8 +15,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -92,8 +90,8 @@ fun PrimaryAmt(
     tint: Color = Color.Unspecified,
     color: Color = MaterialTheme.colorScheme.onSurface
 ) {
-    val primaryCurrency by LocalSettingVM.current.primaryCurrency.collectAsState()
-    val code = primaryCurrency?.code ?: "THB"
+    val setting = LocalSettingVM.current
+    val code = setting.primaryCurrency?.code ?: "THB"
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(3.dp)
@@ -109,12 +107,10 @@ fun SecondaryAmt(
     iconSize: Dp,
     textStyle: TextStyle
 ) {
-    val settingVM = LocalSettingVM.current
-    val showSecondary by settingVM.showSecondaryCurrency.collectAsState()
-    if (!showSecondary) return
+    val setting = LocalSettingVM.current
+    if (!setting.showSecondaryCurrency) return
 
-    val secondaryCurrency by settingVM.secondaryCurrency.collectAsState()
-    val code = secondaryCurrency?.code ?: "SATS"
+    val code = setting.secondaryCurrency?.code ?: "SATS"
     val cryptoColor = MaterialTheme.colorScheme.primary
 
     Row(

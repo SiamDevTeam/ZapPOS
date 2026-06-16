@@ -4,22 +4,25 @@
  */
 package org.siamdev.zappos.ui.components.progress
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class ProgressViewModel : ViewModel() {
 
-    var steps by mutableStateOf<List<String>>(emptyList())
-        private set
+    data class State(
+        val steps: List<String> = emptyList(),
+        val currentStep: Int = 0
+    )
 
-    var currentStep by mutableIntStateOf(0)
-        private set
+    sealed class SideEffect
+
+    private val _state = MutableStateFlow(State())
+    val state: StateFlow<State> = _state.asStateFlow()
 
     fun setup(steps: List<String>, currentStep: Int) {
-        this.steps = steps
-        this.currentStep = currentStep
+        _state.update { it.copy(steps = steps, currentStep = currentStep) }
     }
 }

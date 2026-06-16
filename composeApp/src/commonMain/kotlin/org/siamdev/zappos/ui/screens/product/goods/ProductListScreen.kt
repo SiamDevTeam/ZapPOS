@@ -35,6 +35,7 @@ import org.siamdev.zappos.data.source.MasterEvent
 import org.siamdev.zappos.ui.screens.product.goods.sections.MonitorStockTabContent
 import org.siamdev.zappos.ui.screens.product.goods.sections.ProductDetailPanel
 import org.siamdev.zappos.ui.screens.product.goods.sections.ProductListPane
+import org.siamdev.zappos.ui.screens.setting.SettingFacadeImpl
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 
 /**
@@ -119,7 +120,11 @@ private fun DesktopLayout(
     var splitRatio by remember { mutableStateOf(0.30f) }
 
     Column(Modifier.fillMaxSize()) {
-        WorkspaceHeader(title = "Products List", subtitle = "Inventory · catalog", onSegmentClick = onOpenDrawer)
+        WorkspaceHeader(
+            title = "Products List",
+            subtitle = "Inventory · catalog",
+            onSegmentClick = onOpenDrawer
+        )
 
         BoxWithConstraints(
             modifier =
@@ -137,7 +142,11 @@ private fun DesktopLayout(
                             .fillMaxHeight()
                             .clip(RoundedCornerShape(16.dp))
                             .background(MaterialTheme.colorScheme.surface)
-                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp)),
+                            .border(
+                                1.dp,
+                                MaterialTheme.colorScheme.outlineVariant,
+                                RoundedCornerShape(16.dp)
+                            ),
                 ) {
                     ProductListPane(
                         products = products,
@@ -159,7 +168,8 @@ private fun DesktopLayout(
                                 val totalPx = totalWidth.toPx()
                                 detectHorizontalDragGestures { change, dragAmount ->
                                     change.consume()
-                                    splitRatio = (splitRatio + dragAmount / totalPx).coerceIn(0.20f, 0.55f)
+                                    splitRatio =
+                                        (splitRatio + dragAmount / totalPx).coerceIn(0.20f, 0.55f)
                                 }
                             },
                     contentAlignment = Alignment.Center,
@@ -186,7 +196,11 @@ private fun DesktopLayout(
                             .fillMaxHeight()
                             .clip(RoundedCornerShape(16.dp))
                             .background(MaterialTheme.colorScheme.surface)
-                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp)),
+                            .border(
+                                1.dp,
+                                MaterialTheme.colorScheme.outlineVariant,
+                                RoundedCornerShape(16.dp)
+                            ),
                 ) {
                     if (selected != null) {
                         ProductDetailPanel(
@@ -222,10 +236,10 @@ private fun MobileLayout(
         transitionSpec = {
             if (targetState != null) {
                 slideInHorizontally { it } + fadeIn() togetherWith
-                    slideOutHorizontally { -it / 3 } + fadeOut()
+                        slideOutHorizontally { -it / 3 } + fadeOut()
             } else {
                 slideInHorizontally { -it / 3 } + fadeIn() togetherWith
-                    slideOutHorizontally { it } + fadeOut()
+                        slideOutHorizontally { it } + fadeOut()
             }
         },
     ) { current ->
@@ -282,7 +296,7 @@ private fun EmptyDetailState() {
 @Preview(showBackground = true, widthDp = 411, heightDp = 891, name = "Mobile · List")
 @Composable
 private fun MobileListPreview() {
-    CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
         MobileLayout(
             products = sampleProducts(),
             selectedId = null,
@@ -295,12 +309,17 @@ private fun MobileListPreview() {
     }
 }
 
-@Preview(showBackground = true, widthDp = 411, heightDp = 891, name = "Mobile · Detail – Product Detail")
+@Preview(
+    showBackground = true,
+    widthDp = 411,
+    heightDp = 891,
+    name = "Mobile · Detail – Product Detail"
+)
 @Composable
 private fun MobileDetailProductPreview() {
     val products = sampleProducts()
     val selected = products.first()
-    CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
         MobileLayout(
             products = products,
             selectedId = selected.id,
@@ -313,11 +332,16 @@ private fun MobileDetailProductPreview() {
     }
 }
 
-@Preview(showBackground = true, widthDp = 411, heightDp = 891, name = "Mobile · Detail – Monitor & Stock")
+@Preview(
+    showBackground = true,
+    widthDp = 411,
+    heightDp = 891,
+    name = "Mobile · Detail – Monitor & Stock"
+)
 @Composable
 private fun MobileDetailMonitorPreview() {
     val selected = sampleProducts().first()
-    CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
         Column(
             Modifier
                 .fillMaxSize()
@@ -329,11 +353,16 @@ private fun MobileDetailMonitorPreview() {
     }
 }
 
-@Preview(showBackground = true, widthDp = 411, heightDp = 891, name = "Mobile · Detail – Out of Stock")
+@Preview(
+    showBackground = true,
+    widthDp = 411,
+    heightDp = 891,
+    name = "Mobile · Detail – Out of Stock"
+)
 @Composable
 private fun MobileDetailOutOfStockPreview() {
     val selected = sampleProducts().first { it.stockQty == 0 }
-    CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
         Column(
             Modifier
                 .fillMaxSize()
@@ -348,17 +377,22 @@ private fun MobileDetailOutOfStockPreview() {
 @Preview(showBackground = true, widthDp = 1280, heightDp = 800, name = "Desktop · No Selection")
 @Composable
 private fun DesktopNoSelectionPreview() {
-    CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
         ProductListScreen()
     }
 }
 
-@Preview(showBackground = true, widthDp = 1280, heightDp = 800, name = "Desktop · With Product Detail Selection")
+@Preview(
+    showBackground = true,
+    widthDp = 1280,
+    heightDp = 800,
+    name = "Desktop · With Product Detail Selection"
+)
 @Composable
 private fun DesktopWithProductDetailSelectionPreview() {
     val products = sampleProducts()
     val selected = products.first()
-    CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
         DesktopLayout(
             products = products,
             selectedId = selected.id,
@@ -370,12 +404,17 @@ private fun DesktopWithProductDetailSelectionPreview() {
     }
 }
 
-@Preview(showBackground = true, widthDp = 1280, heightDp = 800, name = "Desktop · With Monitor & Stock Selection")
+@Preview(
+    showBackground = true,
+    widthDp = 1280,
+    heightDp = 800,
+    name = "Desktop · With Monitor & Stock Selection"
+)
 @Composable
 private fun DesktopWithMonitorAndStockSelectionPreview() {
     val products = sampleProducts()
     val selected = products.first()
-    CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
         DesktopLayout(
             products = products,
             selectedId = selected.id,

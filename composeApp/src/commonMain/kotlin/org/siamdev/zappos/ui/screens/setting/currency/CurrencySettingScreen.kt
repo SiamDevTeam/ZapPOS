@@ -31,12 +31,12 @@ import zappos.composeapp.generated.resources.sat_unit
 
 @Composable
 fun CurrencySettingScreen(onNavigateBack: () -> Unit = {}) {
-    val viewModel     = LocalSettingVM.current
-    val currencies    by viewModel.currencies.collectAsState()
-    val primaryCcy    by viewModel.primaryCurrency.collectAsState()
-    val secondaryCcy  by viewModel.secondaryCurrency.collectAsState()
-    val showSecondary by viewModel.showSecondaryCurrency.collectAsState()
-    val isLoading     by viewModel.isLoading.collectAsState()
+    val setting = LocalSettingVM.current
+    val currencies = setting.currencyOptions
+    val primaryCcy = setting.primaryCurrency
+    val secondaryCcy = setting.secondaryCurrency
+    val showSecondary = setting.showSecondaryCurrency
+    val isLoading = setting.isLoading
 
     Column(
         modifier = Modifier
@@ -44,7 +44,11 @@ fun CurrencySettingScreen(onNavigateBack: () -> Unit = {}) {
             .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(WindowInsets.systemBars)
     ) {
-        WorkspaceHeader(title = "Currency", subtitle = "Settings · currency", onNavigateBack = onNavigateBack)
+        WorkspaceHeader(
+            title = "Currency",
+            subtitle = "Settings · currency",
+            onNavigateBack = onNavigateBack
+        )
 
         if (isLoading) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -60,13 +64,13 @@ fun CurrencySettingScreen(onNavigateBack: () -> Unit = {}) {
         ) {
             item {
                 SettingsCard(
-                    currencies    = currencies,
-                    primaryCcy    = primaryCcy,
-                    secondaryCcy  = secondaryCcy,
+                    currencies = currencies,
+                    primaryCcy = primaryCcy,
+                    secondaryCcy = secondaryCcy,
                     showSecondary = showSecondary,
-                    onSelectPrimary   = { viewModel.selectPrimaryCurrency(it) },
-                    onSelectSecondary = { viewModel.selectSecondaryCurrency(it) },
-                    onToggleSecondary = { viewModel.toggleSecondaryCurrency(it) }
+                    onSelectPrimary = { setting.selectPrimaryCurrency(it) },
+                    onSelectSecondary = { setting.selectSecondaryCurrency(it) },
+                    onToggleSecondary = { setting.toggleSecondaryCurrency(it) }
                 )
             }
         }
@@ -95,7 +99,7 @@ private fun SettingsCard(
                 CurrencyCard(
                     currency = ccy,
                     isActive = ccy.id == primaryCcy?.id,
-                    onClick  = { onSelectPrimary(ccy.id) }
+                    onClick = { onSelectPrimary(ccy.id) }
                 )
             }
         }
@@ -140,7 +144,7 @@ private fun SettingsCard(
                         CurrencyCard(
                             currency = ccy,
                             isActive = ccy.id == secondaryCcy?.id,
-                            onClick  = { onSelectSecondary(ccy.id) }
+                            onClick = { onSelectSecondary(ccy.id) }
                         )
                     }
                 }
@@ -182,7 +186,7 @@ private fun CurrencyCard(currency: CurrencyItem, isActive: Boolean, onClick: () 
             .border(
                 width = 1.dp,
                 color = if (isActive) MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
-                        else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f),
+                else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f),
                 shape = RoundedCornerShape(12.dp)
             )
             .background(
@@ -220,8 +224,8 @@ private fun CurrencyCard(currency: CurrencyItem, isActive: Boolean, onClick: () 
 private fun CurrencyIcon(code: String, isActive: Boolean) {
     val bg = when (code) {
         "BTC" -> Color.Transparent
-        else  -> if (isActive) MaterialTheme.colorScheme.primary
-                 else MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+        else -> if (isActive) MaterialTheme.colorScheme.primary
+        else MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
     }
     Box(
         modifier = Modifier
@@ -231,12 +235,18 @@ private fun CurrencyIcon(code: String, isActive: Boolean) {
         contentAlignment = Alignment.Center
     ) {
         when (code) {
-            "BTC"  -> Icon(painterResource(Res.drawable.bitcoin_unit), null,
-                tint = Color.Unspecified, modifier = Modifier.size(38.dp))
-            "SATS" -> Icon(painterResource(Res.drawable.sat_unit), null,
+            "BTC" -> Icon(
+                painterResource(Res.drawable.bitcoin_unit), null,
+                tint = Color.Unspecified, modifier = Modifier.size(38.dp)
+            )
+
+            "SATS" -> Icon(
+                painterResource(Res.drawable.sat_unit), null,
                 tint = if (isActive) Color.White else Color(0xFFFFB700),
-                modifier = Modifier.size(22.dp))
-            else   -> CurrencyCodeIcon(
+                modifier = Modifier.size(22.dp)
+            )
+
+            else -> CurrencyCodeIcon(
                 code = code,
                 modifier = Modifier.size(22.dp),
                 tint = if (isActive) Color.White else MaterialTheme.colorScheme.primary

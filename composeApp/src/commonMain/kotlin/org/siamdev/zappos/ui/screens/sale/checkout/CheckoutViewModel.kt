@@ -4,10 +4,11 @@
  */
 package org.siamdev.zappos.ui.screens.sale.checkout
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 enum class PaymentMethod(val label: String) {
     NFC_LIGHTNING("NFC Lightning Card"),
@@ -29,131 +30,144 @@ data class CheckoutItem(
 
 class CheckoutViewModel : ViewModel() {
 
-    var orderItems by mutableStateOf<List<CheckoutItem>>(emptyList())
-        private set
-
-    var totalFiat by mutableStateOf("0.00")
-        private set
-
-    var totalSat by mutableStateOf("0")
-        private set
-
-    var step by mutableStateOf(CheckoutStep.ORDER)
-        private set
-
-    var selectedMethod by mutableStateOf<PaymentMethod?>(null)
-        private set
-
-    var receivedAmount by mutableStateOf("")
-        private set
-
-    var taxPercent by mutableStateOf(7f)
-        private set
-
-    fun syncFromMenu(
-        items: List<CheckoutItem>,
-        fiat: String,
-        sat: String
+    data class State(
+        val step: CheckoutStep = CheckoutStep.ORDER,
+        val order: Order = Order(),
+        val payment: Payment = Payment()
     ) {
-        orderItems = items
-        totalFiat = fiat
-        totalSat = sat
+        data class Order(
+            val items: List<CheckoutItem> = emptyList(),
+            val totalFiat: String = "0.00",
+            val totalSat: String = "0",
+            val taxPercent: Float = 7f,
+            val grandTotalFiat: String = "0.00",
+            val grandTotalSat: String = "0"
+        )
+
+        data class Payment(
+            val selectedMethod: PaymentMethod? = null,
+            val receivedAmount: String = "",
+            val changeAmount: Double = 0.0,
+            val isChangeValid: Boolean = false
+        )
+    }
+
+    sealed class SideEffect
+
+    private val _state = MutableStateFlow(State())
+    val state: StateFlow<State> = _state.asStateFlow()
+
+    private fun State.recomputed(): State {
+        val subtotalFiat = order.totalFiat.replace(",", "").toDoubleOrNull() ?: 0.0
+        val subtotalSat = order.totalSat.replace(",", "").toDoubleOrNull() ?: 0.0
+        val tax = order.taxPercent / 100f
+        val received = payment.receivedAmount.replace(",", "").toDoubleOrNull() ?: 0.0
+        val change = (received - subtotalFiat).coerceAtLeast(0.0)
+        return copy(
+            order = order.copy(
+                grandTotalFiat = formatDouble(subtotalFiat * (1 + tax)),
+                grandTotalSat = formatDouble(subtotalSat * (1 + tax))
+            ),
+            payment = payment.copy(
+                changeAmount = change,
+                isChangeValid = received >= subtotalFiat
+            )
+        )
+    }
+
+    fun syncFromMenu(items: List<CheckoutItem>, fiat: String, sat: String) {
+        _state.update {
+            it.copy(
+                order = it.order.copy(items = items, totalFiat = fiat, totalSat = sat)
+            ).recomputed()
+        }
     }
 
     fun setTax(percent: Float) {
-        taxPercent = percent
+        _state.update { it.copy(order = it.order.copy(taxPercent = percent)).recomputed() }
     }
 
-    val grandTotalFiat: String
-        get() {
-            val subtotal = totalFiat.replace(",", "").toDoubleOrNull() ?: 0.0
-            return formatDouble(subtotal * (1 + taxPercent / 100))
-        }
-
-    val grandTotalSat: String
-        get() {
-            val subtotal = totalSat.replace(",", "").toDoubleOrNull() ?: 0.0
-            return formatDouble(subtotal * (1 + taxPercent / 100))
-        }
-
-    val changeAmount: Double
-        get() {
-            val total = totalFiat.replace(",", "").toDoubleOrNull() ?: 0.0
-            val received = receivedAmount.replace(",", "").toDoubleOrNull() ?: 0.0
-            return (received - total).coerceAtLeast(0.0)
-        }
-
-    val isChangeValid: Boolean
-        get() {
-            val total = totalFiat.replace(",", "").toDoubleOrNull() ?: 0.0
-            val received = receivedAmount.replace(",", "").toDoubleOrNull() ?: 0.0
-            return received >= total
-        }
+    fun formatChange(): String = formatDouble(_state.value.payment.changeAmount)
 
     fun openSelectPayment() {
-        step = CheckoutStep.SELECT_PAYMENT
+        _state.update { it.copy(step = CheckoutStep.SELECT_PAYMENT) }
     }
 
     fun backToOrder() {
-        step = CheckoutStep.ORDER
+        _state.update { it.copy(step = CheckoutStep.ORDER) }
     }
 
     fun backToSelectPayment() {
-        step = CheckoutStep.SELECT_PAYMENT
+        _state.update { it.copy(step = CheckoutStep.SELECT_PAYMENT) }
     }
 
     fun selectMethod(method: PaymentMethod) {
-        selectedMethod = method
+        _state.update { it.copy(payment = it.payment.copy(selectedMethod = method)) }
     }
 
     fun confirmPayment() {
-        val method = selectedMethod ?: return
-        step = if (method == PaymentMethod.CASH) CheckoutStep.CASH_CALCULATOR
-        else CheckoutStep.PROCESSING
+        val method = _state.value.payment.selectedMethod ?: return
+        val nextStep =
+            if (method == PaymentMethod.CASH) CheckoutStep.CASH_CALCULATOR else CheckoutStep.PROCESSING
+        _state.update { it.copy(step = nextStep) }
     }
 
     fun appendCashDigit(digit: String) {
-        if (digit == "." && receivedAmount.contains(".")) return
-        receivedAmount = when {
-            digit != "." && (receivedAmount == "0" || receivedAmount.isEmpty()) -> digit
-            else -> receivedAmount + digit
+        val current = _state.value.payment.receivedAmount
+        if (digit == "." && current.contains(".")) return
+        val next = when {
+            digit != "." && (current == "0" || current.isEmpty()) -> digit
+            else -> current + digit
         }
+        _state.update { it.copy(payment = it.payment.copy(receivedAmount = next)).recomputed() }
     }
 
     fun deleteCashDigit() {
-        receivedAmount = receivedAmount.dropLast(1)
+        val next = _state.value.payment.receivedAmount.dropLast(1)
+        _state.update { it.copy(payment = it.payment.copy(receivedAmount = next)).recomputed() }
     }
 
     fun clearReceivedAmount() {
-        receivedAmount = ""
+        _state.update { it.copy(payment = it.payment.copy(receivedAmount = "")).recomputed() }
     }
 
     fun appendQuickAmount(amount: String) {
         val add = amount.toDoubleOrNull() ?: return
-        val current = receivedAmount.replace(",", "").toDoubleOrNull() ?: 0.0
+        val current = _state.value.payment.receivedAmount.replace(",", "").toDoubleOrNull() ?: 0.0
         val result = current + add
-        receivedAmount = if (result == result.toLong().toDouble()) {
+        val next = if (result == result.toLong().toDouble()) {
             result.toLong().toString()
         } else {
             val intPart = result.toLong()
             val decPart = ((result - intPart) * 100).toLong()
             "$intPart.${decPart.toString().padStart(2, '0')}"
         }
+        _state.update { it.copy(payment = it.payment.copy(receivedAmount = next)).recomputed() }
     }
 
     fun confirmCash() {
-        if (isChangeValid) step = CheckoutStep.PROCESSING
+        if (_state.value.payment.isChangeValid) {
+            _state.update { it.copy(step = CheckoutStep.PROCESSING) }
+        }
     }
 
     fun confirmProcessing() {
-        step = CheckoutStep.SUCCESS
+        _state.update { it.copy(step = CheckoutStep.SUCCESS) }
     }
 
     fun reset() {
-        step = CheckoutStep.ORDER
-        selectedMethod = null
-        receivedAmount = ""
+        _state.update {
+            it.copy(
+                step = CheckoutStep.ORDER,
+                payment = it.payment.copy(selectedMethod = null, receivedAmount = "")
+            ).recomputed()
+        }
     }
+}
 
-    fun formatChange(): String = formatDouble(changeAmount)
+internal fun formatDouble(value: Double): String {
+    val intPart = value.toLong()
+    val decPart = ((value - intPart) * 100).toInt()
+    val intStr = intPart.toString().reversed().chunked(3).joinToString(",").reversed()
+    return "$intStr.${decPart.toString().padStart(2, '0')}"
 }

@@ -51,13 +51,13 @@ private val AllAccentColors: List<Color> = listOf(YellowPrimary) + MapLikeColors
 
 @Composable
 fun AppearanceSettingScreen(onNavigateBack: () -> Unit = {}) {
-    val viewModel = LocalSettingVM.current
-    val themes by viewModel.themes.collectAsState()
-    val activeTheme by viewModel.activeTheme.collectAsState()
-    val fonts by viewModel.fonts.collectAsState()
-    val activeFont by viewModel.activeFont.collectAsState()
-    val accentColorHex by viewModel.accentColor.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
+    val setting = LocalSettingVM.current
+    val themes = setting.themes
+    val activeTheme = setting.activeTheme
+    val fonts = setting.fonts
+    val activeFont = setting.activeFont
+    val accentColorHex = setting.accentColorHex
+    val isLoading = setting.isLoading
 
     val activeAccentColor = accentColorHex?.let { colorFromHex(it) } ?: YellowPrimary
 
@@ -67,7 +67,11 @@ fun AppearanceSettingScreen(onNavigateBack: () -> Unit = {}) {
                 .background(MaterialTheme.colorScheme.background)
                 .windowInsetsPadding(WindowInsets.systemBars)
     ) {
-        WorkspaceHeader(title = "Appearance", subtitle = "Settings · appearance", onNavigateBack = onNavigateBack)
+        WorkspaceHeader(
+            title = "Appearance",
+            subtitle = "Settings · appearance",
+            onNavigateBack = onNavigateBack
+        )
 
         if (isLoading) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -82,9 +86,9 @@ fun AppearanceSettingScreen(onNavigateBack: () -> Unit = {}) {
                     themes = themes, activeTheme = activeTheme,
                     fonts = fonts, activeFont = activeFont,
                     activeAccentColor = activeAccentColor,
-                    onSelectTheme = { viewModel.selectTheme(it) },
-                    onSelectFont = { viewModel.selectFont(it) },
-                    onSelectColor = { viewModel.selectAccentColor(it.toHex()) }
+                    onSelectTheme = { setting.selectTheme(it) },
+                    onSelectFont = { setting.selectFont(it) },
+                    onSelectColor = { setting.selectAccentColor(it.toHex()) }
                 )
             } else {
                 LazyColumn(
@@ -97,9 +101,9 @@ fun AppearanceSettingScreen(onNavigateBack: () -> Unit = {}) {
                             themes = themes, activeTheme = activeTheme,
                             fonts = fonts, activeFont = activeFont,
                             activeAccentColor = activeAccentColor,
-                            onSelectTheme = { viewModel.selectTheme(it) },
-                            onSelectFont = { viewModel.selectFont(it) },
-                            onSelectColor = { viewModel.selectAccentColor(it.toHex()) }
+                            onSelectTheme = { setting.selectTheme(it) },
+                            onSelectFont = { setting.selectFont(it) },
+                            onSelectColor = { setting.selectAccentColor(it.toHex()) }
                         )
                     }
                 }
@@ -193,7 +197,11 @@ private fun DesktopSettingsLayout(
                 .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp))
         ) {
             SettingSection(label = "THEME") {
-                ThemeSegmentedControl(themes = themes, activeTheme = activeTheme, onSelect = onSelectTheme)
+                ThemeSegmentedControl(
+                    themes = themes,
+                    activeTheme = activeTheme,
+                    onSelect = onSelectTheme
+                )
             }
             SectionDivider()
             SettingSection(label = "FONT SIZE") {

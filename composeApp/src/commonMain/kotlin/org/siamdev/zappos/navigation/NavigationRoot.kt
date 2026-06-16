@@ -108,11 +108,11 @@ fun NavigationRoot(
         modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
         transitionSpec = {
             (slideInHorizontally(tween(300)) { it / 8 } + fadeIn(tween(300))) togetherWith
-            (slideOutHorizontally(tween(300)) { -it / 8 } + fadeOut(tween(300)))
+                    (slideOutHorizontally(tween(300)) { -it / 8 } + fadeOut(tween(300)))
         },
         popTransitionSpec = {
             (slideInHorizontally(tween(300)) { -it / 8 } + fadeIn(tween(300))) togetherWith
-            (slideOutHorizontally(tween(300)) { it / 8 } + fadeOut(tween(300)))
+                    (slideOutHorizontally(tween(300)) { it / 8 } + fadeOut(tween(300)))
         },
         entryDecorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator(),
@@ -122,170 +122,170 @@ fun NavigationRoot(
             NavEntry(key) {
                 when (key) {
 
-                        // Splash
-                        is Route.Splash -> SplashScreen(
-                            viewModel = splashViewModel
-                        ) {
-                            if (splashViewModel.isReady.value) {
-                                backStack.add(Route.Login)
-                            }
+                    // Splash
+                    is Route.Splash -> SplashScreen(
+                        viewModel = splashViewModel
+                    ) {
+                        if (splashViewModel.state.value.isReady) {
+                            backStack.add(Route.Login)
                         }
-
-                        // Login
-                        is Route.Login -> {
-                            LoginScreen(
-                                onLoginNostr = { backStack.add(Route.NostrLogin) },
-                                onLoginAnonymous = { backStack.add(Route.Home) }
-                            )
-                        }
-
-                        // Nostr Login
-                        is Route.NostrLogin -> {
-                            NostrLoginScreen(
-                                onBack = { backStack.removeAt(backStack.lastIndex) },
-                                onLoginSuccess = { backStack.add(Route.Home) }
-                            )
-                        }
-
-                        // Logout
-                        is Route.Logout -> {
-                            LaunchedEffect(Unit) {
-                                backStack.clear()
-                                backStack.add(Route.Login)
-                            }
-                        }
-
-                        // Home
-                        is Route.Home -> NavConfig(
-                            backStack = backStack
-                        ) { navActions, openDrawer ->
-                            HomeScreen(
-                                onOpenDrawer = openDrawer,
-                                onNavigateToMenu = { navActions.to(Route.Menu) }
-                            )
-                        }
-
-                        // Menu
-                        is Route.Menu -> NavConfig(
-                            backStack = backStack
-                        ) { navActions, openDrawer ->
-                            MainMenuScreen(
-                                onOpenDrawer = openDrawer,
-                                onCheckout = { navActions.to(Route.ConfirmOrder) }
-                            )
-                        }
-
-                        // Confirm Order
-                        is Route.ConfirmOrder -> NavConfig(
-                            backStack = backStack
-                        ) { navActions, _ ->
-                            ConfirmOrderScreen(
-                                onBack = { navActions.back() },
-                                onCheckout = { navActions.to(Route.Checkout) }
-                            )
-                        }
-
-                        // Product Entry Master
-                        is Route.ProductList -> NavConfig(
-                            backStack = backStack,
-                            enableDrawer = true
-                        ) { navActions, openDrawer ->
-                            ProductListScreen(
-                                onOpenDrawer = openDrawer,
-                                onEditProduct = { id -> navActions.to(Route.ProductEntryMaster(id)) },
-                                onNewProduct = { navActions.to(Route.ProductEntryMaster()) },
-                            )
-                        }
-
-                        is Route.ProductEntryMaster -> NavConfig(
-                            backStack = backStack,
-                            enableDrawer = true
-                        ) { navActions, openDrawer ->
-                            val prevRoute = backStack.toList().dropLast(1).lastOrNull()
-                            MasterEntryScreen(
-                                productId = key.productId,
-                                onNavigateBack = { navActions.back() },
-                                onOpenDrawer   = openDrawer,
-                                onSave         = { navActions.back() },
-                                showBackButton = prevRoute is Route.ProductList
-                            )
-                        }
-
-                        // Checkout
-                        is Route.Checkout -> NavConfig(
-                            backStack = backStack
-                        ) { navActions, _ ->
-                            CheckoutScreen(
-                                onBack = { navActions.back() },
-                                onSuccess = {
-                                    navActions.back()  // pop Checkout
-                                    navActions.back()  // pop ConfirmOrder → lands on Menu
-                                }
-                            )
-                        }
-
-
-                        // Counter
-                        is Route.Counter -> NavConfig(
-                            backStack = backStack
-                        ) { _, openDrawer ->
-                            CounterScreen(
-                                onOpenDrawer = openDrawer
-                            )
-                        }
-
-                        is Route.GlowEffects -> NavConfig(
-                            backStack = backStack
-                        ) { _, openDrawer ->
-                            GlowStyleScreen(
-                                onOpenDrawer = openDrawer
-                            )
-                        }
-
-                        // Setting
-                        is Route.Setting -> NavConfig(
-                            backStack = backStack
-                        ) { navActions, _ ->
-                            SettingScreen(
-                                onNavigateBack = { navActions.back() },
-                                onNavigateTo = { info ->
-                                    when (info) {
-                                        SettingInfo.APPEARANCE -> navActions.to(Route.AppearanceSetting)
-                                        SettingInfo.CURRENCY -> navActions.to(Route.CurrencySetting)
-                                        else -> { /* TODO */ }
-                                    }
-                                },
-                                onLogout = { navActions.logout() }
-                            )
-                        }
-
-                        // Appearance Setting (theme + font)
-                        is Route.AppearanceSetting -> NavConfig(
-                            backStack = backStack,
-                            enableDrawer = false
-                        ) { navActions, _ ->
-                            AppearanceSettingScreen(
-                                onNavigateBack = { navActions.back() }
-                            )
-                        }
-
-                        // Currency Setting
-                        is Route.CurrencySetting -> NavConfig(
-                            backStack = backStack,
-                            enableDrawer = false
-                        ) { navActions, _ ->
-                            CurrencySettingScreen(
-                                onNavigateBack = { navActions.back() }
-                            )
-                        }
-
-
-
-                        is Route.TopBarStyle -> TopBarScreen()
-
-
-                        else -> error("Unknown NavKey: $key")
                     }
+
+                    // Login
+                    is Route.Login -> {
+                        LoginScreen(
+                            onLoginNostr = { backStack.add(Route.NostrLogin) },
+                            onLoginAnonymous = { backStack.add(Route.Home) }
+                        )
+                    }
+
+                    // Nostr Login
+                    is Route.NostrLogin -> {
+                        NostrLoginScreen(
+                            onBack = { backStack.removeAt(backStack.lastIndex) },
+                            onLoginSuccess = { backStack.add(Route.Home) }
+                        )
+                    }
+
+                    // Logout
+                    is Route.Logout -> {
+                        LaunchedEffect(Unit) {
+                            backStack.clear()
+                            backStack.add(Route.Login)
+                        }
+                    }
+
+                    // Home
+                    is Route.Home -> NavConfig(
+                        backStack = backStack
+                    ) { navActions, openDrawer ->
+                        HomeScreen(
+                            onOpenDrawer = openDrawer,
+                            onNavigateToMenu = { navActions.to(Route.Menu) }
+                        )
+                    }
+
+                    // Menu
+                    is Route.Menu -> NavConfig(
+                        backStack = backStack
+                    ) { navActions, openDrawer ->
+                        MainMenuScreen(
+                            onOpenDrawer = openDrawer,
+                            onCheckout = { navActions.to(Route.ConfirmOrder) }
+                        )
+                    }
+
+                    // Confirm Order
+                    is Route.ConfirmOrder -> NavConfig(
+                        backStack = backStack
+                    ) { navActions, _ ->
+                        ConfirmOrderScreen(
+                            onBack = { navActions.back() },
+                            onCheckout = { navActions.to(Route.Checkout) }
+                        )
+                    }
+
+                    // Product Entry Master
+                    is Route.ProductList -> NavConfig(
+                        backStack = backStack,
+                        enableDrawer = true
+                    ) { navActions, openDrawer ->
+                        ProductListScreen(
+                            onOpenDrawer = openDrawer,
+                            onEditProduct = { id -> navActions.to(Route.ProductEntryMaster(id)) },
+                            onNewProduct = { navActions.to(Route.ProductEntryMaster()) },
+                        )
+                    }
+
+                    is Route.ProductEntryMaster -> NavConfig(
+                        backStack = backStack,
+                        enableDrawer = true
+                    ) { navActions, openDrawer ->
+                        val prevRoute = backStack.toList().dropLast(1).lastOrNull()
+                        MasterEntryScreen(
+                            productId = key.productId,
+                            onNavigateBack = { navActions.back() },
+                            onOpenDrawer = openDrawer,
+                            onSave = { navActions.back() },
+                            showBackButton = prevRoute is Route.ProductList
+                        )
+                    }
+
+                    // Checkout
+                    is Route.Checkout -> NavConfig(
+                        backStack = backStack
+                    ) { navActions, _ ->
+                        CheckoutScreen(
+                            onBack = { navActions.back() },
+                            onSuccess = {
+                                navActions.back()  // pop Checkout
+                                navActions.back()  // pop ConfirmOrder → lands on Menu
+                            }
+                        )
+                    }
+
+
+                    // Counter
+                    is Route.Counter -> NavConfig(
+                        backStack = backStack
+                    ) { _, openDrawer ->
+                        CounterScreen(
+                            onOpenDrawer = openDrawer
+                        )
+                    }
+
+                    is Route.GlowEffects -> NavConfig(
+                        backStack = backStack
+                    ) { _, openDrawer ->
+                        GlowStyleScreen(
+                            onOpenDrawer = openDrawer
+                        )
+                    }
+
+                    // Setting
+                    is Route.Setting -> NavConfig(
+                        backStack = backStack
+                    ) { navActions, _ ->
+                        SettingScreen(
+                            onNavigateBack = { navActions.back() },
+                            onNavigateTo = { info ->
+                                when (info) {
+                                    SettingInfo.APPEARANCE -> navActions.to(Route.AppearanceSetting)
+                                    SettingInfo.CURRENCY -> navActions.to(Route.CurrencySetting)
+                                    else -> { /* TODO */
+                                    }
+                                }
+                            },
+                            onLogout = { navActions.logout() }
+                        )
+                    }
+
+                    // Appearance Setting (theme + font)
+                    is Route.AppearanceSetting -> NavConfig(
+                        backStack = backStack,
+                        enableDrawer = false
+                    ) { navActions, _ ->
+                        AppearanceSettingScreen(
+                            onNavigateBack = { navActions.back() }
+                        )
+                    }
+
+                    // Currency Setting
+                    is Route.CurrencySetting -> NavConfig(
+                        backStack = backStack,
+                        enableDrawer = false
+                    ) { navActions, _ ->
+                        CurrencySettingScreen(
+                            onNavigateBack = { navActions.back() }
+                        )
+                    }
+
+
+                    is Route.TopBarStyle -> TopBarScreen()
+
+
+                    else -> error("Unknown NavKey: $key")
+                }
             }
         }
     )

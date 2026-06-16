@@ -31,6 +31,7 @@ import org.siamdev.zappos.ui.screens.product.entry.EntryFormState
 import org.siamdev.zappos.ui.screens.product.entry.loadFrom
 import org.siamdev.zappos.ui.screens.product.goods.DetailTab
 import org.siamdev.zappos.ui.screens.product.goods.sampleProducts
+import org.siamdev.zappos.ui.screens.setting.SettingFacadeImpl
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 
 private val detailTabs =
@@ -191,7 +192,7 @@ private fun ProductDetailTabContent(
 )
 @Composable
 private fun ProductDetailPanelPreview() {
-    CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
         ProductDetailPanel(
             event = sampleProducts().first(),
             onEdit = {},
@@ -207,7 +208,7 @@ private fun ProductDetailPanelPreview() {
 )
 @Composable
 private fun ProductDetailPanelMonitorPreview() {
-    CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
         ProductDetailPanel(
             event = sampleProducts().first(),
             onEdit = {},
@@ -224,7 +225,7 @@ private fun ProductDetailPanelMonitorPreview() {
 )
 @Composable
 private fun ProductDetailPanelNoStockPreview() {
-    CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
         ProductDetailPanel(
             event = sampleProducts().first { it.stockQty == null },
             onEdit = {},

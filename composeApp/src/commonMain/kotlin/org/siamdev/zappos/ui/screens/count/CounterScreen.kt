@@ -10,14 +10,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.ui.components.common.MaterialButton
-import androidx.compose.foundation.layout.Box
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.sp
 import org.siamdev.zappos.LocalCounterVM
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
@@ -26,15 +24,13 @@ import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 fun CounterScreen(
     onOpenDrawer: () -> Unit = {}
 ) {
-
-    val viewModel = LocalCounterVM.current
-    val count by viewModel.count.collectAsState()
+    val counter = LocalCounterVM.current
 
     CounterContent(
-        count = count,
-        onPlus = { viewModel.plus() },
-        onMinus = { viewModel.minus() },
-        onReset = { viewModel.reset() },
+        count = counter.count,
+        onPlus = counter::plus,
+        onMinus = counter::minus,
+        onReset = counter::reset,
         onOpenDrawer = onOpenDrawer
     )
 }
@@ -54,7 +50,11 @@ fun CounterContent(
                 .background(MaterialTheme.colorScheme.background)
                 .windowInsetsPadding(WindowInsets.statusBars)
         ) {
-            WorkspaceHeader(title = "Counter", subtitle = "Inventory · stock count", onSegmentClick = onOpenDrawer)
+            WorkspaceHeader(
+                title = "Counter",
+                subtitle = "Inventory · stock count",
+                onSegmentClick = onOpenDrawer
+            )
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -64,7 +64,8 @@ fun CounterContent(
                 Text(
                     text = "Count: $count",
                     style = MaterialTheme.typography.titleLarge,
-                    fontSize = 48.sp
+                    fontSize = 48.sp,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(32.dp))
                 Row {

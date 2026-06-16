@@ -30,12 +30,15 @@ import org.siamdev.zappos.ui.components.order.OrderSummaryCard
 import org.siamdev.zappos.ui.components.payment.PaymentMethodDialogCard
 import org.siamdev.zappos.ui.components.payment.PaymentMethodList
 import org.siamdev.zappos.ui.components.progress.ProgressBar
+import org.siamdev.zappos.ui.components.progress.ProgressFacadeImpl
 import org.siamdev.zappos.ui.components.common.SecondaryAmt
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 import org.siamdev.zappos.ui.screens.sale.SaleOrderSteps
+import org.siamdev.zappos.ui.screens.sale.MainMenuFacadeImpl
+import org.siamdev.zappos.ui.screens.sale.MainMenuViewModel
+import org.siamdev.zappos.ui.screens.setting.SettingFacadeImpl
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 import org.siamdev.zappos.ui.components.progress.ProgressViewModel
-import org.siamdev.zappos.ui.screens.sale.MainMenuViewModel
 
 
 @Composable
@@ -43,14 +46,16 @@ fun CheckoutScreen(
     onBack: () -> Unit = {},
     onSuccess: () -> Unit = {}
 ) {
-    val menuVM = LocalMenuVM.current
-    val checkoutVM = LocalCheckoutVM.current
-    val progressVM = LocalProgressVM.current
+    val menu = LocalMenuVM.current
+    val checkout = LocalCheckoutVM.current
+    val progress = LocalProgressVM.current
 
-    LaunchedEffect(menuVM.selectedKeys.toList()) {
-        checkoutVM.syncFromMenu(
-            items = menuVM.selectedKeys.map { key ->
-                val item = menuVM.items.first { it.id == key }
+    LaunchedEffect(menu.selectedKeys) {
+        val selectedKeys = menu.selectedKeys
+        val items = menu.items
+        checkout.syncFromMenu(
+            items = selectedKeys.map { key ->
+                val item = items.first { it.id == key }
                 CheckoutItem(
                     name = item.name,
                     count = item.count,
@@ -58,45 +63,44 @@ fun CheckoutScreen(
                     priceSat = item.priceSat
                 )
             },
-            fiat = menuVM.totalFiat,
-            sat = menuVM.totalSat
+            fiat = menu.totalFiat,
+            sat = menu.totalSat
         )
     }
 
     CheckoutContent(
-        viewModel = checkoutVM,
+        checkout = checkout,
         onBack = onBack,
         onSuccess = {
-            menuVM.clearAllItems()
-            checkoutVM.reset()
-            progressVM.setup(SaleOrderSteps, 0)
+            menu.clearAllItems()
+            checkout.reset()
+            progress.setup(SaleOrderSteps, 0)
             onSuccess()
         }
     )
 }
 
-// Root content / step router
-
 @Composable
 fun CheckoutContent(
-    viewModel: CheckoutViewModel,
+    checkout: CheckoutFacade,
     onBack: () -> Unit = {},
     onSuccess: () -> Unit = {}
 ) {
-    // Sub-screens handled by separate composables — exit early
-    when (viewModel.step) {
+    val step = checkout.step
+
+    when (step) {
         CheckoutStep.CASH_CALCULATOR -> {
             CashCalculatorScreen(
-                viewModel = viewModel,
-                onBack = { viewModel.backToSelectPayment() })
+                checkout = checkout,
+                onBack = { checkout.backToSelectPayment() })
             return
         }
 
         CheckoutStep.PROCESSING -> {
             PaymentProcessingScreen(
-                viewModel = viewModel,
-                onConfirm = { viewModel.confirmProcessing() },
-                onBack = { viewModel.backToSelectPayment() }
+                checkout = checkout,
+                onConfirm = { checkout.confirmProcessing() },
+                onBack = { checkout.backToSelectPayment() }
             )
             return
         }
@@ -117,17 +121,17 @@ fun CheckoutContent(
             .windowInsetsPadding(WindowInsets.navigationBars)
     ) {
         if (maxWidth >= 750.dp) {
-            DesktopCheckoutLayout(viewModel = viewModel, onBack = onBack)
+            DesktopCheckoutLayout(checkout = checkout, onBack = onBack)
         } else {
-            MobileCheckoutLayout(viewModel = viewModel, onBack = onBack)
-            if (viewModel.step == CheckoutStep.SELECT_PAYMENT) {
+            MobileCheckoutLayout(checkout = checkout, onBack = onBack)
+            if (step == CheckoutStep.SELECT_PAYMENT) {
                 PaymentMethodDialogCard(
-                    selectedMethod = viewModel.selectedMethod,
+                    selectedMethod = checkout.selectedPaymentMethod,
                     onSelectMethod = { method ->
-                        viewModel.selectMethod(method)
-                        viewModel.confirmPayment()
+                        checkout.selectMethod(method)
+                        checkout.confirmPayment()
                     },
-                    onDismiss = { viewModel.backToOrder() }
+                    onDismiss = { checkout.backToOrder() }
                 )
             }
         }
@@ -137,11 +141,11 @@ fun CheckoutContent(
 
 @Composable
 private fun MobileCheckoutLayout(
-    viewModel: CheckoutViewModel,
+    checkout: CheckoutFacade,
     onBack: () -> Unit
 ) {
-    val progressVM = LocalProgressVM.current
-    SideEffect { progressVM.setup(SaleOrderSteps, 1) }
+    val progress = LocalProgressVM.current
+    SideEffect { progress.setup(SaleOrderSteps, 1) }
 
     Column(modifier = Modifier.fillMaxSize()) {
         WorkspaceHeader(title = "Checkout", subtitle = "Sales · payment", onNavigateBack = onBack)
@@ -153,7 +157,7 @@ private fun MobileCheckoutLayout(
         )
 
         OrderItemList(
-            items = viewModel.orderItems,
+            items = checkout.orderItems,
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
@@ -166,10 +170,10 @@ private fun MobileCheckoutLayout(
             SectionLabel(text = "SUMMARY", modifier = Modifier.padding(bottom = 8.dp))
 
             OrderSummaryCard(
-                subtotalFiat = viewModel.totalFiat,
-                subtotalSat = viewModel.totalSat,
-                taxPercent = viewModel.taxPercent,
-                onTaxChange = { viewModel.setTax(it) }
+                subtotalFiat = checkout.totalFiat,
+                subtotalSat = checkout.totalSat,
+                taxPercent = checkout.taxPercent,
+                onTaxChange = { checkout.setTax(it) }
             )
 
             Spacer(Modifier.height(12.dp))
@@ -178,7 +182,7 @@ private fun MobileCheckoutLayout(
                 modifier = Modifier.fillMaxWidth(),
                 text = "Choose Payment Method",
                 iconStart = Icons.Default.Payment,
-                onClick = { viewModel.openSelectPayment() }
+                onClick = { checkout.openSelectPayment() }
             )
         }
 
@@ -188,17 +192,16 @@ private fun MobileCheckoutLayout(
 
 @Composable
 private fun DesktopCheckoutLayout(
-    viewModel: CheckoutViewModel,
+    checkout: CheckoutFacade,
     onBack: () -> Unit
 ) {
-    val progressVM = LocalProgressVM.current
-    SideEffect { progressVM.setup(SaleOrderSteps, 1) }
+    val progress = LocalProgressVM.current
+    SideEffect { progress.setup(SaleOrderSteps, 1) }
 
     Column(modifier = Modifier.fillMaxSize()) {
         WorkspaceHeader(title = "Checkout", subtitle = "Sales · payment", onNavigateBack = onBack)
         ProgressBar()
 
-        // Column labels
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -209,7 +212,6 @@ private fun DesktopCheckoutLayout(
             SectionLabel(text = "SUMMARY", modifier = Modifier.width(380.dp))
         }
 
-        // Main content row
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -218,15 +220,13 @@ private fun DesktopCheckoutLayout(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.Top
         ) {
-            // Left: scrollable order list
             OrderItemList(
-                items = viewModel.orderItems,
+                items = checkout.orderItems,
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxHeight()
             )
 
-            // Right: summary + payment
             Column(
                 modifier = Modifier
                     .width(380.dp)
@@ -234,10 +234,10 @@ private fun DesktopCheckoutLayout(
                 verticalArrangement = Arrangement.spacedBy(0.dp)
             ) {
                 OrderSummaryCard(
-                    subtotalFiat = viewModel.totalFiat,
-                    subtotalSat = viewModel.totalSat,
-                    taxPercent = viewModel.taxPercent,
-                    onTaxChange = { viewModel.setTax(it) }
+                    subtotalFiat = checkout.totalFiat,
+                    subtotalSat = checkout.totalSat,
+                    taxPercent = checkout.taxPercent,
+                    onTaxChange = { checkout.setTax(it) }
                 )
 
                 Spacer(Modifier.height(20.dp))
@@ -248,10 +248,10 @@ private fun DesktopCheckoutLayout(
                 )
 
                 PaymentMethodList(
-                    selectedMethod = viewModel.selectedMethod,
+                    selectedMethod = checkout.selectedPaymentMethod,
                     onSelectMethod = { method ->
-                        viewModel.selectMethod(method)
-                        viewModel.confirmPayment()
+                        checkout.selectMethod(method)
+                        checkout.confirmPayment()
                     },
                     showBorder = true
                 )
@@ -273,7 +273,8 @@ internal fun SectionLabel(text: String, modifier: Modifier = Modifier) {
 
 @Composable
 internal fun CheckoutItemRow(item: CheckoutItem, isEven: Boolean = false) {
-    val showSecondary by LocalSettingVM.current.showSecondaryCurrency.collectAsState()
+    val setting = LocalSettingVM.current
+    val showSecondary = setting.showSecondaryCurrency
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -316,15 +317,8 @@ internal fun CheckoutItemRow(item: CheckoutItem, isEven: Boolean = false) {
     }
 }
 
-internal fun formatDouble(value: Double): String {
-    val intPart = value.toLong()
-    val decPart = ((value - intPart) * 100).toInt()
-    val intStr = intPart.toString().reversed().chunked(3).joinToString(",").reversed()
-    return "$intStr.${decPart.toString().padStart(2, '0')}"
-}
 
-
-private val previewViewModel = CheckoutViewModel().apply {
+private val previewCheckoutVM = CheckoutViewModel().apply {
     syncFromMenu(
         items = listOf(
             CheckoutItem("Mocha", 2u, "70.00", "17,500"),
@@ -334,7 +328,7 @@ private val previewViewModel = CheckoutViewModel().apply {
             CheckoutItem("Americano", 1u, "60.00", "15,000"),
             CheckoutItem("Cappuccino", 2u, "75.00", "18,750"),
             CheckoutItem("Flat White", 1u, "80.00", "20,000"),
-            CheckoutItem("Caramel Macchiato", 3u, "90.00", "22,500"),
+            CheckoutItem("Caramel Macchiato", 3u, "90.00", "22,500")
         ),
         fiat = "61,020.00",
         sat = "1,683,138"
@@ -349,12 +343,12 @@ fun CheckoutScreenMobilePreview() {
     val menuVM = remember { MainMenuViewModel(autoLoad = false) }
 
     CompositionLocalProvider(
-        LocalProgressVM provides progressVM,
-        LocalSettingVM provides settingVM,
-        LocalMenuVM provides menuVM,
-        LocalCheckoutVM provides previewViewModel
+        LocalProgressVM provides ProgressFacadeImpl(progressVM),
+        LocalSettingVM provides SettingFacadeImpl(settingVM),
+        LocalMenuVM provides MainMenuFacadeImpl(menuVM),
+        LocalCheckoutVM provides CheckoutFacadeImpl(previewCheckoutVM)
     ) {
-        MaterialTheme { CheckoutContent(viewModel = previewViewModel) }
+        MaterialTheme { CheckoutContent(checkout = CheckoutFacadeImpl(previewCheckoutVM)) }
     }
 }
 
@@ -366,11 +360,11 @@ fun CheckoutScreenDesktopPreview() {
     val menuVM = remember { MainMenuViewModel(autoLoad = false) }
 
     CompositionLocalProvider(
-        LocalProgressVM provides progressVM,
-        LocalSettingVM provides settingVM,
-        LocalMenuVM provides menuVM,
-        LocalCheckoutVM provides previewViewModel
+        LocalProgressVM provides ProgressFacadeImpl(progressVM),
+        LocalSettingVM provides SettingFacadeImpl(settingVM),
+        LocalMenuVM provides MainMenuFacadeImpl(menuVM),
+        LocalCheckoutVM provides CheckoutFacadeImpl(previewCheckoutVM)
     ) {
-        MaterialTheme { CheckoutContent(viewModel = previewViewModel) }
+        MaterialTheme { CheckoutContent(checkout = CheckoutFacadeImpl(previewCheckoutVM)) }
     }
 }

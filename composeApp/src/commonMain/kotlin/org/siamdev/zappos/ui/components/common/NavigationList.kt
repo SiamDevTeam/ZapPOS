@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LightMode
@@ -32,8 +33,6 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,6 +45,8 @@ import androidx.compose.ui.graphics.luminance
 import org.jetbrains.compose.resources.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.LocalSettingVM
+import org.siamdev.zappos.ui.screens.setting.SettingFacadeImpl
+import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 import zappos.composeapp.generated.resources.Res
 import zappos.composeapp.generated.resources.zappos_dark_horizontal_v2
 import zappos.composeapp.generated.resources.zappos_white_horizontal_v2
@@ -62,8 +63,9 @@ fun NavigationList(
     onNavigateToProductEntry: () -> Unit = {},
     onNavigateToSetting: () -> Unit = {}
 ) {
-    val settingVM = LocalSettingVM.current
-    val activeTheme by settingVM.activeTheme.collectAsState()
+    val setting = LocalSettingVM.current
+    val activeTheme = setting.activeTheme
+
     AnimatedVisibility(
         visible = isOpen,
         enter = fadeIn(tween(300)),
@@ -105,7 +107,8 @@ fun NavigationList(
                         .padding(horizontal = 16.dp, vertical = 20.dp)
                 ) {
                     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-                    val logoRes = if (isDark) Res.drawable.zappos_white_horizontal_v2 else Res.drawable.zappos_dark_horizontal_v2
+                    val logoRes =
+                        if (isDark) Res.drawable.zappos_white_horizontal_v2 else Res.drawable.zappos_dark_horizontal_v2
                     Column {
                         Image(
                             painter = painterResource(logoRes),
@@ -185,13 +188,14 @@ fun NavigationList(
                             onClick = { onNavigateToProductList(); onDismiss() }
                         )
                     }
-                    /*item {
+                    item {
                         DrawerNavigationItem(
                             icon = Icons.Default.Add,
                             title = "Counter",
                             onClick = { onNavigateToCounter(); onDismiss() }
                         )
                     }
+                    /*
                     item {
                         DrawerNavigationItem(
                             icon = Icons.Default.AutoAwesome,
@@ -210,8 +214,8 @@ fun NavigationList(
                 DrawerThemeSwitch(
                     isDark = activeTheme?.mode == "DARK",
                     onToggle = { isDark ->
-                        if (isDark) settingVM.selectTheme("theme-dark")
-                        else settingVM.selectTheme("theme-light")
+                        if (isDark) setting.selectTheme("theme-dark")
+                        else setting.selectTheme("theme-light")
                     }
                 )
                 DrawerNavigationItem(
@@ -314,7 +318,7 @@ private fun DrawerNavigationItem(
 private fun NavigationDrawerPreview() {
     MaterialTheme {
         androidx.compose.runtime.CompositionLocalProvider(
-            LocalSettingVM provides org.siamdev.zappos.ui.screens.setting.SettingViewModel()
+            LocalSettingVM provides SettingFacadeImpl(SettingViewModel())
         ) {
             NavigationList(
                 isOpen = true,

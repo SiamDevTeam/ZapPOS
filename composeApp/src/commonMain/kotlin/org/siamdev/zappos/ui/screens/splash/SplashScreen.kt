@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,11 +30,11 @@ fun SplashScreen(
     viewModel: SplashViewModel,
     onSplashFinished: () -> Unit = {}
 ) {
-
-    val ready = viewModel.isReady.collectAsState()
-    LaunchedEffect(ready.value) {
-        if (ready.value) {
-            onSplashFinished()
+    LaunchedEffect(Unit) {
+        viewModel.sideEffect.collect { effect ->
+            when (effect) {
+                is SplashViewModel.SideEffect.NavigateAway -> onSplashFinished()
+            }
         }
     }
 
@@ -101,4 +102,3 @@ fun SplashScreenPreview() {
         onSplashFinished = {}
     )
 }
-

@@ -38,6 +38,7 @@ import org.siamdev.zappos.LocalSettingVM
 import org.siamdev.zappos.ui.components.common.PrimaryAmt
 import org.siamdev.zappos.ui.components.common.SecondaryAmt
 import org.siamdev.zappos.ui.screens.sale.MenuItem
+import org.siamdev.zappos.ui.screens.setting.SettingFacadeImpl
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 
 @Composable
@@ -142,9 +143,11 @@ fun OrderItemCard(
                                 Key.Enter if event.type == KeyEventType.KeyDown -> {
                                     confirmEdit(); true
                                 }
+
                                 Key.Escape if event.type == KeyEventType.KeyDown -> {
                                     isEditing = false; true
                                 }
+
                                 else -> false
                             }
                         }
@@ -216,7 +219,7 @@ fun OrderItemCard(
 @Composable
 fun OrderItemCardPreview() {
     val settingVM = remember { SettingViewModel() }
-    CompositionLocalProvider(LocalSettingVM provides settingVM) {
+    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(settingVM)) {
         MaterialTheme {
             OrderItemCard(
                 item = MenuItem(

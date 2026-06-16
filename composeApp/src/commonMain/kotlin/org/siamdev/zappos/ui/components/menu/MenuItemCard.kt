@@ -44,6 +44,7 @@ import org.jetbrains.compose.resources.painterResource
 import zappos.composeapp.generated.resources.compose_multiplatform
 import org.siamdev.zappos.LocalSettingVM
 import org.siamdev.zappos.ui.components.common.CurrencyCodeIcon
+import org.siamdev.zappos.ui.screens.setting.SettingFacadeImpl
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 
 
@@ -375,12 +376,10 @@ private fun MenuImage(
 
 @Composable
 private fun PriceRow(priceBaht: String, priceSat: String?) {
-    val settingVM = LocalSettingVM.current
-    val showSecondary by settingVM.showSecondaryCurrency.collectAsState()
-    val primaryCurrency by settingVM.primaryCurrency.collectAsState()
-    val secondaryCurrency by settingVM.secondaryCurrency.collectAsState()
-    val primaryCode = primaryCurrency?.code ?: "THB"
-    val secondaryCode = secondaryCurrency?.code ?: "SATS"
+    val setting = LocalSettingVM.current
+    val showSecondary = setting.showSecondaryCurrency
+    val primaryCode = setting.primaryCurrency?.code ?: "THB"
+    val secondaryCode = setting.secondaryCurrency?.code ?: "SATS"
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -464,7 +463,7 @@ private fun AddButton(
 @Preview
 @Composable
 fun MenuItemCardListPreview() {
-    CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
         MenuItemCard(
             imageUrl = "https://images.pexels.com/photos/350478/pexels-photo-350478.jpeg",
             name = "Mocha",
@@ -482,7 +481,7 @@ fun MenuItemCardListPreview() {
 @Preview
 @Composable
 fun MenuItemCardListUnavailablePreview() {
-    CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
         MenuItemCard(
             imageUrl = "https://images.pexels.com/photos/17486832/pexels-photo-17486832.jpeg",
             name = "Latte",
@@ -499,7 +498,7 @@ fun MenuItemCardListUnavailablePreview() {
 @Preview
 @Composable
 fun MenuItemCardChevronPreview() {
-    CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
         MenuItemCard(
             imageUrl = "https://images.pexels.com/photos/2611811/pexels-photo-2611811.jpeg",
             name = "Matcha Latte",
@@ -516,7 +515,7 @@ fun MenuItemCardChevronPreview() {
 @Preview
 @Composable
 fun MenuItemCardGridPreview() {
-    CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
         MenuItemCard(
             imageUrl = "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg",
             name = "Matcha Coffee",
@@ -534,7 +533,7 @@ fun MenuItemCardGridPreview() {
 @Preview
 @Composable
 fun MenuItemCardGridUnavailablePreview() {
-    CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
         MenuItemCard(
             imageUrl = "https://images.pexels.com/photos/18635175/pexels-photo-18635175.jpeg",
             name = "Milk",

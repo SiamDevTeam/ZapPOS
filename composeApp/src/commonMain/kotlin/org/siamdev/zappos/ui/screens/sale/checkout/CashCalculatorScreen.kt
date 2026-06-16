@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import org.siamdev.zappos.LocalProgressVM
 import org.siamdev.zappos.LocalSettingVM
 import org.siamdev.zappos.ui.components.common.CurrencyCodeIcon
 import androidx.compose.ui.Modifier
@@ -28,12 +29,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
-import org.siamdev.zappos.LocalProgressVM
 import org.siamdev.zappos.ui.components.common.MaterialButton
 import org.siamdev.zappos.ui.components.order.OrderItemList
 import org.siamdev.zappos.ui.components.progress.ProgressBar
+import org.siamdev.zappos.ui.components.progress.ProgressFacadeImpl
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 import org.siamdev.zappos.ui.screens.sale.SaleOrderSteps
+import org.siamdev.zappos.ui.screens.setting.SettingFacadeImpl
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 import org.siamdev.zappos.ui.components.progress.ProgressViewModel
 
@@ -48,7 +50,7 @@ private val NumpadKeys = listOf(
 
 @Composable
 fun CashCalculatorScreen(
-    viewModel: CheckoutViewModel,
+    checkout: CheckoutFacade,
     onBack: () -> Unit = {}
 ) {
     BoxWithConstraints(
@@ -58,9 +60,9 @@ fun CashCalculatorScreen(
             .windowInsetsPadding(WindowInsets.systemBars)
     ) {
         if (maxWidth >= 750.dp) {
-            DesktopCashLayout(viewModel = viewModel, onBack = onBack)
+            DesktopCashLayout(checkout = checkout, onBack = onBack)
         } else {
-            MobileCashLayout(viewModel = viewModel, onBack = onBack)
+            MobileCashLayout(checkout = checkout, onBack = onBack)
         }
     }
 }
@@ -68,11 +70,15 @@ fun CashCalculatorScreen(
 
 @Composable
 private fun MobileCashLayout(
-    viewModel: CheckoutViewModel,
+    checkout: CheckoutFacade,
     onBack: () -> Unit
 ) {
-    val progressVM = LocalProgressVM.current
-    SideEffect { progressVM.setup(SaleOrderSteps, 2) }
+    val progress = LocalProgressVM.current
+    SideEffect { progress.setup(SaleOrderSteps, 2) }
+
+    val totalFiat = checkout.totalFiat
+    val receivedAmount = checkout.receivedAmount
+    val isChangeValid = checkout.isChangeValid
 
     Column(modifier = Modifier.fillMaxSize()) {
         WorkspaceHeader(
@@ -93,25 +99,25 @@ private fun MobileCashLayout(
                 .weight(1f)
                 .padding(horizontal = 20.dp)
         ) {
-            TotalDueRow(totalFiat = viewModel.totalFiat)
+            TotalDueRow(totalFiat = totalFiat)
             Spacer(Modifier.height(14.dp))
             ReceivedDisplay(
-                receivedAmount = viewModel.receivedAmount,
-                isValid = viewModel.isChangeValid,
-                onClear = { viewModel.clearReceivedAmount() }
+                receivedAmount = receivedAmount,
+                isValid = isChangeValid,
+                onClear = { checkout.clearReceivedAmount() }
             )
-            ChangeRow(viewModel = viewModel)
+            ChangeRow(checkout = checkout)
             Spacer(Modifier.weight(1f))
-            QuickAmountRow(onAdd = { viewModel.appendQuickAmount(it) })
+            QuickAmountRow(onAdd = { checkout.appendQuickAmount(it) })
             Spacer(Modifier.height(10.dp))
-            CashNumpad(viewModel = viewModel)
+            CashNumpad(checkout = checkout)
             Spacer(Modifier.height(12.dp))
             MaterialButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = "Confirm Cash",
-                buttonColor = if (viewModel.isChangeValid) MaterialTheme.colorScheme.primary
+                buttonColor = if (isChangeValid) MaterialTheme.colorScheme.primary
                 else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
-                onClick = { viewModel.confirmCash() }
+                onClick = { checkout.confirmCash() }
             )
         }
 
@@ -122,11 +128,16 @@ private fun MobileCashLayout(
 
 @Composable
 private fun DesktopCashLayout(
-    viewModel: CheckoutViewModel,
+    checkout: CheckoutFacade,
     onBack: () -> Unit
 ) {
-    val progressVM = LocalProgressVM.current
-    SideEffect { progressVM.setup(SaleOrderSteps, 2) }
+    val progress = LocalProgressVM.current
+    SideEffect { progress.setup(SaleOrderSteps, 2) }
+
+    val totalFiat = checkout.totalFiat
+    val receivedAmount = checkout.receivedAmount
+    val isChangeValid = checkout.isChangeValid
+    val orderItems = checkout.orderItems
 
     Column(modifier = Modifier.fillMaxSize()) {
         WorkspaceHeader(
@@ -155,10 +166,8 @@ private fun DesktopCashLayout(
             verticalAlignment = Alignment.Top
         ) {
             OrderItemList(
-                items = viewModel.orderItems,
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
+                items = orderItems,
+                modifier = Modifier.weight(1f).fillMaxHeight()
             )
 
             Column(
@@ -174,32 +183,32 @@ private fun DesktopCashLayout(
                     .background(MaterialTheme.colorScheme.surface)
                     .padding(horizontal = 28.dp, vertical = 28.dp)
             ) {
-                TotalDueRow(totalFiat = viewModel.totalFiat)
+                TotalDueRow(totalFiat = totalFiat)
                 Spacer(Modifier.height(8.dp))
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                 Spacer(Modifier.height(12.dp))
 
                 ReceivedDisplay(
-                    receivedAmount = viewModel.receivedAmount,
-                    isValid = viewModel.isChangeValid,
-                    onClear = { viewModel.clearReceivedAmount() },
+                    receivedAmount = receivedAmount,
+                    isValid = isChangeValid,
+                    onClear = { checkout.clearReceivedAmount() },
                     isLarge = true
                 )
 
-                ChangeRow(viewModel = viewModel)
+                ChangeRow(checkout = checkout)
 
                 Spacer(Modifier.weight(1f))
 
-                QuickAmountRow(onAdd = { viewModel.appendQuickAmount(it) })
+                QuickAmountRow(onAdd = { checkout.appendQuickAmount(it) })
                 Spacer(Modifier.height(12.dp))
-                CashNumpad(viewModel = viewModel)
+                CashNumpad(checkout = checkout)
                 Spacer(Modifier.height(16.dp))
                 MaterialButton(
                     modifier = Modifier.fillMaxWidth(),
                     text = "Confirm Cash",
-                    buttonColor = if (viewModel.isChangeValid) MaterialTheme.colorScheme.primary
+                    buttonColor = if (isChangeValid) MaterialTheme.colorScheme.primary
                     else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
-                    onClick = { viewModel.confirmCash() }
+                    onClick = { checkout.confirmCash() }
                 )
             }
         }
@@ -209,8 +218,8 @@ private fun DesktopCashLayout(
 
 @Composable
 private fun TotalDueRow(totalFiat: String) {
-    val primaryCurrency by LocalSettingVM.current.primaryCurrency.collectAsState()
-    val primaryCode = primaryCurrency?.code ?: "THB"
+    val setting = LocalSettingVM.current
+    val primaryCode = setting.primaryCurrency?.code ?: "THB"
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -297,11 +306,12 @@ private fun ReceivedDisplay(
 }
 
 @Composable
-private fun ChangeRow(viewModel: CheckoutViewModel) {
-    val primaryCurrency by LocalSettingVM.current.primaryCurrency.collectAsState()
-    val primaryCode = primaryCurrency?.code ?: "THB"
+private fun ChangeRow(checkout: CheckoutFacade) {
+    val setting = LocalSettingVM.current
+    val primaryCode = setting.primaryCurrency?.code ?: "THB"
+    val isChangeValid = checkout.isChangeValid
     AnimatedVisibility(
-        visible = viewModel.isChangeValid,
+        visible = isChangeValid,
         enter = fadeIn(tween(200)) + expandVertically(tween(200)),
         exit = fadeOut(tween(150)) + shrinkVertically(tween(150))
     ) {
@@ -348,7 +358,7 @@ private fun ChangeRow(viewModel: CheckoutViewModel) {
                         tint = GreenSuccess
                     )
                     Text(
-                        viewModel.formatChange(),
+                        formatDouble(checkout.changeAmount),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = GreenSuccess
@@ -396,7 +406,7 @@ private fun QuickAmountRow(
 
 @Composable
 private fun CashNumpad(
-    viewModel: CheckoutViewModel,
+    checkout: CheckoutFacade,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -420,8 +430,8 @@ private fun CashNumpad(
                                 else MaterialTheme.colorScheme.surfaceVariant
                             )
                             .clickable {
-                                if (key == null) viewModel.deleteCashDigit()
-                                else viewModel.appendCashDigit(key)
+                                if (key == null) checkout.deleteCashDigit()
+                                else checkout.appendCashDigit(key)
                             },
                         contentAlignment = Alignment.Center
                     ) {
@@ -448,7 +458,7 @@ private fun CashNumpad(
 }
 
 
-private val cashPreviewViewModel = CheckoutViewModel().apply {
+private val cashPreviewVM = CheckoutViewModel().apply {
     syncFromMenu(
         items = listOf(CheckoutItem("Mocha", 2u, "70.00", "17,500")),
         fiat = "790.00",
@@ -463,11 +473,11 @@ fun CashCalculatorMobilePreview() {
     val settingVM = remember { SettingViewModel() }
 
     CompositionLocalProvider(
-        LocalProgressVM provides progressVM,
-        LocalSettingVM provides settingVM
+        LocalProgressVM provides ProgressFacadeImpl(progressVM),
+        LocalSettingVM provides SettingFacadeImpl(settingVM)
     ) {
         MaterialTheme {
-            CashCalculatorScreen(viewModel = cashPreviewViewModel)
+            CashCalculatorScreen(checkout = CheckoutFacadeImpl(cashPreviewVM))
         }
     }
 }
@@ -479,11 +489,11 @@ fun CashCalculatorDesktopPreview() {
     val settingVM = remember { SettingViewModel() }
 
     CompositionLocalProvider(
-        LocalProgressVM provides progressVM,
-        LocalSettingVM provides settingVM
+        LocalProgressVM provides ProgressFacadeImpl(progressVM),
+        LocalSettingVM provides SettingFacadeImpl(settingVM)
     ) {
         MaterialTheme {
-            CashCalculatorScreen(viewModel = cashPreviewViewModel)
+            CashCalculatorScreen(checkout = CheckoutFacadeImpl(cashPreviewVM))
         }
     }
 }

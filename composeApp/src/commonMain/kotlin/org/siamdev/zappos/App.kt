@@ -5,8 +5,6 @@
 package org.siamdev.zappos
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import org.siamdev.zappos.theme.ThemeMode
 import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.theme.ZapposTheme
@@ -26,19 +24,17 @@ fun App(platform: Platform, splashViewModel: SplashViewModel) {
     }
 
     ProvideViewModels {
-        val settingVM = LocalSettingVM.current
-        val activeTheme by settingVM.activeTheme.collectAsState()
-        val activeFont by settingVM.activeFont.collectAsState()
-        val accentColorHex by settingVM.accentColor.collectAsState()
+        val setting = LocalSettingVM.current
 
-        val themeMode = when (activeTheme?.mode) {
+        val themeMode = when (setting.activeTheme?.mode) {
             "DARK" -> ThemeMode.DARK
             "LIGHT" -> ThemeMode.LIGHT
             "SYSTEM" -> ThemeMode.SYSTEM
             else -> ThemeMode.SYSTEM
         }
-        val fontScale = (activeFont?.size?.toFloat() ?: DEFAULT_FONT_SIZE) / DEFAULT_FONT_SIZE
-        val accentColor = accentColorHex?.let { colorFromHex(it) } ?: YellowPrimary
+        val fontScale =
+            (setting.activeFont?.size?.toFloat() ?: DEFAULT_FONT_SIZE) / DEFAULT_FONT_SIZE
+        val accentColor = setting.accentColorHex?.let { colorFromHex(it) } ?: YellowPrimary
 
         ZapposTheme(themeMode = themeMode, accentColor = accentColor, fontScale = fontScale) {
             NavigationRoot(

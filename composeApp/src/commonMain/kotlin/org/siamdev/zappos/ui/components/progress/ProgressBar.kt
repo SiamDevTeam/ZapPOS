@@ -52,18 +52,15 @@ private val LineHeight = 2.dp
 fun ProgressBar(
     modifier: Modifier = Modifier
 ) {
-    val vm = LocalProgressVM.current
-    val steps = vm.steps
-    val currentStep = vm.currentStep
+    val progress = LocalProgressVM.current
+    val steps = progress.steps
+    val currentStep = progress.currentStep
 
     if (steps.isEmpty()) return
 
     val animatedStep by animateFloatAsState(
         targetValue = currentStep.toFloat(),
-        animationSpec = tween(
-            durationMillis = 500,
-            easing = FastOutSlowInEasing
-        ),
+        animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing),
         label = "progressStep"
     )
 
@@ -90,26 +87,20 @@ fun ProgressBar(
 
                     ProgressLine(
                         modifier = Modifier.weight(1f),
-                        fillProgress = if (index > 0) {
-                            (animatedStep - (index - 1)).coerceIn(0f, 1f)
-                        } else {
-                            0f
-                        }
+                        fillProgress = if (index > 0) (animatedStep - (index - 1)).coerceIn(
+                            0f,
+                            1f
+                        ) else 0f
                     )
 
-                    ProgressDot(
-                        isDone = isDone,
-                        isActive = isActive,
-                        index = index
-                    )
+                    ProgressDot(isDone = isDone, isActive = isActive, index = index)
 
                     ProgressLine(
                         modifier = Modifier.weight(1f),
-                        fillProgress = if (index < steps.lastIndex) {
-                            (animatedStep - index).coerceIn(0f, 1f)
-                        } else {
-                            0f
-                        }
+                        fillProgress = if (index < steps.lastIndex) (animatedStep - index).coerceIn(
+                            0f,
+                            1f
+                        ) else 0f
                     )
                 }
 
@@ -117,11 +108,7 @@ fun ProgressBar(
                     text = label,
                     style = MaterialTheme.typography.labelSmall,
                     fontSize = 9.sp,
-                    fontWeight = if (isActive) {
-                        FontWeight.SemiBold
-                    } else {
-                        FontWeight.Normal
-                    },
+                    fontWeight = if (isActive) FontWeight.SemiBold else FontWeight.Normal,
                     color = when {
                         isActive -> MaterialTheme.colorScheme.onSurface
                         isDone -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f)
@@ -139,22 +126,13 @@ private fun ProgressLine(
     modifier: Modifier = Modifier,
     fillProgress: Float
 ) {
-    Box(
-        modifier = modifier.height(LineHeight)
-    ) {
-
+    Box(modifier = modifier.height(LineHeight)) {
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
-                )
+            modifier = Modifier.fillMaxSize()
+                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
         )
-
         Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth(fillProgress)
+            modifier = Modifier.fillMaxHeight().fillMaxWidth(fillProgress)
                 .background(MaterialTheme.colorScheme.primary)
         )
     }
@@ -166,23 +144,16 @@ private fun ProgressDot(
     isActive: Boolean,
     index: Int
 ) {
-
     val dotSize by animateDpAsState(
-        targetValue = if (isActive) {
-            DotActiveSize
-        } else {
-            DotIdleSize
-        },
+        targetValue = if (isActive) DotActiveSize else DotIdleSize,
         animationSpec = tween(300),
         label = "dotSize"
     )
 
     val dotBackgroundColor by animateColorAsState(
-        targetValue = if (isDone || isActive) {
-            MaterialTheme.colorScheme.primary
-        } else {
-            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.10f)
-        },
+        targetValue = if (isDone || isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(
+            alpha = 0.10f
+        ),
         animationSpec = tween(300),
         label = "dotBackground"
     )
@@ -191,88 +162,50 @@ private fun ProgressDot(
         modifier = Modifier.size(DotContainerSize),
         contentAlignment = Alignment.Center
     ) {
-
         Box(
-            modifier = Modifier
-                .size(dotSize)
-                .clip(CircleShape)
-                .background(dotBackgroundColor),
+            modifier = Modifier.size(dotSize).clip(CircleShape).background(dotBackgroundColor),
             contentAlignment = Alignment.Center
         ) {
-
             Crossfade(
                 targetState = when {
-                    isDone -> DotState.Done
-                    isActive -> DotState.Active
-                    else -> DotState.Idle
+                    isDone -> DotState.Done; isActive -> DotState.Active; else -> DotState.Idle
                 },
                 animationSpec = tween(200),
                 label = "dotState"
             ) { state ->
-
                 when (state) {
+                    DotState.Done -> Icon(
+                        imageVector = Icons.Default.Check,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(10.dp)
+                    )
 
-                    DotState.Done -> {
-                        Icon(
-                            imageVector = Icons.Default.Check,
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(10.dp)
-                        )
-                    }
+                    DotState.Active -> Box(
+                        modifier = Modifier.size(6.dp).clip(CircleShape).background(Color.White)
+                    )
 
-                    DotState.Active -> {
-                        Box(
-                            modifier = Modifier
-                                .size(6.dp)
-                                .clip(CircleShape)
-                                .background(Color.White)
-                        )
-                    }
-
-                    DotState.Idle -> {
-                        Spacer(modifier = Modifier.width(0.dp))
-                    }
+                    DotState.Idle -> Spacer(modifier = Modifier.width(0.dp))
                 }
             }
         }
     }
 }
 
-private enum class DotState {
-    Done,
-    Active,
-    Idle
-}
+private enum class DotState { Done, Active, Idle }
 
 @Preview(showBackground = true, widthDp = 411)
 @Composable
 private fun ProgressBarPreview() {
-
-    val steps = listOf(
-        "Confirm",
-        "Checkout",
-        "Payment",
-        "Successful"
-    )
+    val steps = listOf("Confirm", "Checkout", "Payment", "Successful")
 
     MaterialTheme {
-
-        Column(
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             steps.indices.forEach { step ->
-
                 val vm = remember(step) {
-                    ProgressViewModel().also {
-                        it.setup(steps, step)
-                    }
+                    ProgressViewModel().also { it.setup(steps, step) }
                 }
-
-                CompositionLocalProvider(
-                    LocalProgressVM provides vm
-                ) {
+                CompositionLocalProvider(LocalProgressVM provides ProgressFacadeImpl(vm)) {
                     ProgressBar()
                 }
             }

@@ -28,8 +28,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.LocalSettingVM
 import androidx.compose.runtime.CompositionLocalProvider
-import io.ktor.client.request.invoke
 import org.siamdev.zappos.ui.components.menu.SearchFilter
+import org.siamdev.zappos.ui.screens.setting.SettingFacadeImpl
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 
 enum class SettingGroup(val title: String) {
@@ -49,7 +49,11 @@ enum class SettingInfo(val title: String, val subtitle: String? = null) {
     SIGN_OUT("Sign out")
 }
 
-data class SettingItemData(val destination: SettingInfo, val group: SettingGroup, val icon: ImageVector)
+data class SettingItemData(
+    val destination: SettingInfo,
+    val group: SettingGroup,
+    val icon: ImageVector
+)
 
 @Composable
 fun SettingScreen(
@@ -57,14 +61,13 @@ fun SettingScreen(
     onNavigateTo: (SettingInfo) -> Unit = {},
     onLogout: () -> Unit = {}
 ) {
-    val vm = LocalSettingVM.current
-    val writeError by vm.writeError.collectAsState()
+    val setting = LocalSettingVM.current
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(writeError) {
-        val err = writeError ?: return@LaunchedEffect
-        snackbarHostState.showSnackbar(err.message ?: "Operation failed")
-        vm.clearError()
+    LaunchedEffect(Unit) {
+        setting.errors.collect { message ->
+            snackbarHostState.showSnackbar(message)
+        }
     }
 
     var search by remember { mutableStateOf("") }
@@ -83,13 +86,31 @@ fun SettingScreen(
                 .background(MaterialTheme.colorScheme.background)
                 .windowInsetsPadding(WindowInsets.systemBars)
         ) {
-            WorkspaceHeader(title = "Settings", subtitle = "App · preferences", onNavigateBack = onNavigateBack)
+            WorkspaceHeader(
+                title = "Settings",
+                subtitle = "App · preferences",
+                onNavigateBack = onNavigateBack
+            )
 
             BoxWithConstraints(modifier = Modifier.weight(1f)) {
                 if (maxWidth >= 600.dp) {
-                    DesktopLayout(search, { search = it }, allItems, filteredItems, onNavigateTo, onLogout)
+                    DesktopLayout(
+                        search,
+                        { search = it },
+                        allItems,
+                        filteredItems,
+                        onNavigateTo,
+                        onLogout
+                    )
                 } else {
-                    MobileLayout(search, { search = it }, allItems, filteredItems, onNavigateTo, onLogout)
+                    MobileLayout(
+                        search,
+                        { search = it },
+                        allItems,
+                        filteredItems,
+                        onNavigateTo,
+                        onLogout
+                    )
                 }
             }
         }
@@ -178,8 +199,16 @@ private fun DesktopLayout(
                     )
                     Spacer(Modifier.width(12.dp))
                     Column {
-                        Text("User Name", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-                        Text("nostr:npub1...", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                        Text(
+                            "User Name",
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            "nostr:npub1...",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 12.sp
+                        )
                     }
                 }
 
@@ -198,7 +227,11 @@ private fun DesktopLayout(
                 Spacer(Modifier.weight(1f))
 
                 SettingItemRow(
-                    item = SettingItemData(SettingInfo.SIGN_OUT, SettingGroup.ACCOUNT, Icons.AutoMirrored.Filled.Logout),
+                    item = SettingItemData(
+                        SettingInfo.SIGN_OUT,
+                        SettingGroup.ACCOUNT,
+                        Icons.AutoMirrored.Filled.Logout
+                    ),
                     onClick = onLogout
                 )
             }
@@ -238,8 +271,17 @@ private fun StatusItem(label: String, value: String) {
         modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(label, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text(value, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
+        Text(
+            label,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Text(
+            value,
+            style = MaterialTheme.typography.bodySmall,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurface
+        )
     }
 }
 
@@ -288,7 +330,8 @@ private fun SettingList(
 private fun SettingItemRow(item: SettingItemData, onClick: () -> Unit) {
     val isLogout = item.destination == SettingInfo.SIGN_OUT
     val tintColor = if (isLogout) Color(0xFFE53935) else MaterialTheme.colorScheme.primary
-    val bgColor = if (isLogout) Color(0xFFFFEBEE) else MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+    val bgColor =
+        if (isLogout) Color(0xFFFFEBEE) else MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
 
     Row(
         modifier = Modifier
@@ -303,7 +346,12 @@ private fun SettingItemRow(item: SettingItemData, onClick: () -> Unit) {
             modifier = Modifier.size(40.dp).clip(RoundedCornerShape(10.dp)).background(bgColor),
             contentAlignment = Alignment.Center
         ) {
-            Icon(item.icon, contentDescription = null, tint = tintColor, modifier = Modifier.size(20.dp))
+            Icon(
+                item.icon,
+                contentDescription = null,
+                tint = tintColor,
+                modifier = Modifier.size(20.dp)
+            )
         }
 
         Spacer(Modifier.width(16.dp))
@@ -315,12 +363,20 @@ private fun SettingItemRow(item: SettingItemData, onClick: () -> Unit) {
                 color = if (isLogout) tintColor else MaterialTheme.colorScheme.onSurface
             )
             item.destination.subtitle?.let {
-                Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    it,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
 
         if (!isLogout) {
-            Icon(Icons.Default.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.outline)
+            Icon(
+                Icons.Default.ChevronRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.outline
+            )
         }
     }
 }
@@ -344,7 +400,7 @@ private fun getSettingItems() = listOf(
 @Composable
 private fun SettingScreenMobilePreview() {
     MaterialTheme {
-        CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+        CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
             SettingScreen()
         }
     }
@@ -354,7 +410,7 @@ private fun SettingScreenMobilePreview() {
 @Composable
 private fun SettingScreenDesktopPreview() {
     MaterialTheme {
-        CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+        CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
             SettingScreen()
         }
     }

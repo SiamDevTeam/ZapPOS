@@ -81,9 +81,9 @@ fun DesktopSplashWindow(
             SplashScreen(viewModel = splashViewModel)
         }
 
-        val isReady by splashViewModel.isReady.collectAsState()
-        LaunchedEffect(isReady) {
-            if (isReady) {
+        val splashState by splashViewModel.state.collectAsState()
+        LaunchedEffect(splashState.isReady) {
+            if (splashState.isReady) {
                 isOpen = false
                 onFinished()
             }

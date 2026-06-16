@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import org.siamdev.zappos.LocalProgressVM
 import org.siamdev.zappos.LocalSettingVM
 import org.siamdev.zappos.ui.components.common.CurrencyCodeIcon
 import androidx.compose.ui.Modifier
@@ -27,32 +28,34 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
-import org.siamdev.zappos.LocalProgressVM
 import org.siamdev.zappos.ui.components.common.MaterialButton
 import org.siamdev.zappos.ui.components.order.OrderItemList
 import org.siamdev.zappos.ui.components.progress.ProgressBar
+import org.siamdev.zappos.ui.components.progress.ProgressFacadeImpl
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 import org.siamdev.zappos.ui.screens.sale.SaleOrderSteps
 import org.siamdev.zappos.utils.DateTimeUtils
+import org.siamdev.zappos.ui.screens.setting.SettingFacadeImpl
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 import org.siamdev.zappos.ui.components.progress.ProgressViewModel
 
 @Composable
 fun PaymentProcessingScreen(
-    viewModel: CheckoutViewModel,
+    checkout: CheckoutFacade,
     onConfirm: () -> Unit = {},
     onBack: () -> Unit = {}
 ) {
+    val selectedMethod = checkout.selectedPaymentMethod
     val txId = remember { "TX${(10000..99999).random()}" }
-    val title = when (viewModel.selectedMethod) {
+    val title = when (selectedMethod) {
         PaymentMethod.BITCOIN_LIGHTNING -> "Lightning Invoice"
         PaymentMethod.NFC_LIGHTNING -> "NFC Lightning"
         PaymentMethod.PROMPT_PAY -> "Prompt Pay"
         PaymentMethod.CASH -> "Cash Payment"
         null -> "Payment"
     }
-    val showQr = viewModel.selectedMethod == PaymentMethod.BITCOIN_LIGHTNING ||
-            viewModel.selectedMethod == PaymentMethod.PROMPT_PAY
+    val showQr = selectedMethod == PaymentMethod.BITCOIN_LIGHTNING ||
+            selectedMethod == PaymentMethod.PROMPT_PAY
 
     BoxWithConstraints(
         modifier = Modifier
@@ -62,7 +65,7 @@ fun PaymentProcessingScreen(
     ) {
         if (maxWidth >= 750.dp) {
             DesktopProcessingLayout(
-                viewModel = viewModel,
+                checkout = checkout,
                 txId = txId,
                 title = title,
                 showQr = showQr,
@@ -71,7 +74,7 @@ fun PaymentProcessingScreen(
             )
         } else {
             MobileProcessingLayout(
-                viewModel = viewModel,
+                checkout = checkout,
                 txId = txId,
                 title = title,
                 showQr = showQr,
@@ -84,7 +87,7 @@ fun PaymentProcessingScreen(
 
 @Composable
 private fun MobileProcessingLayout(
-    viewModel: CheckoutViewModel,
+    checkout: CheckoutFacade,
     txId: String,
     title: String,
     showQr: Boolean,
@@ -93,8 +96,10 @@ private fun MobileProcessingLayout(
 ) {
     var orderExpanded by remember { mutableStateOf(false) }
 
-    val progressVM = LocalProgressVM.current
-    SideEffect { progressVM.setup(SaleOrderSteps, 2) }
+    val progress = LocalProgressVM.current
+    SideEffect { progress.setup(SaleOrderSteps, 2) }
+
+    val orderItems = checkout.orderItems
 
     Column(modifier = Modifier.fillMaxSize()) {
         WorkspaceHeader(title = title, subtitle = "Sales · processing", onNavigateBack = onBack)
@@ -171,7 +176,7 @@ private fun MobileProcessingLayout(
                                     .padding(horizontal = 8.dp, vertical = 2.dp)
                             ) {
                                 Text(
-                                    text = "${viewModel.orderItems.size}",
+                                    text = "${orderItems.size}",
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.primary,
                                     fontWeight = FontWeight.Bold
@@ -204,7 +209,7 @@ private fun MobileProcessingLayout(
                                 .background(MaterialTheme.colorScheme.surface)
                                 .padding(8.dp)
                         ) {
-                            viewModel.orderItems.forEachIndexed { index, item ->
+                            orderItems.forEachIndexed { index, item ->
                                 CheckoutItemRow(item = item, isEven = index % 2 == 1)
                             }
                         }
@@ -215,7 +220,7 @@ private fun MobileProcessingLayout(
             item { SectionLabel("PAYMENT DETAIL") }
 
             item {
-                ProcessingDetailCard(viewModel = viewModel, txId = txId)
+                ProcessingDetailCard(checkout = checkout, txId = txId)
             }
         }
 
@@ -232,15 +237,17 @@ private fun MobileProcessingLayout(
 
 @Composable
 private fun DesktopProcessingLayout(
-    viewModel: CheckoutViewModel,
+    checkout: CheckoutFacade,
     txId: String,
     title: String,
     showQr: Boolean,
     onConfirm: () -> Unit,
     onBack: () -> Unit
 ) {
-    val progressVM = LocalProgressVM.current
-    SideEffect { progressVM.setup(SaleOrderSteps, 2) }
+    val progress = LocalProgressVM.current
+    SideEffect { progress.setup(SaleOrderSteps, 2) }
+
+    val orderItems = checkout.orderItems
 
     Column(modifier = Modifier.fillMaxSize()) {
         WorkspaceHeader(title = title, subtitle = "Sales · processing", onNavigateBack = onBack)
@@ -264,7 +271,6 @@ private fun DesktopProcessingLayout(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.Top
         ) {
-            // Left: QR + order list
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -279,21 +285,20 @@ private fun DesktopProcessingLayout(
                     )
                 }
                 OrderItemList(
-                    items = viewModel.orderItems,
+                    items = orderItems,
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
                 )
             }
 
-            // Right: detail card + Done button
             Column(
                 modifier = Modifier
                     .width(380.dp)
                     .wrapContentHeight(),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                ProcessingDetailCard(viewModel = viewModel, txId = txId)
+                ProcessingDetailCard(checkout = checkout, txId = txId)
                 MaterialButton(
                     modifier = Modifier.fillMaxWidth(),
                     text = "Done",
@@ -361,18 +366,16 @@ private fun ProcessingQrSection(modifier: Modifier = Modifier) {
 
 @Composable
 private fun ProcessingDetailCard(
-    viewModel: CheckoutViewModel,
+    checkout: CheckoutFacade,
     txId: String,
     modifier: Modifier = Modifier
 ) {
-    val taxPercent = viewModel.taxPercent
+    val taxPercent = checkout.taxPercent
     val hasVat = taxPercent > 0f
-    val settingVM = LocalSettingVM.current
-    val primaryCurrency by settingVM.primaryCurrency.collectAsState()
-    val secondaryCurrency by settingVM.secondaryCurrency.collectAsState()
-    val showSecondary by settingVM.showSecondaryCurrency.collectAsState()
-    val primaryCode = primaryCurrency?.code ?: "THB"
-    val secondaryCode = secondaryCurrency?.code ?: "SATS"
+    val setting = LocalSettingVM.current
+    val primaryCode = setting.primaryCurrency?.code ?: "THB"
+    val secondaryCode = setting.secondaryCurrency?.code ?: "SATS"
+    val showSecondary = setting.showSecondaryCurrency
 
     Column(
         modifier = modifier
@@ -452,7 +455,7 @@ private fun ProcessingDetailCard(
                         tint = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
-                        viewModel.grandTotalFiat,
+                        checkout.grandTotalFiat,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
@@ -469,7 +472,7 @@ private fun ProcessingDetailCard(
                             tint = Color(0xFFFFB700)
                         )
                         Text(
-                            viewModel.grandTotalSat,
+                            checkout.grandTotalSat,
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color(0xFFFFB700),
                             fontWeight = FontWeight.SemiBold
@@ -481,7 +484,7 @@ private fun ProcessingDetailCard(
     }
 }
 
-private val processingPreviewViewModel = CheckoutViewModel().apply {
+private val processingPreviewVM = CheckoutViewModel().apply {
     syncFromMenu(
         items = listOf(
             CheckoutItem("Mocha", 2u, "70.00", "17,500"),
@@ -519,10 +522,10 @@ fun PaymentProcessingMobilePreview() {
     val settingVM = remember { SettingViewModel() }
 
     CompositionLocalProvider(
-        LocalProgressVM provides progressVM,
-        LocalSettingVM provides settingVM
+        LocalProgressVM provides ProgressFacadeImpl(progressVM),
+        LocalSettingVM provides SettingFacadeImpl(settingVM)
     ) {
-        MaterialTheme { PaymentProcessingScreen(viewModel = processingPreviewViewModel) }
+        MaterialTheme { PaymentProcessingScreen(checkout = CheckoutFacadeImpl(processingPreviewVM)) }
     }
 }
 
@@ -533,9 +536,9 @@ fun PaymentProcessingDesktopPreview() {
     val settingVM = remember { SettingViewModel() }
 
     CompositionLocalProvider(
-        LocalProgressVM provides progressVM,
-        LocalSettingVM provides settingVM
+        LocalProgressVM provides ProgressFacadeImpl(progressVM),
+        LocalSettingVM provides SettingFacadeImpl(settingVM)
     ) {
-        MaterialTheme { PaymentProcessingScreen(viewModel = processingPreviewViewModel) }
+        MaterialTheme { PaymentProcessingScreen(checkout = CheckoutFacadeImpl(processingPreviewVM)) }
     }
 }

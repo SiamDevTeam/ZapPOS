@@ -21,6 +21,7 @@ import org.siamdev.zappos.ui.components.menu.DefaultProductCategories
 import org.siamdev.zappos.ui.components.product.ProductHeader
 import org.siamdev.zappos.ui.components.stock.*
 import org.siamdev.zappos.ui.screens.product.goods.sampleProducts
+import org.siamdev.zappos.ui.screens.setting.SettingFacadeImpl
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 import kotlin.math.abs
 
@@ -183,7 +184,7 @@ internal fun MonitorStockTabContent(product: MasterEvent) {
 )
 @Composable
 private fun MonitorStockInStockPreview() {
-    CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
         MonitorStockTabContent(product = sampleProducts().first())
     }
 }
@@ -196,7 +197,7 @@ private fun MonitorStockInStockPreview() {
 )
 @Composable
 private fun MonitorStockOutOfStockPreview() {
-    CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
         MonitorStockTabContent(product = sampleProducts().first { it.stockQty == 0 })
     }
 }
@@ -209,7 +210,7 @@ private fun MonitorStockOutOfStockPreview() {
 )
 @Composable
 private fun MonitorStockNoTrackingPreview() {
-    CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
         MonitorStockTabContent(product = sampleProducts().first { it.stockQty == null })
     }
 }
@@ -222,7 +223,7 @@ private fun MonitorStockNoTrackingPreview() {
 )
 @Composable
 private fun MonitorStockWidePreview() {
-    CompositionLocalProvider(LocalSettingVM provides SettingViewModel()) {
+    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(SettingViewModel())) {
         MonitorStockTabContent(product = sampleProducts().first())
     }
 }

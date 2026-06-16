@@ -8,17 +8,26 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class CounterViewModel : ViewModel() {
 
-    private val _count = MutableStateFlow(0)
-    val count: StateFlow<Int> = _count.asStateFlow()
+    data class State(val count: Int = 0)
 
-    fun plus() = _count.value++
+    sealed class SideEffect
 
-    fun minus() = _count.value--
+    private val _state = MutableStateFlow(State())
+    val state: StateFlow<State> = _state.asStateFlow()
+
+    fun plus() {
+        _state.update { it.copy(count = it.count + 1) }
+    }
+
+    fun minus() {
+        _state.update { it.copy(count = it.count - 1) }
+    }
 
     fun reset() {
-        _count.value = 0
+        _state.value = State()
     }
 }

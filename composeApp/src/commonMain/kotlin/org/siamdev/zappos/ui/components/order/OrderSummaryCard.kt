@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import org.siamdev.zappos.ui.components.common.PrimaryAmt
 import org.siamdev.zappos.ui.components.common.SecondaryAmt
 import org.siamdev.zappos.ui.screens.sale.checkout.formatDouble
+import org.siamdev.zappos.ui.screens.setting.SettingFacadeImpl
 import org.siamdev.zappos.ui.screens.setting.SettingViewModel
 
 
@@ -66,7 +67,11 @@ fun OrderSummaryCard(
                     textStyle = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold
                 )
-                SecondaryAmt(value = subtotalSat, iconSize = 12.dp, textStyle = MaterialTheme.typography.bodySmall)
+                SecondaryAmt(
+                    value = subtotalSat,
+                    iconSize = 12.dp,
+                    textStyle = MaterialTheme.typography.bodySmall
+                )
             }
         }
 
@@ -116,7 +121,11 @@ fun OrderSummaryCard(
                     textStyle = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
-                SecondaryAmt(value = formatDouble(grandTotalSat), iconSize = 13.dp, textStyle = MaterialTheme.typography.bodySmall)
+                SecondaryAmt(
+                    value = formatDouble(grandTotalSat),
+                    iconSize = 13.dp,
+                    textStyle = MaterialTheme.typography.bodySmall
+                )
             }
         }
     }
@@ -151,7 +160,11 @@ private fun VatChip(rate: Float, isSelected: Boolean, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
-            .background(if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f))
+            .background(
+                if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(
+                    alpha = 0.06f
+                )
+            )
             .clickable { onClick() }
             .padding(horizontal = 10.dp, vertical = 5.dp),
         contentAlignment = Alignment.Center
@@ -170,7 +183,7 @@ private fun VatChip(rate: Float, isSelected: Boolean, onClick: () -> Unit) {
 @Composable
 fun OrderSummaryCardNoVatPreview() {
     val settingVM = remember { SettingViewModel() }
-    CompositionLocalProvider(LocalSettingVM provides settingVM) {
+    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(settingVM)) {
         MaterialTheme {
             OrderSummaryCard(
                 subtotalFiat = "845.00",
@@ -187,7 +200,7 @@ fun OrderSummaryCardNoVatPreview() {
 @Composable
 fun OrderSummaryCard7PercentPreview() {
     val settingVM = remember { SettingViewModel() }
-    CompositionLocalProvider(LocalSettingVM provides settingVM) {
+    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(settingVM)) {
         MaterialTheme {
             OrderSummaryCard(
                 subtotalFiat = "845.00",
@@ -204,7 +217,7 @@ fun OrderSummaryCard7PercentPreview() {
 @Composable
 fun OrderSummaryCard10PercentPreview() {
     val settingVM = remember { SettingViewModel() }
-    CompositionLocalProvider(LocalSettingVM provides settingVM) {
+    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(settingVM)) {
         MaterialTheme {
             OrderSummaryCard(
                 subtotalFiat = "845.00",
@@ -221,10 +234,16 @@ fun OrderSummaryCard10PercentPreview() {
 @Composable
 fun SecondaryAmtCryptoPreview() {
     val settingVM = remember { SettingViewModel() }
-    CompositionLocalProvider(LocalSettingVM provides settingVM) {
+    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(settingVM)) {
         MaterialTheme {
-            Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Text("Secondary Amount (SATS/BTC Style)", style = MaterialTheme.typography.labelSmall)
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Text(
+                    "Secondary Amount (SATS/BTC Style)",
+                    style = MaterialTheme.typography.labelSmall
+                )
                 SecondaryAmt(
                     value = "214,250",
                     iconSize = 18.dp,
@@ -239,7 +258,7 @@ fun SecondaryAmtCryptoPreview() {
 @Composable
 fun OrderSummaryCardInteractivePreview() {
     val settingVM = remember { SettingViewModel() }
-    CompositionLocalProvider(LocalSettingVM provides settingVM) {
+    CompositionLocalProvider(LocalSettingVM provides SettingFacadeImpl(settingVM)) {
         MaterialTheme {
             var tax by remember { mutableFloatStateOf(7f) }
             OrderSummaryCard(
