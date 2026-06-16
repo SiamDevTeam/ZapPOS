@@ -70,15 +70,10 @@ fun NavConfig(
 
         if (enableDrawer) {
             NavigationList(
-                isOpen = drawerOpen,
-                onDismiss = { drawerOpen = false },
-                onNavigateToHome = { navActions.to(Route.Home); drawerOpen = false },
-                onNavigateToMenu = { navActions.to(Route.Menu); drawerOpen = false },
-                onNavigateToCounter = { navActions.to(Route.Counter); drawerOpen = false },
-                onNavigateToGlow = { navActions.to(Route.GlowEffects); drawerOpen = false },
-                onNavigateToProductList = { navActions.to(Route.ProductList); drawerOpen = false },
-                onNavigateToProductEntry = { navActions.to(Route.ProductEntryMaster()); drawerOpen = false },
-                onNavigateToSetting = { navActions.to(Route.Setting); drawerOpen = false }
+                isOpen       = drawerOpen,
+                currentRoute = navActions.currentRoute() as? Route,
+                onDismiss    = { drawerOpen = false },
+                onNavigate   = { route -> navActions.to(route); drawerOpen = false }
             )
         }
     }

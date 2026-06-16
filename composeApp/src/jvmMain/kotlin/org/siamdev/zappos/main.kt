@@ -24,7 +24,6 @@ import org.siamdev.zappos.ui.screens.splash.SplashViewModel
 import org.siamdev.module.db.appDatabase
 import org.siamdev.zappos.cache.DesktopThumbnailCache
 import org.siamdev.zappos.cache.thumbnailCache
-import javax.swing.SwingUtilities
 
 private val database = runBlocking { appDatabase() }.also {
     it.registerDependencies()
@@ -89,11 +88,4 @@ fun DesktopSplashWindow(
             }
         }
     }
-}
-
-
-private inline fun <T : Any> runOnMainThreadBlocking(crossinline block: () -> T): T {
-    lateinit var result: T
-    SwingUtilities.invokeAndWait { result = block() }
-    return result
 }
