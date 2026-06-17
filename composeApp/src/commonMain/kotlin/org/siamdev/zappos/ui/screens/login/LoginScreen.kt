@@ -76,7 +76,7 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Card หลัก
+            // Main Card
             GlassCard(
                 modifier = Modifier
                     .width(cardWidth)

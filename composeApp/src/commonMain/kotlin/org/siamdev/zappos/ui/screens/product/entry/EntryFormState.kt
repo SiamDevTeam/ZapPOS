@@ -9,13 +9,15 @@ import androidx.compose.material.icons.filled.Inventory
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.runtime.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import org.siamdev.zappos.data.source.EventKind
 import org.siamdev.zappos.data.source.MasterEvent
 import org.siamdev.zappos.ui.components.common.TabItem
 import org.siamdev.zappos.utils.DateTimeUtils
 import org.siamdev.zappos.utils.TimeValue
 
-internal enum class EntryType {
+enum class EntryType {
     GOODS,
     SERVICE,
     RENTAL
@@ -48,77 +50,77 @@ internal val entryTabs: List<TabItem> =
     )
 
 @Stable
-internal class EntryFormState {
+internal class EntryFormState : MasterEntrySurface {
     // type
-    var entryType by mutableStateOf(EntryType.GOODS)
+    override var entryType by mutableStateOf(EntryType.GOODS)
 
-    // identity — null in create mode; set after save or when editing an existing item
-    var productId by mutableStateOf<String?>(null)
+    // identity
+    override var productId by mutableStateOf<String?>(null)
 
     // product details
-    var name by mutableStateOf("")
-    var category by mutableStateOf("")
-    var subCategory by mutableStateOf<String?>(null)
-    var description by mutableStateOf("")
-    var isAvailable by mutableStateOf(true)
-    var isRecommended by mutableStateOf(false)
+    override var name by mutableStateOf("")
+    override var category by mutableStateOf("")
+    override var subCategory by mutableStateOf<String?>(null)
+    override var description by mutableStateOf("")
+    override var isAvailable by mutableStateOf(true)
+    override var isRecommended by mutableStateOf(false)
 
     // pricing – shared
-    var price by mutableStateOf("")
-    var unit by mutableStateOf("piece")
-    var chargeVat by mutableStateOf(true)
-    var costPrice by mutableStateOf("")
-    var showCostPrice by mutableStateOf(false)
+    override var price by mutableStateOf("")
+    override var unit by mutableStateOf("piece")
+    override var chargeVat by mutableStateOf(true)
+    override var costPrice by mutableStateOf("")
+    override var showCostPrice by mutableStateOf(false)
 
     // pricing – goods only
-    var openPrice by mutableStateOf(false)
+    override var openPrice by mutableStateOf(false)
 
     // pricing – service only  (0 = per person, 1 = per session, 2 = per hour)
-    var chargedBy by mutableStateOf(2)
+    override var chargedBy by mutableStateOf(2)
 
     // pricing – rental only
-    var bookingDuration by mutableStateOf("60")
-    var minBooking by mutableStateOf("1")
+    override var bookingDuration by mutableStateOf("60")
+    override var minBooking by mutableStateOf("1")
 
     // inventory (goods)
-    var trackStock by mutableStateOf(true)
-    var openingStock by mutableStateOf("0")
-    var maxCapacity by mutableStateOf("0")
-    var lowStockAlert by mutableStateOf("0")
-    var supplier by mutableStateOf("")
-    var trackActive by mutableStateOf(false)
+    override var trackStock by mutableStateOf(true)
+    override var openingStock by mutableStateOf("0")
+    override var maxCapacity by mutableStateOf("0")
+    override var lowStockAlert by mutableStateOf("0")
+    override var supplier by mutableStateOf("")
+    override var trackActive by mutableStateOf(false)
 
     // schedule & capacity (service)
-    var serviceCapacity by mutableStateOf("12")
-    var serviceDuration by mutableStateOf("60")
-    var serviceOpens by mutableStateOf(TimeValue(9, 0))
-    var serviceCloses by mutableStateOf(TimeValue(18, 0))
-    var activeDays by mutableStateOf(setOf(0, 1, 2, 3, 4))
-    var instructor by mutableStateOf("")
-    var serviceRequiresBooking by mutableStateOf(false)
+    override var serviceCapacity by mutableStateOf("12")
+    override var serviceDuration by mutableStateOf("60")
+    override var serviceOpens by mutableStateOf(TimeValue(9, 0))
+    override var serviceCloses by mutableStateOf(TimeValue(18, 0))
+    override var activeDays by mutableStateOf(setOf(0, 1, 2, 3, 4))
+    override var instructor by mutableStateOf("")
+    override var serviceRequiresBooking by mutableStateOf(false)
 
     // resources & booking (rental)
-    var rentalUnitsCount by mutableStateOf("2")
-    var rentalBuffer by mutableStateOf("0")
-    var rentalOpens by mutableStateOf(TimeValue(8, 0))
-    var rentalCloses by mutableStateOf(TimeValue(22, 0))
-    var depositAmount by mutableStateOf("0.00")
-    var rentalRequiresBooking by mutableStateOf(true)
+    override var rentalUnitsCount by mutableStateOf("2")
+    override var rentalBuffer by mutableStateOf("0")
+    override var rentalOpens by mutableStateOf(TimeValue(8, 0))
+    override var rentalCloses by mutableStateOf(TimeValue(22, 0))
+    override var depositAmount by mutableStateOf("0.00")
+    override var rentalRequiresBooking by mutableStateOf(true)
 
     // options & add-ons
-    var optionGroups by mutableStateOf(emptyList<OptionGroup>())
+    override var optionGroups by mutableStateOf(emptyList<OptionGroup>())
 
     // advanced
-    var advancedExpanded by mutableStateOf(false)
-    var sku by mutableStateOf("")
-    var barcode by mutableStateOf("")
-    var sendOrderTo by mutableStateOf("None")
-    var displayOrder by mutableStateOf("0")
+    override var advancedExpanded by mutableStateOf(false)
+    override var sku by mutableStateOf("")
+    override var barcode by mutableStateOf("")
+    override var sendOrderTo by mutableStateOf("None")
+    override var displayOrder by mutableStateOf("0")
 
-    val isFormValid: Boolean
+    override val isFormValid: Boolean
         get() = name.isNotBlank() && price.isNotBlank()
 
-    val unitOptions: List<String>
+    override val unitOptions: List<String>
         get() =
             when (entryType) {
                 EntryType.GOODS ->
@@ -126,6 +128,14 @@ internal class EntryFormState {
                 EntryType.SERVICE -> listOf("session", "person", "hour", "course", "class", "month")
                 EntryType.RENTAL -> listOf("hour", "court", "field", "table", "room", "day")
             }
+
+    override val isEditMode: Boolean get() = false
+
+    override val effect: SharedFlow<MasterEntryViewModel.SideEffect> =
+        MutableSharedFlow()
+
+    override fun save() = Unit
+    override fun discard() = Unit
 }
 
 internal fun EntryFormState.loadFrom(event: MasterEvent) {

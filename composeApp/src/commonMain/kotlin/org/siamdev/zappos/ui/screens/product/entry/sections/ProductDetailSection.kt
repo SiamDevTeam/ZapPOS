@@ -22,6 +22,7 @@ import org.siamdev.zappos.ui.components.common.SectionCard
 import org.siamdev.zappos.ui.components.common.ToggleItem
 import org.siamdev.zappos.ui.screens.product.entry.EntryFormState
 import org.siamdev.zappos.ui.screens.product.entry.EntryType
+import org.siamdev.zappos.ui.screens.product.entry.MasterEntrySurface
 import org.siamdev.zappos.ui.screens.product.entry.rememberEntryFormState
 
 private data class TypeConfig(
@@ -67,7 +68,7 @@ private fun typeConfigFor(type: EntryType): TypeConfig =
     }
 
 @Composable
-internal fun ProductDetailsSection(state: EntryFormState) {
+internal fun ProductDetailsSection(state: MasterEntrySurface) {
     val config = typeConfigFor(state.entryType)
 
     SectionCard(
@@ -86,7 +87,7 @@ internal fun ProductDetailsSection(state: EntryFormState) {
 }
 
 @Composable
-private fun DetailsDesktop(state: EntryFormState, config: TypeConfig) {
+private fun DetailsDesktop(state: MasterEntrySurface, config: TypeConfig) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
 
         Row(
@@ -188,7 +189,7 @@ private fun DetailsDesktop(state: EntryFormState, config: TypeConfig) {
 
 // Mobile: full-width image at top, then each field stacked individually, then toggles.
 @Composable
-private fun DetailsMobile(state: EntryFormState, config: TypeConfig) {
+private fun DetailsMobile(state: MasterEntrySurface, config: TypeConfig) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
 
         ImagePickerBox(

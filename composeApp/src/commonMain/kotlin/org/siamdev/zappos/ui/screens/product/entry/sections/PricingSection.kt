@@ -35,11 +35,12 @@ import org.siamdev.zappos.ui.components.common.TextIconButton
 import org.siamdev.zappos.ui.components.common.ToggleItem
 import org.siamdev.zappos.ui.screens.product.entry.EntryFormState
 import org.siamdev.zappos.ui.screens.product.entry.EntryType
+import org.siamdev.zappos.ui.screens.product.entry.MasterEntrySurface
 import org.siamdev.zappos.ui.screens.product.entry.rememberEntryFormState
 import org.siamdev.zappos.utils.formatAmount
 
 @Composable
-internal fun PricingSection(state: EntryFormState) {
+internal fun PricingSection(state: MasterEntrySurface) {
     val margin =
         remember(state.price, state.costPrice) {
             val p = state.price.toDoubleOrNull() ?: 0.0

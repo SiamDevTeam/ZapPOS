@@ -52,11 +52,7 @@ class NavigationViewModel : ViewModel() {
     private val _state = MutableStateFlow(State())
     val state: StateFlow<State> = _state.asStateFlow()
 
-    fun setActiveNav(id: String) {
-        _state.update { it.copy(activeNavId = id) }
-    }
+    fun setActiveNav(id: String) = _state.update { it.copy(activeNavId = id) }
 
-    fun setFilter(sectionId: String?) {
-        _state.update { it.copy(activeSectionId = sectionId) }
-    }
+    fun setFilter(sectionId: String?) = _state.update { it.copy(activeSectionId = sectionId) }
 }

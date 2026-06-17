@@ -9,6 +9,8 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Image
@@ -20,7 +22,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.automirrored.filled.ViewList
 import androidx.compose.material.icons.filled.*
@@ -38,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
+import org.siamdev.zappos.APP_VERSION
 import org.siamdev.zappos.LocalNavigationVM
 import org.siamdev.zappos.LocalSettingVM
 import org.siamdev.zappos.navigation.Route
@@ -104,8 +106,7 @@ private val NAV_ITEMS = listOf(
     NavDef("s_rpt", "Sales Reports", Icons.Default.BarChart, NavSection.REPORTS),
     NavDef("i_rpt", "Inventory Reports", Icons.Default.Assessment, NavSection.REPORTS),
     NavDef("pnl", "Profit & Loss", Icons.AutoMirrored.Filled.TrendingUp, NavSection.REPORTS),
-    NavDef("settings", "Settings", Icons.Default.Settings, NavSection.SYSTEM, Route.Setting),
-    NavDef("help", "Help & Support", Icons.AutoMirrored.Filled.Help, NavSection.SYSTEM),
+    NavDef("settings", "Settings", Icons.Default.Settings, NavSection.SYSTEM, Route.Setting)
 )
 
 
@@ -136,6 +137,7 @@ private val CAT_OPTIONS = listOf(
 fun NavigationList(
     isOpen: Boolean,
     currentRoute: Route? = null,
+    initialShowCatSheet: Boolean = false,
     onDismiss: () -> Unit,
     onNavigate: (Route) -> Unit = {}
 ) {
@@ -156,7 +158,9 @@ fun NavigationList(
     val filter: NavSection? = remember(navVM.activeSectionId) {
         navVM.activeSectionId?.let { id -> NavSection.entries.find { it.name == id } }
     }
-    var showCatSheet by remember { mutableStateOf(false) }
+    var showCatSheet by remember { mutableStateOf(initialShowCatSheet) }
+
+    LaunchedEffect(isOpen) { if (!isOpen) showCatSheet = false }
 
     // Sync highlighted item with the currently displayed screen
     LaunchedEffect(currentRoute, isOpen) {
@@ -174,7 +178,8 @@ fun NavigationList(
         }
     }
 
-    Box(Modifier.fillMaxSize()) {
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+        val isDesktop = maxWidth >= 840.dp
 
         // Scrim
         AnimatedVisibility(
@@ -257,37 +262,65 @@ fun NavigationList(
             }
         }
 
-        // Function Category bottom sheet
-        SlideBottomSheet(
-            show = showCatSheet,
-            onDismiss = { showCatSheet = false },
-            topContent = {
-                Text(
-                    text = "FUNCTION CATEGORY",
-                    color = muted,
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Medium,
-                    letterSpacing = 1.5.sp,
-                    modifier = Modifier.padding(bottom = 12.dp)
+        // Desktop: floating category card anchored near the drawer footer
+        AnimatedVisibility(
+            visible = isDesktop && showCatSheet,
+            enter = fadeIn(tween(150)) + scaleIn(tween(150), initialScale = 0.92f),
+            exit = fadeOut(tween(120)) + scaleOut(tween(120), targetScale = 0.92f),
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(end = DrawerWidth + 8.dp, bottom = 64.dp),
+                contentAlignment = Alignment.BottomEnd,
+            ) {
+                CategoryFilterCard(
+                    filter = filter,
+                    accent = accent,
+                    text = text,
+                    muted = muted,
+                    drawerBg = drawerBg,
+                    onSelect = { id ->
+                        navVM.setFilter(id)
+                        showCatSheet = false
+                    },
                 )
-                CAT_OPTIONS.forEach { opt ->
-                    val selected = if (opt.sectionId == null) filter == null
-                    else filter?.name == opt.sectionId
-                    CatRow(
-                        opt = opt,
-                        isSelected = selected,
-                        accent = accent,
-                        text = text,
-                        muted = muted,
-                        onClick = {
-                            navVM.setFilter(opt.sectionId)
-                            showCatSheet = false
-                        }
+            }
+        }
+
+        // Mobile / Tablet: bottom sheet
+        if (!isDesktop) {
+            SlideBottomSheet(
+                show = showCatSheet,
+                onDismiss = { showCatSheet = false },
+                topContent = {
+                    Text(
+                        text = "FUNCTION CATEGORY",
+                        color = muted,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Medium,
+                        letterSpacing = 1.5.sp,
+                        modifier = Modifier.padding(bottom = 12.dp)
                     )
-                }
-            },
-            bottomContent = {}
-        )
+                    CAT_OPTIONS.forEach { opt ->
+                        val selected = if (opt.sectionId == null) filter == null
+                        else filter?.name == opt.sectionId
+                        CatRow(
+                            opt = opt,
+                            isSelected = selected,
+                            accent = accent,
+                            text = text,
+                            muted = muted,
+                            onClick = {
+                                navVM.setFilter(opt.sectionId)
+                                showCatSheet = false
+                            }
+                        )
+                    }
+                },
+                bottomContent = {}
+            )
+        }
 
     }
 }
@@ -313,22 +346,43 @@ private fun BrandHeader(muted: Color) {
         )
         Spacer(Modifier.height(10.dp))
         Row(
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(5.dp)
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(5.dp),
+            ) {
+                Box(
+                    Modifier
+                        .size(6.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFF4CAF50))
+                )
+                Text(
+                    text = "Point of Sale System",
+                    color = muted,
+                    fontSize = 10.sp,
+                    letterSpacing = 0.3.sp,
+                )
+            }
             Box(
-                Modifier
-                    .size(6.dp)
-                    .clip(CircleShape)
-                    .background(Color(0xFF4CAF50))
-            )
-            Text(
-                text = "Point of Sale System",
-                color = muted,
-                fontSize = 10.sp,
-                letterSpacing = 0.3.sp
-            )
+                modifier = Modifier
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(muted.copy(alpha = 0.1f))
+                    .padding(horizontal = 6.dp, vertical = 2.dp),
+            ) {
+                Text(
+                    text = "v$APP_VERSION",
+                    color = muted,
+                    fontSize = 9.sp,
+                    fontWeight = FontWeight.Medium,
+                    letterSpacing = 0.5.sp,
+                )
+            }
         }
+        Spacer(Modifier.height(4.dp))
     }
 }
 
@@ -470,17 +524,6 @@ private fun FooterSection(
             Text("Settings", color = text, fontSize = 14.sp, modifier = Modifier.weight(1f))
         }
 
-        // Help & Support
-        FooterRow(
-            icon = Icons.AutoMirrored.Filled.Help,
-            iconBg = accent.copy(alpha = 0.12f),
-            iconTint = accent,
-            surface = Color.Transparent,
-            onClick = {}
-        ) {
-            Text("Help & Support", color = text, fontSize = 14.sp, modifier = Modifier.weight(1f))
-        }
-
         // Function Category
         FooterRow(
             icon = Icons.Default.GridView,
@@ -558,7 +601,7 @@ private fun CatRow(
             .clip(RoundedCornerShape(10.dp))
             .background(if (isSelected) accent.copy(alpha = 0.10f) else Color.Transparent)
             .clickable { onClick() }
-            .padding(horizontal = 4.dp, vertical = 8.dp)
+            .padding(horizontal = 10.dp, vertical = 8.dp)
             .heightIn(min = 44.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -589,12 +632,59 @@ private fun CatRow(
 
 
 
+@Composable
+private fun CategoryFilterCard(
+    filter: NavSection?,
+    accent: Color,
+    text: Color,
+    muted: Color,
+    drawerBg: Color,
+    onSelect: (String?) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier.width(240.dp),
+        shape = RoundedCornerShape(16.dp),
+        tonalElevation = 4.dp,
+        shadowElevation = 16.dp,
+        color = drawerBg,
+    ) {
+        Column(
+            modifier = Modifier.padding(8.dp),
+        ) {
+            Text(
+                text = "FUNCTION CATEGORY",
+                color = muted,
+                fontSize = 10.sp,
+                fontWeight = FontWeight.Medium,
+                letterSpacing = 1.5.sp,
+                modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp)
+            )
+            CAT_OPTIONS.forEach { opt ->
+                val selected = if (opt.sectionId == null) filter == null
+                else filter?.name == opt.sectionId
+                CatRow(
+                    opt = opt,
+                    isSelected = selected,
+                    accent = accent,
+                    text = text,
+                    muted = muted,
+                    onClick = { onSelect(opt.sectionId) }
+                )
+            }
+            Spacer(Modifier.height(4.dp))
+        }
+    }
+}
+
+
 @Preview(name = "Drawer – Dark", showBackground = true, widthDp = 411, heightDp = 891)
 @Composable
 private fun DrawerDarkPreview() {
     MaterialTheme(colorScheme = darkColorScheme()) {
         CompositionLocalProvider(
-            LocalSettingVM provides SettingSurfaceImpl(SettingViewModel())
+            LocalSettingVM provides SettingSurfaceImpl(SettingViewModel()),
+            LocalNavigationVM provides NavigationSurfaceImpl(NavigationViewModel())
         ) {
             NavigationList(isOpen = true, onDismiss = {})
         }
@@ -606,7 +696,8 @@ private fun DrawerDarkPreview() {
 private fun DrawerLightPreview() {
     MaterialTheme(colorScheme = lightColorScheme()) {
         CompositionLocalProvider(
-            LocalSettingVM provides SettingSurfaceImpl(SettingViewModel())
+            LocalSettingVM provides SettingSurfaceImpl(SettingViewModel()),
+            LocalNavigationVM provides NavigationSurfaceImpl(NavigationViewModel())
         ) {
             NavigationList(isOpen = true, onDismiss = {})
         }
@@ -623,7 +714,8 @@ private fun DrawerLightPreview() {
 private fun DrawerActiveItemPreview() {
     MaterialTheme {
         CompositionLocalProvider(
-            LocalSettingVM provides SettingSurfaceImpl(SettingViewModel())
+            LocalSettingVM provides SettingSurfaceImpl(SettingViewModel()),
+            LocalNavigationVM provides NavigationSurfaceImpl(NavigationViewModel())
         ) {
             NavigationList(
                 isOpen = true,
@@ -644,11 +736,75 @@ private fun DrawerActiveItemPreview() {
 private fun DrawerActiveSettingsPreview() {
     MaterialTheme {
         CompositionLocalProvider(
-            LocalSettingVM provides SettingSurfaceImpl(SettingViewModel())
+            LocalSettingVM provides SettingSurfaceImpl(SettingViewModel()),
+            LocalNavigationVM provides NavigationSurfaceImpl(NavigationViewModel())
         ) {
             NavigationList(
                 isOpen = true,
                 currentRoute = Route.Setting,
+                onDismiss = {}
+            )
+        }
+    }
+}
+
+@Preview(
+    name = "Drawer – Filtered (Sales)",
+    showBackground = true,
+    widthDp = 411,
+    heightDp = 891
+)
+@Composable
+private fun DrawerFilteredPreview() {
+    val navVM = NavigationViewModel().apply { setFilter("SALES") }
+    MaterialTheme {
+        CompositionLocalProvider(
+            LocalSettingVM provides SettingSurfaceImpl(SettingViewModel()),
+            LocalNavigationVM provides NavigationSurfaceImpl(navVM)
+        ) {
+            NavigationList(isOpen = true, onDismiss = {})
+        }
+    }
+}
+
+@Preview(
+    name = "Drawer – Function Category Sheet",
+    showBackground = true,
+    widthDp = 411,
+    heightDp = 891
+)
+@Composable
+private fun DrawerCatSheetPreview() {
+    MaterialTheme {
+        CompositionLocalProvider(
+            LocalSettingVM provides SettingSurfaceImpl(SettingViewModel()),
+            LocalNavigationVM provides NavigationSurfaceImpl(NavigationViewModel())
+        ) {
+            NavigationList(
+                isOpen = true,
+                initialShowCatSheet = true,
+                onDismiss = {}
+            )
+        }
+    }
+}
+
+@Preview(
+    name = "Drawer – Function Category Card (Desktop)",
+    showBackground = true,
+    widthDp = 1024,
+    heightDp = 768
+)
+@Composable
+private fun DrawerCatCardDesktopPreview() {
+    MaterialTheme(colorScheme = darkColorScheme()) {
+        CompositionLocalProvider(
+            LocalSettingVM provides SettingSurfaceImpl(SettingViewModel()),
+            LocalNavigationVM provides NavigationSurfaceImpl(NavigationViewModel())
+        ) {
+            NavigationList(
+                isOpen = true,
+                initialShowCatSheet = true,
                 onDismiss = {}
             )
         }
@@ -661,6 +817,16 @@ private fun BrandHeaderPreview() {
     MaterialTheme {
         Surface(color = Color(0xFF101013)) {
             BrandHeader(muted = Color(0xFF8B8B93))
+        }
+    }
+}
+
+@Preview(name = "Sub: Section Header", showBackground = true, widthDp = 290)
+@Composable
+private fun SecHeaderPreview() {
+    MaterialTheme {
+        Surface(color = Color(0xFF101013)) {
+            SecHeader(label = "PRODUCTS", muted = Color(0xFF8B8B93))
         }
     }
 }
@@ -708,6 +874,51 @@ private fun FooterSectionPreview() {
                 onNavigate = {},
                 onDismiss = {}
             )
+        }
+    }
+}
+
+@Preview(name = "Sub: Footer Row", showBackground = true, widthDp = 290)
+@Composable
+private fun FooterRowPreview() {
+    MaterialTheme {
+        Surface(color = Color(0xFF101013)) {
+            FooterRow(
+                icon = Icons.Default.Settings,
+                iconBg = Color(0xFF4CAF50).copy(alpha = 0.12f),
+                iconTint = Color(0xFF4CAF50),
+                surface = Color.Transparent,
+                onClick = {}
+            ) {
+                Text("Settings", color = Color.White, fontSize = 14.sp)
+            }
+        }
+    }
+}
+
+@Preview(name = "Sub: Category Row", showBackground = true, widthDp = 290)
+@Composable
+private fun CatRowPreview() {
+    MaterialTheme {
+        Surface(color = Color(0xFF101013)) {
+            Column(Modifier.padding(8.dp)) {
+                CatRow(
+                    opt = CAT_OPTIONS[2],
+                    isSelected = true,
+                    accent = Color(0xFF4CAF50),
+                    text = Color.White,
+                    muted = Color(0xFF8B8B93),
+                    onClick = {}
+                )
+                CatRow(
+                    opt = CAT_OPTIONS[3],
+                    isSelected = false,
+                    accent = Color(0xFF4CAF50),
+                    text = Color.White,
+                    muted = Color(0xFF8B8B93),
+                    onClick = {}
+                )
+            }
         }
     }
 }

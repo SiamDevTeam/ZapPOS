@@ -19,12 +19,13 @@ import org.siamdev.zappos.ui.components.common.LabeledChipRow
 import org.siamdev.zappos.ui.components.common.NumberUnitField
 import org.siamdev.zappos.ui.components.common.SectionCard
 import org.siamdev.zappos.ui.screens.product.entry.EntryFormState
+import org.siamdev.zappos.ui.screens.product.entry.MasterEntrySurface
 import org.siamdev.zappos.ui.screens.product.entry.rememberEntryFormState
 
 private val orderDestinations = listOf("None", "Kitchen", "Bar", "Counter", "Grill")
 
 @Composable
-internal fun AdvancedSection(state: EntryFormState) {
+internal fun AdvancedSection(state: MasterEntrySurface) {
     SectionCard(
         icon = Icons.Default.Settings,
         title = "Advanced",

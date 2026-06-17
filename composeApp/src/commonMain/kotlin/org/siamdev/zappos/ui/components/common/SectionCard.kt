@@ -25,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -140,6 +141,110 @@ fun SectionCard(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 content = content
             )
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "SectionCard - Standard")
+@Composable
+private fun SectionCardStandardPreview() {
+    MaterialTheme {
+        Box(Modifier.padding(16.dp)) {
+            SectionCard(
+                icon = Icons.Default.KeyboardArrowDown,
+                title = "Appearance",
+                subtitle = "Customizing theme and fonts"
+            ) {
+                Text("Content inside the card goes here.")
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "SectionCard - With Badge")
+@Composable
+private fun SectionCardWithBadgePreview() {
+    MaterialTheme {
+        Box(Modifier.padding(16.dp)) {
+            SectionCard(
+                icon = Icons.Default.KeyboardArrowDown,
+                title = "Currencies",
+                subtitle = "Active currency pairs",
+                badge = "2 Active"
+            ) {
+                Text("Thai Baht (THB)")
+                Text("Sats (BTC)")
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "SectionCard - Expandable (Collapsed)")
+@Composable
+private fun SectionCardExpandableCollapsedPreview() {
+    MaterialTheme {
+        Box(Modifier.padding(16.dp)) {
+            SectionCard(
+                icon = Icons.Default.KeyboardArrowDown,
+                title = "Expandable Section",
+                subtitle = "Click to see more",
+                expanded = false,
+                onExpandChange = {}
+            ) {
+                Text("This should be hidden")
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "SectionCard - Expandable (Expanded)")
+@Composable
+private fun SectionCardExpandableExpandedPreview() {
+    MaterialTheme {
+        Box(Modifier.padding(16.dp)) {
+            SectionCard(
+                icon = Icons.Default.KeyboardArrowDown,
+                title = "Collapsible Section",
+                subtitle = "Currently showing details",
+                expanded = true,
+                onExpandChange = {}
+            ) {
+                Text("Detail Item 1")
+                Text("Detail Item 2")
+                Text("Detail Item 3")
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "SectionCard - Interactive")
+@Composable
+private fun SectionCardInteractivePreview() {
+    MaterialTheme {
+        var isExpanded by remember { mutableStateOf(true) }
+        Box(Modifier.padding(16.dp)) {
+            SectionCard(
+                icon = Icons.Default.KeyboardArrowDown,
+                title = "Interactive Section",
+                subtitle = "Click header to toggle",
+                expanded = isExpanded,
+                onExpandChange = { isExpanded = it }
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    repeat(3) { i ->
+                        Surface(
+                            color = MaterialTheme.colorScheme.surface,
+                            shape = RoundedCornerShape(8.dp),
+                            border = CardDefaults.outlinedCardBorder()
+                        ) {
+                            Text(
+                                "Dynamic Item ${i + 1}",
+                                modifier = Modifier.padding(12.dp).fillMaxWidth()
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }

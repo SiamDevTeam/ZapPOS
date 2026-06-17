@@ -34,7 +34,7 @@ fun GlassCard(
     horizontalAlignment : Alignment.Horizontal = Alignment.Start,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    val shape = RoundedCornerShape(24.dp)
+    val shape = RoundedCornerShape(17.dp)
 
     Column(
         modifier = modifier

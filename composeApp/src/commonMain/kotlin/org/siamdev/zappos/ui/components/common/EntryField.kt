@@ -8,14 +8,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,11 +37,17 @@ fun EntryField(
     minLines: Int = 1,
     keyboardType: KeyboardType = KeyboardType.Text,
     readOnly: Boolean = false,
+    viewMode: Boolean = false,
     textStyle: TextStyle = LocalTextStyle.current,
     prefix: @Composable (() -> Unit)? = null,
     suffix: @Composable (() -> Unit)? = null,
     trailingContent: @Composable (() -> Unit)? = null
 ) {
+    if (viewMode) {
+        EntryFieldView(label = label, value = value, modifier = modifier)
+        return
+    }
+
     val errorColor = MaterialTheme.colorScheme.error
     val variantColor = MaterialTheme.colorScheme.onSurfaceVariant
     OutlinedTextField(
@@ -86,13 +95,26 @@ fun NumberUnitField(
     onValueChange: (String) -> Unit,
     label: String,
     unitLabel: String,
-    modifier: Modifier = Modifier.fillMaxWidth()
+    modifier: Modifier = Modifier.fillMaxWidth(),
+    allowNegative: Boolean = false,
+    viewMode: Boolean = false,
 ) {
+    if (viewMode) {
+        EntryFieldView(label = label, value = "$value $unitLabel", modifier = modifier)
+        return
+    }
+
     EntryField(
         value = value,
-        onValueChange = { onValueChange(it.filter(Char::isDigit)) },
+        onValueChange = { raw ->
+            val negative = allowNegative && raw.startsWith("-")
+            val digits = raw.removePrefix("-").filter(Char::isDigit)
+            // Normalize: strip insignificant leading zeros ("05"→"5", "023"→"23").
+            val normalized = digits.trimStart('0').ifEmpty { if (digits.isEmpty()) "" else "0" }
+            onValueChange(if (negative) "-$normalized" else normalized)
+        },
         label = label,
-        keyboardType = KeyboardType.Number,
+        keyboardType = if (allowNegative) KeyboardType.Text else KeyboardType.Decimal,
         suffix = {
             Text(
                 text = unitLabel,
@@ -104,37 +126,114 @@ fun NumberUnitField(
     )
 }
 
-@Preview(showBackground = true)
+@Composable
+private fun EntryFieldView(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier.fillMaxWidth(),
+) {
+    Column(modifier = modifier) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Text(
+            text = value.ifEmpty { " — " },
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Medium,
+            color = if (value.isEmpty())
+                MaterialTheme.colorScheme.onSurfaceVariant
+            else
+                MaterialTheme.colorScheme.onSurface,
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "EntryField Gallery")
 @Composable
 private fun EntryFieldPreview() {
     MaterialTheme {
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(16.dp).verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Standard size
+            Text("Edit Mode", style = MaterialTheme.typography.titleMedium)
             EntryField(
                 value = "",
                 onValueChange = {},
                 label = "Standard Field",
-                placeholder = "Full width default",
+                placeholder = "Enter something here...",
             )
-            
-            // Scaled down by width
             EntryField(
-                value = "123",
+                value = "ZapPOS User",
                 onValueChange = {},
-                label = "Smaller Width",
-                modifier = Modifier.fillMaxWidth(0.5f)
+                label = "Required Field",
+                required = true
+            )
+            EntryField(
+                value = "",
+                onValueChange = {},
+                label = "Optional Field",
+                optional = true
+            )
+            EntryField(
+                value = "ReadOnly Content",
+                onValueChange = {},
+                label = "Read Only",
+                readOnly = true
+            )
+            EntryField(
+                value = "500",
+                onValueChange = {},
+                label = "With Prefix & Suffix",
+                prefix = { Text("฿") },
+                suffix = { Text("THB") }
+            )
+            EntryField(
+                value = "This is a longer text that spans multiple lines to demonstrate how minLines and multi-line support works in this component.",
+                onValueChange = {},
+                label = "Multi-line Field",
+                singleLine = false,
+                minLines = 3
             )
 
-            // Scaled down by font and height
-            EntryField(
-                value = "Compact",
+            HorizontalDivider()
+            Text("NumberUnitField", style = MaterialTheme.typography.titleMedium)
+            NumberUnitField(
+                value = "150",
                 onValueChange = {},
-                label = "Compact Field",
-                textStyle = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
+                label = "Inventory",
+                unitLabel = "units"
+            )
+            NumberUnitField(
+                value = "-10",
+                onValueChange = {},
+                label = "Balance (Allow Negative)",
+                unitLabel = "฿",
+                allowNegative = true
+            )
+
+            HorizontalDivider()
+            Text("View Mode", style = MaterialTheme.typography.titleMedium)
+            EntryField(
+                value = "Green Tea Latte",
+                onValueChange = {},
+                label = "Product Name",
+                viewMode = true,
+            )
+            EntryField(
+                value = "",
+                onValueChange = {},
+                label = "SKU",
+                viewMode = true,
+            )
+            NumberUnitField(
+                value = "12",
+                onValueChange = {},
+                label = "Stock",
+                unitLabel = "pcs",
+                viewMode = true,
             )
         }
     }

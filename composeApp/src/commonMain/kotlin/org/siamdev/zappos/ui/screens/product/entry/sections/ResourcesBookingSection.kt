@@ -21,10 +21,11 @@ import org.siamdev.zappos.ui.components.common.ToggleItem
 import org.siamdev.zappos.ui.components.picker.TimeRangeRow
 import org.siamdev.zappos.ui.screens.product.entry.EntryFormState
 import org.siamdev.zappos.ui.screens.product.entry.EntryType
+import org.siamdev.zappos.ui.screens.product.entry.MasterEntrySurface
 import org.siamdev.zappos.ui.screens.product.entry.rememberEntryFormState
 
 @Composable
-internal fun ResourcesBookingSection(state: EntryFormState) {
+internal fun ResourcesBookingSection(state: MasterEntrySurface) {
     SectionCard(
         icon = Icons.Default.Business,
         title = "Resources & booking",

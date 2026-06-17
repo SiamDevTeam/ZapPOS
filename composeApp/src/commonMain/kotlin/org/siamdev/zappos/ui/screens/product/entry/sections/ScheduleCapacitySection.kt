@@ -24,12 +24,13 @@ import org.siamdev.zappos.ui.components.common.ToggleItem
 import org.siamdev.zappos.ui.components.picker.TimeRangeRow
 import org.siamdev.zappos.ui.screens.product.entry.EntryFormState
 import org.siamdev.zappos.ui.screens.product.entry.EntryType
+import org.siamdev.zappos.ui.screens.product.entry.MasterEntrySurface
 import org.siamdev.zappos.ui.screens.product.entry.rememberEntryFormState
 
 private val dayLabels = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
 
 @Composable
-internal fun ScheduleCapacitySection(state: EntryFormState) {
+internal fun ScheduleCapacitySection(state: MasterEntrySurface) {
     SectionCard(
         icon = Icons.Default.DateRange,
         title = "Schedule & capacity",

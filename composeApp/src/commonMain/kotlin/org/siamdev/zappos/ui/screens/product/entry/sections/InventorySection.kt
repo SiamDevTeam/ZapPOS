@@ -19,10 +19,11 @@ import org.siamdev.zappos.ui.components.common.NumberUnitField
 import org.siamdev.zappos.ui.components.common.SectionCard
 import org.siamdev.zappos.ui.components.common.ToggleItem
 import org.siamdev.zappos.ui.screens.product.entry.EntryFormState
+import org.siamdev.zappos.ui.screens.product.entry.MasterEntrySurface
 import org.siamdev.zappos.ui.screens.product.entry.rememberEntryFormState
 
 @Composable
-internal fun InventorySection(state: EntryFormState) {
+internal fun InventorySection(state: MasterEntrySurface) {
     val sellUnit = state.unit.ifEmpty { "unit" }
 
     SectionCard(

@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.siamdev.zappos.viewModelOf
 import org.siamdev.zappos.ui.components.common.SegmentedTabBar
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 import org.siamdev.zappos.ui.components.menu.DefaultProductCategories
@@ -28,7 +29,6 @@ import org.siamdev.zappos.ui.screens.product.entry.sections.PricingSection
 import org.siamdev.zappos.ui.screens.product.entry.sections.ProductDetailsSection
 import org.siamdev.zappos.ui.screens.product.entry.sections.ResourcesBookingSection
 import org.siamdev.zappos.ui.screens.product.entry.sections.ScheduleCapacitySection
-import org.siamdev.zappos.ui.screens.product.goods.sampleProducts
 
 @Composable
 fun MasterEntryScreen(
@@ -38,12 +38,19 @@ fun MasterEntryScreen(
     onSave: () -> Unit = {},
     showBackButton: Boolean = false,
 ) {
-    val state = rememberEntryFormState()
-    val isEditMode = productId != null
+    val vm = viewModelOf { MasterEntryViewModel() }
+    val surface = remember(vm) { MasterEntrySurfaceImpl(vm) }
 
-    if (isEditMode) {
-        val event = remember(productId) { sampleProducts().find { it.id == productId } }
-        LaunchedEffect(productId) { event?.let { state.loadFrom(it) } }
+    LaunchedEffect(productId) { vm.init(productId) }
+
+    LaunchedEffect(vm) {
+        vm.effect.collect { effect ->
+            when (effect) {
+                is MasterEntryViewModel.SideEffect.SaveSuccess -> onSave()
+                is MasterEntryViewModel.SideEffect.NavigateBack -> onNavigateBack()
+                is MasterEntryViewModel.SideEffect.SaveError -> Unit
+            }
+        }
     }
 
     Column(
@@ -54,16 +61,16 @@ fun MasterEntryScreen(
     ) {
         WorkspaceHeader(
             title = "Product Master",
-            subtitle = if (isEditMode) "Edit product · master data" else "New product · master data",
+            subtitle = if (surface.isEditMode) "Edit product · master data" else "New product · master data",
             onSegmentClick = onOpenDrawer,
             onNavigateBack = if (showBackButton) onNavigateBack else null,
         )
 
-        if (!isEditMode) {
+        if (!surface.isEditMode) {
             SegmentedTabBar(
                 tabs = entryTabs,
-                selectedIndex = state.entryType.ordinal,
-                onTabSelect = { state.entryType = EntryType.entries[it] },
+                selectedIndex = surface.entryType.ordinal,
+                onTabSelect = { surface.entryType = EntryType.entries[it] },
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
                     .padding(top = 8.dp, bottom = 8.dp),
@@ -72,29 +79,28 @@ fun MasterEntryScreen(
 
         BoxWithConstraints(modifier = Modifier.weight(1f)) {
             if (maxWidth >= 750.dp) {
-                EntryDesktopLayout(state)
+                EntryDesktopLayout(surface)
             } else {
-                EntryMobileLayout(state)
+                EntryMobileLayout(surface)
             }
         }
 
         EntryActionBar(
-            isFormValid = state.isFormValid,
-            isEditMode = isEditMode,
-            onSave = onSave,
-            onDiscard = onNavigateBack,
+            isFormValid = surface.isFormValid,
+            isEditMode = surface.isEditMode,
+            onSave = { surface.save() },
+            onDiscard = { surface.discard() },
         )
     }
 }
 
-// Mobile: single scrolling column; ProductHeader is first item under the tab bar
 @Composable
-private fun EntryMobileLayout(state: EntryFormState) {
-    val tab = entryTabs[state.entryType.ordinal]
+private fun EntryMobileLayout(surface: MasterEntrySurface) {
+    val tab = entryTabs[surface.entryType.ordinal]
     val catEntry =
-        remember(state.category) { DefaultProductCategories.find { it.id == state.category } }
-    val categoryName = catEntry?.name ?: state.category.ifBlank { tab.label }
-    val subName = catEntry?.subCategories?.find { it.id == state.subCategory }?.name
+        remember(surface.category) { DefaultProductCategories.find { it.id == surface.category } }
+    val categoryName = catEntry?.name ?: surface.category.ifBlank { tab.label }
+    val subName = catEntry?.subCategories?.find { it.id == surface.subCategory }?.name
     val catIcon = catEntry?.icon ?: tab.icon ?: Icons.Default.ShoppingBag
 
     LazyColumn(
@@ -102,11 +108,10 @@ private fun EntryMobileLayout(state: EntryFormState) {
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-
-        if (state.name.isNotBlank()) {
+        if (surface.name.isNotBlank()) {
             item {
                 ProductHeader(
-                    name = state.name,
+                    name = surface.name,
                     categoryName = categoryName,
                     subName = subName,
                     catIcon = catIcon,
@@ -114,41 +119,40 @@ private fun EntryMobileLayout(state: EntryFormState) {
             }
         }
 
-        item { ProductDetailsSection(state) }
-        item { PricingSection(state) }
+        item { ProductDetailsSection(surface) }
+        item { PricingSection(surface) }
 
-        when (state.entryType) {
+        when (surface.entryType) {
             EntryType.GOODS -> {
-                item { InventorySection(state) }
-                item { OptionsSection(state) }
+                item { InventorySection(surface) }
+                item { OptionsSection(surface) }
             }
 
             EntryType.SERVICE -> {
-                item { ScheduleCapacitySection(state) }
-                item { OptionsSection(state) }
+                item { ScheduleCapacitySection(surface) }
+                item { OptionsSection(surface) }
             }
 
-            EntryType.RENTAL -> item { ResourcesBookingSection(state) }
+            EntryType.RENTAL -> item { ResourcesBookingSection(surface) }
         }
 
-        item { AdvancedSection(state) }
+        item { AdvancedSection(surface) }
     }
 }
 
-// Desktop: ProductHeader spans full width above two equal columns
 @Composable
-private fun EntryDesktopLayout(state: EntryFormState) {
-    val tab = entryTabs[state.entryType.ordinal]
+private fun EntryDesktopLayout(surface: MasterEntrySurface) {
+    val tab = entryTabs[surface.entryType.ordinal]
     val catEntry =
-        remember(state.category) { DefaultProductCategories.find { it.id == state.category } }
-    val categoryName = catEntry?.name ?: state.category.ifBlank { tab.label }
-    val subName = catEntry?.subCategories?.find { it.id == state.subCategory }?.name
+        remember(surface.category) { DefaultProductCategories.find { it.id == surface.category } }
+    val categoryName = catEntry?.name ?: surface.category.ifBlank { tab.label }
+    val subName = catEntry?.subCategories?.find { it.id == surface.subCategory }?.name
     val catIcon = catEntry?.icon ?: tab.icon ?: Icons.Default.ShoppingBag
 
     Column(modifier = Modifier.fillMaxSize()) {
-        if (state.name.isNotBlank()) {
+        if (surface.name.isNotBlank()) {
             ProductHeader(
-                name = state.name,
+                name = surface.name,
                 categoryName = categoryName,
                 subName = subName,
                 catIcon = catIcon,
@@ -161,40 +165,38 @@ private fun EntryDesktopLayout(state: EntryFormState) {
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
         Row(modifier = Modifier.weight(1f)) {
-            // Left column — product details + pricing
             LazyColumn(
                 modifier = Modifier.weight(1f).fillMaxHeight(),
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                item { ProductDetailsSection(state) }
-                item { PricingSection(state) }
+                item { ProductDetailsSection(surface) }
+                item { PricingSection(surface) }
             }
 
             VerticalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
-            // Right column — type-specific sections + advanced
             LazyColumn(
                 modifier = Modifier.weight(1f).fillMaxHeight(),
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                when (state.entryType) {
+                when (surface.entryType) {
                     EntryType.GOODS -> {
-                        item { InventorySection(state) }
-                        item { OptionsSection(state) }
+                        item { InventorySection(surface) }
+                        item { OptionsSection(surface) }
                     }
 
                     EntryType.SERVICE -> {
-                        item { ScheduleCapacitySection(state) }
-                        item { OptionsSection(state) }
+                        item { ScheduleCapacitySection(surface) }
+                        item { OptionsSection(surface) }
                     }
 
                     EntryType.RENTAL -> {
-                        item { ResourcesBookingSection(state) }
+                        item { ResourcesBookingSection(surface) }
                     }
                 }
-                item { AdvancedSection(state) }
+                item { AdvancedSection(surface) }
             }
         }
     }
