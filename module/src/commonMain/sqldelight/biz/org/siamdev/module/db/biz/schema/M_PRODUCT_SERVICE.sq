@@ -1,0 +1,25 @@
+-- SERVICE-specific schedule and capacity configuration.
+-- One row per product where I_PRD_KIND = '1001'.
+-- I_ACTIVE_DAYS stores a comma-separated list of day indices: 0=Mon 1=Tue ... 6=Sun
+-- e.g. "0,1,2,3,4" = Monday through Friday.
+CREATE TABLE M_PRODUCT_SERVICE (
+    I_PRD_ID            TEXT    PRIMARY KEY NOT NULL,
+
+    I_CHARGED_BY        TEXT,               -- 00=per person  01=per session  02=per hour
+    I_CAPACITY          INTEGER,            -- max attendees per session
+    I_DURATION_MIN      INTEGER,            -- session length in minutes
+    I_OPENS_HH          INTEGER,            -- operating open hour  0-23
+    I_OPENS_MM          INTEGER,            -- operating open minute  0-59
+    I_CLOSES_HH         INTEGER,            -- operating close hour  0-23
+    I_CLOSES_MM         INTEGER,            -- operating close minute  0-59
+    I_ACTIVE_DAYS       TEXT,               -- comma-separated day indices  e.g. "0,1,2,3,4"
+    I_INSTRUCTOR        TEXT,               -- instructor / host name
+    I_REQUIRES_BOOKING  INTEGER,            -- 0=walk-in allowed  1=must book ahead
+
+    I_CREATED_AT        INTEGER,
+    I_UPDATED_AT        INTEGER,
+    I_MODIFY_COUNT      INTEGER,
+
+    I_CREATED_BY        TEXT,
+    I_UPDATED_BY        TEXT
+);

@@ -152,25 +152,25 @@ private fun OptionsInfoCardPreview() {
             OptionsInfoCard(
                 optionGroups = listOf(
                     OptionGroup(
-                        id = 1L,
+                        id = "1",
                         name = "Size",
                         pickMode = PickMode.ONE,
                         required = true,
                         items = listOf(
-                            OptionItem(1L, "Small", -10),
-                            OptionItem(2L, "Medium", 0),
-                            OptionItem(3L, "Large", 15),
+                            OptionItem("1", "Small", -10),
+                            OptionItem("2", "Medium", 0),
+                            OptionItem("3", "Large", 15),
                         )
                     ),
                     OptionGroup(
-                        id = 2L,
+                        id = "2",
                         name = "Add-ons",
                         pickMode = PickMode.MANY,
                         required = false,
                         items = listOf(
-                            OptionItem(4L, "Extra Shot", 15),
-                            OptionItem(5L, "Whipped Cream", 10),
-                            OptionItem(6L, "Honey", 5),
+                            OptionItem("4", "Extra Shot", 15),
+                            OptionItem("5", "Whipped Cream", 10),
+                            OptionItem("6", "Honey", 5),
                         )
                     ),
                 )

@@ -1,0 +1,21 @@
+-- Option groups attached to a product  e.g. "Size"  "Milk type"  "Add-ons".
+-- I_PICK_MODE controls whether the customer may select one or many items from the group.
+-- I_SORT_ORDER controls display sequence of groups within a product.
+CREATE TABLE M_PRODUCT_OPTION_GROUP (
+    I_OPT_GRP_ID        TEXT    PRIMARY KEY NOT NULL,
+
+    I_PRD_ID            TEXT,
+    I_GRP_NAME          TEXT,               -- label shown at checkout  e.g. "Size"
+    I_PICK_MODE         TEXT,               -- 01=single select  02=multi select
+    I_REQUIRED          INTEGER,            -- 0=optional  1=customer must choose
+    I_SORT_ORDER        INTEGER,            -- display position within the product
+
+    I_IS_ACTIVE         INTEGER,            -- 0=removed  1=active
+
+    I_CREATED_AT        INTEGER,
+    I_UPDATED_AT        INTEGER,
+    I_MODIFY_COUNT      INTEGER,
+
+    I_CREATED_BY        TEXT,
+    I_UPDATED_BY        TEXT
+);

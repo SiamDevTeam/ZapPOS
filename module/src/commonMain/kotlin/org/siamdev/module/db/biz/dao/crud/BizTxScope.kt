@@ -16,7 +16,6 @@ class BizTxScope internal constructor(
 ) : TxScope {
     override val steps = mutableListOf<suspend () -> Unit>()
 
-    // Set by eachLine before each iteration; read by detail table extension functions.
     internal var currentDetailMode: WriteOp? = null
 
     internal suspend fun runAll() = steps.forEach { it() }

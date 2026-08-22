@@ -1,0 +1,23 @@
+-- Individual selectable options within an option group.
+-- I_PRICE_MODIFIER is the price delta added to the base product price.
+-- Negative values are allowed  e.g. Small size = -10.
+-- I_PRD_ID is denormalized here to allow fast lookup of all options for a product
+-- without joining through M_PRODUCT_OPTION_GROUP.
+CREATE TABLE M_PRODUCT_OPTION_ITEM (
+    I_OPT_ITEM_ID       TEXT    PRIMARY KEY NOT NULL,
+
+    I_OPT_GRP_ID        TEXT,
+    I_PRD_ID            TEXT,               -- denormalized from parent group
+    I_ITEM_NAME         TEXT,               -- option label shown at checkout  e.g. "Large"
+    I_PRICE_MODIFIER    REAL,               -- price delta  negative allowed  0=no change
+    I_SORT_ORDER        INTEGER,            -- display position within the group
+
+    I_IS_ACTIVE         INTEGER,            -- 0=removed  1=active
+
+    I_CREATED_AT        INTEGER,
+    I_UPDATED_AT        INTEGER,
+    I_MODIFY_COUNT      INTEGER,
+
+    I_CREATED_BY        TEXT,
+    I_UPDATED_BY        TEXT
+);

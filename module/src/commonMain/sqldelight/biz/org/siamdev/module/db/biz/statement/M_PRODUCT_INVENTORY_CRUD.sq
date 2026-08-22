@@ -1,0 +1,41 @@
+insert:
+INSERT INTO M_PRODUCT_INVENTORY (
+    I_PRD_ID,
+    I_TRACK_STOCK, I_MAX_CAPACITY, I_LOW_STOCK_ALERT,
+    I_SUPPLIER_NAME, I_TRACK_EXPIRY,
+    I_CREATED_AT, I_UPDATED_AT, I_MODIFY_COUNT, I_CREATED_BY, I_UPDATED_BY
+) VALUES (
+    :prdId,
+    :trackStock, :maxCapacity, :lowStockAlert,
+    :supplierName, :trackExpiry,
+    :createdAt, NULL, 0, :createdBy, NULL
+);
+
+update:
+UPDATE M_PRODUCT_INVENTORY
+SET I_TRACK_STOCK     = :trackStock,
+    I_MAX_CAPACITY    = :maxCapacity,
+    I_LOW_STOCK_ALERT = :lowStockAlert,
+    I_SUPPLIER_NAME   = :supplierName,
+    I_TRACK_EXPIRY    = :trackExpiry,
+    I_UPDATED_AT      = :updatedAt,
+    I_MODIFY_COUNT    = I_MODIFY_COUNT + 1,
+    I_UPDATED_BY      = :updatedBy
+WHERE I_PRD_ID = :prdId;
+
+delete:
+DELETE FROM M_PRODUCT_INVENTORY WHERE I_PRD_ID = :prdId;
+
+selectById:
+SELECT * FROM M_PRODUCT_INVENTORY WHERE I_PRD_ID = :prdId;
+
+selectTracked:
+SELECT * FROM M_PRODUCT_INVENTORY WHERE I_TRACK_STOCK = 1;
+
+selectLowStock:
+-- Returns inventory config for products whose on-hand qty is at or below the alert threshold.
+-- Join with T_STOCK on I_PRD_ID to apply the filter at the call site.
+SELECT inv.*
+FROM M_PRODUCT_INVENTORY inv
+WHERE inv.I_TRACK_STOCK = 1
+  AND inv.I_LOW_STOCK_ALERT > 0;

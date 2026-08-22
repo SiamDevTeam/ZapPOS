@@ -1,0 +1,20 @@
+-- GOODS-specific inventory configuration.
+-- One row per product that has inventory management enabled.
+-- Current on-hand quantity lives in T_STOCK, not here.
+-- Opening stock at product creation is written to T_STOCK and T_STOCK_MOVEMENT as an ADJUST_INC entry.
+CREATE TABLE M_PRODUCT_INVENTORY (
+    I_PRD_ID            TEXT    PRIMARY KEY NOT NULL,
+
+    I_TRACK_STOCK       INTEGER,            -- 0=no tracking  1=track quantity
+    I_MAX_CAPACITY      REAL,               -- storage capacity ceiling  0=unlimited
+    I_LOW_STOCK_ALERT   REAL,               -- alert threshold qty  0=disabled
+    I_SUPPLIER_NAME     TEXT,               -- supplier / vendor name
+    I_TRACK_EXPIRY      INTEGER,            -- 0=no expiry alerts  1=active
+
+    I_CREATED_AT        INTEGER,
+    I_UPDATED_AT        INTEGER,
+    I_MODIFY_COUNT      INTEGER,
+
+    I_CREATED_BY        TEXT,
+    I_UPDATED_BY        TEXT
+);

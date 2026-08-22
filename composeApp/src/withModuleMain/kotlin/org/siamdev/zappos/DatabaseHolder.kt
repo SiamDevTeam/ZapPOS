@@ -5,8 +5,9 @@
 package org.siamdev.zappos
 
 import org.siamdev.module.db.AppDatabase
-import org.siamdev.zappos.data.source.local.SettingLocalInterfaceImpl
-import org.siamdev.zappos.data.source.local.settingSource
+import org.siamdev.zappos.data.source.local.LocalSources
+import org.siamdev.zappos.data.source.local.datasource.ProductDataSource
+import org.siamdev.zappos.data.source.local.datasource.SettingDataSource
 
 object DatabaseHolder {
     lateinit var db: AppDatabase
@@ -14,5 +15,6 @@ object DatabaseHolder {
 
 fun AppDatabase.registerDependencies() {
     DatabaseHolder.db = this
-    settingSource = SettingLocalInterfaceImpl(this)
+    LocalSources.setting = SettingDataSource(this)
+    LocalSources.product = ProductDataSource(this)
 }

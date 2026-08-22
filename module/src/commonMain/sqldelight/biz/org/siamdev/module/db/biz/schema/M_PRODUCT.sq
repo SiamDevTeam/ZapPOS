@@ -1,21 +1,29 @@
 CREATE TABLE M_PRODUCT (
     I_PRD_ID            TEXT    PRIMARY KEY NOT NULL,
 
-    I_CAT_ID            TEXT    NOT NULL,
-    I_TAX_ID            TEXT    NOT NULL,
-    I_PRODUCT_NAME      TEXT    NOT NULL,
-    I_IMAGE_PATH        TEXT,
-    I_UNIT              TEXT    NOT NULL,
-    I_PRICE             REAL    NOT NULL    CHECK (I_PRICE >= 0),
-    I_COST              REAL    NOT NULL    CHECK (I_COST  >= 0),
-    I_DESCRIPTION       TEXT,
-    I_TRACK_STOCK       INTEGER NOT NULL    CHECK (I_TRACK_STOCK     IN (0, 1)), -- 0=no, 1=yes
-    I_IS_RECOMMENDED    INTEGER NOT NULL    CHECK (I_IS_RECOMMENDED  IN (0, 1)), -- 0=no, 1=yes
-    I_IS_ACTIVE         INTEGER NOT NULL    CHECK (I_IS_ACTIVE       IN (0, 1)), -- 0=inactive, 1=active
+    I_CAT_ID            TEXT,
+    I_TAX_ID            TEXT,
+    I_PRD_KIND          TEXT,               -- 1000=GOODS  1001=SERVICE  1002=RENTAL
+
+    I_PRD_NAME          TEXT,
+    I_PRD_DESC          TEXT,
+    I_UNIT              TEXT,
+    I_PRICE             REAL,
+    I_COST_PRICE        REAL,               -- NULL when cost tracking is disabled
+    I_CHARGE_VAT        INTEGER,            -- 0=no  1=yes
+    I_OPEN_PRICE        INTEGER,            -- 0=fixed  1=variable/open (GOODS only)
+    I_SKU               TEXT,
+    I_BARCODE           TEXT,
+    I_SEND_ORDER_TO     TEXT,               -- order routing: None / Kitchen / Bar / Counter / Grill
+    I_DISPLAY_ORDER     INTEGER,            -- sort position on the menu (0-based)
+
+    I_IS_AVAILABLE      INTEGER,            -- 0=hidden from menu  1=orderable
+    I_IS_RECOMMENDED    INTEGER,            -- 0=no  1=featured with star
+    I_IS_ACTIVE         INTEGER,            -- 0=soft-deleted  1=active
 
     I_CREATED_AT        INTEGER,
     I_UPDATED_AT        INTEGER,
-    I_MODIFY_COUNT      INTEGER DEFAULT 0,
+    I_MODIFY_COUNT      INTEGER,
 
     I_CREATED_BY        TEXT,
     I_UPDATED_BY        TEXT

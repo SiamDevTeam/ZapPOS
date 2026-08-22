@@ -1,0 +1,40 @@
+insert:
+INSERT INTO M_PRODUCT_SERVICE (
+    I_PRD_ID,
+    I_CHARGED_BY, I_CAPACITY, I_DURATION_MIN,
+    I_OPENS_HH, I_OPENS_MM, I_CLOSES_HH, I_CLOSES_MM,
+    I_ACTIVE_DAYS, I_INSTRUCTOR, I_REQUIRES_BOOKING,
+    I_CREATED_AT, I_UPDATED_AT, I_MODIFY_COUNT, I_CREATED_BY, I_UPDATED_BY
+) VALUES (
+    :prdId,
+    :chargedBy, :capacity, :durationMin,
+    :opensHh, :opensMm, :closesHh, :closesMm,
+    :activeDays, :instructor, :requiresBooking,
+    :createdAt, NULL, 0, :createdBy, NULL
+);
+
+update:
+UPDATE M_PRODUCT_SERVICE
+SET I_CHARGED_BY       = :chargedBy,
+    I_CAPACITY         = :capacity,
+    I_DURATION_MIN     = :durationMin,
+    I_OPENS_HH         = :opensHh,
+    I_OPENS_MM         = :opensMm,
+    I_CLOSES_HH        = :closesHh,
+    I_CLOSES_MM        = :closesMm,
+    I_ACTIVE_DAYS      = :activeDays,
+    I_INSTRUCTOR       = :instructor,
+    I_REQUIRES_BOOKING = :requiresBooking,
+    I_UPDATED_AT       = :updatedAt,
+    I_MODIFY_COUNT     = I_MODIFY_COUNT + 1,
+    I_UPDATED_BY       = :updatedBy
+WHERE I_PRD_ID = :prdId;
+
+delete:
+DELETE FROM M_PRODUCT_SERVICE WHERE I_PRD_ID = :prdId;
+
+selectById:
+SELECT * FROM M_PRODUCT_SERVICE WHERE I_PRD_ID = :prdId;
+
+selectAll:
+SELECT * FROM M_PRODUCT_SERVICE;

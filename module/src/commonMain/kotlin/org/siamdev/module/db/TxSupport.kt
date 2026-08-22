@@ -4,13 +4,12 @@
  */
 package org.siamdev.module.db
 
-// Shared contract for both BizTxScope and SysTxScope.
 interface TxScope {
     val steps: MutableList<suspend () -> Unit>
 }
 
 class TxCallback<T> {
-    var onSuccess: (T) -> Unit         = {}
+    var onSuccess: (T) -> Unit = {}
     var onFailure: (Throwable) -> Unit = {}
 }
 
@@ -22,8 +21,11 @@ class TxStepBuilder<T> internal constructor(
 
     init {
         scope.steps += {
-            try   { callback.onSuccess(op()) }
-            catch (e: Throwable) { callback.onFailure(e); throw e }
+            try {
+                callback.onSuccess(op())
+            } catch (e: Throwable) {
+                callback.onFailure(e); throw e
+            }
         }
     }
 

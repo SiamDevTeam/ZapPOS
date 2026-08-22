@@ -1,0 +1,47 @@
+insert:
+INSERT INTO M_PRODUCT_OPTION_ITEM (
+    I_OPT_ITEM_ID, I_OPT_GRP_ID, I_PRD_ID,
+    I_ITEM_NAME, I_PRICE_MODIFIER, I_SORT_ORDER, I_IS_ACTIVE,
+    I_CREATED_AT, I_UPDATED_AT, I_MODIFY_COUNT, I_CREATED_BY, I_UPDATED_BY
+) VALUES (
+    :optItemId, :optGrpId, :prdId,
+    :itemName, :priceModifier, :sortOrder, 1,
+    :createdAt, NULL, 0, :createdBy, NULL
+);
+
+update:
+UPDATE M_PRODUCT_OPTION_ITEM
+SET I_ITEM_NAME      = :itemName,
+    I_PRICE_MODIFIER = :priceModifier,
+    I_SORT_ORDER     = :sortOrder,
+    I_UPDATED_AT     = :updatedAt,
+    I_MODIFY_COUNT   = I_MODIFY_COUNT + 1,
+    I_UPDATED_BY     = :updatedBy
+WHERE I_OPT_ITEM_ID = :optItemId;
+
+deactivate:
+UPDATE M_PRODUCT_OPTION_ITEM
+SET I_IS_ACTIVE    = 0,
+    I_UPDATED_AT   = :updatedAt,
+    I_MODIFY_COUNT = I_MODIFY_COUNT + 1,
+    I_UPDATED_BY   = :updatedBy
+WHERE I_OPT_ITEM_ID = :optItemId;
+
+delete:
+DELETE FROM M_PRODUCT_OPTION_ITEM WHERE I_OPT_ITEM_ID = :optItemId;
+
+deleteByGroup:
+DELETE FROM M_PRODUCT_OPTION_ITEM WHERE I_OPT_GRP_ID = :optGrpId;
+
+deleteByProduct:
+DELETE FROM M_PRODUCT_OPTION_ITEM WHERE I_PRD_ID = :prdId;
+
+selectByGroup:
+SELECT * FROM M_PRODUCT_OPTION_ITEM
+WHERE I_OPT_GRP_ID = :optGrpId AND I_IS_ACTIVE = 1
+ORDER BY I_SORT_ORDER ASC;
+
+selectByProduct:
+SELECT * FROM M_PRODUCT_OPTION_ITEM
+WHERE I_PRD_ID = :prdId AND I_IS_ACTIVE = 1
+ORDER BY I_SORT_ORDER ASC;

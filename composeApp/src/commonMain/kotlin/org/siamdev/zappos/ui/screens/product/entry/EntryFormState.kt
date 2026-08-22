@@ -29,13 +29,13 @@ enum class PickMode {
 }
 
 data class OptionItem(
-    val id: Long = DateTimeUtils.nowEpochMillis(),
+    val id: String = DateTimeUtils.nowEpochMillis().toString(),
     val name: String = "",
     val priceModifier: Int = 0,
 )
 
 data class OptionGroup(
-    val id: Long = DateTimeUtils.nowEpochMillis(),
+    val id: String = DateTimeUtils.nowEpochMillis().toString(),
     val name: String = "Size",
     val pickMode: PickMode = PickMode.ONE,
     val required: Boolean = false,

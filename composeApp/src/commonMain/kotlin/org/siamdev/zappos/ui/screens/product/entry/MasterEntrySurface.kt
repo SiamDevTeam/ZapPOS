@@ -84,24 +84,28 @@ internal class MasterEntrySurfaceImpl(
         vm.update(block)
 
     override val isEditMode get() = _state.mode == MasterEntryViewModel.Mode.EDIT
-    override val isFormValid get() = _state.name.isNotBlank() && _state.price.isNotBlank()
+    override val isFormValid get() = _state.detail.name.isNotBlank() && _state.pricing.price.isNotBlank()
     override val unitOptions
         get() = when (_state.entryType) {
-            EntryType.GOODS -> listOf("cup", "plate", "bowl", "piece", "skewer", "bottle", "pack", "kg", "box")
+            EntryType.GOODS   -> listOf("cup", "plate", "bowl", "piece", "skewer", "bottle", "pack", "kg", "box")
             EntryType.SERVICE -> listOf("session", "person", "hour", "course", "class", "month")
-            EntryType.RENTAL -> listOf("hour", "court", "field", "table", "room", "day")
+            EntryType.RENTAL  -> listOf("hour", "court", "field", "table", "room", "day")
         }
+
+    // ── Identity ──────────────────────────────────────────────────────────────
 
     override var entryType: EntryType
         get() = _state.entryType
         set(value) = update {
             copy(
                 entryType = value,
-                unit = when (value) {
-                    EntryType.GOODS -> "piece"
-                    EntryType.SERVICE -> "hour"
-                    EntryType.RENTAL -> "hour"
-                },
+                pricing = pricing.copy(
+                    unit = when (value) {
+                        EntryType.GOODS   -> "piece"
+                        EntryType.SERVICE -> "hour"
+                        EntryType.RENTAL  -> "hour"
+                    },
+                ),
             )
         }
 
@@ -109,165 +113,183 @@ internal class MasterEntrySurfaceImpl(
         get() = _state.productId
         set(value) = update { copy(productId = value) }
 
+    // ── Detail ────────────────────────────────────────────────────────────────
+
     override var name: String
-        get() = _state.name
-        set(value) = update { copy(name = value) }
+        get() = _state.detail.name
+        set(value) = update { copy(detail = detail.copy(name = value)) }
 
     override var category: String
-        get() = _state.category
-        set(value) = update { copy(category = value) }
+        get() = _state.detail.category
+        set(value) = update { copy(detail = detail.copy(category = value)) }
 
     override var subCategory: String?
-        get() = _state.subCategory
-        set(value) = update { copy(subCategory = value) }
+        get() = _state.detail.subCategory
+        set(value) = update { copy(detail = detail.copy(subCategory = value)) }
 
     override var description: String
-        get() = _state.description
-        set(value) = update { copy(description = value) }
+        get() = _state.detail.description
+        set(value) = update { copy(detail = detail.copy(description = value)) }
 
     override var isAvailable: Boolean
-        get() = _state.isAvailable
-        set(value) = update { copy(isAvailable = value) }
+        get() = _state.detail.isAvailable
+        set(value) = update { copy(detail = detail.copy(isAvailable = value)) }
 
     override var isRecommended: Boolean
-        get() = _state.isRecommended
-        set(value) = update { copy(isRecommended = value) }
+        get() = _state.detail.isRecommended
+        set(value) = update { copy(detail = detail.copy(isRecommended = value)) }
+
+    // ── Pricing ───────────────────────────────────────────────────────────────
 
     override var price: String
-        get() = _state.price
-        set(value) = update { copy(price = value) }
+        get() = _state.pricing.price
+        set(value) = update { copy(pricing = pricing.copy(price = value)) }
 
     override var unit: String
-        get() = _state.unit
-        set(value) = update { copy(unit = value) }
+        get() = _state.pricing.unit
+        set(value) = update { copy(pricing = pricing.copy(unit = value)) }
 
     override var chargeVat: Boolean
-        get() = _state.chargeVat
-        set(value) = update { copy(chargeVat = value) }
+        get() = _state.pricing.chargeVat
+        set(value) = update { copy(pricing = pricing.copy(chargeVat = value)) }
 
     override var costPrice: String
-        get() = _state.costPrice
-        set(value) = update { copy(costPrice = value) }
+        get() = _state.pricing.costPrice
+        set(value) = update { copy(pricing = pricing.copy(costPrice = value)) }
+
+    override var openPrice: Boolean
+        get() = _state.pricing.openPrice
+        set(value) = update { copy(pricing = pricing.copy(openPrice = value)) }
+
+    override var chargedBy: Int
+        get() = _state.pricing.chargedBy
+        set(value) = update { copy(pricing = pricing.copy(chargedBy = value)) }
+
+    override var bookingDuration: String
+        get() = _state.pricing.bookingDuration
+        set(value) = update { copy(pricing = pricing.copy(bookingDuration = value)) }
+
+    override var minBooking: String
+        get() = _state.pricing.minBooking
+        set(value) = update { copy(pricing = pricing.copy(minBooking = value)) }
+
+    // ── UI-only ───────────────────────────────────────────────────────────────
 
     override var showCostPrice: Boolean
         get() = _state.showCostPrice
         set(value) = update { copy(showCostPrice = value) }
 
-    override var openPrice: Boolean
-        get() = _state.openPrice
-        set(value) = update { copy(openPrice = value) }
-
-    override var chargedBy: Int
-        get() = _state.chargedBy
-        set(value) = update { copy(chargedBy = value) }
-
-    override var bookingDuration: String
-        get() = _state.bookingDuration
-        set(value) = update { copy(bookingDuration = value) }
-
-    override var minBooking: String
-        get() = _state.minBooking
-        set(value) = update { copy(minBooking = value) }
-
-    override var trackStock: Boolean
-        get() = _state.trackStock
-        set(value) = update { copy(trackStock = value) }
-
-    override var openingStock: String
-        get() = _state.openingStock
-        set(value) = update { copy(openingStock = value) }
-
-    override var maxCapacity: String
-        get() = _state.maxCapacity
-        set(value) = update { copy(maxCapacity = value) }
-
-    override var lowStockAlert: String
-        get() = _state.lowStockAlert
-        set(value) = update { copy(lowStockAlert = value) }
-
-    override var supplier: String
-        get() = _state.supplier
-        set(value) = update { copy(supplier = value) }
-
-    override var trackActive: Boolean
-        get() = _state.trackActive
-        set(value) = update { copy(trackActive = value) }
-
-    override var serviceCapacity: String
-        get() = _state.serviceCapacity
-        set(value) = update { copy(serviceCapacity = value) }
-
-    override var serviceDuration: String
-        get() = _state.serviceDuration
-        set(value) = update { copy(serviceDuration = value) }
-
-    override var serviceOpens: TimeValue
-        get() = _state.serviceOpens
-        set(value) = update { copy(serviceOpens = value) }
-
-    override var serviceCloses: TimeValue
-        get() = _state.serviceCloses
-        set(value) = update { copy(serviceCloses = value) }
-
-    override var activeDays: Set<Int>
-        get() = _state.activeDays
-        set(value) = update { copy(activeDays = value) }
-
-    override var instructor: String
-        get() = _state.instructor
-        set(value) = update { copy(instructor = value) }
-
-    override var serviceRequiresBooking: Boolean
-        get() = _state.serviceRequiresBooking
-        set(value) = update { copy(serviceRequiresBooking = value) }
-
-    override var rentalUnitsCount: String
-        get() = _state.rentalUnitsCount
-        set(value) = update { copy(rentalUnitsCount = value) }
-
-    override var rentalBuffer: String
-        get() = _state.rentalBuffer
-        set(value) = update { copy(rentalBuffer = value) }
-
-    override var rentalOpens: TimeValue
-        get() = _state.rentalOpens
-        set(value) = update { copy(rentalOpens = value) }
-
-    override var rentalCloses: TimeValue
-        get() = _state.rentalCloses
-        set(value) = update { copy(rentalCloses = value) }
-
-    override var depositAmount: String
-        get() = _state.depositAmount
-        set(value) = update { copy(depositAmount = value) }
-
-    override var rentalRequiresBooking: Boolean
-        get() = _state.rentalRequiresBooking
-        set(value) = update { copy(rentalRequiresBooking = value) }
-
-    override var optionGroups: List<OptionGroup>
-        get() = _state.optionGroups
-        set(value) = update { copy(optionGroups = value) }
-
     override var advancedExpanded: Boolean
         get() = _state.advancedExpanded
         set(value) = update { copy(advancedExpanded = value) }
 
+    // ── Inventory ─────────────────────────────────────────────────────────────
+
+    override var trackStock: Boolean
+        get() = _state.inventory.trackStock
+        set(value) = update { copy(inventory = inventory.copy(trackStock = value)) }
+
+    override var openingStock: String
+        get() = _state.inventory.openingStock
+        set(value) = update { copy(inventory = inventory.copy(openingStock = value)) }
+
+    override var maxCapacity: String
+        get() = _state.inventory.maxCapacity
+        set(value) = update { copy(inventory = inventory.copy(maxCapacity = value)) }
+
+    override var lowStockAlert: String
+        get() = _state.inventory.lowStockAlert
+        set(value) = update { copy(inventory = inventory.copy(lowStockAlert = value)) }
+
+    override var supplier: String
+        get() = _state.inventory.supplier
+        set(value) = update { copy(inventory = inventory.copy(supplier = value)) }
+
+    override var trackActive: Boolean
+        get() = _state.inventory.trackActive
+        set(value) = update { copy(inventory = inventory.copy(trackActive = value)) }
+
+    // ── Service ───────────────────────────────────────────────────────────────
+
+    override var serviceCapacity: String
+        get() = _state.service.capacity
+        set(value) = update { copy(service = service.copy(capacity = value)) }
+
+    override var serviceDuration: String
+        get() = _state.service.duration
+        set(value) = update { copy(service = service.copy(duration = value)) }
+
+    override var serviceOpens: TimeValue
+        get() = _state.service.opens
+        set(value) = update { copy(service = service.copy(opens = value)) }
+
+    override var serviceCloses: TimeValue
+        get() = _state.service.closes
+        set(value) = update { copy(service = service.copy(closes = value)) }
+
+    override var activeDays: Set<Int>
+        get() = _state.service.activeDays
+        set(value) = update { copy(service = service.copy(activeDays = value)) }
+
+    override var instructor: String
+        get() = _state.service.instructor
+        set(value) = update { copy(service = service.copy(instructor = value)) }
+
+    override var serviceRequiresBooking: Boolean
+        get() = _state.service.requiresBooking
+        set(value) = update { copy(service = service.copy(requiresBooking = value)) }
+
+    // ── Rental ────────────────────────────────────────────────────────────────
+
+    override var rentalUnitsCount: String
+        get() = _state.rental.unitsCount
+        set(value) = update { copy(rental = rental.copy(unitsCount = value)) }
+
+    override var rentalBuffer: String
+        get() = _state.rental.buffer
+        set(value) = update { copy(rental = rental.copy(buffer = value)) }
+
+    override var rentalOpens: TimeValue
+        get() = _state.rental.opens
+        set(value) = update { copy(rental = rental.copy(opens = value)) }
+
+    override var rentalCloses: TimeValue
+        get() = _state.rental.closes
+        set(value) = update { copy(rental = rental.copy(closes = value)) }
+
+    override var depositAmount: String
+        get() = _state.rental.depositAmount
+        set(value) = update { copy(rental = rental.copy(depositAmount = value)) }
+
+    override var rentalRequiresBooking: Boolean
+        get() = _state.rental.requiresBooking
+        set(value) = update { copy(rental = rental.copy(requiresBooking = value)) }
+
+    // ── Options ───────────────────────────────────────────────────────────────
+
+    override var optionGroups: List<OptionGroup>
+        get() = _state.options
+        set(value) = update { copy(options = value) }
+
+    // ── Advanced ──────────────────────────────────────────────────────────────
+
     override var sku: String
-        get() = _state.sku
-        set(value) = update { copy(sku = value) }
+        get() = _state.advanced.sku
+        set(value) = update { copy(advanced = advanced.copy(sku = value)) }
 
     override var barcode: String
-        get() = _state.barcode
-        set(value) = update { copy(barcode = value) }
+        get() = _state.advanced.barcode
+        set(value) = update { copy(advanced = advanced.copy(barcode = value)) }
 
     override var sendOrderTo: String
-        get() = _state.sendOrderTo
-        set(value) = update { copy(sendOrderTo = value) }
+        get() = _state.advanced.sendOrderTo
+        set(value) = update { copy(advanced = advanced.copy(sendOrderTo = value)) }
 
     override var displayOrder: String
-        get() = _state.displayOrder
-        set(value) = update { copy(displayOrder = value) }
+        get() = _state.advanced.displayOrder
+        set(value) = update { copy(advanced = advanced.copy(displayOrder = value)) }
+
+    // ── Effects & actions ─────────────────────────────────────────────────────
 
     override val effect: SharedFlow<MasterEntryViewModel.SideEffect> get() = vm.effect
 

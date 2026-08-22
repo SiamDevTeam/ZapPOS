@@ -1,0 +1,40 @@
+insert:
+INSERT INTO M_PRODUCT_RENTAL (
+    I_PRD_ID,
+    I_UNITS_COUNT, I_SLOT_DURATION_MIN, I_MIN_BOOKING, I_BUFFER_MIN,
+    I_OPENS_HH, I_OPENS_MM, I_CLOSES_HH, I_CLOSES_MM,
+    I_DEPOSIT_AMT, I_REQUIRES_BOOKING,
+    I_CREATED_AT, I_UPDATED_AT, I_MODIFY_COUNT, I_CREATED_BY, I_UPDATED_BY
+) VALUES (
+    :prdId,
+    :unitsCount, :slotDurationMin, :minBooking, :bufferMin,
+    :opensHh, :opensMm, :closesHh, :closesMm,
+    :depositAmt, :requiresBooking,
+    :createdAt, NULL, 0, :createdBy, NULL
+);
+
+update:
+UPDATE M_PRODUCT_RENTAL
+SET I_UNITS_COUNT       = :unitsCount,
+    I_SLOT_DURATION_MIN = :slotDurationMin,
+    I_MIN_BOOKING       = :minBooking,
+    I_BUFFER_MIN        = :bufferMin,
+    I_OPENS_HH          = :opensHh,
+    I_OPENS_MM          = :opensMm,
+    I_CLOSES_HH         = :closesHh,
+    I_CLOSES_MM         = :closesMm,
+    I_DEPOSIT_AMT       = :depositAmt,
+    I_REQUIRES_BOOKING  = :requiresBooking,
+    I_UPDATED_AT        = :updatedAt,
+    I_MODIFY_COUNT      = I_MODIFY_COUNT + 1,
+    I_UPDATED_BY        = :updatedBy
+WHERE I_PRD_ID = :prdId;
+
+delete:
+DELETE FROM M_PRODUCT_RENTAL WHERE I_PRD_ID = :prdId;
+
+selectById:
+SELECT * FROM M_PRODUCT_RENTAL WHERE I_PRD_ID = :prdId;
+
+selectAll:
+SELECT * FROM M_PRODUCT_RENTAL;

@@ -1,0 +1,25 @@
+-- RENTAL-specific resource and booking configuration.
+-- One row per product where I_PRD_KIND = '1002'.
+-- I_SLOT_DURATION_MIN and I_MIN_BOOKING define the pricing slot structure.
+-- I_BUFFER_MIN is dead time between consecutive bookings of the same unit.
+CREATE TABLE M_PRODUCT_RENTAL (
+    I_PRD_ID            TEXT    PRIMARY KEY NOT NULL,
+
+    I_UNITS_COUNT       INTEGER,            -- number of physical rental units available
+    I_SLOT_DURATION_MIN INTEGER,            -- length of one bookable slot in minutes
+    I_MIN_BOOKING       INTEGER,            -- minimum number of slots per reservation
+    I_BUFFER_MIN        INTEGER,            -- buffer minutes between consecutive bookings
+    I_OPENS_HH          INTEGER,            -- facility open hour  0-23
+    I_OPENS_MM          INTEGER,            -- facility open minute  0-59
+    I_CLOSES_HH         INTEGER,            -- facility close hour  0-23
+    I_CLOSES_MM         INTEGER,            -- facility close minute  0-59
+    I_DEPOSIT_AMT       REAL,               -- required deposit amount  0=no deposit
+    I_REQUIRES_BOOKING  INTEGER,            -- 0=walk-in  1=advance reservation required
+
+    I_CREATED_AT        INTEGER,
+    I_UPDATED_AT        INTEGER,
+    I_MODIFY_COUNT      INTEGER,
+
+    I_CREATED_BY        TEXT,
+    I_UPDATED_BY        TEXT
+);

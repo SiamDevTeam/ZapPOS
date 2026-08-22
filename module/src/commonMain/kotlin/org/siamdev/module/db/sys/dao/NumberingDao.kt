@@ -36,53 +36,61 @@ class NumberingDao(private val db: AppDatabase) {
                 db.sys { nUMBERING_CONFIG_CRUDQueries.insertNew(codeType, format) }
                 T_SYS_NUMBERING_CONFIG(codeType, format, 0L, "")
             }
+
             existing.I_FORMAT != format -> {
                 db.sys { nUMBERING_CONFIG_CRUDQueries.resetFormat(format, codeType) }
                 T_SYS_NUMBERING_CONFIG(codeType, format, 0L, "")
             }
+
             else -> existing
         }
     }
 }
 
 private fun String.detectBreakPattern() = when {
-    ":hhmmss"  in this -> ":hhmmss"
-    ":hhmm"    in this -> ":hhmm"
-    ":hh"      in this -> ":hh"
-    ":mm"      in this -> ":mm"
-    ":ss"      in this -> ":ss"
+    ":hhmmss" in this -> ":hhmmss"
+    ":hhmm" in this -> ":hhmm"
+    ":hh" in this -> ":hh"
+    ":mm" in this -> ":mm"
+    ":ss" in this -> ":ss"
     "yyyymmdd" in this -> "yyyymmdd"
-    "yyyymm"   in this -> "yyyymm"
-    "yymmdd"   in this -> "yymmdd"
-    "yymm"     in this -> "yymm"
-    "yyyy"     in this -> "yyyy"
-    "yy"       in this -> "yy"
-    "mm"       in this -> "mm"
-    "dd"       in this -> "dd"
-    else       -> ""
+    "yyyymm" in this -> "yyyymm"
+    "yymmdd" in this -> "yymmdd"
+    "yymm" in this -> "yymm"
+    "yyyy" in this -> "yyyy"
+    "yy" in this -> "yy"
+    "mm" in this -> "mm"
+    "dd" in this -> "dd"
+    else -> ""
 }
 
 private fun buildBreakKey(pattern: String, dt: LocalDateTime): String {
     fun Int.p() = toString().padStart(2, '0')
     return when (pattern) {
-        ":hhmmss"  -> ":${dt.hour.p()}${dt.minute.p()}${dt.second.p()}"
-        ":hhmm"    -> ":${dt.hour.p()}${dt.minute.p()}"
-        ":hh"      -> ":${dt.hour.p()}"
-        ":mm"      -> ":${dt.minute.p()}"
-        ":ss"      -> ":${dt.second.p()}"
+        ":hhmmss" -> ":${dt.hour.p()}${dt.minute.p()}${dt.second.p()}"
+        ":hhmm" -> ":${dt.hour.p()}${dt.minute.p()}"
+        ":hh" -> ":${dt.hour.p()}"
+        ":mm" -> ":${dt.minute.p()}"
+        ":ss" -> ":${dt.second.p()}"
         "yyyymmdd" -> "${dt.year}${dt.monthNumber.p()}${dt.dayOfMonth.p()}"
-        "yyyymm"   -> "${dt.year}${dt.monthNumber.p()}"
-        "yymmdd"   -> "${dt.year.toString().takeLast(2)}${dt.monthNumber.p()}${dt.dayOfMonth.p()}"
-        "yymm"     -> "${dt.year.toString().takeLast(2)}${dt.monthNumber.p()}"
-        "yyyy"     -> "${dt.year}"
-        "yy"       -> dt.year.toString().takeLast(2)
-        "mm"       -> dt.monthNumber.p()
-        "dd"       -> dt.dayOfMonth.p()
-        else       -> ""
+        "yyyymm" -> "${dt.year}${dt.monthNumber.p()}"
+        "yymmdd" -> "${dt.year.toString().takeLast(2)}${dt.monthNumber.p()}${dt.dayOfMonth.p()}"
+        "yymm" -> "${dt.year.toString().takeLast(2)}${dt.monthNumber.p()}"
+        "yyyy" -> "${dt.year}"
+        "yy" -> dt.year.toString().takeLast(2)
+        "mm" -> dt.monthNumber.p()
+        "dd" -> dt.dayOfMonth.p()
+        else -> ""
     }
 }
 
-private fun buildNumber(format: String, breakPattern: String, breakKey: String, digitLen: Int, seq: Long): String {
+private fun buildNumber(
+    format: String,
+    breakPattern: String,
+    breakKey: String,
+    digitLen: Int,
+    seq: Long
+): String {
     var result = format
     if (breakPattern.isNotEmpty())
         result = result.replace(breakPattern, breakKey.replace(":", ""))

@@ -25,7 +25,6 @@ import org.siamdev.zappos.ui.components.common.EntryChip
 import org.siamdev.zappos.ui.components.common.EntryField
 import org.siamdev.zappos.ui.components.common.SectionCard
 import org.siamdev.zappos.ui.components.common.TextIconButton
-import org.siamdev.zappos.ui.screens.product.entry.EntryFormState
 import org.siamdev.zappos.ui.screens.product.entry.MasterEntrySurface
 import org.siamdev.zappos.ui.screens.product.entry.OptionGroup
 import org.siamdev.zappos.ui.screens.product.entry.OptionItem

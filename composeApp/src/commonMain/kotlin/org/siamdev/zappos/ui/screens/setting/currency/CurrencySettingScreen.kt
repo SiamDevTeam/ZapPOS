@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
 import org.siamdev.zappos.LocalSettingVM
-import org.siamdev.zappos.data.source.local.CurrencyItem
+import org.siamdev.zappos.data.source.local.model.CurrencyItem
 import org.siamdev.zappos.ui.components.common.CurrencyCodeIcon
 import org.siamdev.zappos.ui.components.common.WorkspaceHeader
 import zappos.composeapp.generated.resources.Res

@@ -1,0 +1,21 @@
+-- Stores one row per image attached to a product.
+-- Supports remote URLs and local disk cache entries from ThumbnailCache.
+-- I_SORT_ORDER = 0 is the primary display image.
+CREATE TABLE M_PRODUCT_MEDIA (
+    I_MEDIA_ID          TEXT    PRIMARY KEY NOT NULL,
+
+    I_PRD_ID            TEXT,
+    I_MEDIA_TYPE        TEXT,               -- 01=remote URL  02=local cache
+    I_MEDIA_URL         TEXT,               -- remote URL or absolute local file path
+    I_LOCAL_HASH        TEXT,               -- FNV-1a hash from ThumbnailCache  NULL until cached
+    I_SORT_ORDER        INTEGER,            -- 0 = primary image
+
+    I_IS_ACTIVE         INTEGER,            -- 0=removed  1=active
+
+    I_CREATED_AT        INTEGER,
+    I_UPDATED_AT        INTEGER,
+    I_MODIFY_COUNT      INTEGER,
+
+    I_CREATED_BY        TEXT,
+    I_UPDATED_BY        TEXT
+);

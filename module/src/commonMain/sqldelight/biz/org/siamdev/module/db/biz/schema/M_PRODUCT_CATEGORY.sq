@@ -1,0 +1,15 @@
+CREATE TABLE M_PRODUCT_CATEGORY (
+    I_CAT_ID            TEXT    PRIMARY KEY NOT NULL,
+
+    I_CAT_NAME          TEXT,               -- parent category name  e.g. "Beverages"
+    I_SUBCAT_NAME       TEXT,               -- subcategory name  e.g. "Tea & Coffee"  NULL = top-level only
+
+    I_IS_ACTIVE         INTEGER,            -- 0=inactive  1=active
+
+    I_CREATED_AT        INTEGER,
+    I_UPDATED_AT        INTEGER,
+    I_MODIFY_COUNT      INTEGER,
+
+    I_CREATED_BY        TEXT,
+    I_UPDATED_BY        TEXT
+);

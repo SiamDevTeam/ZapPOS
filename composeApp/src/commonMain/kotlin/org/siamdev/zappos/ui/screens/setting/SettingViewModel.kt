@@ -14,11 +14,11 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.siamdev.zappos.data.source.local.CurrencyItem
-import org.siamdev.zappos.data.source.local.FontItem
-import org.siamdev.zappos.data.source.local.SettingLocalInterface
-import org.siamdev.zappos.data.source.local.ThemeItem
-import org.siamdev.zappos.data.source.local.settingSource
+import org.siamdev.zappos.data.source.local.LocalSources
+import org.siamdev.zappos.data.source.local.contract.SettingSource
+import org.siamdev.zappos.data.source.local.model.CurrencyItem
+import org.siamdev.zappos.data.source.local.model.FontItem
+import org.siamdev.zappos.data.source.local.model.ThemeItem
 
 class SettingViewModel : ViewModel() {
 
@@ -59,7 +59,7 @@ class SettingViewModel : ViewModel() {
     private val _sideEffect = MutableSharedFlow<SideEffect>(replay = 0)
     val sideEffect: SharedFlow<SideEffect> = _sideEffect.asSharedFlow()
 
-    private val source: SettingLocalInterface? get() = settingSource
+    private val source: SettingSource? get() = LocalSources.setting
 
     init {
         viewModelScope.launch { loadAll() }
@@ -100,7 +100,7 @@ class SettingViewModel : ViewModel() {
         }
     }
 
-    private suspend fun seedDefaults(src: SettingLocalInterface) {
+    private suspend fun seedDefaults(src: SettingSource) {
         if (src.getThemes().isEmpty()) {
             src.seedTheme(id = "theme-system", name = "System", mode = "SYSTEM", isDefault = true)
             src.seedTheme(id = "theme-light", name = "Light", mode = "LIGHT", isDefault = false)

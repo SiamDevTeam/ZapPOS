@@ -12,9 +12,9 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import org.siamdev.zappos.data.source.local.CurrencyItem
-import org.siamdev.zappos.data.source.local.FontItem
-import org.siamdev.zappos.data.source.local.ThemeItem
+import org.siamdev.zappos.data.source.local.model.CurrencyItem
+import org.siamdev.zappos.data.source.local.model.FontItem
+import org.siamdev.zappos.data.source.local.model.ThemeItem
 
 @Stable
 interface SettingSurface {

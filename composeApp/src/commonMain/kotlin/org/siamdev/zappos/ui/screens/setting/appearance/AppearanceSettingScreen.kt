@@ -39,8 +39,8 @@ import androidx.compose.ui.unit.sp
 import kotlin.math.abs
 import kotlin.math.roundToInt
 import org.siamdev.zappos.LocalSettingVM
-import org.siamdev.zappos.data.source.local.FontItem
-import org.siamdev.zappos.data.source.local.ThemeItem
+import org.siamdev.zappos.data.source.local.model.FontItem
+import org.siamdev.zappos.data.source.local.model.ThemeItem
 import org.siamdev.zappos.theme.MapLikeColors
 import org.siamdev.zappos.theme.YellowPrimary
 import org.siamdev.zappos.theme.colorFromHex

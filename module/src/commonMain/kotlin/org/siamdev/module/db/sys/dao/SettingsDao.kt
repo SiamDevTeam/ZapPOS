@@ -12,7 +12,12 @@ class SettingsDao(private val db: AppDatabase) {
     suspend fun selectSystem(): T_SYS_SETTINGS? =
         db.sys { sETTINGS_CRUDQueries.selectSystem().executeAsOneOrNull() }
 
-    suspend fun initSystem(themeId: String?, fontId: String?, primaryCurrencyId: String?, createdAt: Long) =
+    suspend fun initSystem(
+        themeId: String?,
+        fontId: String?,
+        primaryCurrencyId: String?,
+        createdAt: Long
+    ) =
         db.sys { sETTINGS_CRUDQueries.initSystem(themeId, fontId, primaryCurrencyId, createdAt) }
 
     suspend fun updateTheme(themeId: String, updatedAt: Long, updatedBy: String) =

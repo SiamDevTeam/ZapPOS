@@ -1,0 +1,48 @@
+insert:
+INSERT INTO M_PRODUCT_MEDIA (
+    I_MEDIA_ID, I_PRD_ID, I_MEDIA_TYPE, I_MEDIA_URL, I_LOCAL_HASH, I_SORT_ORDER, I_IS_ACTIVE,
+    I_CREATED_AT, I_UPDATED_AT, I_MODIFY_COUNT, I_CREATED_BY, I_UPDATED_BY
+) VALUES (
+    :mediaId, :prdId, :mediaType, :mediaUrl, :localHash, :sortOrder, 1,
+    :createdAt, NULL, 0, :createdBy, NULL
+);
+
+updateLocalHash:
+UPDATE M_PRODUCT_MEDIA
+SET I_LOCAL_HASH   = :localHash,
+    I_UPDATED_AT   = :updatedAt,
+    I_MODIFY_COUNT = I_MODIFY_COUNT + 1,
+    I_UPDATED_BY   = :updatedBy
+WHERE I_MEDIA_ID = :mediaId;
+
+updateSortOrder:
+UPDATE M_PRODUCT_MEDIA
+SET I_SORT_ORDER   = :sortOrder,
+    I_UPDATED_AT   = :updatedAt,
+    I_MODIFY_COUNT = I_MODIFY_COUNT + 1,
+    I_UPDATED_BY   = :updatedBy
+WHERE I_MEDIA_ID = :mediaId;
+
+deactivate:
+UPDATE M_PRODUCT_MEDIA
+SET I_IS_ACTIVE    = 0,
+    I_UPDATED_AT   = :updatedAt,
+    I_MODIFY_COUNT = I_MODIFY_COUNT + 1,
+    I_UPDATED_BY   = :updatedBy
+WHERE I_MEDIA_ID = :mediaId;
+
+delete:
+DELETE FROM M_PRODUCT_MEDIA WHERE I_MEDIA_ID = :mediaId;
+
+deleteByProduct:
+DELETE FROM M_PRODUCT_MEDIA WHERE I_PRD_ID = :prdId;
+
+selectByProduct:
+SELECT * FROM M_PRODUCT_MEDIA
+WHERE I_PRD_ID = :prdId AND I_IS_ACTIVE = 1
+ORDER BY I_SORT_ORDER ASC;
+
+selectPrimaryByProduct:
+SELECT * FROM M_PRODUCT_MEDIA
+WHERE I_PRD_ID = :prdId AND I_IS_ACTIVE = 1 AND I_SORT_ORDER = 0
+LIMIT 1;

@@ -10,41 +10,65 @@ import org.siamdev.module.db.WriteOp
 
 // M_PRODUCT
 fun BizTxScope.Product(block: ProductBuilder.() -> Unit): TxStepBuilder<Unit> {
-    val b    = ProductBuilder().apply(block)
-    val mode = ctx.writeOp
-    val a    = ctx.actor
+    val builder = ProductBuilder().apply(block)
+    val writeOp = ctx.writeOp
+    val actor = ctx.actor
     return TxStepBuilder({
-        when (mode) {
+        when (writeOp) {
             WriteOp.INSERT -> db.m_PRODUCT_CRUDQueries.insert(
-                b.I_PRD_ID, b.I_CAT_ID, b.I_TAX_ID, b.I_PRODUCT_NAME,
-                b.I_IMAGE_PATH, b.I_UNIT, b.I_PRICE, b.I_COST, b.I_DESCRIPTION,
-                b.I_TRACK_STOCK, b.I_IS_RECOMMENDED, b.I_IS_ACTIVE,
-                a.at, a.userId
+                builder.I_PRD_ID,
+                builder.I_CAT_ID,
+                builder.I_TAX_ID,
+                builder.I_PRD_KIND,
+                builder.I_PRD_NAME,
+                builder.I_PRD_DESC,
+                builder.I_UNIT,
+                builder.I_PRICE,
+                builder.I_COST_PRICE,
+                builder.I_CHARGE_VAT,
+                builder.I_OPEN_PRICE,
+                builder.I_SKU,
+                builder.I_BARCODE,
+                builder.I_SEND_ORDER_TO,
+                builder.I_DISPLAY_ORDER,
+                builder.I_IS_AVAILABLE,
+                builder.I_IS_RECOMMENDED,
+                builder.I_IS_ACTIVE,
+                actor.at,
+                actor.userId
             )
 
             WriteOp.UPDATE -> db.m_PRODUCT_CRUDQueries.update(
-                b.I_CAT_ID, b.I_TAX_ID, b.I_PRODUCT_NAME,
-                b.I_IMAGE_PATH, b.I_UNIT, b.I_PRICE, b.I_COST, b.I_DESCRIPTION,
-                b.I_TRACK_STOCK, b.I_IS_RECOMMENDED, b.I_IS_ACTIVE,
-                a.at, a.userId, b.I_PRD_ID
+                builder.I_CAT_ID, builder.I_TAX_ID, builder.I_PRD_NAME, builder.I_PRD_DESC,
+                builder.I_UNIT, builder.I_PRICE, builder.I_COST_PRICE,
+                builder.I_CHARGE_VAT, builder.I_OPEN_PRICE, builder.I_SKU, builder.I_BARCODE,
+                builder.I_SEND_ORDER_TO, builder.I_DISPLAY_ORDER,
+                builder.I_IS_AVAILABLE, builder.I_IS_RECOMMENDED, builder.I_IS_ACTIVE,
+                actor.at, actor.userId, builder.I_PRD_ID
             )
 
-            WriteOp.DELETE -> db.m_PRODUCT_CRUDQueries.delete(b.I_PRD_ID)
+            WriteOp.DELETE -> db.m_PRODUCT_CRUDQueries.delete(builder.I_PRD_ID)
         }
     }, this)
 }
 
 class ProductBuilder {
-    var I_PRD_ID: String          = ""
-    var I_CAT_ID: String          = ""
-    var I_TAX_ID: String          = ""
-    var I_PRODUCT_NAME: String    = ""
-    var I_IMAGE_PATH: String?     = null
-    var I_UNIT: String            = ""
-    var I_PRICE: Double           = 0.0
-    var I_COST: Double            = 0.0
-    var I_DESCRIPTION: String?    = null
-    var I_TRACK_STOCK: Long       = 0L
-    var I_IS_RECOMMENDED: Long    = 0L
-    var I_IS_ACTIVE: Long         = 1L
+    var I_PRD_ID: String = ""
+    var I_CAT_ID: String? = null
+    var I_TAX_ID: String? = null
+    var I_PRD_KIND: String = "1000"
+    var I_PRD_NAME: String = ""
+    var I_PRD_DESC: String? = null
+    var I_UNIT: String = ""
+    var I_PRICE: Double = 0.0
+    var I_COST_PRICE: Double? = null
+    var I_CHARGE_VAT: Long = 1L
+    var I_OPEN_PRICE: Long = 0L
+    var I_SKU: String? = null
+    var I_BARCODE: String? = null
+    var I_SEND_ORDER_TO: String? = null
+    var I_DISPLAY_ORDER: Long = 0L
+    var I_IS_AVAILABLE: Long = 1L
+    var I_IS_RECOMMENDED: Long = 0L
+    var I_IS_ACTIVE: Long = 1L
 }
